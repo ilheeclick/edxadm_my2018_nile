@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <table border="1" >
+        <tr>
+            <td colspan ="2">회원가입자 수</td>
+        </tr>
+        <tr align="center">
+            <td>어제</td>
+            <td>누적</td>
+        </tr>
+        <tr align="center">
+            <td>{{ user_count }}</td>
+            <td>{{ user_count_total }}</td>
+        </tr>
+    </table>
+    </br>
+    <table border="1" >
+        <tr>
+            <td colspan ="2" >강좌 수강자 수 (중복제외)</td>
+        </tr>
+        <tr align="center">
+            <td>어제</td>
+            <td>누적</td>
+        </tr>
+        <tr align="center">
+            <td>{{ course_count_distinct }}</td>
+            <td>{{ course_count_distinct_total }}</td>
+        </tr>
+    </table>
+    </br>
+    <table border="1" >
+        <tr align="center">
+            <td> </td>
+            <td colspan= "3">어제</td>
+            <td colspan= "3">누적</td>
+        </tr>
+        <tr align="center">
+            <td>구분</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+        </tr>
+        <tr align="center">
+            <td>박사</td>
+            <td>{{ male_p }}</td>
+            <td>{{ female_p }}</td>
+            <td>{{ male_p|add:female_p }}</td>
+            <td>{{ male_p_total }}</td>
+            <td>{{ female_p_total }}</td>
+            <td>{{ male_p_total|add:female_p_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>석사</td>
+            <td>{{ male_m }}</td>
+            <td>{{ female_m }}</td>
+            <td>{{ male_m|add:female_m }}</td>
+            <td>{{ male_m_total }}</td>
+            <td>{{ female_m_total }}</td>
+            <td>{{ male_m_total|add:female_m_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>학사</td>
+            <td>{{ male_b }}</td>
+            <td>{{ female_b }}</td>
+            <td>{{ male_b|add:female_b }}</td>
+            <td>{{ male_b_total }}</td>
+            <td>{{ female_b_total }}</td>
+            <td>{{ male_b_total|add:female_b_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>전문학사</td>
+            <td>{{ male_a }}</td>
+            <td>{{ female_a }}</td>
+            <td>{{ male_a|add:female_a }}</td>
+            <td>{{ male_a_total }}</td>
+            <td>{{ female_a_total }}</td>
+            <td>{{ male_a_total|add:female_a_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>고등학교 졸업</td>
+            <td>{{ male_hs }}</td>
+            <td>{{ female_hs }}</td>
+            <td>{{ male_hs|add:female_hs }}</td>
+            <td>{{ male_hs_total }}</td>
+            <td>{{ female_hs_total }}</td>
+            <td>{{ male_hs_total|add:female_hs_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>중학교 졸업</td>
+            <td>{{ male_jhs }}</td>
+            <td>{{ female_jhs }}</td>
+            <td>{{ male_jhs|add:female_jhs }}</td>
+            <td>{{ male_jhs_total }}</td>
+            <td>{{ female_jhs_total }}</td>
+            <td>{{ male_jhs|add:female_jhs_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>초등학교 졸업</td>
+            <td>{{ male_el }}</td>
+            <td>{{ female_el }}</td>
+            <td>{{ male_el|add:female_el }}</td>
+            <td>{{ male_el_total }}</td>
+            <td>{{ female_el_total }}</td>
+            <td>{{ male_el_total|add:female_el_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>기타</td>
+            <td>{{ male_other }}</td>
+            <td>{{ female_other }}</td>
+            <td>{{ male_other|add:female_other }}</td>
+            <td>{{ male_other_total }}</td>
+            <td>{{ female_other_total }}</td>
+            <td>{{ male_other_total|add:female_other_total }}</td>
+        </tr>
+            <tr align="center">
+            <td>미 입력</td>
+            <td>{{ male_none }}</td>
+            <td>{{ female_none }}</td>
+            <td>{{ male_none|add:female_none }}</td>
+            <td>{{ male_none_total }}</td>
+            <td>{{ female_none_total }}</td>
+            <td>{{ male_none_total|add:female_none_total }}</td>
+        </tr>
+    </table>
+    </br>
+    <table border="1" >
+        <tr align="center">
+            <td> </td>
+            <td colspan= "3">어제</td>
+            <td colspan= "3">누적</td>
+        </tr>
+        <tr align="center">
+            <td>구분</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+        </tr>
+        <tr align="center">
+            <td>20대 미만</td>
+            <td>{{ male_10 }}</td>
+            <td>{{ female_10 }}</td>
+            <td>{{ male_10|add:female_10 }}</td>
+            <td>{{ male_10_total }}</td>
+            <td>{{ female_10_total }}</td>
+            <td>{{ male_10_total|add:female_10_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>20대</td>
+            <td>{{ male_20 }}</td>
+            <td>{{ female_20 }}</td>
+            <td>{{ male_20|add:female_20 }}</td>
+            <td>{{ male_20_total }}</td>
+            <td>{{ female_20_total }}</td>
+            <td>{{ male_20_total|add:female_20_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>30대</td>
+            <td>{{ male_30 }}</td>
+            <td>{{ female_30 }}</td>
+            <td>{{ male_30|add:female_30 }}</td>
+            <td>{{ male_30_total }}</td>
+            <td>{{ female_30_total }}</td>
+            <td>{{ male_30_total|add:female_30_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>40대</td>
+            <td>{{ male_40 }}</td>
+            <td>{{ female_40 }}</td>
+            <td>{{ male_40|add:female_40 }}</td>
+            <td>{{ male_40_total }}</td>
+            <td>{{ female_40_total }}</td>
+            <td>{{ male_40_total|add:female_40_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>50대</td>
+            <td>{{ male_50 }}</td>
+            <td>{{ female_50 }}</td>
+            <td>{{ male_50|add:female_50 }}</td>
+            <td>{{ male_50_total }}</td>
+            <td>{{ female_50_total }}</td>
+            <td>{{ male_50_total|add:female_50_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>60대 이상</td>
+            <td>{{ male_60 }}</td>
+            <td>{{ female_60 }}</td>
+            <td>{{ male_60|add:female_60 }}</td>
+            <td>{{ male_60_total }}</td>
+            <td>{{ female_60_total }}</td>
+            <td>{{ male_60_total|add:female_60_total }}</td>
+        </tr>
+    </table>
+    </br>
+    <table border="1">
+        <tr align="center">
+            <td>대학명</td>
+            <td>과목명</td>
+            <td>수강자 수</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="2">경희대학교</td>
+            <td>1.호모 폴리티쿠스</td>
+            <td align="center">{{ course_1 }}</td>
+        </tr>
+        <tr >
+            <td>2.세계시민교육</td>
+            <td align="center">{{ course_2 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="4">고려대학교</td>
+            <td>3.일반인을 위한 일반 상대성 이론</td>
+            <td align="center">{{ course_3 }}</td>
+        </tr>
+        <tr >
+            <td>4.Quantum Mechanics for IT/NT/BT</td>
+            <td align="center">{{ course_4 }}</td>
+        </tr>
+        <tr >
+            <td>5.민법학입문</td>
+            <td align="center">{{ course_5 }}</td>
+        </tr>
+        <tr >
+            <td>6.고전문헌과 역사문화</td>
+            <td align="center">{{ course_6 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="2">부산대학교</td>
+            <td>7.생명의 프린키피아</td>
+            <td align="center">{{ course_7 }}</td>
+        </tr>
+        <tr >
+            <td>8.사회적기업 아름다운 경영이야기</td>
+            <td align="center">{{ course_8 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="2">서울대학교</td>
+            <td>9.경제학들어가기</td>
+            <td align="center">{{ course_9 }}</td>
+        </tr>
+        <tr >
+            <td>10.우주와 생명</td>
+            <td align="center">{{ course_10 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="2">성균관대학교</td>
+            <td>11.논어</td>
+            <td align="center">{{ course_11 }}</td>
+        </tr>
+        <tr >
+            <td>12.창의적 발상</td>
+            <td align="center">{{ course_12 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="3">연세대학교</td>
+            <td>13.문학이란 무엇인가</td>
+            <td align="center">{{ course_13 }}</td>
+        </tr>
+        <tr >
+            <td>14.서비스디자인</td>
+            <td align="center">{{ course_14 }}</td>
+        </tr>
+        <tr >
+            <td>15.우주의 이해</td>
+            <td align="center">{{ course_15 }}</td>
+        </tr><tr >
+            <td align="center" rowspan ="4">이화여자대학교</td>
+            <td>16.현대물리학과 인간사고의 변혁</td>
+            <td align="center">{{ course_16 }}</td>
+        </tr>
+        <tr >
+            <td>17.영화 스토리텔링의 이해</td>
+            <td align="center">{{ course_17 }}</td>
+        </tr>
+        <tr >
+            <td>18.인간행위와 사회구조</td>
+            <td align="center">{{ course_18 }}</td>
+        </tr>
+        <tr >
+            <td>19.건축으로 읽는 사회문화사</td>
+            <td align="center">{{ course_19 }}</td>
+        </tr><tr >
+            <td align="center" rowspan ="2">포항공과대학교</td>
+            <td>20.연속체 역학과 유한요소해석</td>
+            <td align="center">{{ course_20 }}</td>
+        </tr>
+        <tr >
+            <td>21.디지털 통신 시스템:변복조와 전력 스펙트럼</td>
+            <td align="center">{{ course_21 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="2">한국과학기술원</td>
+            <td>22.동역학(Dynamics)</td>
+            <td align="center">{{ course_22 }}</td>
+        </tr>
+        <tr >
+            <td>23.인공지능과 기계학습</td>
+            <td align="center">{{ course_23 }}</td>
+        </tr>
+        <tr >
+            <td align="center" rowspan ="4">한양대학교</td>
+            <td>24.건축공간론</td>
+            <td align="center">{{ course_24 }}</td>
+        </tr>
+        <tr >
+            <td>25.정책학개론</td>
+            <td align="center">{{ course_25 }}</td>
+        </tr>
+        <tr >
+            <td>26.경영데이터마이닝</td>
+            <td align="center">{{ course_26 }}</td>
+        </tr>
+        <tr >
+            <td>27.정보사회학입문</td>
+            <td align="center">{{ course_27 }}</td>
+        </tr>
+    </table>
+    </br>
+    <table border = "1">
+        <tr >
+            <td></td>
+            <td align="center">수강자 수</td>
+        </tr>
+        <tr >
+            <td align="center">경희대학교</td>
+            <td align="center">{{ khu }}</td>
+        </tr>
+        <tr >
+            <td align="center">고려대학교</td>
+            <td align="center">{{ ku }}</td>
+        </tr>
+        <tr >
+            <td align="center">부산대학교</td>
+            <td align="center">{{ bu }}</td>
+        </tr>
+        <tr >
+            <td align="center">서울대학교</td>
+            <td align="center">{{ su }}</td>
+        </tr>
+        <tr >
+            <td align="center">성균관대학교</td>
+            <td align="center">{{ skku }}</td>
+        </tr>
+        <tr >
+            <td align="center">연세대학교</td>
+            <td align="center">{{ yu }}</td>
+        </tr>
+        <tr >
+            <td align="center">이화여자대학교</td>
+            <td align="center">{{ ehwu }}</td>
+        </tr>
+        <tr >
+            <td align="center">포항공과대학교</td>
+            <td align="center">{{ posco }}</td>
+        </tr>
+        <tr >
+            <td align="center">한국과학기술대학교</td>
+            <td align="center">{{ kaist }}</td>
+        </tr>
+        <tr >
+            <td align="center">한양대학교</td>
+            <td align="center">{{ hu }}</td>
+        </tr>
+    </table>
+    </br>
+    {{ test }}
+</body>
+</html>

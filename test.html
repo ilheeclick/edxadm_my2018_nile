@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    </br>
+    <table border="1" >
+        <tr align="center">
+            <td> </td>
+            <td colspan= "3">어제</td>
+            <td colspan= "3">누적</td>
+        </tr>
+        <tr align="center">
+            <td>구분</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+            <td>남자</td>
+            <td>여자</td>
+            <td>계</td>
+        </tr>
+        <tr align="center">
+            <td>박사</td>
+            <td>{{ male_p }}</td>
+            <td>{{ female_p }}</td>
+            <td>{{ male_p|add:female_p }}</td>
+            <td>{{ male_p_total }}</td>
+            <td>{{ female_p_total }}</td>
+            <td>{{ male_p_total|add:female_p_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>석사</td>
+            <td>{{ male_m }}</td>
+            <td>{{ female_m }}</td>
+            <td>{{ male_m|add:female_m }}</td>
+            <td>{{ male_m_total }}</td>
+            <td>{{ female_m_total }}</td>
+            <td>{{ male_m_total|add:female_m_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>학사</td>
+            <td>{{ male_b }}</td>
+            <td>{{ female_b }}</td>
+            <td>{{ male_b|add:female_b }}</td>
+            <td>{{ male_b_total }}</td>
+            <td>{{ female_b_total }}</td>
+            <td>{{ male_b_total|add:female_b_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>전문학사</td>
+            <td>{{ male_a }}</td>
+            <td>{{ female_a }}</td>
+            <td>{{ male_a|add:female_a }}</td>
+            <td>{{ male_a_total }}</td>
+            <td>{{ female_a_total }}</td>
+            <td>{{ male_a_total|add:female_a_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>고등학교 졸업</td>
+            <td>{{ male_hs }}</td>
+            <td>{{ female_hs }}</td>
+            <td>{{ male_hs|add:female_hs }}</td>
+            <td>{{ male_hs_total }}</td>
+            <td>{{ female_hs_total }}</td>
+            <td>{{ male_hs_total|add:female_hs_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>중학교 졸업</td>
+            <td>{{ male_jhs }}</td>
+            <td>{{ female_jhs }}</td>
+            <td>{{ male_jhs|add:female_jhs }}</td>
+            <td>{{ male_jhs_total }}</td>
+            <td>{{ female_jhs_total }}</td>
+            <td>{{ male_jhs|add:female_jhs_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>초등학교 졸업</td>
+            <td>{{ male_el }}</td>
+            <td>{{ female_el }}</td>
+            <td>{{ male_el|add:female_el }}</td>
+            <td>{{ male_el_total }}</td>
+            <td>{{ female_el_total }}</td>
+            <td>{{ male_el_total|add:female_el_total }}</td>
+        </tr>
+        <tr align="center">
+            <td>기타</td>
+            <td>{{ male_other }}</td>
+            <td>{{ female_other }}</td>
+            <td>{{ male_other|add:female_other }}</td>
+            <td>{{ male_other_total }}</td>
+            <td>{{ female_other_total }}</td>
+            <td>{{ male_other_total|add:female_other_total }}</td>
+        </tr>
+            <tr align="center">
+            <td>미 입력</td>
+            <td>{{ male_none }}</td>
+            <td>{{ female_none }}</td>
+            <td>{{ male_none|add:female_none }}</td>
+            <td>{{ male_none_total }}</td>
+            <td>{{ female_none_total }}</td>
+            <td>{{ male_none_total|add:female_none_total }}</td>
+        </tr>
+    </table>
+    </br>
+</body>
+</html>

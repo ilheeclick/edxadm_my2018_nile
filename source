@@ -1,0 +1,652 @@
+# -*- coding: utf-8 -*-
+from django.db import connection
+from django.shortcuts import render
+from django.template import Context
+from django.http import HttpResponse
+from django.template.loader import get_template
+import query
+
+def user_main(name):
+
+    user_count = connection.cursor()
+
+    user_count.execute(name)
+
+    result = user_count.fetchone()[0]
+
+    user_count.close()
+
+    return result
+
+def user_detail_main(name, num1, num2):
+
+    main = connection.cursor()
+
+    main.execute(name)
+
+    result = main.fetchall()[num1][num2]
+
+    main.close()
+
+    return result
+
+def user_manage(request):
+
+    #Test
+
+    cursor = connection.cursor()
+
+    cursor.execute(query.gender_education)
+
+    row = cursor.fetchall()
+
+    cursor.close()
+
+    # 회원가입자 수(신규)
+
+    user_count_view_total = user_main(query.user_count_total)
+
+    # 회원가입자 수(누적)
+
+    user_count_view =user_main(query.user_count)
+
+    # 수강신청자 (중복제거)(신규)
+
+    course_count_distinct_view = user_main(query.course_count_distinct)
+
+    # 수강신청자 (중복제거)(누적)
+
+    course_count_distinct_view_total = user_main(query.course_count_distinct_total)
+
+    # 수강신청자 수 (**수정 필수)
+
+    # 성별/학력/박사
+
+    # 남자
+
+    male_p = user_detail_main(query.gender_education, 0, 1)
+
+    # 여자
+
+    female_p = user_detail_main(query.gender_education, 0, 2)
+
+    # 성별/학력/석사
+
+    # 남자
+
+    male_m = user_detail_main(query.gender_education, 1, 1)
+
+    # 여자
+
+    female_m = user_detail_main(query.gender_education, 1, 2)
+
+    # 성별/학력/학사
+
+    # 남자
+
+    male_b = user_detail_main(query.gender_education, 2, 1)
+
+    # 여자
+
+    female_b = user_detail_main(query.gender_education, 2, 2)
+
+    # 성별/학력/전문학사
+
+    # 남자
+
+    male_a = user_detail_main(query.gender_education, 3, 1)
+
+    # 여자
+    female_a = user_detail_main(query.gender_education, 3, 2)
+
+    # 성별/학력/고등학교 졸업
+
+    # 남자
+
+    male_hs = user_detail_main(query.gender_education, 4, 1)
+
+    # 여자
+
+    female_hs = user_detail_main(query.gender_education, 4, 2)
+
+    # 성별/학력/중학교 졸업
+
+    # 남자
+
+    male_jhs = user_detail_main(query.gender_education, 5, 1)
+
+    # 여자
+
+    female_jhs = user_detail_main(query.gender_education, 5, 2)
+
+    # 성별/학력/초등학교 졸업
+
+    # 남자
+
+    male_el = user_detail_main(query.gender_education, 6, 1)
+
+    # 여자
+
+    female_el = user_detail_main(query.gender_education, 6, 2)
+
+    # 성별/학력/기타
+
+    # 남자
+
+    male_other = user_detail_main(query.gender_education, 7, 1)
+
+    # 여자
+
+    female_other = user_detail_main(query.gender_education, 7, 2)
+
+    # 성별/학력/미 입력
+
+    # 남자
+
+    male_none1 = user_detail_main(query.gender_education, 8, 1)
+
+    male_none2 = user_detail_main(query.gender_education, 9, 1)
+
+    if male_none2 == None:
+        male_none = int(male_none1)
+    else:
+        male_none = int(male_none1)+int(male_none2)
+
+    # 여자
+
+    female_none1 = user_detail_main(query.gender_education, 8, 2)
+
+    female_none2 = user_detail_main(query.gender_education, 9, 2)
+
+    if female_none2 == None:
+        female_none = int(female_none1)
+    else:
+        female_none = int(female_none1)+int(female_none2)
+
+
+    # 성별/학력/박사(누적)
+
+    # 남자
+
+    male_p_total = user_detail_main(query.gender_education_total, 0, 1)
+
+    # 여자
+
+    female_p_total = user_detail_main(query.gender_education_total, 0, 2)
+
+    # 성별/학력/석사
+
+    # 남자
+
+    male_m_total = user_detail_main(query.gender_education_total, 1, 1)
+
+    # 여자
+
+    female_m_total = user_detail_main(query.gender_education_total, 1, 2)
+
+    # 성별/학력/학사
+
+    # 남자
+
+    male_b_total = user_detail_main(query.gender_education_total, 2, 1)
+
+    # 여자
+
+    female_b_total = user_detail_main(query.gender_education_total, 2, 2)
+
+    # 성별/학력/전문학사
+
+    # 남자
+
+    male_a_total = user_detail_main(query.gender_education_total, 3, 1)
+
+    # 여자
+    female_a_total = user_detail_main(query.gender_education_total, 3, 2)
+
+    # 성별/학력/고등학교 졸업
+
+    # 남자
+
+    male_hs_total = user_detail_main(query.gender_education_total, 4, 1)
+
+    # 여자
+
+    female_hs_total = user_detail_main(query.gender_education_total, 4, 2)
+
+    # 성별/학력/중학교 졸업
+
+    # 남자
+
+    male_jhs_total = user_detail_main(query.gender_education_total, 5, 1)
+
+    # 여자
+
+    female_jhs_total = user_detail_main(query.gender_education_total, 5, 2)
+
+    # 성별/학력/초등학교 졸업
+
+    # 남자
+
+    male_el_total = user_detail_main(query.gender_education_total, 6, 1)
+
+    # 여자
+
+    female_el_total = user_detail_main(query.gender_education_total, 6, 2)
+
+    # 성별/학력/기타
+
+    # 남자
+
+    male_other_total = user_detail_main(query.gender_education_total, 7, 1)
+
+    # 여자
+
+    female_other_total = user_detail_main(query.gender_education_total, 7, 2)
+
+    # 성별/학력/미 입력
+
+    # 남자
+
+    male_none1_total = user_detail_main(query.gender_education_total, 8, 1)
+
+    male_none2_total = user_detail_main(query.gender_education_total, 9, 1)
+
+    male_none3_total = user_detail_main(query.gender_education_total, 10, 1)
+
+    if male_none2_total == None:
+        male_none_total = int(male_none1_total)
+    else:
+        male_none_total = int(male_none1_total)+int(male_none2_total)+int(male_none3_total)
+
+    # 여자
+
+    female_none1_total = user_detail_main(query.gender_education_total, 8, 2)
+
+    female_none2_total = user_detail_main(query.gender_education_total, 9, 2)
+
+    female_none3_total = user_detail_main(query.gender_education_total, 10, 2)
+
+    if female_none2_total == None:
+        female_none_total = int(female_none1_total)
+    else:
+        female_none_total = int(female_none1_total)+int(female_none2_total)+int(female_none3_total)
+
+    # 성별/나이/20대 미만
+
+    # 남자
+
+    male_10 = user_detail_main(query.gender_age, 0, 1)
+
+    # 여자
+
+    female_10 = user_detail_main(query.gender_age, 0, 2)
+
+    # 성별/나이/20대
+
+    # 남자
+
+    male_20  = user_detail_main(query.gender_age, 1, 1)
+
+    # 여자
+
+    female_20 = user_detail_main(query.gender_age, 1, 2)
+
+    # 성별/나이/30대
+
+    # 남자
+
+    male_30 = user_detail_main(query.gender_age, 2, 1)
+
+    # 여자
+
+    female_30 = user_detail_main(query.gender_age, 2, 2)
+
+    # 성별/나이/40대
+
+    # 남자
+
+    male_40 = user_detail_main(query.gender_age, 3, 1)
+
+    # 여자
+
+    female_40 = user_detail_main(query.gender_age, 3, 2)
+
+    # 성별/나이/50대
+
+    # 남자
+
+    male_50 = user_detail_main(query.gender_age, 4, 1)
+
+    # 여자
+
+    female_50 = user_detail_main(query.gender_age, 4, 2)
+
+    # 성별/나이/60대 이상
+
+    # 남자
+
+    male_60 = user_detail_main(query.gender_age, 5, 1)
+
+    # 여자
+
+    female_60 = user_detail_main(query.gender_age, 5, 2)
+
+    # 성별/나이/20대 미만
+
+    # 남자
+
+    male_10_total = user_detail_main(query.gender_age_total, 0, 1)
+
+    # 여자
+
+    female_10_total = user_detail_main(query.gender_age_total, 0, 2)
+
+    # 성별/나이/20대
+
+    # 남자
+
+    male_20_total = user_detail_main(query.gender_age_total, 1, 1)
+
+    # 여자
+
+    female_20_total = user_detail_main(query.gender_age_total, 1, 2)
+
+    # 성별/나이/30대
+
+    # 남자
+
+    male_30_total = user_detail_main(query.gender_age_total, 2, 1)
+
+    # 여자
+
+    female_30_total = user_detail_main(query.gender_age_total, 2, 2)
+
+    # 성별/나이/40대
+
+    # 남자
+
+    male_40_total = user_detail_main(query.gender_age_total, 3, 1)
+
+    # 여자
+
+    female_40_total = user_detail_main(query.gender_age_total, 3, 2)
+
+    # 성별/나이/50대
+
+    # 남자
+
+    male_50_total = user_detail_main(query.gender_age_total, 4, 1)
+
+    # 여자
+
+    female_50_total = user_detail_main(query.gender_age_total, 4, 2)
+
+    # 성별/나이/60대 이상
+
+    # 남자
+
+    male_60_total = user_detail_main(query.gender_age_total, 5, 1)
+
+    # 여자
+
+    female_60_total = user_detail_main(query.gender_age_total, 5, 2)
+
+    #코스별 수강자 수
+
+
+    # 1.호모폴리티쿠스
+
+    course_1 = user_detail_main(query.course_user, 11, 1)
+
+    # 2.세계시민교육
+
+    course_2 = user_detail_main(query.course_user, 10, 1)
+
+    #3.일반인을 위한 상대성 이론
+
+    course_3 = user_detail_main(query.course_user, 15, 1)
+
+    # 4.Quantum Mechanics
+
+    course_4 = user_detail_main(query.course_user, 13, 1)
+
+    # 5.민법학 입문
+
+    course_5 = user_detail_main(query.course_user, 16, 1)
+
+    # 6.고전문헌과 역사문화
+
+    course_6 = user_detail_main(query.course_user, 14, 1)
+
+    # 7.생명의 프린키피아
+
+    course_7 = user_detail_main(query.course_user, 17, 1)
+
+    # 8.사회적 기업 아름다운 경영이야기
+
+    course_8 = user_detail_main(query.course_user, 18, 1)
+
+    # 9.경제학들어가기
+
+    course_9 = user_detail_main(query.course_user, 23, 1)
+
+    # 10.우주와 생명
+
+    course_10 = user_detail_main(query.course_user, 24, 1)
+
+    # 11.논어
+
+    course_11 = user_detail_main(query.course_user, 21, 1)
+
+    # 12.창의적 발상
+
+    course_12 = user_detail_main(query.course_user, 22, 1)
+
+    # 13.문학이란 무엇인가
+
+    course_13 = user_detail_main(query.course_user, 26, 1)
+
+    # 14.서비스디자인
+
+    course_14 = user_detail_main(query.course_user, 25, 1)
+
+    # 15.우주의 이해
+
+    course_15 = user_detail_main(query.course_user, 27, 1)
+
+    # 16.현대물리학과 인간사고의 변혁
+
+    course_16 = user_detail_main(query.course_user, 0, 1)
+
+    # 17.영화스토리텔링의 이해
+
+    course_17 = user_detail_main(query.course_user, 2, 1)
+
+    # 18.인간행위와 사회구조
+
+    course_18 = user_detail_main(query.course_user, 1, 1)
+
+    # 19.건축으로 읽는 사회문화사
+
+    course_19 = user_detail_main(query.course_user, 3, 1)
+
+    # 20.연속체 역학과 유한요소해석
+
+    course_20 = user_detail_main(query.course_user, 20, 1)
+
+    # 21.디지털 통신 시스템
+
+    course_21 = user_detail_main(query.course_user, 19, 1)
+
+    # 22.동역학
+
+    course_22 = user_detail_main(query.course_user, 9, 1)
+
+    # 23.인공지능과 기계학습
+
+    course_23 = user_detail_main(query.course_user, 8, 1)
+
+    # 24.건축공간론
+
+    course_24 = user_detail_main(query.course_user, 4, 1)
+
+    # 25.정책학개론
+
+    course_25 = user_detail_main(query.course_user, 6, 1)
+
+    # 26.경영데이터마이닝
+
+    course_26 = user_detail_main(query.course_user, 5, 1)
+
+    # 27.정보사회학입문
+
+    course_27 = user_detail_main(query.course_user, 7, 1)
+
+    # 대학별 신청자 수
+
+    # 경희대학교
+
+    khu = int(course_1) + int(course_2)
+
+    #고려대학교
+
+    ku = int(course_3) + int(course_4) + int(course_5) + int(course_6)
+
+    #부산대학교
+
+    bu = int(course_7) + int(course_8)
+
+    #서울대학교
+
+    su = int(course_9) + int(course_10)
+
+    #성균관대학교
+
+    skku = int(course_11) + int(course_12)
+
+    #연세대학교
+
+    yu = int(course_13) + int(course_14) + int(course_15)
+
+    #이화여자대학교
+
+    ehwu = int(course_16) + int(course_17) + int(course_18) + int(course_19)
+
+    #포항공과대학교
+
+    posco = int(course_20) + int(course_21)
+
+    #한국과학기술원
+
+    kaist = int(course_22) + int(course_23)
+
+    #한양대학교
+
+    hu = int(course_24) + int(course_25) + int(course_26) + int(course_27)
+
+
+    template = get_template('manage_main.html')
+    context = Context({'user_count' : user_count_view,
+                       'user_count_total' : user_count_view_total,
+                       'course_count_distinct' : course_count_distinct_view,
+                       'course_count_distinct_total' : course_count_distinct_view_total,
+                       'male_p' : male_p,
+                       'female_p' : female_p,
+                       'male_m' : male_m,
+                       'female_m' : female_m,
+                       'male_b' : male_b,
+                       'female_b' : female_b,
+                       'male_a' : male_a,
+                       'female_a' : female_a,
+                       'male_hs' : male_hs,
+                       'female_hs' : female_hs,
+                       'male_jhs' : male_jhs,
+                       'female_jhs' : female_jhs,
+                       'male_el' : male_el,
+                       'female_el' : female_el,
+                       'male_other' : male_other,
+                       'female_other' : female_other,
+                       'male_none' : male_none,
+                       'female_none' : female_none,
+                       'male_p_total' : male_p_total,
+                       'female_p_total' : female_p_total,
+                       'male_m_total' : male_m_total,
+                       'female_m_total' : female_m_total,
+                       'male_b_total' : male_b_total,
+                       'female_b_total' : female_b_total,
+                       'male_a_total' : male_a_total,
+                       'female_a_total' : female_a_total,
+                       'male_hs_total' : male_hs_total,
+                       'female_hs_total' : female_hs_total,
+                       'male_jhs_total' : male_jhs_total,
+                       'female_jhs_total' : female_jhs_total,
+                       'male_el_total' : male_el_total,
+                       'female_el_total' : female_el_total,
+                       'male_other_total' : male_other_total,
+                       'female_other_total' : female_other_total,
+                       'male_none_total' : male_none_total,
+                       'female_none_total' : female_none_total,
+                       'male_10' : male_10,
+                       'female_10' : female_10,
+                       'male_20' : male_20,
+                       'female_20' : female_20,
+                       'male_30' : male_30,
+                       'female_30' : female_30,
+                       'male_40' : male_40,
+                       'female_40' : female_40,
+                       'male_50' : male_50,
+                       'female_50' : female_50,
+                       'male_60' : male_60,
+                       'female_60' : female_60,
+                       'male_10_total' : male_10_total,
+                       'female_10_total' : female_10_total,
+                       'male_20_total' : male_20_total,
+                       'female_20_total' : female_20_total,
+                       'male_30_total' : male_30_total,
+                       'female_30_total' : female_30_total,
+                       'male_40_total' : male_40_total,
+                       'female_40_total' : female_40_total,
+                       'male_50_total' : male_50_total,
+                       'female_50_total' : female_50_total,
+                       'male_60_total' : male_60_total,
+                       'female_60_total' : female_60_total,
+                       'test' : row,
+                       'course_1' : course_1,
+                       'course_2' : course_2,
+                       'course_3' : course_3,
+                       'course_4' : course_4,
+                       'course_5' : course_5,
+                       'course_6' : course_6,
+                       'course_7' : course_7,
+                       'course_8' : course_8,
+                       'course_9' : course_9,
+                       'course_10' : course_10,
+                       'course_11' : course_11,
+                       'course_12' : course_12,
+                       'course_13' : course_13,
+                       'course_14' : course_14,
+                       'course_15' : course_15,
+                       'course_16' : course_16,
+                       'course_17' : course_17,
+                       'course_18' : course_18,
+                       'course_19' : course_19,
+                       'course_20' : course_20,
+                       'course_21' : course_21,
+                       'course_22' : course_22,
+                       'course_23' : course_23,
+                       'course_24' : course_24,
+                       'course_25' : course_25,
+                       'course_26' : course_26,
+                       'khu' : khu,
+                       'ku' : ku,
+                       'bu' : bu,
+                       'su' : su,
+                       'skku' : skku,
+                       'yu' : yu,
+                       'ehwu' : ehwu,
+                       'posco' : posco,
+                       'kaist' : kaist,
+                       'hu' : hu,
+                       })
+
+    return HttpResponse(template.render(context))
