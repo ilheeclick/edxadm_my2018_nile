@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>K-Mooc 관리</title>
+    {% load staticfiles %}
     <meta charset="UTF-8">
-    <link type="text/css" rel="stylesheet" href="http://lifelongedu.kmoocs.kr/managestatic/css/user_count.css">
+  <!-- <link type="text/css" rel="stylesheet" href="http://lifelongedu.kmoocs.kr/managestatic/css/user_count.css">-->
+    <link type="text/css" rel="stylesheet" href="{% static "css/management.css" %}"> 
 
     <script>
         (function(w,d,s,g,js,fs){
@@ -76,7 +78,7 @@
                 refresh();
             }
             function refresh() {
-                $("#aa").load("/manage_main.html #aa");
+                $("#aa").load("/manage #aa");
                 setTimeout("refresh()", Number(lol2));
             }
 
@@ -157,13 +159,26 @@
              formatting and manipulation. -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-
+        
+	<!--
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/view-selector2.js"></script>
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/date-range-selector.js"></script>
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/active-users.js"></script>
+	-->
+
+	<!-- Include the ViewSelector2 component script. -->
+        <script src="{% static 'js/view-selector2.js' %}"></script>
+
+        <!-- Include the DateRangeSelector component script. -->
+        <script src="{% static 'js/date-range-selector.js' %}"></script>-
+
+        <!-- Include the ActiveUsers component script. -->
+        <script src="{% static 'js/active-users.js' %}"></script>
+
+	<script src="http://es6-promises.s3.amazonaws.com/es6-promise-2.0.0.min.js"></script>
 
         <script>
-
+	var Promise = Promise || ES6Promise.Promise; // do this to access Promise directly
         // == NOTE ==
         // This code uses ES6 promises. If you want to use this code in a browser
         // that doesn't supporting promises natively, you'll have to include a polyfill.

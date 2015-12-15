@@ -18,7 +18,7 @@ from django.contrib import admin
 from user_manage.views import user_manage
 
 urlpatterns = [
-    url(r'^', user_manage),
+    url(r'^manage/$', user_manage),
     #url(r'^', user_manage),
     #url(r'^admin/', google_test),
     #url(r'^admin/', include(admin.site.urls)),
