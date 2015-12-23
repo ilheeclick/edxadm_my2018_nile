@@ -64,7 +64,7 @@
        <div class="join_cycle">
          <ul>
            <li class="text">주기</li>
-           <li><label><input type="text" value="" id="lolz" style="width:25px; height:35px; font-size: 20px;"></label></li>
+           <li><label><input type="text" value="10" id="lolz" style="width:25px; height:35px; font-size: 20px;"></label></li>
            <li class="text">분</li>
            <li class="btn"><a href="#" onclick="setTime()">적용</a></li>
          </ul>
@@ -107,7 +107,7 @@
                 <th class="none">누적</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody id="count_data1">
                <tr>
                 <td>{{ user_today }}</td>
                 <td class="none">{{ user_total }}</td>
@@ -160,7 +160,18 @@
         <span class="Titles-main" id="view-name" style="display: none;"></span>
         <span id="embed-api-auth-container"></span>
         <span id="view-selector-container" style="display: none;"></span>
-        <h3><span id="active-users-container"></span></h3><br>
+        <span>
+            <table id="active-user">
+                <tr>
+                    <td><h3>현재 접속중인 사용자</h3></td>
+                </tr>
+                <tr>
+                    <td id="active-users-container"></td>
+                </tr>
+            </table>
+        </span>
+        <br>
+{#            <span id="active-users-container"></span></h3><br>#}
         <div id="chart-1-container"></div>
         <br>
 
