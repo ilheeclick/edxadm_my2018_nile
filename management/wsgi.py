@@ -18,4 +18,3 @@ sys.path.insert(0, '/home/project/management/management')
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
-

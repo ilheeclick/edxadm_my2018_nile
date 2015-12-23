@@ -5,8 +5,14 @@
     <title>K-Mooc 관리</title>
     {% load staticfiles %}
     <meta charset="UTF-8">
-  <!-- <link type="text/css" rel="stylesheet" href="http://lifelongedu.kmoocs.kr/managestatic/css/user_count.css">-->
-    <link type="text/css" rel="stylesheet" href="{% static "css/management.css" %}"> 
+    <!--<link type="text/css" rel="stylesheet" href="http://lifelongedu.kmoocs.kr/managestatic/css/user_count.css">-->
+    <link type="text/css" rel="stylesheet" href="{% static "css/management.css" %}">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+    <script>
+        var lol2=1000;
+    </script>
 
     <script>
         (function(w,d,s,g,js,fs){
@@ -46,12 +52,6 @@
                       printTime();
         }
     </script>
-
-    <script>
-        var lol2=1000;
-    </script>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -96,7 +96,7 @@
                                 <td colspan="2">가입자 수</td>
                             </tr>
                             <tr id="a1">
-                                <td width="50%">신규</td>
+                                <td width="50%">오늘 신규</td>
                                 <td width="50%">누적</td>
                             </tr>
                             <tr id="a2">
@@ -108,15 +108,27 @@
                     <td>
                         <table id="count2" border="1" cellspacing="0">
                             <tr align="center">
-                                <td colspan="2">수강 신청자 수</td>
+                                <td colspan="3">수강 신청자 수</td>
                             </tr>
                             <tr id="b1">
-                                <td width="50%">신규</td>
-                                <td width="50%">누적</td>
+                                <td width="30%">오늘 신규</td>
+                                <td width="30%">누적(중복제외)</td>
+                                <td width="30%">누적</td>
                             </tr>
                             <tr id="b2">
-                                <td width="50%">{{ course_today }}</td>
-                                <td width="50%">{{ course_total }}</td>
+                                <td width="30%">{{ course_today }}</td>
+                                <td width="30%">{{ course_distinct }}</td>
+                                <td width="30%">{{ course_total }}</td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table id="count2" border="1" cellspacing="0">
+                            <tr align="center">
+                                <td>운영과정수</td>
+                            </tr>
+                            <tr id="b2">
+                                <td width="100%">{{ course_count }}</td>
                             </tr>
                             </table>
                         </td>
@@ -135,9 +147,9 @@
 
         <!-- Step 1: Create the containing elements. -->
         <span class="Titles-main" id="view-name" style="display: none;"></span>
-        <span id="embed-api-auth-container"></span>
-        <span id="view-selector-container" style="display: none;"></span>
-        <h3><span id="active-users-container"></span></h3><br>
+        <span id="embed-api-auth-container"></span><br>
+        <span id="view-selector-container" style="display: none;"></span><br>
+        <span id="active-users-container"></span>
         <div id="chart-1-container"></div>
         <br>
 
@@ -152,21 +164,20 @@
 
         <!--<div id="legend-1-container"></div>-->
 
-
         <!-- Step 2: Load the library. -->
 
         <!-- This demo uses the Chart.js graphing library and Moment.js to do date
              formatting and manipulation. -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-        
-	<!--
+
+        <!--
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/view-selector2.js"></script>
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/date-range-selector.js"></script>
         <script src="http://lifelongedu.kmoocs.kr/managestatic/js/active-users.js"></script>
-	-->
+        -->
 
-	<!-- Include the ViewSelector2 component script. -->
+        <!-- Include the ViewSelector2 component script. -->
         <script src="{% static 'js/view-selector2.js' %}"></script>
 
         <!-- Include the DateRangeSelector component script. -->
@@ -175,10 +186,10 @@
         <!-- Include the ActiveUsers component script. -->
         <script src="{% static 'js/active-users.js' %}"></script>
 
-	<script src="http://es6-promises.s3.amazonaws.com/es6-promise-2.0.0.min.js"></script>
+        <script src="http://es6-promises.s3.amazonaws.com/es6-promise-2.0.0.min.js"></script>
 
         <script>
-	var Promise = Promise || ES6Promise.Promise; // do this to access Promise directly
+        var Promise = Promise || ES6Promise.Promise; // do this to access Promise directly
         // == NOTE ==
         // This code uses ES6 promises. If you want to use this code in a browser
         // that doesn't supporting promises natively, you'll have to include a polyfill.
