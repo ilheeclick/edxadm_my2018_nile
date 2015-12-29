@@ -1,10 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <title>K-MOOC 통계관리</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+    <style>
+        #header {
+            border-bottom: 5px solid blue;
+            width: 300px;
+        }
+        #main {
+            margin-top: 30px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+
+        var dateObj = new Date();
+        var year = dateObj.getFullYear();
+        var month = dateObj.getMonth()+1;
+        var day = dateObj.getDate();
+
+        if (month < 10) {
+            month = '0'+ month
+                      }
+        if (day < 10) {
+            day = '0'+ day
+                      }
+        var today = year+""+month+""+day;
+
+    $(function() {
+        $( "#datepicker1" ).datepicker({
+        minDate: new Date(2015, 10 - 1, 14),
+        maxDate: "+0m +0w -1d",
+        dateFormat: 'yymmdd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNames: ['일','월','화','수','목','금','토'],
+        dayNamesShort: ['일','월','화','수','목','금','토'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년'
+        });
+    });
+
+    function excelDonwload(){
+{#        console.log('=============================');#}
+{#        console.log($("#datepicker1").val());#}
+{#        console.log(today);#}
+        $.ajax({
+            url: "/manage/excel_download/" + $("#datepicker1").val()
+        })
+        .done(function( data ) {
+            alert('파일 생성 완료!');
+            $("#download").prop("href", data);
+            $("#downloadBtn").click();
+        });
+     }
+    </script>
 </head>
 <body>
-    <input type="button" value="적용" OnClick=""></p>
+<div id="header">
+    <h1>K-MOOC 통계 관리</h1>
+</div>
+<div id="main">
+    <form>
+        날짜선택 : <input type="text" style="width: 65px;" id="datepicker1">
+        <input type="button" id="excel_down" value="다운로드" onclick="excelDonwload();">
+        <a href="#" id="download" ><span id="downloadBtn" style="display: none;">test</span></a>
+    </form>
+</div>
 </body>
 </html>

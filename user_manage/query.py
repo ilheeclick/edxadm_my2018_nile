@@ -2,20 +2,20 @@
 
 # 회원 가입자 수 (신규)
 
-user_count_today = ('''Select count(*)
+user_count_today = ('''Select format(count(*),0)
                       FROM auth_userprofile a, auth_user b
                       WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and b.date_joined > CURDATE();''')
 
 
 # 회원 가입자 수 (누적)
 
-user_count_total = (''' Select count(*)
+user_count_total = (''' Select format(count(*),0)
                     FROM auth_userprofile a, auth_user b
                     WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d')  > '20151013';''')
 
 # 강좌 수강자 수(신규)
 
-course_count_today = (''' select count(a.user_id) cnt
+course_count_today = (''' select format(count(a.user_id),0) cnt
                         from student_courseenrollment a, auth_user b
                         where a.user_id = b.id
                           and a.created > CURDATE()
@@ -26,7 +26,7 @@ course_count_today = (''' select count(a.user_id) cnt
 
 # 강좌 수강자 수(누적)
 
-course_count_total = (''' select count(a.user_id) cnt
+course_count_total = (''' select format(count(a.user_id),0) cnt
                         from student_courseenrollment a, auth_user b
                         where a.user_id = b.id
                           and date_format(a.created,'%Y%m%d') > '20151013'
@@ -38,7 +38,7 @@ course_count_total = (''' select count(a.user_id) cnt
 
 # 강좌 수강자 수(누적/중복제외)
 
-course_count_distinct = ('''select count(distinct a.user_id) cnt
+course_count_distinct = ('''select format(count(distinct a.user_id),0) cnt
                             from student_courseenrollment a, auth_user b
                             where a.user_id = b.id
                               and date_format(a.created,'%Y%m%d') > '20151013'
@@ -47,7 +47,7 @@ course_count_distinct = ('''select count(distinct a.user_id) cnt
 
 #운영 강좌수
 
-course_count = ('''select count(distinct a.course_id) cnt
+course_count = ('''select format(count(distinct a.course_id),0) cnt
                 from student_courseenrollment a, auth_user b
                 where a.user_id = b.id
                   and a.is_active = 1
@@ -63,26 +63,3 @@ now_day = ('''select date_format(now( ), '%Y.%m.%d %H:%i:%s' );''')
 
 now_time = ('''select curtime();''')
 
-#엑셀 시
-
-excel_now_day = ('''select date_format(now( ), '%Y%m%d' );''')
-
-#Test
-
-test = ('''SELECT case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null'  then 'none' else level_of_education end level_of_education,
-       sum(if(a.gender = 'm', 1, 0)) AS "male",
-       sum(if(a.gender = 'f', 1, 0)) AS "female",
-       count(*) total
-  FROM auth_userprofile a, auth_user b
- WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d') between '20151014' and '20151221'
- group by case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 'none' else level_of_education end
- order by case
-         when a.level_of_education = 'p' then 1
-         when a.level_of_education = 'm' then 2
-         when a.level_of_education = 'b' then 3
-         when a.level_of_education = 'a' then 4
-         when a.level_of_education = 'hs' then 5
-         when a.level_of_education = 'jhs' then 6
-         when a.level_of_education = 'el' then 7
-         when a.level_of_education = 'other' then 8
-         when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 9 end;''')

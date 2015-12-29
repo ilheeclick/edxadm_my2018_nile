@@ -2,7 +2,7 @@
 <head>
     {% load staticfiles %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>회원가입현황</title>
+	<title>K-MOOC 현황</title>
 	<link rel="stylesheet" type="text/css" href="{% static "css/layout.css" %}" />
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
@@ -134,18 +134,27 @@
               </tr>
              </tbody>
           </table>
-        </div> 
-        <div class="number">
-          <div class="table_tit3">운영과정수</div>
-          <table summary="가입자 수"  class="table3">
-          <caption>운영과정수</caption>
-            <tbody>
-               <tr>
-                <td rowspan="2">{{ course_count }}</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
+             <div class="number2">
+              <div class="table_tit3">운영과정수</div>
+              <table summary="가입자 수"  class="table3">
+              <caption>운영과정수</caption>
+                 <thead>
+                  <tr>
+                    <th>운영과정수</th>
+                    <th>수강신청자 수</th>
+                    <th class="none">수강신청자수 <br />(중복제외)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                   <tr>
+                     <td>{{ course_count }}</td>
+                    <td>{{ course_total }}</td>
+                    <td class="none">{{ course_distinct }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
          </div>
      </div>
     </div>
