@@ -83,6 +83,9 @@
 
            function setTime() {
                var lol = Number(document.getElementById('lolz').value);
+	       if (lol==null) {
+		   lol=10;
+	       }
                lol2 = lol * 1000 * 60;
                refresh(lol);
             }
@@ -91,6 +94,10 @@
 
                 setTimeout("refresh()", Number(lol2));
             }
+
+	    $(document).ready(function(){
+               setTime();
+            });
 
         </script>
 
