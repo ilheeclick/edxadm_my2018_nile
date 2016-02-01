@@ -186,3 +186,101 @@ def statistics_excel(request, date):
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
 
+def certificate_excel(request):
+
+    d = datetime.date.today()
+    # certificates = statistics_query.course_ids()
+    course_ids = statistics_query.course_ids()
+
+    saveName = 'K-Mooc_certificate_'+d+'.xlsx'
+    savePath = '/home/project/management/static/excel/' + saveName
+
+    list_published_branch = list()
+    map_course_id_published_branch = {}
+    course_names = {}
+
+    if os.path.isfile(savePath):
+        pass
+
+    else:
+        wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
+        ws1 = wb['Sheet1']
+        row = 2
+
+        client = MongoClient('192.168.1.113', 27017)
+        db = client.edxapp
+
+        pb = ''
+        ov = ''
+        dn = ''
+
+        for c in course_ids:
+            cid = str(c[0])
+            cid = cid.replace('course-v1:', '')
+            cid = cid.replace('+', '.')
+            cursor = db.modulestore.active_versions.find({'search_targets.wiki_slug':c_id})
+            for document in cursor:
+                pb = document.get('versions').get('published-branch')
+
+            cursor.close()
+
+            cursor = db.modulestore.structures.find({'_id':pb})
+            for document in cursor:
+                ov = document.get('original_version')
+
+            cursor.close()
+
+            cursor = db.modulestore.structures.find({'_id':ov})
+
+            for document in cursor:
+                blocks = document.get('blocks')
+                print 'size = ', len(blocks)
+
+                for block in blocks:
+                        fields = block.get('fields')
+                        for field in fields:
+                                dn = fields['display_name']
+                                print '-----------------------------------'
+                                print 'dn = ', dn.encode('utf8')
+                                print '-----------------------------------'
+                                break
+                        break
+
+            cursor.close()
+
+
+
+            if document.get('versions').get('published-branch') != None:
+                list_published_branch.append(document.get('versions').get('published-branch'))
+                map_course_id_published_branch[document.get('versions').get('published-branch')] = cid
+            cursor.close()
+
+        for published_branch in list_published_branch:
+            cursor = db.modulestore.structures.find({'_id':published_branch})
+            for document in cursor:
+                blocks = document.get('blocks')
+                for block in blocks:
+                    fields = block.get('fields')
+                    if fields.has_key('display_name') :
+                        print map_course_id_published_branch[published_branch] + ' ' + fields['display_name']
+            cursor.close()
+        client.close()
+
+        for c in certificates:
+
+            cid = str(c[0])
+            cid = cid.replace('course-v1:', '')
+            cid = cid.replace('+', '.')
+
+            ws1['A' + str(row)] = c[0]
+            ws1['B' + str(row)] = c[1]
+            ws1['C' + str(row)] = c[2]
+            ws1['D' + str(row)] = c[3]
+            row += 1
+
+    return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
+
+
+
+
+

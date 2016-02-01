@@ -929,3 +929,10 @@ def course_edu(date):
 #                          when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
 #                          when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
 #                          when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27 end;''')
+
+def course_ids():
+    cur = connection.cursor()
+    cur.execute('''select distinct course_id from certificates_generatedcertificate;''')
+    row = cur.fetchall()
+    cur.close()
+    return row

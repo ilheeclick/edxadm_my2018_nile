@@ -61,6 +61,59 @@ def user_manage(request):
     time2 = main_query_one(query.now_time)
 
     template = get_template('index.html')
+
+
+    # add certificate option
+    pb = ''
+    ov = ''
+    dn = ''
+    courseId = ''
+    courseName = ''
+    courseInfo = {}
+
+    course_ids = statistics_query.course_ids()
+    for c in course_ids:
+        cid = str(c[0])
+        courseId = cid
+        cid = cid.replace('course-v1:', '')
+        cid = cid.replace('+', '.')
+        cursor = db.modulestore.active_versions.find({'search_targets.wiki_slug':c_id})
+        for document in cursor:
+            pb = document.get('versions').get('published-branch')
+
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':pb})
+        for document in cursor:
+            ov = document.get('original_version')
+
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':ov})
+
+        for document in cursor:
+            blocks = document.get('blocks')
+            print 'size = ', len(blocks)
+
+            for block in blocks:
+                fields = block.get('fields')
+                for field in fields:
+                    dn = fields['display_name']
+                    courseName = dn
+
+                    print '-----------------------------------'
+                    print courseId, ':', courseName
+                    print '-----------------------------------'
+
+                    courseInfo[courseId] = courseName
+                    break
+                break
+        cursor.close()
+
+    print '===================================='
+    print courseInfo
+    print '===================================='
+
     context = Context({'user_today' : user_today,
                        'user_total' : user_total,
                        'course_today' : course_today,
@@ -70,6 +123,7 @@ def user_manage(request):
                        'time': time,
                        'time2': time2,
                        'lolz': lolz,
+                       'courseInfo': courseInfo,
                         })
 
     return HttpResponse(template.render(context))
