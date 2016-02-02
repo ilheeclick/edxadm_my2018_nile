@@ -87,8 +87,8 @@ def statistics_excel(request, date):
 
     sortlist.sort()
     print '======'
-    for univ in sortlist:
-        print univ
+    #for univ in sortlist:
+    #    print str(univ)
     print '======'
 
 
@@ -113,7 +113,7 @@ def statistics_excel(request, date):
     savePath = '/home/project/management/static/excel/' + saveName
     # savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
 
-    if os.path.isfile(savePath) and False:
+    if os.path.isfile(savePath):
         pass
 
     else:
