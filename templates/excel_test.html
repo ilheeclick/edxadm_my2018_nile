@@ -18,20 +18,22 @@
 
     <script>
 
-        var dateObj = new Date();
-        var year = dateObj.getFullYear();
-        var month = dateObj.getMonth()+1;
-        var day = dateObj.getDate();
+    var dateObj = new Date();
+    var year = dateObj.getFullYear();
+    var month = dateObj.getMonth()+1;
+    var day = dateObj.getDate();
 
-        if (month < 10) {
-            month = '0'+ month
-                      }
-        if (day < 10) {
-            day = '0'+ day
-                      }
-        var today = year+""+month+""+day;
+    if (month < 10) {
+        month = '0'+ month
+                  }
+    if (day < 10) {
+        day = '0'+ day
+                  }
+    var today = year+""+month+""+day;
 
     $(function() {
+
+        // calendar setting
         $( "#datepicker1" ).datepicker({
         minDate: new Date(2015, 10 - 1, 14),
         maxDate: "+0m +0w -1d",
@@ -46,12 +48,22 @@
         showMonthAfterYear: true,
         yearSuffix: '년'
         });
+
+        // teset
+        console.log('{{ courseInfo }}')
     });
 
     function excelDonwload(){
 {#        console.log('=============================');#}
 {#        console.log($("#datepicker1").val());#}
 {#        console.log(today);#}
+
+        if($("#datepicker1").val() == ""){
+            alert('날짜를 선택하세요.');
+            return;
+        }
+
+        $("#download").find("img").show();
         $.ajax({
             url: "/manage/excel_download/" + $("#datepicker1").val()
         })
@@ -59,11 +71,35 @@
             alert('파일 생성 완료!');
             $("#download").prop("href", data);
             $("#downloadBtn").click();
+            $("#download").find("img").hide();
         });
      }
+
+    function excelDonwload2(){
+
+        alert('준비중입니다.');
+        return;
+
+
+        $("#download2").find("img").show();
+        $.ajax({
+            url: "/manage/excel_download2/" + $("#courseId").val()
+        })
+        .done(function( data ) {
+            alert('파일 생성 완료!');
+            $("#download2").prop("href", data);
+            $("#downloadBtn2").click();
+            $("#download2").find("img").hide();
+        });
+     }
+
+
+
+
     </script>
 </head>
 <body>
+{% load staticfiles %}
 <div id="header">
     <h1>K-MOOC 통계 관리</h1>
 </div>
@@ -71,16 +107,20 @@
     <form>
         날짜선택 : <input type="text" style="width: 65px;" id="datepicker1">
         <input type="button" id="excel_down" value="다운로드" onclick="excelDonwload();">
-        <a href="#" id="download" ><span id="downloadBtn" style="display: none;">test</span></a>
+        <a href="#" id="download" ><span id="downloadBtn" style="display: none;">download</span><img src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
 
         <hr/>
 
         강좌선택 :
-        <select>
-            <option value="test">test</option>
+        <select id="courseId">
+            {% for key, value in courseInfo %}
+                <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+
+
         </select>
         <input type="button" id="excel_down2" value="다운로드" onclick="excelDonwload2();">
-        <a href="#" id="download2" ><span id="downloadBtn2" style="display: none;">test</span></a>
+        <a href="#" id="download2" ><span id="downloadBtn2" style="display: none;">download</span><img src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
 
     </form>
 

@@ -29,35 +29,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="excel_test.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="excel_test.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/excel_test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6900115">
-              <caret line="70" column="10" selection-start-line="70" selection-start-column="10" selection-end-line="70" selection-end-column="10" />
+            <state vertical-scroll-proportion="-23.166666">
+              <caret line="55" column="29" selection-start-line="55" selection-start-column="29" selection-end-line="55" selection-end-column="29" />
               <folding>
-                <element signature="n#style#0;n#span#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="google.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/google.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="27" column="42" selection-start-line="27" selection-start-column="41" selection-end-line="27" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="statistics.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/user_manage/statistics.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.444445">
-              <caret line="168" column="44" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
-              <folding>
-                <element signature="e#24#56#0" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#a#0;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,8 +45,8 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/management/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.666667">
-              <caret line="21" column="29" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="30" column="1" selection-start-line="30" selection-start-column="1" selection-end-line="30" selection-end-column="1" />
               <folding>
                 <element signature="e#619#660#0" expanded="true" />
               </folding>
@@ -75,25 +54,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="statistics_query.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/management/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.703704">
-              <caret line="908" column="93" selection-start-line="908" selection-start-column="93" selection-end-line="908" selection-end-column="93" />
-              <folding>
-                <marker date="1454290542000" expanded="true" signature="417:629" placeholder="Select count..auth_userprofile..." />
-                <marker date="1454290542000" expanded="true" signature="788:1054" placeholder="Select count..auth_userprofile..." />
-                <marker date="1454290542000" expanded="true" signature="1562:1940" placeholder="select count..student_courseenrollment..." />
-                <marker date="1454290542000" expanded="true" signature="2565:3054" placeholder="select count..student_courseenrollment..." />
-                <marker date="1454290542000" expanded="true" signature="3792:4310" placeholder="select count..student_courseenrollment..." />
-                <marker date="1454290542000" expanded="true" signature="18418:20674" placeholder="SELECT b.aa,..@rn..." />
-                <marker date="1454290542000" expanded="true" signature="18643:18757" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1454290542000" expanded="true" signature="18710:18725" placeholder="SELECT @rn :..." />
-                <marker date="1454290542000" expanded="true" signature="18816:20619" placeholder="SELECT age, ..age..." />
-                <marker date="1454290542000" expanded="true" signature="19483:20590" placeholder="SELECT CASE ..date_format..." />
-                <marker date="1454290542000" expanded="true" signature="20064:20558" placeholder="SELECT (date..auth_userprofile..." />
-                <marker date="1454290542000" expanded="true" signature="52731:52795" placeholder="select disti..certificates_generatedcertificate..." />
-              </folding>
+            <state vertical-scroll-proportion="-5.445783">
+              <caret line="99" column="13" selection-start-line="99" selection-start-column="13" selection-end-line="99" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -101,10 +67,74 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/user_manage/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-26.592592">
-              <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+            <state vertical-scroll-proportion="-9.036144">
+              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
               <folding>
                 <element signature="e#24#56#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="statistics.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/user_manage/statistics.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="7.296296">
+              <caret line="115" column="42" selection-start-line="115" selection-start-column="42" selection-end-line="115" selection-end-column="42" />
+              <folding>
+                <element signature="e#24#56#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="statistics_query.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.48029557">
+              <caret line="199" column="48" selection-start-line="199" selection-start-column="48" selection-end-line="199" selection-end-column="48" />
+              <folding>
+                <element signature="e#25#42#0" expanded="true" />
+                <marker date="1454405568000" expanded="true" signature="417:629" placeholder="Select count..auth_userprofile..." />
+                <marker date="1454405568000" expanded="true" signature="788:1054" placeholder="Select count..auth_userprofile..." />
+                <marker date="1454405568000" expanded="true" signature="1562:1940" placeholder="select count..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="2565:3054" placeholder="select count..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="3792:4310" placeholder="select count..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="18418:20674" placeholder="SELECT b.aa,..@rn..." />
+                <marker date="1454405568000" expanded="true" signature="18643:18757" placeholder="SELECT (@rn ..auth_user..." />
+                <marker date="1454405568000" expanded="true" signature="18710:18725" placeholder="SELECT @rn :..." />
+                <marker date="1454405568000" expanded="true" signature="18816:20619" placeholder="SELECT age, ..age..." />
+                <marker date="1454405568000" expanded="true" signature="19483:20590" placeholder="SELECT CASE ..date_format..." />
+                <marker date="1454405568000" expanded="true" signature="20064:20558" placeholder="SELECT (date..auth_userprofile..." />
+                <marker date="1454405568000" expanded="true" signature="23198:24183" placeholder="SELECT a.cou..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="23400:23557" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="23617:24133" placeholder="SELECT cours..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="23663:24129" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="24411:25610" placeholder="SELECT a.cou..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="24635:24816" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="24912:25548" placeholder="SELECT cours..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="24970:25544" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="25785:27574" placeholder="SELECT subst..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="26465:26622" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="26682:27466" placeholder="SELECT cours..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="26809:27188" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="26809:27265" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="26809:27462" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="27734:29865" placeholder="SELECT subst..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="28817:28974" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="29034:29757" placeholder="SELECT cours..course_id..." />
+                <marker date="1454405568000" expanded="true" signature="29095:29557" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="29095:29753" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="30006:30171" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="30006:30176" placeholder="SELECT cours..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="30306:30370" placeholder="select disti..certificates_generatedcertificate..." />
+                <marker date="1454405568000" expanded="true" signature="30514:31525" placeholder="SELECT a.org..substring..." />
+                <marker date="1454405568000" expanded="true" signature="30514:31781" placeholder="SELECT a.org..substring..." />
+                <marker date="1454405568000" expanded="true" signature="30561:31085" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="31130:31525" placeholder="SELECT subst..student_courseenrollment..." />
+                <marker date="1454405568000" expanded="true" signature="31936:33224" placeholder="SELECT a.org..substring..." />
+                <marker date="1454405568000" expanded="true" signature="31983:32507" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1454405568000" expanded="true" signature="32552:33140" placeholder="SELECT subst..student_courseenrollment..." />
               </folding>
             </state>
           </provider>
@@ -148,15 +178,15 @@
         <option value="$PROJECT_DIR$/static/js/active-users.js" />
         <option value="$PROJECT_DIR$/user_manage/query.py" />
         <option value="$PROJECT_DIR$/templates/Test.html" />
-        <option value="$PROJECT_DIR$/management/settings.py" />
-        <option value="$PROJECT_DIR$/management/urls.py" />
         <option value="$PROJECT_DIR$/templates/error.html" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/static/css/layout.css" />
-        <option value="$PROJECT_DIR$/user_manage/statistics_query.py" />
-        <option value="$PROJECT_DIR$/user_manage/statistics.py" />
+        <option value="$PROJECT_DIR$/management/settings.py" />
+        <option value="$PROJECT_DIR$/management/urls.py" />
         <option value="$PROJECT_DIR$/user_manage/views.py" />
         <option value="$PROJECT_DIR$/templates/excel_test.html" />
+        <option value="$PROJECT_DIR$/user_manage/statistics_query.py" />
+        <option value="$PROJECT_DIR$/user_manage/statistics.py" />
       </list>
     </option>
   </component>
@@ -251,14 +281,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="image" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="management" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -268,7 +316,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="FullScreen" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../dev" />
     <property name="restartRequiresConfirmation" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -280,9 +328,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/image" />
       <recent name="$PROJECT_DIR$/static/css" />
       <recent name="$PROJECT_DIR$/templates" />
-      <recent name="$PROJECT_DIR$/static/image" />
       <recent name="$PROJECT_DIR$/static/font" />
       <recent name="$PROJECT_DIR$/management" />
     </key>
@@ -604,7 +652,8 @@
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947367" sideWeight="0.492233" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.219935" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24951456" sideWeight="0.4945055" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16458334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -615,37 +664,36 @@
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="168" y="343" width="703" height="677" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22075279" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="manage.py@management" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18921669" sideWeight="0.48863637" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39937106" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23739496" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23739496" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="168" y="343" width="703" height="677" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22075279" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.219935" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="manage.py@management" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21953781" sideWeight="0.48863637" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39937106" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17190775" sideWeight="0.5113636" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="manage.py@management" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18921669" sideWeight="0.48863637" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24951456" sideWeight="0.50549453" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17190775" sideWeight="0.5113636" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947367" sideWeight="0.492233" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24951456" sideWeight="0.4945055" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2584" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16458334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21894737" sideWeight="0.4912" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23739496" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -661,17 +709,28 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <option name="time" value="10" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/user_manage/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#24#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/excel_test.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="62" column="6" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="6" />
           <folding>
-            <element signature="n#style#0;n#span#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -708,6 +767,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -911,14 +971,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/management/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.54558206">
-          <caret line="105" column="29" selection-start-line="105" selection-start-column="14" selection-end-line="105" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/image/btn_analytic.gif">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -936,6 +988,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6891892">
           <caret line="145" column="53" selection-start-line="145" selection-start-column="53" selection-end-line="145" selection-end-column="53" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -989,63 +1042,101 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.703704">
-          <caret line="908" column="93" selection-start-line="908" selection-start-column="93" selection-end-line="908" selection-end-column="93" />
-          <folding>
-            <marker date="1454290542000" expanded="true" signature="417:629" placeholder="Select count..auth_userprofile..." />
-            <marker date="1454290542000" expanded="true" signature="788:1054" placeholder="Select count..auth_userprofile..." />
-            <marker date="1454290542000" expanded="true" signature="1562:1940" placeholder="select count..student_courseenrollment..." />
-            <marker date="1454290542000" expanded="true" signature="2565:3054" placeholder="select count..student_courseenrollment..." />
-            <marker date="1454290542000" expanded="true" signature="3792:4310" placeholder="select count..student_courseenrollment..." />
-            <marker date="1454290542000" expanded="true" signature="18418:20674" placeholder="SELECT b.aa,..@rn..." />
-            <marker date="1454290542000" expanded="true" signature="18643:18757" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1454290542000" expanded="true" signature="18710:18725" placeholder="SELECT @rn :..." />
-            <marker date="1454290542000" expanded="true" signature="18816:20619" placeholder="SELECT age, ..age..." />
-            <marker date="1454290542000" expanded="true" signature="19483:20590" placeholder="SELECT CASE ..date_format..." />
-            <marker date="1454290542000" expanded="true" signature="20064:20558" placeholder="SELECT (date..auth_userprofile..." />
-            <marker date="1454290542000" expanded="true" signature="52731:52795" placeholder="select disti..certificates_generatedcertificate..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/management/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.666667">
-          <caret line="21" column="29" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="1" selection-start-line="30" selection-start-column="1" selection-end-line="30" selection-end-column="1" />
           <folding>
             <element signature="e#619#660#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/user_manage/statistics.py">
+    <entry file="file://$PROJECT_DIR$/management/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.444445">
-          <caret line="168" column="44" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
+        <state vertical-scroll-proportion="-5.445783">
+          <caret line="99" column="13" selection-start-line="99" selection-start-column="13" selection-end-line="99" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/excel_test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-23.166666">
+          <caret line="55" column="29" selection-start-line="55" selection-start-column="29" selection-end-line="55" selection-end-column="29" />
           <folding>
-            <element signature="e#24#56#0" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/user_manage/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-26.592592">
-          <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+        <state vertical-scroll-proportion="-9.036144">
+          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
           <folding>
             <element signature="e#24#56#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/excel_test.html">
+    <entry file="file://$PROJECT_DIR$/user_manage/statistics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6900115">
-          <caret line="70" column="10" selection-start-line="70" selection-start-column="10" selection-end-line="70" selection-end-column="10" />
+        <state vertical-scroll-proportion="7.296296">
+          <caret line="115" column="42" selection-start-line="115" selection-start-column="42" selection-end-line="115" selection-end-column="42" />
           <folding>
-            <element signature="n#style#0;n#span#0;n#a#1;n#form#0;n#div#1;n#body#0;n#!!top" expanded="true" />
+            <element signature="e#24#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48029557">
+          <caret line="199" column="48" selection-start-line="199" selection-start-column="48" selection-end-line="199" selection-end-column="48" />
+          <folding>
+            <element signature="e#25#42#0" expanded="true" />
+            <marker date="1454405568000" expanded="true" signature="417:629" placeholder="Select count..auth_userprofile..." />
+            <marker date="1454405568000" expanded="true" signature="788:1054" placeholder="Select count..auth_userprofile..." />
+            <marker date="1454405568000" expanded="true" signature="1562:1940" placeholder="select count..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="2565:3054" placeholder="select count..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="3792:4310" placeholder="select count..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="18418:20674" placeholder="SELECT b.aa,..@rn..." />
+            <marker date="1454405568000" expanded="true" signature="18643:18757" placeholder="SELECT (@rn ..auth_user..." />
+            <marker date="1454405568000" expanded="true" signature="18710:18725" placeholder="SELECT @rn :..." />
+            <marker date="1454405568000" expanded="true" signature="18816:20619" placeholder="SELECT age, ..age..." />
+            <marker date="1454405568000" expanded="true" signature="19483:20590" placeholder="SELECT CASE ..date_format..." />
+            <marker date="1454405568000" expanded="true" signature="20064:20558" placeholder="SELECT (date..auth_userprofile..." />
+            <marker date="1454405568000" expanded="true" signature="23198:24183" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="23400:23557" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="23617:24133" placeholder="SELECT cours..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="23663:24129" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="24411:25610" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="24635:24816" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="24912:25548" placeholder="SELECT cours..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="24970:25544" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="25785:27574" placeholder="SELECT subst..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="26465:26622" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="26682:27466" placeholder="SELECT cours..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="26809:27188" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="26809:27265" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="26809:27462" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="27734:29865" placeholder="SELECT subst..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="28817:28974" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="29034:29757" placeholder="SELECT cours..course_id..." />
+            <marker date="1454405568000" expanded="true" signature="29095:29557" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="29095:29753" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="30006:30171" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="30006:30176" placeholder="SELECT cours..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="30306:30370" placeholder="select disti..certificates_generatedcertificate..." />
+            <marker date="1454405568000" expanded="true" signature="30514:31525" placeholder="SELECT a.org..substring..." />
+            <marker date="1454405568000" expanded="true" signature="30514:31781" placeholder="SELECT a.org..substring..." />
+            <marker date="1454405568000" expanded="true" signature="30561:31085" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="31130:31525" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1454405568000" expanded="true" signature="31936:33224" placeholder="SELECT a.org..substring..." />
+            <marker date="1454405568000" expanded="true" signature="31983:32507" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1454405568000" expanded="true" signature="32552:33140" placeholder="SELECT subst..student_courseenrollment..." />
           </folding>
         </state>
       </provider>

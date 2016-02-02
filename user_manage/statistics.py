@@ -5,25 +5,92 @@ import statistics_query
 from django.template import Context
 from django.http import HttpResponse
 from django.template.loader import get_template
+from pymongo import MongoClient
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Style
 import os
 
 def statistics_excel(request, date):
 
-    # date = date.replace("-","")
-    #
-    # print statistics_query.course_age(date)
 
-    # print date
-    # print date
 
-    # print '----------------------------'
-    # #print '/excel_select/'.GET.get('datepicker1', '')
-    # print "'"+ date +"'"
-    # print  '''"''' + date + '''"'''
-    # print '----------------------------'
-    #
-    #
-    # print statistics_query.edu_total(date)
+
+    # Get course name
+    course_ids_all = statistics_query.course_ids_all()
+
+    client = MongoClient('192.168.1.113', 27017)
+    db = client.edxapp
+    pb = ''
+    ov = ''
+    org = ''
+    courseOrgs = {}
+    courseNames = {}
+
+    for c in course_ids_all:
+        cid = str(c[0])
+        courseId = cid
+        cid = cid.split('+')[1]
+
+        print '1. cid = ', cid
+
+        cursor = db.modulestore.active_versions.find({'course':cid})
+        for document in cursor:
+            pb = document.get('versions').get('published-branch')
+            org = document.get('org')
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':pb})
+        for document in cursor:
+            ov = document.get('original_version')
+            print '2. original_vertion = ', ov
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':ov})
+        for document in cursor:
+            blocks = document.get('blocks')
+            # print 'size = ', len(blocks)
+            for block in blocks:
+                    fields = block.get('fields')
+                    for field in fields:
+                            dn = fields['display_name']
+                            print '3. display_name = ', dn.encode('utf8')
+                            courseOrgs[courseId] = org
+                            courseNames[courseId] = dn
+                            break
+                    break
+            break
+        cursor.close()
+
+    '''
+    print '--------------------------------'
+    for key, value in courseNames.items():
+        print key, value
+    print '--------------------------------'
+    '''
+
+    sortlist = list()
+
+    thin_border = Border(left=Side(style='thin'),
+                     right=Side(style='thin'),
+                     top=Side(style='thin'),
+                     bottom=Side(style='thin'))
+
+    dic_univ = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
+                'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
+
+
+    # univ name sort ing....
+    for dic in dic_univ:
+        print dic
+        sortlist.append(dic_univ[dic])
+
+    sortlist.sort()
+    print '======'
+    for univ in sortlist:
+        print univ
+    print '======'
+
 
     user_join_new = statistics_query.user_join_new(date)
     user_join_total = statistics_query.user_join_total(date)
@@ -36,26 +103,29 @@ def statistics_excel(request, date):
     age_total = statistics_query.age_total(date)
     age_edu = statistics_query.age_edu(date)
     course_user = statistics_query.course_user(date)
+    course_univ = statistics_query.course_univ(date)
     course_user_total =statistics_query.course_user_total(date)
+    course_univ_total =statistics_query.course_univ_total(date)
     course_age = statistics_query.course_age(date)
     course_edu = statistics_query.course_edu(date)
 
     saveName = 'K-Mooc'+date+'.xlsx'
     savePath = '/home/project/management/static/excel/' + saveName
+    # savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
 
-    if os.path.isfile(savePath):
+    if os.path.isfile(savePath) and False:
         pass
 
     else:
         wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
+        # wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
-        ws3 = wb['course_age']
-        ws4 = wb['course_edu']
-        ws5 = wb['course_count_total']
+        ws3 = wb['course_count_total']
+        ws4 = wb['course_age']
+        ws5 = wb['course_edu']
 
         #가입현황
-
         ws1['B4'] = user_join_new
         ws1['C4'] = user_join_total
         ws1['D4'] = course_count_distinct
@@ -63,7 +133,6 @@ def statistics_excel(request, date):
         ws1['F4'] = course_count_total
 
         #학력구분
-
         sort = [(9,0),(10,1),(11,2),(12,3),(13,4),
                 (14,5),(15,6),(16,7),(17,8)]
 
@@ -76,7 +145,6 @@ def statistics_excel(request, date):
             ws1['G' + str(number)] = edu_total[number1][1]
 
         #연령구분
-
         sort = [(23,0),(24,1),(25,2),(26,3),(27,4),(28,5)]
 
         for (number, number1) in sort:
@@ -88,7 +156,6 @@ def statistics_excel(request, date):
             ws1['G' + str(number)] = age_total[number1][1]
 
         #연령학력
-
         sort = [(34,0),(35,1),(36,2),(37,3),(38,4),(39,5)]
 
         for (number, number1) in sort:
@@ -102,58 +169,165 @@ def statistics_excel(request, date):
             ws1['J' + str(number)] = age_edu[number1][7]
             ws1['K' + str(number)] = age_edu[number1][8]
 
-        #코스별 수강자
 
-        sort = [(3,0),(4,1),(5,2),(6,3),(7,4),(8,5),(9,6),(10,7),
-                (11,8),(12,9),(13,10),(14,11),(15,12),(16,13),
-                (17,14),(18,15),(19,16),(20,17),(21,18),(22,19),
-                (23,20),(24,21),(25,22),(26,23),(27,24),(28,25),(29,26)]
+#======================================================================================================================================================
 
-        for (number, number1) in sort:
-            ws2['D' + str(number)] = course_user[number1][0]
 
-        #코스별 수강자 누적
+        #코스별 수강자 # LJH수정
+        # sorted(courseInfo.items(), key=itemgetter(1))
+        rn1 = 3
+        rn2 = 0
+        for cId, cId1, cId2, cnt in course_user:
+            # print cId, cName
 
-        sort = [(3,0),(4,1),(5,2),(6,3),(7,4),(8,5),(9,6),(10,7),
-                (11,8),(12,9),(13,10),(14,11),(15,12),(16,13),
-                (17,14),(18,15),(19,16),(20,17),(21,18),(22,19),
-                (23,20),(24,21),(25,22),(26,23),(27,24),(28,25),(29,26)]
+            if str(courseOrgs[cId]) in dic_univ:
+                ws2['A' + str(rn1)] = dic_univ[str(courseOrgs[cId])]
+            else:
+                ws2['A' + str(rn1)] = courseOrgs[cId]
 
-        for (number, number1) in sort:
-            ws5['D' + str(number)] = course_user_total[number1][0]
+            ws2['B' + str(rn1)] = courseNames[cId]
+            ws2['C' + str(rn1)] = cId1
+            ws2['D' + str(rn1)] = cId2
+            ws2['E' + str(rn1)] = cnt
+            # set border
+            ws2['A' + str(rn1)].border = thin_border
+            ws2['B' + str(rn1)].border = thin_border
+            ws2['C' + str(rn1)].border = thin_border
+            ws2['D' + str(rn1)].border = thin_border
+            ws2['E' + str(rn1)].border = thin_border
+            rn1 += 1
+            rn2 += 1
+
+        rn1 = 3
+        for univ, cnt in course_univ:
+            # print cId, cName
+
+            if univ in dic_univ:
+                ws2['G' + str(rn1)] = dic_univ[univ]
+            else:
+                ws2['G' + str(rn1)] = univ
+
+            ws2['H' + str(rn1)] = cnt
+            # set border
+            ws2['G' + str(rn1)].border = thin_border
+            ws2['H' + str(rn1)].border = thin_border
+            rn1 += 1
+
+
+        #코스별 수강자 누적 # LJH수정
+        # sorted(courseInfo.items(), key=itemgetter(1))
+        rn1 = 3
+        rn2 = 0
+        for cId, cId1, cId2, cnt in course_user_total:
+            # print cId, cName
+
+            if str(courseOrgs[cId]) in dic_univ:
+                ws3['A' + str(rn1)] = dic_univ[str(courseOrgs[cId])]
+            else:
+                ws3['A' + str(rn1)] = courseOrgs[cId]
+
+            ws3['B' + str(rn1)] = courseNames[cId]
+            ws3['C' + str(rn1)] = cId1
+            ws3['D' + str(rn1)] = cId2
+            ws3['E' + str(rn1)] = cnt
+            # set border
+            ws3['A' + str(rn1)].border = thin_border
+            ws3['B' + str(rn1)].border = thin_border
+            ws3['C' + str(rn1)].border = thin_border
+            ws3['D' + str(rn1)].border = thin_border
+            ws3['E' + str(rn1)].border = thin_border
+            rn1 += 1
+            rn2 += 1
+
+        rn1 = 3
+        for univ, cnt in course_univ_total:
+            # print cId, cName
+
+            if univ in dic_univ:
+                ws3['G' + str(rn1)] = dic_univ[univ]
+            else:
+                ws3['G' + str(rn1)] = univ
+
+            ws3['H' + str(rn1)] = cnt
+            # set border
+            ws3['G' + str(rn1)].border = thin_border
+            ws3['H' + str(rn1)].border = thin_border
+            rn1 += 1
+
 
         #코스별 연령
+        rn1 = 3
+        for org, cId, cId1, cId2, age1, age2, age3, age4, age5, age6 in course_age:
+            # print cId, cName
 
-        sort = [(4,0),(5,1),(6,2),(7,3),(8,4),(9,5),(10,6),(11,7),
-                (12,8),(13,9),(14,10),(15,11),(16,12),(17,13),(18,14),
-                (19,15),(20,16),(21,17),(22,18),(23,19),(24,20),
-                (25,21),(26,22),(27,23),(28,24),(29,25),(30,26)]
+            if univ in dic_univ:
+                ws4['A' + str(rn1)] = dic_univ[org]
+            else:
+                ws4['A' + str(rn1)] = org
 
-        for (number, number1) in sort:
-            ws3['B' + str(number)] = course_age[number1][0]
-            ws3['C' + str(number)] = course_age[number1][1]
-            ws3['D' + str(number)] = course_age[number1][2]
-            ws3['E' + str(number)] = course_age[number1][3]
-            ws3['F' + str(number)] = course_age[number1][4]
-            ws3['G' + str(number)] = course_age[number1][5]
+            ws4['B' + str(rn1)] = courseNames[cId]
+            ws4['C' + str(rn1)] = cId1
+            ws4['D' + str(rn1)] = cId2
+            ws4['E' + str(rn1)] = age1
+            ws4['F' + str(rn1)] = age2
+            ws4['G' + str(rn1)] = age3
+            ws4['H' + str(rn1)] = age4
+            ws4['I' + str(rn1)] = age5
+            ws4['J' + str(rn1)] = age6
+
+            # set border
+            ws4['A' + str(rn1)].border = thin_border
+            ws4['B' + str(rn1)].border = thin_border
+            ws4['C' + str(rn1)].border = thin_border
+            ws4['D' + str(rn1)].border = thin_border
+            ws4['E' + str(rn1)].border = thin_border
+            ws4['F' + str(rn1)].border = thin_border
+            ws4['G' + str(rn1)].border = thin_border
+            ws4['H' + str(rn1)].border = thin_border
+            ws4['I' + str(rn1)].border = thin_border
+            ws4['J' + str(rn1)].border = thin_border
+            rn1 += 1
+
 
         #코스별 학력
+        rn1 = 3
+        for org, cId, cId1, cId2, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in course_edu:
+            # print cId, cName
 
-        sort = [(4,0),(5,1),(6,2),(7,3),(8,4),(9,5),(10,6),(11,7),
-                (12,8),(13,9),(14,10),(15,11),(16,12),(17,13),
-                (18,14),(19,15),(20,16),(21,17),(22,18),(23,19),(24,20),
-                (25,21),(26,22),(27,23),(28,24),(29,25),(30,26)]
+            if univ in dic_univ:
+                ws5['A' + str(rn1)] = dic_univ[org]
+            else:
+                ws5['A' + str(rn1)] = org
 
-        for (number, number1) in sort:
-            ws4['B' + str(number)] = course_edu[number1][0]
-            ws4['C' + str(number)] = course_edu[number1][1]
-            ws4['D' + str(number)] = course_edu[number1][2]
-            ws4['E' + str(number)] = course_edu[number1][3]
-            ws4['F' + str(number)] = course_edu[number1][4]
-            ws4['G' + str(number)] = course_edu[number1][5]
-            ws4['H' + str(number)] = course_edu[number1][6]
-            ws4['I' + str(number)] = course_edu[number1][7]
-            ws4['J' + str(number)] = course_edu[number1][8]
+            ws5['B' + str(rn1)] = courseNames[cId]
+            ws5['C' + str(rn1)] = cId1
+            ws5['D' + str(rn1)] = cId2
+            ws5['E' + str(rn1)] = edu1
+            ws5['F' + str(rn1)] = edu2
+            ws5['G' + str(rn1)] = edu3
+            ws5['H' + str(rn1)] = edu4
+            ws5['I' + str(rn1)] = edu5
+            ws5['J' + str(rn1)] = edu6
+            ws5['K' + str(rn1)] = edu7
+            ws5['L' + str(rn1)] = edu8
+            ws5['M' + str(rn1)] = edu9
+
+            # set border
+            ws5['A' + str(rn1)].border = thin_border
+            ws5['B' + str(rn1)].border = thin_border
+            ws5['C' + str(rn1)].border = thin_border
+            ws5['D' + str(rn1)].border = thin_border
+            ws5['E' + str(rn1)].border = thin_border
+            ws5['F' + str(rn1)].border = thin_border
+            ws5['G' + str(rn1)].border = thin_border
+            ws5['H' + str(rn1)].border = thin_border
+            ws5['I' + str(rn1)].border = thin_border
+            ws5['J' + str(rn1)].border = thin_border
+            ws5['K' + str(rn1)].border = thin_border
+            ws5['L' + str(rn1)].border = thin_border
+            ws5['M' + str(rn1)].border = thin_border
+            rn1 += 1
+
 
         wb.save(savePath)
 
@@ -190,7 +364,7 @@ def certificate_excel(request):
 
     d = datetime.date.today()
     # certificates = statistics_query.course_ids()
-    course_ids = statistics_query.course_ids()
+    course_ids_cert = statistics_query.course_ids_cert()
 
     saveName = 'K-Mooc_certificate_'+d+'.xlsx'
     savePath = '/home/project/management/static/excel/' + saveName
@@ -214,7 +388,7 @@ def certificate_excel(request):
         ov = ''
         dn = ''
 
-        for c in course_ids:
+        for c in course_ids_cert:
             cid = str(c[0])
             cid = cid.replace('course-v1:', '')
             cid = cid.replace('+', '.')
