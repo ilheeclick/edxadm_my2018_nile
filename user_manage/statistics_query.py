@@ -499,55 +499,26 @@ def age_edu(date):
 #코스별 수강자수
 
 def course_user(date):
-
+    query = '''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
+                substring_index(a.course_id, '+',-1) course_id2, ifnull(cnt, 0)
+          FROM (SELECT course_id
+                  FROM course_structures_coursestructure
+                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+               a
+               LEFT JOIN
+               (SELECT course_id, cnt
+                  FROM (SELECT a.course_id, count(*) cnt
+                          FROM student_courseenrollment a, auth_user b
+                         WHERE     a.user_id = b.id
+                               AND date_format(a.created, '%Y%m%d') = '''+date+'''
+                               AND a.is_active = 1
+                               AND NOT (b.email) LIKE '%delete_%'
+                               AND a.course_id NOT LIKE '%DEMOk%'
+                        GROUP BY a.course_id) aa) b
+                  ON a.course_id = b.course_id;'''
+    # print query
     cur = connection.cursor()
-    cur.execute('''SELECT
-                 ifnull(b.cnt, 0)
-                 FROM (SELECT (@rn := @rn + 1) r
-                          FROM auth_user a, (SELECT @rn := 0) b
-                         LIMIT 30) a
-                       LEFT OUTER JOIN
-                       (select case
-                         when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-                         when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-                         when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-                         when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-                         when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-                         when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-                         when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-                         when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-                         when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-                         when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-                         when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-                         when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-                         when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-                         when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-                         when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-                         when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-                         when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-                         when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-                         when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-                         when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-                         when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-                         when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-                         when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-                         when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-                         when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-                         when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-                         when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27
-                         when course_id = 'course-v1:edX+DemoX+Demo_Course' then 28
-                         when course_id = 'course-v1:KMOOC+DEMOk+2015_1' then 29 end course, course_id, cnt from (
-                select a.course_id , count(*) cnt
-                from student_courseenrollment a, auth_user b
-                where a.user_id = b.id
-                  and date_format(a.created,'%Y%m%d') = "'''+date+'''"
-                  and a.is_active = 1
-                  and not (b.email) like '%delete_%'
-                  and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1'
-                  and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                group by a.course_id)aa) b
-                 ON a.r = b.course
-                ORDER BY a.r;''')
+    cur.execute(query)
     row = cur.fetchall()
     cur.close()
 
@@ -558,374 +529,213 @@ def course_user(date):
 def course_user_total(date):
 
     cur = connection.cursor()
-    cur.execute('''SELECT
-                 ifnull(b.cnt, 0)
-                 FROM (SELECT (@rn := @rn + 1) r
-                          FROM auth_user a, (SELECT @rn := 0) b
-                         LIMIT 30) a
-                       LEFT OUTER JOIN
-                       (select case
-                         when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-                         when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-                         when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-                         when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-                         when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-                         when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-                         when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-                         when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-                         when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-                         when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-                         when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-                         when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-                         when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-                         when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-                         when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-                         when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-                         when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-                         when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-                         when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-                         when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-                         when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-                         when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-                         when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-                         when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-                         when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-                         when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-                         when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27
-                         when course_id = 'course-v1:edX+DemoX+Demo_Course' then 28
-                         when course_id = 'course-v1:KMOOC+DEMOk+2015_1' then 29 end course, course_id, cnt from (
-                select a.course_id , count(*) cnt
-                from student_courseenrollment a, auth_user b
-                where a.user_id = b.id
-                  and date_format(a.created,'%Y%m%d') between '20151014' and "'''+date+'''"
-                  and a.is_active = 1
-                  and not (b.email) like '%delete_%'
-                  and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1'
-                  and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                group by a.course_id)aa) b
-                 ON a.r = b.course
-                ORDER BY a.r;''')
+    cur.execute('''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
+                          substring_index(a.course_id, '+',-1) course_id2, ifnull(cnt, 0)
+                      FROM (SELECT course_id
+                              FROM course_structures_coursestructure
+                             WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+                           a
+                           LEFT JOIN
+                           (SELECT course_id, cnt
+                              FROM (SELECT a.course_id, count(*) cnt
+                                      FROM student_courseenrollment a, auth_user b
+                                     WHERE     a.user_id = b.id
+                                           AND date_format(a.created, '%Y%m%d') between '20151014' and  "'''+date+'''"
+                                           AND a.is_active = 1
+                                           AND NOT (b.email) LIKE '%delete_%'
+                                           AND a.course_id NOT LIKE '%DEMOk%'
+                                    GROUP BY a.course_id) aa) b
+                              ON a.course_id = b.course_id;
+                    ''')
     row = cur.fetchall()
     cur.close()
 
     return row
-
-# course_user = ('''SELECT
-#                  ifnull(b.cnt, 0)
-#                  FROM (SELECT (@rn := @rn + 1) r
-#                           FROM auth_user a, (SELECT @rn := 0) b
-#                          LIMIT 30) a
-#                        LEFT OUTER JOIN
-#                        (select case
-#                          when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-#                          when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-#                          when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-#                          when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-#                          when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-#                          when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-#                          when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-#                          when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-#                          when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-#                          when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-#                          when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-#                          when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-#                          when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-#                          when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-#                          when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-#                          when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-#                          when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-#                          when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-#                          when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-#                          when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-#                          when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-#                          when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-#                          when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-#                          when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-#                          when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27
-#                          when course_id = 'course-v1:edX+DemoX+Demo_Course' then 28
-#                          when course_id = 'course-v1:KMOOC+DEMOk+2015_1' then 29 end course, course_id, cnt from (
-#                 select a.course_id , count(*) cnt
-#                 from student_courseenrollment a, auth_user b
-#                 where a.user_id = b.id
-#                   and date_format(a.created,'%Y%m%d') = date_format(DATE_ADD(now(), INTERVAL -1 day), '%Y%m%d')
-#                   and a.is_active = 1
-#                   and not (b.email) like '%delete_%'
-#                   and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1'
-#                   and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-#                 group by a.course_id)aa) b
-#                  ON a.r = b.course
-#                 ORDER BY a.r;''')
 
 #코스별 연령
 
 def course_age(date):
 
     cur = connection.cursor()
-    cur.execute('''SELECT
-                       ifnull(sum(IF(agegroup = 'a', 1, NULL)),0) a,
-                       ifnull(sum(IF(agegroup = 'b', 1, NULL)),0) b,
-                       ifnull(sum(IF(agegroup = 'c', 1, NULL)),0) c,
-                       ifnull(sum(IF(agegroup = 'd', 1, NULL)),0) d,
-                       ifnull(sum(IF(agegroup = 'e', 1, NULL)),0) e,
-                       ifnull(sum(IF(agegroup = 'f', 1, NULL)),0) f,
-                       ifnull(sum(IF(agegroup = 'x', 1, NULL)),0) x
-                  FROM (SELECT course_id,
-                          CASE
-                                  WHEN age < 20 THEN 'a'
-                                  WHEN age BETWEEN 20 AND 29 THEN 'b'
-                                  WHEN age BETWEEN 30 AND 39 THEN 'c'
-                                  WHEN age BETWEEN 40 AND 49 THEN 'd'
-                                  WHEN age BETWEEN 50 AND 59 THEN 'e'
-                                  WHEN age >= 60 THEN 'f'
-                                  ELSE 'x'
-                               END agegroup
-                          FROM (SELECT a.course_id,
-                                       ifnull((date_format(NOW(), '%Y') - b.year_of_birth), 0) + 1 age
-                                  FROM student_courseenrollment a,
-                                       auth_userprofile b,
-                                       auth_user c
-                                 WHERE     a.user_id = b.user_id
-                                       AND a.user_id = c.id
-                                       and a.is_active = 1
-                                       and not (c.email) like '%delete_%'
-                                       and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                                       and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1'
-                                       AND date_format(a.created, '%Y%m%d') between '20151014' and "'''+date+'''")
-                                  aa) bb
-                GROUP BY course_id
-                ORDER by case
-                         when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-                         when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-                         when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-                         when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-                         when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-                         when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-                         when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-                         when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-                         when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-                         when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-                         when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-                         when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-                         when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-                         when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-                         when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-                         when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-                         when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-                         when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-                         when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-                         when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-                         when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-                         when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-                         when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-                         when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-                         when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-                         when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-                         when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27
-                         when course_id = 'course-v1:edX+DemoX+Demo_Course' then 28 end;''')
+    cur.execute('''
+        SELECT substring(a.course_id,
+                         instr(a.course_id, ':') + 1,
+                         (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                  org, a.course_id,
+                  substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
+                  substring_index(a.course_id, '+',-1) course_id2,
+               sum(if(age < 20, 1, 0)),
+               sum(if(age BETWEEN 20 AND 29, 1, 0)),
+               sum(if(age BETWEEN 30 AND 39, 1, 0)),
+               sum(if(age BETWEEN 40 AND 49, 1, 0)),
+               sum(if(age BETWEEN 50 AND 59, 1, 0)),
+               sum(if(age > 60, 1, 0))
+          FROM (SELECT course_id
+                  FROM course_structures_coursestructure
+                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+               a
+               LEFT JOIN
+               (SELECT course_id,
+                       ifnull((date_format(NOW(), '%Y') - year_of_birth), 0) + 1 age
+                  FROM (SELECT a.course_id, c.year_of_birth
+                          FROM student_courseenrollment a,
+                               auth_user b,
+                               auth_userprofile c
+                         WHERE     a.user_id = b.id
+                               AND b.id = c.user_id
+                               AND date_format(a.created, '%Y%m%d') BETWEEN '20151014' and
+                                                                        "'''+date+'''"
+                               AND a.is_active = 1
+                               AND NOT (b.email) LIKE '%delete_%'
+                               AND a.course_id NOT LIKE '%DEMOk%') aa) b
+                  ON a.course_id = b.course_id
+        GROUP BY a.course_id
+        ORDER BY a.course_id;
+
+    ''')
     row = cur.fetchall()
     cur.close()
 
     return row
-#
-# course_age = ('''SELECT
-#                        ifnull(sum(IF(agegroup = 'a', 1, NULL)),0) a,
-#                        ifnull(sum(IF(agegroup = 'b', 1, NULL)),0) b,
-#                        ifnull(sum(IF(agegroup = 'c', 1, NULL)),0) c,
-#                        ifnull(sum(IF(agegroup = 'd', 1, NULL)),0) d,
-#                        ifnull(sum(IF(agegroup = 'e', 1, NULL)),0) e,
-#                        ifnull(sum(IF(agegroup = 'f', 1, NULL)),0) f,
-#                        ifnull(sum(IF(agegroup = 'x', 1, NULL)),0) x
-#                   FROM (SELECT course_id,
-#                           CASE
-#                                   WHEN age < 20 THEN 'a'
-#                                   WHEN age BETWEEN 20 AND 29 THEN 'b'
-#                                   WHEN age BETWEEN 30 AND 39 THEN 'c'
-#                                   WHEN age BETWEEN 40 AND 49 THEN 'd'
-#                                   WHEN age BETWEEN 50 AND 59 THEN 'e'
-#                                   WHEN age >= 60 THEN 'f'
-#                                   ELSE 'x'
-#                                END agegroup
-#                           FROM (SELECT a.course_id,
-#                                        ifnull((date_format(NOW(), '%Y') - b.year_of_birth), 0) + 1 age
-#                                   FROM student_courseenrollment a,
-#                                        auth_userprofile b,
-#                                        auth_user c
-#                                  WHERE     a.user_id = b.user_id
-#                                        AND a.user_id = c.id
-#                                        and a.is_active = 1
-#                                        and not (c.email) like '%delete_%'
-#                                        and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-#                                        and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1'
-#                                        AND date_format(a.created, '%y%m%d') between '151014' and date_format(DATE_ADD(now(), INTERVAL -1 day), '%y%m%d'))
-#                                   aa) bb
-#                 GROUP BY course_id
-#                 ORDER by case
-#                          when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-#                          when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-#                          when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-#                          when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-#                          when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-#                          when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-#                          when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-#                          when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-#                          when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-#                          when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-#                          when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-#                          when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-#                          when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-#                          when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-#                          when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-#                          when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-#                          when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-#                          when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-#                          when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-#                          when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-#                          when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-#                          when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-#                          when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-#                          when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-#                          when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27
-#                          when course_id = 'course-v1:edX+DemoX+Demo_Course' then 28 end;''')
 
 #코스별 학력
 
 def course_edu(date):
 
     cur = connection.cursor()
-    cur.execute('''SELECT
-                       ifnull(sum(IF(edugroup = '1', 1, NULL)) , 0)p,
-                       ifnull(sum(IF(edugroup = '2', 1, NULL)) ,0) m,
-                       ifnull(sum(IF(edugroup = '3', 1, NULL)) ,0) b,
-                       ifnull(sum(IF(edugroup = '4', 1, NULL)) ,0) a,
-                       ifnull(sum(IF(edugroup = '5', 1, NULL)) ,0) hs,
-                       ifnull(sum(IF(edugroup = '6', 1, NULL)) ,0) jhs,
-                       ifnull(sum(IF(edugroup = '7', 1, NULL)) ,0) el,
-                       ifnull(sum(IF(edugroup = '8', 1, NULL)) ,0) other,
-                       ifnull(sum(IF(edugroup = '9', 1, NULL)) ,0) none
-                  FROM (SELECT course_id,
-                        case
-                          when level_of_education = 'p' then '1'
-                          when level_of_education = 'm' then '2'
-                          when level_of_education = 'b' then '3'
-                          when level_of_education = 'a' then '4'
-                          when level_of_education = 'hs' then '5'
-                          when level_of_education = 'jhs' then '6'
-                          when level_of_education = 'el' then '7'
-                          when level_of_education = 'other' then '8'
-                          else '9'
-                        end edugroup
-
-                          FROM (SELECT a.course_id, b.level_of_education
-                                  FROM student_courseenrollment a,
-                                       auth_userprofile b,
-                                       auth_user c
-                                 WHERE     a.user_id = b.user_id
-                                       AND a.user_id = c.id
-                                       and a.is_active = 1
-                                       AND date_format(a.created , '%Y%m%d') between '20151014' and "'''+date+'''"
-                                       and not (c.email) like '%delete_%'
-                                       and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                                       and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1')
-                               aa) bb
-                GROUP BY course_id
-                ORDER by case
-                         when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-                         when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-                         when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-                         when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-                         when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-                         when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-                         when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-                         when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-                         when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-                         when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-                         when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-                         when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-                         when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-                         when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-                         when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-                         when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-                         when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-                         when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-                         when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-                         when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-                         when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-                         when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-                         when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-                         when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-                         when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-                         when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-                         when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27 end;''')
+    cur.execute('''
+        SELECT substring(a.course_id,
+                         instr(a.course_id, ':') + 1,
+                         (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                  org, a.course_id,
+               substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
+                substring_index(a.course_id, '+',-1) course_id2,
+               sum(if(level_of_education = 'p', 1, 0)),
+               sum(if(level_of_education = 'm', 1, 0)),
+               sum(if(level_of_education = 'b', 1, 0)),
+               sum(if(level_of_education = 'a', 1, 0)),
+               sum(if(level_of_education = 'hs', 1, 0)),
+               sum(if(level_of_education = 'jhs', 1, 0)),
+               sum(if(level_of_education = 'el', 1, 0)),
+               sum(if(level_of_education = 'other', 1, 0)),
+               sum(
+                  if(
+                        level_of_education = ''
+                     OR level_of_education = 'null'
+                     OR level_of_education IS NULL,
+                     1,
+                     0))
+          FROM (SELECT course_id
+                  FROM course_structures_coursestructure
+                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+               a
+               LEFT JOIN
+               (SELECT course_id, level_of_education
+                  FROM (SELECT a.course_id, c.level_of_education
+                          FROM student_courseenrollment a,
+                               auth_user b,
+                               auth_userprofile c
+                         WHERE     a.user_id = b.id
+                               AND b.id = c.user_id
+                               AND date_format(a.created, '%Y%m%d') BETWEEN '20151014'
+                                                                        AND "'''+date+'''"
+                               AND a.is_active = 1
+                               AND NOT (b.email) LIKE '%delete_%'
+                               AND a.course_id NOT LIKE '%DEMOk%') aa) b
+                  ON a.course_id = b.course_id
+        GROUP BY a.course_id
+        ORDER BY a.course_id;
+    ''')
     row = cur.fetchall()
     cur.close()
 
     return row
 
-# course_edu = ('''SELECT
-#                        ifnull(sum(IF(edugroup = '1', 1, NULL)) , 0)p,
-#                        ifnull(sum(IF(edugroup = '2', 1, NULL)) ,0) m,
-#                        ifnull(sum(IF(edugroup = '3', 1, NULL)) ,0) b,
-#                        ifnull(sum(IF(edugroup = '4', 1, NULL)) ,0) a,
-#                        ifnull(sum(IF(edugroup = '5', 1, NULL)) ,0) hs,
-#                        ifnull(sum(IF(edugroup = '6', 1, NULL)) ,0) jhs,
-#                        ifnull(sum(IF(edugroup = '7', 1, NULL)) ,0) el,
-#                        ifnull(sum(IF(edugroup = '8', 1, NULL)) ,0) other,
-#                        ifnull(sum(IF(edugroup = '9', 1, NULL)) ,0) none
-#                   FROM (SELECT course_id,
-#                         case
-#                           when level_of_education = 'p' then '1'
-#                           when level_of_education = 'm' then '2'
-#                           when level_of_education = 'b' then '3'
-#                           when level_of_education = 'a' then '4'
-#                           when level_of_education = 'hs' then '5'
-#                           when level_of_education = 'jhs' then '6'
-#                           when level_of_education = 'el' then '7'
-#                           when level_of_education = 'other' then '8'
-#                           else '9'
-#                         end edugroup
-#
-#                           FROM (SELECT a.course_id, b.level_of_education
-#                                   FROM student_courseenrollment a,
-#                                        auth_userprofile b,
-#                                        auth_user c
-#                                  WHERE     a.user_id = b.user_id
-#                                        AND a.user_id = c.id
-#                                        and a.is_active = 1
-#                                        AND date_format(a.created , '%y%m%d') between '151014' and date_format(DATE_ADD(now(), INTERVAL -1 day), '%y%m%d')
-#                                        and not (c.email) like '%delete_%'
-#                                        and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-#                                        and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1')
-#                                aa) bb
-#                 GROUP BY course_id
-#                 ORDER by case
-#                          when course_id = 'course-v1:KHUk+KH102+2015_KH02' then 1
-#                          when course_id = 'course-v1:KHUk+KH101+2015_KH01' then 2
-#                          when course_id = 'course-v1:KoreaUnivK+ku_phy_001+2015_A04' then 3
-#                          when course_id = 'course-v1:KoreaUnivK+ku_cpx_001+2015_A03' then 4
-#                          when course_id = 'course-v1:KoreaUnivK+ku_soc_001+2015_A01' then 5
-#                          when course_id = 'course-v1:KoreaUnivK+ku_hum_001+2015_A02' then 6
-#                          when course_id = 'course-v1:PNUk+PL_C01+2015_KM_001' then 7
-#                          when course_id = 'course-v1:PNUk+SE_C01+2015_KM_002' then 8
-#                          when course_id = 'course-v1:SNUk+SNU044.008k+2015' then 9
-#                          when course_id = 'course-v1:SNUk+SNU046.101k+2015' then 10
-#                          when course_id = 'course-v1:SKKUk+COS2034.01x+2015_SKKU1' then 11
-#                          when course_id = 'course-v1:SKKUk+GEDT011.01x+2015_SKKU2' then 12
-#                          when course_id = 'course-v1:YSUk+YSU_KOR02k+2015_T2' then 13
-#                          when course_id = 'course-v1:YSUk+YSU_BIZ03k+2015_T2' then 14
-#                          when course_id = 'course-v1:YSUk+YSU_UCC01k+2015_T2' then 15
-#                          when course_id = 'course-v1:EwhaK+EW10164K+2015-01' then 16
-#                          when course_id = 'course-v1:EwhaK+EW11151K+2015-02' then 17
-#                          when course_id = 'course-v1:EwhaK+EW10771K+2015-03' then 18
-#                          when course_id = 'course-v1:EwhaK+EW36387K+2015-04' then 19
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.MECH583k+2015-01' then 20
-#                          when course_id = 'course-v1:POSTECHk+POSTECH.EECE341k+2015-01' then 21
-#                          when course_id = 'course-v1:KAISTk+KMAE251+2015_K0101' then 22
-#                          when course_id = 'course-v1:KAISTk+KCS470+2015_K0201' then 23
-#                          when course_id = 'course-v1:HYUk+HYUARE4100k+2015_C1' then 24
-#                          when course_id = 'course-v1:HYUk+HYUPAD3004k+2015_C1' then 25
-#                          when course_id = 'course-v1:HYUk+HYUBUS3099k+2015_C1' then 26
-#                          when course_id = 'course-v1:HYUk+HYUSOC1053k+2015_C1' then 27 end;''')
+def course_ids_all():
+    cur = connection.cursor()
+    cur.execute(''' SELECT course_id
+                      FROM course_structures_coursestructure
+                     WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%';''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+def course_ids_cert():
+    cur = connection.cursor()
+    cur.execute('''select distinct course_id from certificates_generatedcertificate;''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+def course_univ(date):
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT a.org, count(b.org) cnt
+          FROM (SELECT DISTINCT
+                       substring(
+                          a.course_id,
+                          instr(a.course_id, ':') + 1,
+                          (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                          org
+                  FROM course_structures_coursestructure a
+                 WHERE     a.course_id NOT LIKE '%DEMOk%'
+                       AND a.course_id NOT LIKE '%KMOOC%'
+                       AND a.course_id NOT LIKE '%edX%'
+                GROUP BY a.course_id) a
+               LEFT JOIN
+               (SELECT substring(
+                          a.course_id,
+                          instr(a.course_id, ':') + 1,
+                          (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                          org
+                  FROM student_courseenrollment a, auth_user b
+                 WHERE     a.user_id = b.id
+                       AND date_format(a.created, '%Y%m%d') = "'''+date+'''"
+                       AND a.is_active = 1
+                       AND NOT (b.email) LIKE '%delete_%'
+                       AND a.course_id NOT LIKE '%DEMOk%') b
+                  ON a.org = b.org
+        GROUP BY a.org
+        ORDER BY a.org;
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+def course_univ_total(date):
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT a.org, count(b.org) cnt
+          FROM (SELECT DISTINCT
+                       substring(
+                          a.course_id,
+                          instr(a.course_id, ':') + 1,
+                          (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                          org
+                  FROM course_structures_coursestructure a
+                 WHERE     a.course_id NOT LIKE '%DEMOk%'
+                       AND a.course_id NOT LIKE '%KMOOC%'
+                       AND a.course_id NOT LIKE '%edX%'
+                GROUP BY a.course_id) a
+               LEFT JOIN
+               (SELECT substring(
+                          a.course_id,
+                          instr(a.course_id, ':') + 1,
+                          (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                          org
+                  FROM student_courseenrollment a, auth_user b
+                 WHERE     a.user_id = b.id
+                       AND date_format(a.created, '%Y%m%d') between '20151014' and "'''+date+'''"
+                       AND a.is_active = 1
+                       AND NOT (b.email) LIKE '%delete_%'
+                       AND a.course_id NOT LIKE '%DEMOk%') b
+                  ON a.org = b.org
+        GROUP BY a.org
+        ORDER BY a.org;
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+
+

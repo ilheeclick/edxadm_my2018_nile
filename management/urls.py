@@ -23,6 +23,7 @@ urlpatterns = [
     # url(r'^excel_download/?$', statistics_excel),
     url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),
     url(r'^manage/excel_select/$', excel_manage),
+    url(r'^manage/excel_select2/$', excel_manage),
     #url(r'^', user_manage),
     #url(r'^admin/', google_test),
     #url(r'^admin/', include(admin.site.urls)),

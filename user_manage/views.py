@@ -7,7 +7,9 @@ from django.template.loader import get_template
 import query
 from django.views.generic.base import TemplateView
 import os
-
+import statistics_query
+from pymongo import MongoClient
+from operator import itemgetter
 def main_query(id):
 
     html = ""
@@ -42,6 +44,9 @@ def main_query_one(id):
 
 def user_manage(request):
 
+    print 'user_manage called ******************'
+
+
     lolz = 10
 
     user_today = main_query_one(query.user_count_today)
@@ -61,6 +66,10 @@ def user_manage(request):
     time2 = main_query_one(query.now_time)
 
     template = get_template('index.html')
+
+
+
+
     context = Context({'user_today' : user_today,
                        'user_total' : user_total,
                        'course_today' : course_today,
@@ -78,4 +87,83 @@ def excel_manage(request):
 
     template = get_template('excel_test.html')
 
-    return HttpResponse(template.render())
+    # add certificate option
+    pb = ''
+    ov = ''
+    dn = ''
+    courseId = ''
+    courseName = ''
+    courseInfo = {}
+
+    client = MongoClient('192.168.1.112', 27017)
+    db = client.edxapp
+
+    course_ids_cert = statistics_query.course_ids_cert()
+
+    print '[',course_ids_cert,']'
+
+    for c in course_ids_cert:
+        cid = str(c[0])
+        courseId = cid
+
+        # cid = cid.replace('course-v1:', '')
+        # cid = cid.replace('+', '.')
+        cid = cid.split('+')[1]
+
+        # print 'courseId ====> ', courseId, cid
+        # cursor = db.modulestore.active_versions.find({'search_targets.wiki_slug':cid})
+        cursor = db.modulestore.active_versions.find({'course':cid})
+
+        pb = ''
+
+        # if cursor:
+        #     print 'cursor exitst'
+        # else:
+        #     print 'cursor not exists'
+
+        for document in cursor:
+            # print '* get published-branch'
+            pb = document.get('versions').get('published-branch')
+            if pb:
+                # print 'pb = ', pb
+                break
+        cursor.close()
+
+        if pb:
+            cursor = db.modulestore.structures.find({'_id':pb})
+            ov = ''
+            for document in cursor:
+                ov = document.get('original_version')
+
+                # if ov is not None:
+                #     print 'cid = ',cid, ' ov = ', ov
+                # else:
+                #     print 'ov is none'
+
+            cursor.close()
+
+            cursor = db.modulestore.structures.find({'_id':ov})
+
+            for document in cursor:
+                blocks = document.get('blocks')
+                # print 'size = ', len(blocks)
+                for block in blocks:
+                    fields = block.get('fields')
+
+                    courseName = ''
+                    for field in fields:
+                        dn = fields['display_name']
+                        courseName = dn
+                        # print '------------------------------------'
+                        # print courseId, ':', courseName
+                        # print '------------------------------------'
+                        courseInfo[courseId] = courseName
+                        break
+                    break
+            cursor.close()
+            # print '===================================================================================='
+
+    context = {
+        'courseInfo': sorted(courseInfo.items(), key=itemgetter(1)),
+    }
+    return HttpResponse(template.render(context))
