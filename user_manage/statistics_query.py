@@ -778,8 +778,6 @@ def certificateInfo(courseId):
                AND a.user_id = b.id
                AND c.user_id = b.id
                AND a.course_id = c.course_id
-               --    and b.is_active = 1
-               --    and not b.email like 'delete_%'
                AND c.is_active = 1
                AND a.course_id = "'''+courseId+'''"
         GROUP BY a.course_id, a.status
