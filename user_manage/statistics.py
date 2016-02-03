@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from pymongo import MongoClient
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Style
 import os
+from operator import itemgetter
 
 def statistics_excel(request, date):
 
@@ -17,7 +18,7 @@ def statistics_excel(request, date):
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.1.113', 27017)
+    client = MongoClient('192.168.1.112', 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -30,7 +31,7 @@ def statistics_excel(request, date):
         courseId = cid
         cid = cid.split('+')[1]
 
-        print '1. cid = ', cid
+        # print '1. cid = ', cid
 
         cursor = db.modulestore.active_versions.find({'course':cid})
         for document in cursor:
@@ -42,7 +43,7 @@ def statistics_excel(request, date):
         cursor = db.modulestore.structures.find({'_id':pb})
         for document in cursor:
             ov = document.get('original_version')
-            print '2. original_vertion = ', ov
+            # print '2. original_vertion = ', ov
             break
         cursor.close()
 
@@ -54,7 +55,7 @@ def statistics_excel(request, date):
                     fields = block.get('fields')
                     for field in fields:
                             dn = fields['display_name']
-                            print '3. display_name = ', dn.encode('utf8')
+                            # print '3. display_name = ', dn.encode('utf8')
                             courseOrgs[courseId] = org
                             courseNames[courseId] = dn
                             break
@@ -69,8 +70,6 @@ def statistics_excel(request, date):
     print '--------------------------------'
     '''
 
-    sortlist = list()
-
     thin_border = Border(left=Side(style='thin'),
                      right=Side(style='thin'),
                      top=Side(style='thin'),
@@ -79,17 +78,10 @@ def statistics_excel(request, date):
     dic_univ = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
                 'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
 
-
-    # univ name sort ing....
-    for dic in dic_univ:
-        print dic
-        sortlist.append(dic_univ[dic])
-
-    sortlist.sort()
-    print '======'
+    # print '======'
     #for univ in sortlist:
     #    print str(univ)
-    print '======'
+    # print '======'
 
 
     user_join_new = statistics_query.user_join_new(date)
@@ -110,15 +102,15 @@ def statistics_excel(request, date):
     course_edu = statistics_query.course_edu(date)
 
     saveName = 'K-Mooc'+date+'.xlsx'
-    savePath = '/home/project/management/static/excel/' + saveName
-    # savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
+    # savePath = '/home/project/management/static/excel/' + saveName
+    savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
 
-    if os.path.isfile(savePath):
+    if os.path.isfile(savePath) and False:
         pass
 
     else:
-        wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
-        # wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic.xlsx')
+        # wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
+        wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
         ws3 = wb['course_count_total']
@@ -170,22 +162,36 @@ def statistics_excel(request, date):
             ws1['K' + str(number)] = age_edu[number1][8]
 
 
-#======================================================================================================================================================
+        #======================================================================================================================================================
 
 
         #코스별 수강자 # LJH수정
         # sorted(courseInfo.items(), key=itemgetter(1))
         rn1 = 3
         rn2 = 0
-        for cId, cId1, cId2, cnt in course_user:
-            # print cId, cName
 
-            if str(courseOrgs[cId]) in dic_univ:
-                ws2['A' + str(rn1)] = dic_univ[str(courseOrgs[cId])]
+
+        sortlist = list()
+        for c in course_user:
+            if str(courseOrgs[c[0]]) in dic_univ:
+                c = (dic_univ[str(courseOrgs[c[0]])],courseNames[c[0]], ) + c
             else:
-                ws2['A' + str(rn1)] = courseOrgs[cId]
+                c = (str(courseOrgs[c[0]]),courseNames[c[0]], ) + c
+            print '0================================'
+            print c
+            print '================================='
+            sortlist.append(c)
 
-            ws2['B' + str(rn1)] = courseNames[cId]
+        sortlist.sort(key=itemgetter(0,4,1))
+        for s in sortlist:
+            orgName = s[0]
+            cName = s[1]
+            cId1 = s[3]
+            cId2 = s[4]
+            cnt = s[5]
+
+            ws2['A' + str(rn1)] = orgName
+            ws2['B' + str(rn1)] = cName
             ws2['C' + str(rn1)] = cId1
             ws2['D' + str(rn1)] = cId2
             ws2['E' + str(rn1)] = cnt
@@ -199,14 +205,27 @@ def statistics_excel(request, date):
             rn2 += 1
 
         rn1 = 3
-        for univ, cnt in course_univ:
+
+        # for univ, cnt in course_univ:
+        sortlist = list()
+        for c in course_univ:
+            if c[0] in dic_univ:
+                c = (dic_univ[c[0]],) + c
+            else:
+                c = (c[0], ) + c
+            print '1================================'
+            print c
+            print '================================='
+            sortlist.append(c)
+
+        sortlist.sort(key=itemgetter(0))
+        for s in sortlist:
+            orgName = s[0]
+            cnt = s[2]
+
             # print cId, cName
 
-            if univ in dic_univ:
-                ws2['G' + str(rn1)] = dic_univ[univ]
-            else:
-                ws2['G' + str(rn1)] = univ
-
+            ws2['G' + str(rn1)] = orgName
             ws2['H' + str(rn1)] = cnt
             # set border
             ws2['G' + str(rn1)].border = thin_border
@@ -214,19 +233,33 @@ def statistics_excel(request, date):
             rn1 += 1
 
 
-        #코스별 수강자 누적 # LJH수정
+        #코스별 수강자 누적
         # sorted(courseInfo.items(), key=itemgetter(1))
         rn1 = 3
         rn2 = 0
-        for cId, cId1, cId2, cnt in course_user_total:
+        # for cId, cId1, cId2, cnt in course_user_total:
+        sortlist = list()
+        for c in course_user_total:
+            if str(courseOrgs[c[0]]) in dic_univ:
+                c = (dic_univ[str(courseOrgs[c[0]])],courseNames[c[0]], ) + c
+            else:
+                c = (str(courseOrgs[c[0]]),courseNames[c[0]], ) + c
+            print '2================================'
+            print c
+            print '================================='
+            sortlist.append(c)
+
+        sortlist.sort(key=itemgetter(0,4,1))
+        for s in sortlist:
+            orgName = s[0]
+            cName = s[1]
+            cId1 = s[3]
+            cId2 = s[4]
+            cnt = s[5]
             # print cId, cName
 
-            if str(courseOrgs[cId]) in dic_univ:
-                ws3['A' + str(rn1)] = dic_univ[str(courseOrgs[cId])]
-            else:
-                ws3['A' + str(rn1)] = courseOrgs[cId]
-
-            ws3['B' + str(rn1)] = courseNames[cId]
+            ws3['A' + str(rn1)] = orgName
+            ws3['B' + str(rn1)] = cName
             ws3['C' + str(rn1)] = cId1
             ws3['D' + str(rn1)] = cId2
             ws3['E' + str(rn1)] = cnt
@@ -240,32 +273,61 @@ def statistics_excel(request, date):
             rn2 += 1
 
         rn1 = 3
-        for univ, cnt in course_univ_total:
+        # for univ, cnt in course_univ_total:
+        sortlist = list()
+        for c in course_univ_total:
+            if c[0] in dic_univ:
+                c = (dic_univ[c[0]],) + c
+            else:
+                c = (c[0], ) + c
+            print '3================================'
+            print c
+            print '================================='
+            sortlist.append(c)
+
+        sortlist.sort(key=itemgetter(0))
+        for s in sortlist:
+            orgName = s[0]
+            cnt = s[2]
             # print cId, cName
 
-            if univ in dic_univ:
-                ws3['G' + str(rn1)] = dic_univ[univ]
-            else:
-                ws3['G' + str(rn1)] = univ
-
+            ws3['G' + str(rn1)] = orgName
             ws3['H' + str(rn1)] = cnt
             # set border
             ws3['G' + str(rn1)].border = thin_border
             ws3['H' + str(rn1)].border = thin_border
             rn1 += 1
 
-
         #코스별 연령
         rn1 = 3
-        for org, cId, cId1, cId2, age1, age2, age3, age4, age5, age6 in course_age:
-            # print cId, cName
-
-            if univ in dic_univ:
-                ws4['A' + str(rn1)] = dic_univ[org]
+        # for org, cId, cId1, cId2, age1, age2, age3, age4, age5, age6 in course_age:
+        sortlist = list()
+        for c in course_age:
+            if c[0] in dic_univ:
+                c = (dic_univ[c[0]],) + c
             else:
-                ws4['A' + str(rn1)] = org
+                c = (c[0],) + c
+            print '4================================'
+            print c
+            print '================================='
 
-            ws4['B' + str(rn1)] = courseNames[cId]
+            sortlist.append(c)
+
+        sortlist.sort(key=itemgetter(0,4,1))
+        for s in sortlist:
+            orgName = s[0]
+            cName = courseNames[s[2]]
+            cId1 = s[3]
+            cId2 = s[4]
+            age1 = s[5]
+            age2 = s[6]
+            age3 = s[7]
+            age4 = s[8]
+            age5 = s[9]
+            age6 = s[10]
+
+            ws4['A' + str(rn1)] = orgName
+            ws4['B' + str(rn1)] = cName
             ws4['C' + str(rn1)] = cId1
             ws4['D' + str(rn1)] = cId2
             ws4['E' + str(rn1)] = age1
@@ -291,15 +353,38 @@ def statistics_excel(request, date):
 
         #코스별 학력
         rn1 = 3
-        for org, cId, cId1, cId2, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in course_edu:
+        # for org, cId, cId1, cId2, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in course_edu:
+        sortlist = list()
+        for c in course_edu:
+            if c[0] in dic_univ:
+                c = (dic_univ[c[0]],) + c
+            else:
+                c = (c[0],) + c
+            print '5================================'
+            print c
+            print '================================='
+            sortlist.append(c)
+
+        sortlist.sort(key=itemgetter(0,4,1))
+        for s in sortlist:
+            orgName = s[0]
+            cName = courseNames[s[2]]
+            cId1 = s[3]
+            cId2 = s[4]
+            edu1 = s[5]
+            edu2 = s[6]
+            edu3 = s[7]
+            edu4 = s[8]
+            edu5 = s[9]
+            edu6 = s[10]
+            edu7 = s[11]
+            edu8 = s[12]
+            edu9 = s[13]
             # print cId, cName
 
-            if univ in dic_univ:
-                ws5['A' + str(rn1)] = dic_univ[org]
-            else:
-                ws5['A' + str(rn1)] = org
+            ws5['A' + str(rn1)] = orgName
 
-            ws5['B' + str(rn1)] = courseNames[cId]
+            ws5['B' + str(rn1)] = cName
             ws5['C' + str(rn1)] = cId1
             ws5['D' + str(rn1)] = cId2
             ws5['E' + str(rn1)] = edu1
