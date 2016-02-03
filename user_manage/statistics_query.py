@@ -764,17 +764,26 @@ def certificateInfo(courseId):
                          instr(a.course_id, ':') + 1,
                          (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
                   org,
-               course_id,
+               a.course_id,
                substring(substring_index(a.course_id, '+', 2),
                          instr(a.course_id, '+') + 1)
                   course_id1,
                substring_index(a.course_id, '+', -1) course_id2,
-               status,
+               a.status,
                count(*) cnt
-          FROM certificates_generatedcertificate a
-         WHERE course_id = "'''+courseId+'''"
-        GROUP BY course_id, status
-        ORDER BY course_id, status;
+          FROM certificates_generatedcertificate a,
+               auth_user b,
+               student_courseenrollment c
+         WHERE     1 = 1
+               AND a.user_id = b.id
+               AND c.user_id = b.id
+               AND a.course_id = c.course_id
+               --    and b.is_active = 1
+               --    and not b.email like 'delete_%'
+               AND c.is_active = 1
+               AND a.course_id = "'''+courseId+'''"
+        GROUP BY a.course_id, a.status
+        ORDER BY a.course_id, a.status;
     ''')
     row = cur.fetchall()
     cur.close()
