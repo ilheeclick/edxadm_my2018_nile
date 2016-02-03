@@ -77,10 +77,6 @@
 
     function excelDonwload2(){
 
-        alert('준비중입니다.');
-        return;
-
-
         $("#download2").find("img").show();
         $.ajax({
             url: "/manage/excel_download2/" + $("#courseId").val()

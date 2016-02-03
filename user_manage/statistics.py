@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Style
 import os
 from operator import itemgetter
+import datetime
 
 def statistics_excel(request, date):
 
@@ -62,13 +63,6 @@ def statistics_excel(request, date):
                     break
             break
         cursor.close()
-
-    '''
-    print '--------------------------------'
-    for key, value in courseNames.items():
-        print key, value
-    print '--------------------------------'
-    '''
 
     thin_border = Border(left=Side(style='thin'),
                      right=Side(style='thin'),
@@ -416,126 +410,116 @@ def statistics_excel(request, date):
 
         wb.save(savePath)
 
-    # # template = get_template('excel_test.html')
-    # context = Context({'time': time,
-    #                    'user_join_new': user_join_new,
-    #                    'user_join_total': user_join_total,
-    #                    'course_count_distinct': course_count_distinct,
-    #                    'course_count_new': course_count_new,
-    #                    'course_count_total': course_count_total,
-    #                    'edu_new': edu_new,
-    #                    'edu_total': edu_total,
-    #                    'age_new': age_new,
-    #                    'age_total': age_total,
-    #                    'age_edu': age_edu,
-    #                    'course_user': course_user,
-    #                    'course_age': course_age,
-    #                    'course_edu': course_edu,
-    #                     })
-    #
-    # print 'a'
-    #
-    # downloader = fileDownloader.DownloadFile('http://mme.kmoocs.kr/vod/pop-up.htm')
-    # downloader.download()
-    #
-    # print 'a'
-
-    # return response
-
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
 
-def certificate_excel(request):
+def certificate_excel(request, courseId):
+
+    print 'courseId', courseId
 
     d = datetime.date.today()
-    # certificates = statistics_query.course_ids()
-    course_ids_cert = statistics_query.course_ids_cert()
+    year = d.year
+    month = d.month
+    day = d.day
 
-    saveName = 'K-Mooc_certificate_'+d+'.xlsx'
-    savePath = '/home/project/management/static/excel/' + saveName
-
-    list_published_branch = list()
-    map_course_id_published_branch = {}
-    course_names = {}
-
-    if os.path.isfile(savePath):
-        pass
-
-    else:
-        wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
-        ws1 = wb['Sheet1']
-        row = 2
-
-        client = MongoClient('192.168.1.113', 27017)
-        db = client.edxapp
-
-        pb = ''
-        ov = ''
-        dn = ''
-
-        for c in course_ids_cert:
-            cid = str(c[0])
-            cid = cid.replace('course-v1:', '')
-            cid = cid.replace('+', '.')
-            cursor = db.modulestore.active_versions.find({'search_targets.wiki_slug':c_id})
-            for document in cursor:
-                pb = document.get('versions').get('published-branch')
-
-            cursor.close()
-
-            cursor = db.modulestore.structures.find({'_id':pb})
-            for document in cursor:
-                ov = document.get('original_version')
-
-            cursor.close()
-
-            cursor = db.modulestore.structures.find({'_id':ov})
-
-            for document in cursor:
-                blocks = document.get('blocks')
-                print 'size = ', len(blocks)
-
-                for block in blocks:
-                        fields = block.get('fields')
-                        for field in fields:
-                                dn = fields['display_name']
-                                print '-----------------------------------'
-                                print 'dn = ', dn.encode('utf8')
-                                print '-----------------------------------'
-                                break
-                        break
-
-            cursor.close()
+    if month < 10:
+        month = '0' + str(month)
+    if day < 10:
+        day = '0' + str(day)
 
 
+    print 'month', month
+    print 'day', day
 
-            if document.get('versions').get('published-branch') != None:
-                list_published_branch.append(document.get('versions').get('published-branch'))
-                map_course_id_published_branch[document.get('versions').get('published-branch')] = cid
-            cursor.close()
+    certificates = statistics_query.certificateInfo(courseId)
 
-        for published_branch in list_published_branch:
-            cursor = db.modulestore.structures.find({'_id':published_branch})
-            for document in cursor:
-                blocks = document.get('blocks')
-                for block in blocks:
-                    fields = block.get('fields')
-                    if fields.has_key('display_name') :
-                        print map_course_id_published_branch[published_branch] + ' ' + fields['display_name']
-            cursor.close()
-        client.close()
+    courseName = ''
+    pb = ''
+    ov = ''
 
-        for c in certificates:
+    client = MongoClient('192.168.1.112', 27017)
+    db = client.edxapp
 
-            cid = str(c[0])
-            cid = cid.replace('course-v1:', '')
-            cid = cid.replace('+', '.')
+    # wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
+    wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic_cert.xlsx')
 
-            ws1['A' + str(row)] = c[0]
-            ws1['B' + str(row)] = c[1]
-            ws1['C' + str(row)] = c[2]
-            ws1['D' + str(row)] = c[3]
-            row += 1
+    for c in certificates:
+        cid = str(c[2])
+
+        print 'cid', cid
+
+        cursor = db.modulestore.active_versions.find({'course':cid})
+        for document in cursor:
+            print '>> 1'
+            pb = document.get('versions').get('published-branch')
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':pb})
+        for document in cursor:
+            print '>> 2'
+            ov = document.get('original_version')
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id':ov})
+        for document in cursor:
+            print '>> 3'
+            blocks = document.get('blocks')
+            for block in blocks:
+                print '>> 4'
+                fields = block.get('fields')
+                for field in fields:
+                    print '>> 5'
+                    dn = fields['display_name']
+                    courseName = dn
+                    print 'courseName', courseName
+                    break
+                break
+            break
+        break
+        cursor.close()
+
+    thin_border = Border(left=Side(style='thin'),
+                     right=Side(style='thin'),
+                     top=Side(style='thin'),
+                     bottom=Side(style='thin'))
+
+    dic_univ = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
+                'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
+
+    # dic_status = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
+    #             'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
+
+
+    ws1 = wb['certificates']
+
+    row = 2
+    for c in certificates:
+        print '0------------------------------------------------------------------'
+        print c
+        print '-------------------------------------------------------------------'
+
+        ws1['A' + str(row)] = dic_univ[c[0]]
+        ws1['B' + str(row)] = courseName
+        ws1['C' + str(row)] = c[2]
+        ws1['D' + str(row)] = c[3]
+        ws1['E' + str(row)] = c[4]
+        ws1['F' + str(row)] = c[5]
+
+        ws1['A' + str(row)].border = thin_border
+        ws1['B' + str(row)].border = thin_border
+        ws1['C' + str(row)].border = thin_border
+        ws1['D' + str(row)].border = thin_border
+        ws1['E' + str(row)].border = thin_border
+        ws1['F' + str(row)].border = thin_border
+        row += 1
+
+    saveName = 'K-Mooc_certificate_' + courseId  + '_' + str(year) + month + day +'.xlsx'
+    # savePath = '/home/project/management/static/excel/' + saveName
+    savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
+
+    wb.save(savePath)
 
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 

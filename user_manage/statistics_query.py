@@ -757,4 +757,27 @@ def course_univ_total(date):
     return row
 
 
+def certificateInfo(courseId):
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT substring(a.course_id,
+                         instr(a.course_id, ':') + 1,
+                         (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
+                  org,
+               course_id,
+               substring(substring_index(a.course_id, '+', 2),
+                         instr(a.course_id, '+') + 1)
+                  course_id1,
+               substring_index(a.course_id, '+', -1) course_id2,
+               status,
+               count(*) cnt
+          FROM certificates_generatedcertificate a
+         WHERE course_id = "'''+courseId+'''"
+        GROUP BY course_id, status
+        ORDER BY course_id, status;
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
 
