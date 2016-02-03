@@ -501,9 +501,12 @@ def age_edu(date):
 def course_user(date):
     query = '''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
                 substring_index(a.course_id, '+',-1) course_id2, ifnull(cnt, 0)
-          FROM (SELECT course_id
-                  FROM course_structures_coursestructure
-                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+          FROM (SELECT DISTINCT a.course_id
+          FROM course_structures_coursestructure a,
+               student_courseaccessrole b
+         WHERE     a.course_id = b.course_id
+               AND a.course_id NOT LIKE '%DEMO%'
+               AND a.course_id NOT LIKE '%KMOOC%')
                a
                LEFT JOIN
                (SELECT course_id, cnt
@@ -531,9 +534,12 @@ def course_user_total(date):
     cur = connection.cursor()
     cur.execute('''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
                           substring_index(a.course_id, '+',-1) course_id2, ifnull(cnt, 0)
-                      FROM (SELECT course_id
-                              FROM course_structures_coursestructure
-                             WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+                      FROM (SELECT DISTINCT a.course_id
+          FROM course_structures_coursestructure a,
+               student_courseaccessrole b
+         WHERE     a.course_id = b.course_id
+               AND a.course_id NOT LIKE '%DEMO%'
+               AND a.course_id NOT LIKE '%KMOOC%')
                            a
                            LEFT JOIN
                            (SELECT course_id, cnt
@@ -570,9 +576,12 @@ def course_age(date):
                sum(if(age BETWEEN 40 AND 49, 1, 0)),
                sum(if(age BETWEEN 50 AND 59, 1, 0)),
                sum(if(age > 60, 1, 0))
-          FROM (SELECT course_id
-                  FROM course_structures_coursestructure
-                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+          FROM (SELECT DISTINCT a.course_id
+          FROM course_structures_coursestructure a,
+               student_courseaccessrole b
+         WHERE     a.course_id = b.course_id
+               AND a.course_id NOT LIKE '%DEMO%'
+               AND a.course_id NOT LIKE '%KMOOC%')
                a
                LEFT JOIN
                (SELECT course_id,
@@ -625,9 +634,12 @@ def course_edu(date):
                      OR level_of_education IS NULL,
                      1,
                      0))
-          FROM (SELECT course_id
-                  FROM course_structures_coursestructure
-                 WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%')
+          FROM (SELECT DISTINCT a.course_id
+          FROM course_structures_coursestructure a,
+               student_courseaccessrole b
+         WHERE     a.course_id = b.course_id
+               AND a.course_id NOT LIKE '%DEMO%'
+               AND a.course_id NOT LIKE '%KMOOC%')
                a
                LEFT JOIN
                (SELECT course_id, level_of_education
@@ -653,9 +665,12 @@ def course_edu(date):
 
 def course_ids_all():
     cur = connection.cursor()
-    cur.execute(''' SELECT course_id
-                      FROM course_structures_coursestructure
-                     WHERE course_id NOT LIKE '%DEMO%' AND course_id NOT LIKE '%KMOOC%';''')
+    cur.execute('''(SELECT DISTINCT a.course_id
+          FROM course_structures_coursestructure a,
+               student_courseaccessrole b
+         WHERE     a.course_id = b.course_id
+               AND a.course_id NOT LIKE '%DEMO%'
+               AND a.course_id NOT LIKE '%KMOOC%')''')
     row = cur.fetchall()
     cur.close()
     return row
@@ -677,11 +692,13 @@ def course_univ(date):
                           instr(a.course_id, ':') + 1,
                           (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
                           org
-                  FROM course_structures_coursestructure a
-                 WHERE     a.course_id NOT LIKE '%DEMOk%'
+                  FROM course_structures_coursestructure a, student_courseaccessrole b
+                 WHERE 1=1
+                   and a.course_id = b.course_id
+                   and a.course_id NOT LIKE '%DEMOk%'
                        AND a.course_id NOT LIKE '%KMOOC%'
                        AND a.course_id NOT LIKE '%edX%'
-                GROUP BY a.course_id) a
+                GROUP BY a.course_id)  a
                LEFT JOIN
                (SELECT substring(
                           a.course_id,
@@ -712,11 +729,13 @@ def course_univ_total(date):
                           instr(a.course_id, ':') + 1,
                           (instr(a.course_id, '+')) - instr(a.course_id, ':') - 1)
                           org
-                  FROM course_structures_coursestructure a
-                 WHERE     a.course_id NOT LIKE '%DEMOk%'
+                  FROM course_structures_coursestructure a, student_courseaccessrole b
+                 WHERE 1=1
+                   and a.course_id = b.course_id
+                   and a.course_id NOT LIKE '%DEMOk%'
                        AND a.course_id NOT LIKE '%KMOOC%'
                        AND a.course_id NOT LIKE '%edX%'
-                GROUP BY a.course_id) a
+                GROUP BY a.course_id)  a
                LEFT JOIN
                (SELECT substring(
                           a.course_id,
