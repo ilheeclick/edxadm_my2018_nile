@@ -19,7 +19,7 @@ def statistics_excel(request, date):
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.1.112', 27017)
+    client = MongoClient('192.168.1.113', 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -96,15 +96,13 @@ def statistics_excel(request, date):
     course_edu = statistics_query.course_edu(date)
 
     saveName = 'K-Mooc'+date+'.xlsx'
-    # savePath = '/home/project/management/static/excel/' + saveName
-    savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
+    savePath = '/home/project/management/static/excel/' + saveName
 
     if os.path.isfile(savePath) and False:
         pass
 
     else:
-        # wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
-        wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic.xlsx')
+        wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
         ws3 = wb['course_count_total']
@@ -437,11 +435,10 @@ def certificate_excel(request, courseId):
     pb = ''
     ov = ''
 
-    client = MongoClient('192.168.1.112', 27017)
+    client = MongoClient('192.168.1.113', 27017)
     db = client.edxapp
 
-    # wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
-    wb = load_workbook('/Users/redukyo/workspace/management/static/excel/basic_cert.xlsx')
+    wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
 
     for c in certificates:
         cid = str(c[2])
@@ -473,7 +470,6 @@ def certificate_excel(request, courseId):
                     print '>> 5'
                     dn = fields['display_name']
                     courseName = dn
-                    print 'courseName', courseName
                     break
                 break
             break
@@ -515,9 +511,8 @@ def certificate_excel(request, courseId):
         ws1['F' + str(row)].border = thin_border
         row += 1
 
-    saveName = 'K-Mooc_certificate_' + courseId  + '_' + str(year) + month + day +'.xlsx'
-    # savePath = '/home/project/management/static/excel/' + saveName
-    savePath = '/Users/redukyo/workspace/management/static/excel/' + saveName
+    saveName = 'K-Mooc_certificate_' + str(cid)  + '_' + str(year) + str(month) + str(day) +'.xlsx'
+    savePath = '/home/project/management/static/excel/' + saveName
 
     wb.save(savePath)
 
