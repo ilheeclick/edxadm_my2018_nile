@@ -19,7 +19,7 @@ def statistics_excel(request, date):
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.1.112', 27017)
+    client = MongoClient('192.168.1.113', 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -435,7 +435,7 @@ def certificate_excel(request, courseId):
     pb = ''
     ov = ''
 
-    client = MongoClient('192.168.1.112', 27017)
+    client = MongoClient('192.168.1.113', 27017)
     db = client.edxapp
 
     wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
@@ -518,7 +518,7 @@ def certificate_excel(request, courseId):
 
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
-def statistics_excel(request, date):
+def statistics_excel3(request, date):
 
     member_statistics = statistics_query.member_statistics(date)
     country_statistics = statistics_query.country_statistics(date)
@@ -781,20 +781,20 @@ def statistics_excel(request, date):
         "ZW": "Zimbabwe",
     }
 
-    ws1 = wb['certificates']
+    ws1 = wb['Sheet1']
 
     row = 2
     for c in member_statistics:
-        ws1['A' + str(row+1)] = dic_univ[c[0]]
-        ws1['A' + str(row+2)] = dic_univ[c[1]]
-        ws1['A' + str(row+3)] = dic_univ[c[2]]
+        ws1['B' + str(row+1)] = c[0]
+        ws1['B' + str(row+2)] = c[1]
+        ws1['B' + str(row+3)] = c[2]
 
     row = 8
     for c in country_statistics:
 
         ws1['A' + str(row)] = c[0]
         ws1['B' + str(row)] = c[1]
-        ws1['C' + str(row)] = COUNTRIES[c[2]]
+        ws1['C' + str(row)] = COUNTRIES[c[0]]
 
         ws1['A' + str(row)].border = thin_border
         ws1['B' + str(row)].border = thin_border
