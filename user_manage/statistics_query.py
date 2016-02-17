@@ -675,13 +675,6 @@ def course_ids_all():
     cur.close()
     return row
 
-def course_ids_cert():
-    cur = connection.cursor()
-    cur.execute('''select distinct course_id from certificates_generatedcertificate;''')
-    row = cur.fetchall()
-    cur.close()
-    return row
-
 def course_univ(date):
     cur = connection.cursor()
     cur.execute('''
@@ -756,6 +749,21 @@ def course_univ_total(date):
     cur.close()
     return row
 
+def course_ids_cert():
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT a.course_id
+          FROM certificates_generatedcertificate a
+               LEFT JOIN student_courseenrollment b
+                  ON     a.course_id = b.course_id
+                     AND a.user_id = b.user_id
+                     AND b.is_active = 1
+        GROUP BY a.course_id
+        HAVING count(a.course_id) > count(b.course_id);
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
 
 def certificateInfo(courseId):
     cur = connection.cursor()
@@ -782,6 +790,36 @@ def certificateInfo(courseId):
                AND a.course_id = "'''+courseId+'''"
         GROUP BY a.course_id, a.status
         ORDER BY a.course_id, a.status;
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+
+## 월별 통계 자료
+def member_statistics(date):
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT sum(if(a.is_active = '1', 1, 0)) active,
+               sum(if(a.is_active = '1', 0, 1)) unactive,
+               count(*)
+          FROM auth_user a
+         WHERE date_format(a.date_joined, '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
+    ''')
+    row = cur.fetchall()
+    cur.close()
+    return row
+
+def country_statistics(date):
+    cur = connection.cursor()
+    cur.execute('''
+        SELECT b.country, count(*) cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(a.date_joined, '%Y%m%d') BETWEEN '20151014'
+                                                            AND '''+date+'''
+        GROUP BY b.country
+        ORDER BY count(*) DESC;
     ''')
     row = cur.fetchall()
     cur.close()

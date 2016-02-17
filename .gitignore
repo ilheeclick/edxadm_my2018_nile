@@ -1,3 +1,8 @@
 *.xlsx
 !basic.xlsx
 !basic_cert.xlsx
+!basic_month.xlsx
+.DS_Store
+static/.DS_Store
+.idea/workspace.xml
+*.pyc

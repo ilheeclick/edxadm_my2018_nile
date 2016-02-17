@@ -49,6 +49,25 @@
         yearSuffix: '년'
         });
 
+        // calendar setting
+        $( "#datepicker3" ).datepicker({
+        minDate: new Date(2015, 10 - 1, 14),
+        maxDate: "+0m +0w -1d",
+        dateFormat: 'yymmdd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNames: ['일','월','화','수','목','금','토'],
+        dayNamesShort: ['일','월','화','수','목','금','토'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년',
+        beforeShowDay: function(date){
+            return [date.getDate() == 13, ''];
+        }
+        });
+
         // teset
         console.log('{{ courseInfo }}')
     });
@@ -89,6 +108,20 @@
         });
      }
 
+    function excelDonwload3(){
+
+        $("#download3").find("img").show();
+        $.ajax({
+            url: "/manage/excel_download3/" + $("#datepicker3").val()
+        })
+        .done(function( data ) {
+            alert('파일 생성 완료!');
+            $("#download3").prop("href", data);
+            $("#downloadBtn3").click();
+            $("#download3").find("img").hide();
+        });
+     }
+
 
 
 
@@ -101,18 +134,22 @@
 </div>
 <div id="main">
     <form>
-        날짜선택 : <input type="text" style="width: 65px;" id="datepicker1">
+        일일통계 : <input type="text" style="width: 65px;" id="datepicker1" readonly>
         <input type="button" id="excel_down" value="다운로드" onclick="excelDonwload();">
         <a href="#" id="download" ><span id="downloadBtn" style="display: none;">download</span><img src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
 
         <hr/>
+        월별통계 : <input type="text" style="width: 65px;" id="datepicker3" readonly>
+        <input type="button" id="excel_down" value="다운로드" onclick="excelDonwload3();">
+        <a href="#" id="download3" ><span id="downloadBtn3" style="display: none;">download</span><img src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
 
+
+        <hr/>
         강좌선택 :
         <select id="courseId">
             {% for key, value in courseInfo %}
                 <option value="{{ key }}">{{ value }}</option>
             {% endfor %}
-
 
         </select>
         <input type="button" id="excel_down2" value="다운로드" onclick="excelDonwload2();">

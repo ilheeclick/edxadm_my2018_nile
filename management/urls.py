@@ -16,13 +16,14 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from user_manage.views import user_manage, excel_manage
-from user_manage.statistics import statistics_excel, certificate_excel
+from user_manage.statistics import statistics_excel, certificate_excel, statistics_excel3
 
 urlpatterns = [
     url(r'^manage/$', user_manage),
     # url(r'^excel_download/?$', statistics_excel),
     url(r'^manage/excel_select/$', excel_manage),
     url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),
+    url(r'^manage/excel_download3/(?P<date>.*?)$', statistics_excel3),
     url(r'^manage/excel_download2/(?P<courseId>.*?)$', certificate_excel),
     #url(r'^', user_manage),
     #url(r'^admin/', google_test),
