@@ -103,12 +103,16 @@ def excel_manage(request):
     print '[',course_ids_cert,']'
 
     for c in course_ids_cert:
-        cid = str(c[0])
-        courseId = cid
+        cid_org = str(c[0])
+        courseId = cid_org
 
         # cid = cid.replace('course-v1:', '')
         # cid = cid.replace('+', '.')
-        cid = cid.split('+')[1]
+
+        # print '1 >>', cid_org
+
+        cid = cid_org.split('+')[1]
+        term = cid_org.split('+')[2]
 
         # print 'courseId ====> ', courseId, cid
         # cursor = db.modulestore.active_versions.find({'search_targets.wiki_slug':cid})
@@ -157,7 +161,7 @@ def excel_manage(request):
                         # print '------------------------------------'
                         # print courseId, ':', courseName
                         # print '------------------------------------'
-                        courseInfo[courseId] = courseName
+                        courseInfo[courseId] = courseName + ' : ' + term
                         break
                     break
             cursor.close()
