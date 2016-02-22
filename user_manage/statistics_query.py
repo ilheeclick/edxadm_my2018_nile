@@ -752,14 +752,17 @@ def course_univ_total(date):
 def course_ids_cert():
     cur = connection.cursor()
     cur.execute('''
-        SELECT a.course_id
-          FROM certificates_generatedcertificate a
-               LEFT JOIN student_courseenrollment b
-                  ON     a.course_id = b.course_id
-                     AND a.user_id = b.user_id
-                     AND b.is_active = 1
-        GROUP BY a.course_id
-        HAVING count(a.course_id) > count(b.course_id);
+	SELECT a.course_id
+	  FROM (SELECT course_id, count(a.user_id) cnt, max(a.created_date) cdate
+	          FROM certificates_generatedcertificate a
+	        GROUP BY a.course_id) a,
+	       (SELECT a.course_id, a.created cdate
+	          FROM student_courseenrollment a
+	         WHERE a.is_active = 1) b
+	 WHERE a.course_id = b.course_id
+	   and a.cdate >= b.cdate
+	 group by a.course_id
+	 having max(a.cnt) >= count(b.course_id)
     ''')
     row = cur.fetchall()
     cur.close()

@@ -488,7 +488,7 @@ def certificate_excel(request, courseId):
     #             'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
 
 
-    ws1 = wb['statistics_month']
+    ws1 = wb['certificates']
 
     row = 2
     for c in certificates:
