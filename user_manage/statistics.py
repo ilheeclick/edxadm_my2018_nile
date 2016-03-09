@@ -87,14 +87,9 @@ def statistics_excel(request, date):
                 'KNUk':u'경북대학교',
                 'YeungnamUnivK':u'영남대학교',
                 'KonYangK':u'건양대학교',
+                'DKUK':u'단국대학교',
                 '':u''
                 }
-
-    # print '======'
-    #for univ in sortlist:
-    #    print str(univ)
-    # print '======'
-
 
     user_join_new = statistics_query.user_join_new(date)
     user_join_total = statistics_query.user_join_total(date)
