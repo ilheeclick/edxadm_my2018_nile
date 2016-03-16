@@ -84,8 +84,8 @@ def course_count_new(date):
                           and date_format(a.created,'%Y%m%d') ="'''+date+'''"
                           and a.is_active = 1
                           and not (b.email) like '%delete_%'
-                          and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                          and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1';''')
+                          AND a.course_id NOT LIKE '%DEMO%'
+                          AND a.course_id NOT LIKE '%KMOOC%';''')
     row = cur.fetchone()[0]
     cur.close()
 
@@ -111,8 +111,8 @@ def course_count_total(date):
                            and date_format(a.created,'%Y%m%d') between '20151014' and "'''+date+'''"
                            and a.is_active = 1
                            and not (b.email) like '%delete_%'
-                           and not a.course_id = 'course-v1:edX+DemoX+Demo_Course'
-                           and not a.course_id = 'course-v1:KMOOC+DEMOk+2015_1';''')
+                           AND a.course_id NOT LIKE '%DEMO%'
+                           AND a.course_id NOT LIKE '%KMOOC%';''')
     row = cur.fetchone()[0]
     cur.close()
 
