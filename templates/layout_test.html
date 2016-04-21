@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>layout test</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            console.log('ready');
+
+            leftEvent();
+            viewContent();
+        });
+
+        function leftEvent(){
+            $("#left a").each(function(index){
+                console.log("leftEvent: "+index);
+                $(this).click(function(){
+                    alert(index);
+                });
+                //$(this).click(viewContent(index));
+            });
+        }
+
+
+        function viewContent(no){
+            console.log("viewContent["+no+"]");
+
+            $("div[id^=main]").hide();
+
+            switch(no) {
+                case 0:
+                    $("#main").show();
+                    break;
+                case 1:
+                    $("#main2").show();
+                    break;
+                default :
+                    $("#main").show();
+                    break;
+
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<div id="wrap">
+
+    <div id="header">
+        <h1>K-MOOC 관리</h1>
+    </div>
+
+    <div id="content">
+    <form>
+        <div id="left" style="border: 1px solid blue; float: left; width: 15%; min-height: 330px;">
+            <ul style="line-height: 25px;">
+                <li><a href="#">통계</a></li>
+                <li><a href="#">공지사항</a></li>
+            </ul>
+        </div>
+
+        <div id="main" style="border: 1px solid red; float: left; width: 80%; margin-left: 10px; padding: 15px; display: none;">
+
+            일일통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker1" readonly="" type="text">
+            <input id="excel_down" value="다운로드" onclick="excelDonwload();" type="button">
+            <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+            <hr>
+            월별통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker3" readonly="" type="text">
+            <input id="excel_down" value="다운로드" onclick="excelDonwload3();" type="button">
+            <a href="#" id="download3"><span id="downloadBtn3" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+            <hr>
+            이수증<br> 결과확인 :
+            <select id="courseId">
+                    <option value="course-v1:KoreaUnivK+ku_cpx_001+2015_A03">Quantum Mechanics for IT/NT/BT : 2015_A03</option>
+            </select>
+            <input id="excel_down2" value="다운로드" onclick="excelDonwload2();" type="button">
+            <a href="#" id="download2"><span id="downloadBtn2" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+        </div>
+
+        <div id="main2" style="border: 1px solid red; float: left; width: 80%; margin-left: 10px; padding: 15px; display: none;">
+
+            일일통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker1" readonly="" type="text">
+            <input id="excel_down" value="다운로드" onclick="excelDonwload();" type="button">
+            <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+            <hr>
+            월별통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker3" readonly="" type="text">
+            <input id="excel_down" value="다운로드" onclick="excelDonwload3();" type="button">
+            <a href="#" id="download3"><span id="downloadBtn3" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+            <hr>
+            이수증<br> 결과확인 :
+            <select id="courseId">
+                    <option value="course-v1:KoreaUnivK+ku_cpx_001+2015_A03">Quantum Mechanics for IT/NT/BT : 2015_A03</option>
+            </select>
+            <input id="excel_down2" value="다운로드" onclick="excelDonwload2();" type="button">
+            <a href="#" id="download2"><span id="downloadBtn2" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+
+        </div>
+
+    </form>
+    </div>
+
+
+    <div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div>
+
+
+</div>
+</body>
+</html>
