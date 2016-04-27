@@ -10,6 +10,8 @@ import os
 import statistics_query
 from pymongo import MongoClient
 from operator import itemgetter
+from django.core.context_processors import csrf
+
 def main_query(id):
 
     html = ""
@@ -170,4 +172,7 @@ def excel_manage(request):
     context = {
         'courseInfo': sorted(courseInfo.items(), key=itemgetter(1)),
     }
+
+    context.update(csrf(request))
+
     return HttpResponse(template.render(context))
