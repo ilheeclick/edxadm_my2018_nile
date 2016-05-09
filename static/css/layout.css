@@ -62,16 +62,16 @@ input {padding:0 5px 0 0; vertical-align:middle; border:solid 1px #acacac; margi
 .join_cycle li.text{font-size:26px; font-weight:bold; color:#FFFFFF; padding: 17px 0 0 0}
 .join_cycle li.btn{padding:7px 0 0 0; font-weight:bold; text-align:center; color: #fff; background: #edaf14; vertical-align:middle; border-radius:10px 10px; text-decoration:none; width:75px; height:35px; font-size:20px; margin:10px 0 0 5px}
 
-.join_bg .number{float:left; width:25%; margin:0 0 0 35px}
-.join_bg .number1{float:left; width:32%; margin:0 0 0 35px}
-.join_bg .number2{float:left; width:32%; margin:0 0 0 35px}
-.join_bg .table_tit1{width:50%; padding:10px 0 2px 0; font-weight:bold; text-align:center; color: #fff; background: #3e6830; vertical-align:middle; border-radius:12px 12px;box-shadow:0 1px 0 #d4d4d4; text-decoration:none; margin:70px 0 10px 87px; height:30px; font-size:18px}
+.join_bg .number{float:left; width:35%; margin:0 0 0 40px}
+.join_bg .number1{float:left; width:55%; margin:0 0 0 55px}
+.join_bg .number2{float:left; width:32%; margin:0 0 0 35px; display: none;}
+.join_bg .table_tit1{width:50%; padding:10px; font-weight:bold; text-align:center; color: #fff; background: #3e6830; vertical-align:middle; border-radius:12px 12px;box-shadow:0 1px 0 #d4d4d4; text-decoration:none; margin: 10px auto; font-size:30px}
 .join_bg .table1{width:100%;}
 .join_bg .table1 thead th{color:#085585;line-height:20px;border-right:dotted 1px #9a9a9a; background:#f6fafc; border-top:solid 2px #3e6830; border-bottom:dotted 1px #9a9a9a; height:40px; font-size:18px}
 .join_bg .table1 thead th.none{color:#085585;line-height:20px;border-right:none; background:#f6fafc; border-top:solid 2px #3e6830; border-bottom:dotted 1px #9a9a9a; height:40px;  font-size:18px}
 .join_bg .table1 tbody td{color:#085585;line-height:20px;border-right:dotted 1px #9a9a9a; background:#ffffff; border-bottom:solid 2px #9a9a9a; height:35px; text-align:center; font-size:35px; color:#d4382a; width:50%; font-weight:bold}
 .join_bg .table1 tbody td.none{color:#085585;line-height:20px;border-right:none; background:#ffffff; border-bottom:solid 2px #9a9a9a; height:40px; text-align:center;  font-size:35px; color:#d4382a; width:50%; font-weight:bold}
-.join_bg .table_tit2{width:40%; padding:10px 0 2px 0; font-weight:bold; text-align:center; color: #fff; background: #6779a8; vertical-align:middle; border-radius:12px 12px;box-shadow:0 1px 0 #d4d4d4; text-decoration:none; margin:70px auto 10px; height:30px; font-size:18px}
+.join_bg .table_tit2{width:40%; padding:10px; font-weight:bold; text-align:center; color: #fff; background: #6779a8; vertical-align:middle; border-radius:12px 12px;box-shadow:0 1px 0 #d4d4d4; text-decoration:none; margin:10px auto; font-size:30px}
 .join_bg .table2{width:100%;}
 .join_bg .table2 thead th{color:#085585;line-height:20px;border-right:dotted 1px #9a9a9a; background:#f6fafc; border-top:solid 2px #6779a8; border-bottom:dotted 1px #9a9a9a; height:40px; font-size:18px}
 .join_bg .table2 thead th.none{color:#085585;line-height:20px; width:30%; border-right:none; background:#f6fafc; border-top:solid 2px #0079c8; border-bottom:dotted 1px #9a9a9a; height:40px;  font-size:16px}
@@ -115,3 +115,8 @@ input {padding:0 5px 0 0; vertical-align:middle; border:solid 1px #acacac; margi
 	text-align: center;
 	color : #D4382A;
 }
+
+
+
+.join_bg th{line-height: normal !important; font-size: 33px !important; padding: 5px !important;}
+.join_bg td{line-height: normal !important; font-size: 45px !important; padding: 5px !important;}
