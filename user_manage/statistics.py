@@ -19,7 +19,7 @@ def statistics_excel(request, date):
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.1.113', 27017)
+    client = MongoClient('192.168.44.10', 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -448,7 +448,7 @@ def certificate_excel(request, courseId):
     pb = ''
     ov = ''
 
-    client = MongoClient('192.168.1.113', 27017)
+    client = MongoClient('192.168.44.10', 27017)
     db = client.edxapp
 
     wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')

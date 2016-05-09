@@ -4,6 +4,71 @@
     <meta charset="UTF-8">
     <title>layout test</title>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        ul {
+            line-height: 25px;
+        }
+        table {
+            width: 100%;
+        }
+        .table14_9 td:nth-child(1) input, td:nth-child(2) input, td:nth-child(7)  input {
+            width: 99%;
+        }
+
+        .table14_9 td:nth-child(3) input:nth-child(1), td:nth-child(4) input:nth-child(1) {
+            width: 40%;
+        }
+
+        .table14_9 td:nth-child(3) input:nth-child(2), td:nth-child(4) input:nth-child(2) {
+            width: 20%;
+        }
+        .table14_9 td:nth-child(3) input:nth-child(3), td:nth-child(4) input:nth-child(3) {
+            width: 20%;
+        }
+
+        .table14_9 table {
+            width:100%;
+            margin:15px 0;
+            border:0;
+        }
+        .table14_9 th {
+            font-weight:bold;
+            background-color:#cdeafe;
+            color:#2071fe
+        }
+        .table14_9,.table14_9 th,.table14_9 td {
+            font-size:0.95em;
+            text-align:center;
+            padding:4px;
+            border-collapse:collapse;
+        }
+        .table14_9 th,.table14_9 td {
+            border: 1px solid #ffffff;
+            border-width:1px
+        }
+        .table14_9 th {
+            border: 1px solid #cdeafe;
+            border-width:1px 0 1px 0
+        }
+        .table14_9 td {
+            border: 1px solid #eeeeee;
+            border-width:1px 0 1px 0
+        }
+        .table14_9 tr {
+            border: 1px solid #ffffff;
+        }
+        .table14_9 tr:nth-child(odd){
+            background-color:#f7f7f7;
+        }
+        .table14_9 tr:nth-child(even){
+            background-color:#ffffff;
+        }
+
+        #left {border: 0px solid blue; float: left; width: 15%; min-height: 330px;}
+        .main {border: 0px solid red; float: left; width: 80%; margin-left: 10px; padding: 15px; display: none;}
+
+    </style>
+
     <script src="http://code.jquery.com/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script>
@@ -18,9 +83,8 @@
             $("#left a").each(function(index){
                 console.log("leftEvent: "+index);
                 $(this).click(function(){
-                    alert(index);
+                    viewContent(index);
                 });
-                //$(this).click(viewContent(index));
             });
         }
 
@@ -38,13 +102,15 @@
                     $("#main2").show();
                     break;
                 default :
-                    $("#main").show();
+                    $("#main2").show();
                     break;
-
             }
         }
 
     </script>
+
+
+
 </head>
 <body>
 
@@ -52,18 +118,19 @@
 
     <div id="header">
         <h1>K-MOOC 관리</h1>
+        <hr/>
     </div>
 
     <div id="content">
     <form>
-        <div id="left" style="border: 1px solid blue; float: left; width: 15%; min-height: 330px;">
-            <ul style="line-height: 25px;">
+        <div id="left" style="">
+            <ul>
                 <li><a href="#">통계</a></li>
                 <li><a href="#">공지사항</a></li>
             </ul>
         </div>
 
-        <div id="main" style="border: 1px solid red; float: left; width: 80%; margin-left: 10px; padding: 15px; display: none;">
+        <div id="main" class="main">
 
             일일통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker1" readonly="" type="text">
             <input id="excel_down" value="다운로드" onclick="excelDonwload();" type="button">
@@ -84,24 +151,63 @@
 
         </div>
 
-        <div id="main2" style="border: 1px solid red; float: left; width: 80%; margin-left: 10px; padding: 15px; display: none;">
-
-            일일통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker1" readonly="" type="text">
-            <input id="excel_down" value="다운로드" onclick="excelDonwload();" type="button">
-            <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+        <div id="main2" class="main">
+            <table class="table14_9">
+                <colgroup>
+                    <col width="22%"/>
+                    <col width="22%"/>
+                    <col width="22%"/>
+                    <col width="22%"/>
+                    <col width="*"/>
+                </colgroup>
+            <tr>
+                <th>제목</th>
+                <th>링크</th>
+                <th>게시일</th>
+                <th>종료일</th>
+                <th>-</th>
+            </tr>
+            <tr>
+                <td><input type="input" name="title" /></td>
+                <td><input type="input" name="link" /></td>
+                <td><input type="input" name="sdate" /><input type="input" name="sHH" /><input type="input" name="sMI" /></td>
+                <td><input type="input" name="edate" /><input type="input" name="eHH" /><input type="input" name="eMI" /></td>
+                <td><input type="button" value="등록" /></td>
+            </tr>
+            </table>
 
             <hr>
-            월별통계 : <input class="hasDatepicker" style="width: 65px;" id="datepicker3" readonly="" type="text">
-            <input id="excel_down" value="다운로드" onclick="excelDonwload3();" type="button">
-            <a href="#" id="download3"><span id="downloadBtn3" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
 
-            <hr>
-            이수증<br> 결과확인 :
-            <select id="courseId">
-                    <option value="course-v1:KoreaUnivK+ku_cpx_001+2015_A03">Quantum Mechanics for IT/NT/BT : 2015_A03</option>
-            </select>
-            <input id="excel_down2" value="다운로드" onclick="excelDonwload2();" type="button">
-            <a href="#" id="download2"><span id="downloadBtn2" style="display: none;">download</span><img src="/manage/static/image/progress.gif" style="display: none; width:20px; vertical-align: middle;"></a>
+            <table class=table14_9>
+                <colgroup>
+                    <col width="5%"/>
+                    <col width="*"/>
+                    <col width="20%"/>
+                    <col width="12%"/>
+                    <col width="12%"/>
+                    <col width="10%"/>
+                </colgroup>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>링크</th>
+                <th>게시일</th>
+                <th>종료일</th>
+                <th>-</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>
+                    <input type="button" value="수정" />
+                    <input type="button" value="삭제" />
+                </td>
+            </tr>
+            </table>
+
 
         </div>
 
