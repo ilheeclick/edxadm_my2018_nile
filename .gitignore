@@ -9,3 +9,5 @@ workspace.xml
 .gitignore
 .workspace.xml
 .idea/workspace.xml
+management/settings.py
+user_manage/statistics.py
