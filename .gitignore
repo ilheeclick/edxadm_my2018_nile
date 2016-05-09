@@ -9,8 +9,3 @@ workspace.xml
 .gitignore
 .workspace.xml
 .idea/workspace.xml
-<<<<<<< HEAD
-=======
-management/settings.py
-user_manage/statistics.py
->>>>>>> 37e548439f0ed82c9860f6ae577c7908d959d2e3
