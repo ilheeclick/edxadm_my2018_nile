@@ -221,6 +221,10 @@
                 "/manage/notice/reg",
                 $("#form").serialize(),
                 function(data){
+
+                    if(data > 0)
+                        alert("저장되었습니다.");
+
                     notice_list();
                 });
         }
@@ -274,8 +278,8 @@
                         html += "<tr style='display: none;'>                                                                           ";
                         html += "    <td><input type='checkbox' name='seq' value='"+data[i].seq+"' onclick='modChg("+data[i].seq+")' /></td>      ";
                         html += "    <td>"+data[i].seq+"</td>                                                   ";
-                        html += "    <td><input type='text' name='title' value='"+data[i].title+"' disabled /></td>      ";
-                        html += "    <td><input type='text' name='link' value='"+data[i].link+"' disabled /></td>        ";
+                        html += "    <td><input type='text' name='title' value='"+data[i].title+"' disabled maxlength='120'/></td>      ";
+                        html += "    <td><input type='text' name='link' value='"+data[i].link+"' disabled maxlength='120'/></td>        ";
                         html += "    <td>                                                                       ";
                         html += "	<input type='text' name='sDate' value='"+data[i].sdate+"' disabled readonly/>                 ";
                         html += "	<select name='sHH' id='sHH' disabled>                                                ";
@@ -482,8 +486,8 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" name="title" /></td>
-                    <td><input type="text" name="link" /></td>
+                    <td><input type="text" name="title"  maxlength='120'/></td>
+                    <td><input type="text" name="link"  maxlength='120'/></td>
                     <td>
                         <input type="text" name="sDate" id="sDate" readonly/>
                         <select name="sHH" id="sHH">
