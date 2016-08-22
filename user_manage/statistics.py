@@ -19,7 +19,7 @@ def statistics_excel(request, date):
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.44.10', 27017)
+    client = MongoClient('192.168.44.11', 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -27,14 +27,18 @@ def statistics_excel(request, date):
     courseOrgs = {}
     courseNames = {}
 
+    debug = False
+
     for c in course_ids_all:
         cid = str(c[0])
         courseId = cid
-        cid = cid.split('+')[1]
 
-        # print '1. cid = ', cid
+        if debug: print 'check >>> ', courseId, cid.split('+')[0], cid.split('+')[1], cid.split('+')[2]
 
-        cursor = db.modulestore.active_versions.find({'course':cid})
+        cid = courseId.split('+')[1]
+        run = courseId.split('+')[2]
+
+        cursor = db.modulestore.active_versions.find({'course':cid, 'run': run})
         for document in cursor:
             pb = document.get('versions').get('published-branch')
             org = document.get('org')
@@ -43,26 +47,47 @@ def statistics_excel(request, date):
 
         cursor = db.modulestore.structures.find({'_id':pb})
         for document in cursor:
-            ov = document.get('original_version')
-            # print '2. original_vertion = ', ov
+            blocks = document.get('blocks')
+            for block in blocks:
+                blocktype = block.get('block_type')
+                if blocktype == 'course':
+                    fields = block.get('fields')
+                    for field in fields:
+                        if field == 'display_name':
+                            if debug: print 'field :', field
+                            dn = fields['display_name']
+                            if debug: print 'dn1 :', dn
+                            if dn == '' or dn is None:
+                                if debug: print 'dn is empty'
+
+                                ov = document.get('original_version')
+
+                                if debug: print 'ov :', ov
+                                cursor2 = db.modulestore.structures.find({'_id':ov})
+                                for document2 in cursor2:
+                                    blocks2 = document2.get('blocks')
+                                    for block2 in blocks2:
+                                        fields2 = block2.get('fields')
+                                        dn = fields2['display_name']
+                                        if debug: print 'dn2 :', dn
+                                        break
+                                    break
+                                cursor2.close()
+
+                            courseOrgs[courseId] = org
+                            courseNames[courseId] = dn
+
+                            print 'display_name = ', courseId, pb,  dn.encode('utf8')
+
+                            break
+                        else:
+                            continue
+                    break
+                else:
+                    continue
             break
         cursor.close()
 
-        cursor = db.modulestore.structures.find({'_id':ov})
-        for document in cursor:
-            blocks = document.get('blocks')
-            # print 'size = ', len(blocks)
-            for block in blocks:
-                    fields = block.get('fields')
-                    for field in fields:
-                            dn = fields['display_name']
-                            # print '3. display_name = ', dn.encode('utf8')
-                            courseOrgs[courseId] = org
-                            courseNames[courseId] = dn
-                            break
-                    break
-            break
-        cursor.close()
 
     thin_border = Border(left=Side(style='thin'),
                      right=Side(style='thin'),
@@ -448,7 +473,7 @@ def certificate_excel(request, courseId):
     pb = ''
     ov = ''
 
-    client = MongoClient('192.168.44.10', 27017)
+    client = MongoClient('192.168.44.11', 27017)
     db = client.edxapp
 
     wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
