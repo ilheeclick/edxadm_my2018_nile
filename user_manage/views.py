@@ -97,7 +97,7 @@ def excel_manage(request):
     courseName = ''
     courseInfo = {}
 
-    client = MongoClient('192.168.1.113', 27017)
+    client = MongoClient('192.168.44.11', 27017)
     db = client.edxapp
 
     course_ids_cert = statistics_query.course_ids_cert()
