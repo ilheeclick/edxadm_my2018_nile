@@ -38,7 +38,7 @@ def user_join_total(date):
                 FROM auth_userprofile a, auth_user b
                 WHERE a.user_id = b.id
                 AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                and date_format(b.date_joined,'%Y%m%d') between '20151014' and "'''+ date +'''"''')
+                and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+ date +'''"''')
     row = cur.fetchone()[0]
     cur.close()
 
@@ -58,7 +58,7 @@ def course_count_distinct(date):
     cur.execute('''select count(distinct a.user_id) cnt
                             from student_courseenrollment a, auth_user b
                             where a.user_id = b.id
-                              and date_format(a.created,'%Y%m%d') between '20151014' and"'''+date+'''"
+                              and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and"'''+date+'''"
                               and a.is_active = 1
                               and not (b.email) like '%delete_%';''')
     row = cur.fetchone()[0]
@@ -81,9 +81,10 @@ def course_count_new(date):
     cur.execute('''select count(a.user_id) cnt
                         from student_courseenrollment a, auth_user b
                         where a.user_id = b.id
-                          and date_format(a.created,'%Y%m%d') ="'''+date+'''"
+                          and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') ="'''+date+'''"
                           and a.is_active = 1
                           and not (b.email) like '%delete_%'
+                          and lower(a.course_id) not like '%test%'
                           AND a.course_id NOT LIKE '%DEMO%'
                           AND a.course_id NOT LIKE '%KMOOC%';''')
     row = cur.fetchone()[0]
@@ -108,9 +109,10 @@ def course_count_total(date):
     cur.execute('''select count(a.user_id) cnt
                          from student_courseenrollment a, auth_user b
                          where a.user_id = b.id
-                           and date_format(a.created,'%Y%m%d') between '20151014' and "'''+date+'''"
+                           and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''"
                            and a.is_active = 1
                            and not (b.email) like '%delete_%'
+                           and lower(a.course_id) not like '%test%'
                            AND a.course_id NOT LIKE '%DEMO%'
                            AND a.course_id NOT LIKE '%KMOOC%';''')
     row = cur.fetchone()[0]
@@ -153,7 +155,7 @@ def edu_new(date):
                        sum(if(a.gender = 'm', 1, 0)) AS "male",
                        sum(if(a.gender = 'f', 1, 0)) AS "female"
                   FROM auth_userprofile a, auth_user b
-                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d') = "'''+date+'''"
+                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "'''+date+'''"
                  group by case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 'none' else level_of_education end
                  order by level_of_education) b
                  ON a.r = b.result
@@ -214,7 +216,7 @@ def edu_total(date):
                        sum(if(a.gender = 'm', 1, 0)) AS "male",
                        sum(if(a.gender = 'f', 1, 0)) AS "female"
                   FROM auth_userprofile a, auth_user b
-                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d') between '20151014' and "'''+date+'''"
+                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''"
                  group by case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 'none' else level_of_education end
                  order by level_of_education) b
                  ON a.r = b.result
@@ -280,7 +282,7 @@ def age_new(date):
                                    a.gender
                               FROM auth_userprofile a, auth_user b
                              WHERE     a.user_id = b.id
-                                   AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d') = "'''+date+'''") aa) bb
+                                   AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "'''+date+'''") aa) bb
             GROUP BY age) b
              ON a.r = b.age
             ORDER BY a.r;''')
@@ -350,7 +352,7 @@ def age_total(date):
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
                                        AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                                       and date_format(b.date_joined,'%Y%m%d') between '20151014' and "'''+date+'''") aa) bb
+                                       and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''") aa) bb
                 GROUP BY age) b
                  ON a.r = b.age
                 ORDER BY a.r;''')
@@ -437,7 +439,7 @@ def age_edu(date):
                               FROM auth_userprofile a, auth_user b
                              WHERE     a.user_id = b.id
                                    AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                                   AND date_format(b.date_joined, '%Y%m%d') between '20151014' and "'''+date+'''" )
+                                   AND date_format( adddate(b.date_joined, interval 9 hour), '%Y%m%d') between '20151014' and "'''+date+'''" )
                            aa) bb
             GROUP BY age) b
             ON a.r = b.age
@@ -505,6 +507,7 @@ def course_user(date):
           FROM course_structures_coursestructure a,
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
+               and lower(a.course_id) not like '%test%'
                AND a.course_id NOT LIKE '%DEMO%'
                AND a.course_id NOT LIKE '%KMOOC%')
                a
@@ -513,9 +516,10 @@ def course_user(date):
                   FROM (SELECT a.course_id, count(*) cnt
                           FROM student_courseenrollment a, auth_user b
                          WHERE     a.user_id = b.id
-                               AND date_format(a.created, '%Y%m%d') = '''+date+'''
+                               AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = '''+date+'''
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
+                               and lower(a.course_id) not like '%test%'
                                AND a.course_id NOT LIKE '%DEMOk%'
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;'''
@@ -538,6 +542,7 @@ def course_user_total(date):
           FROM course_structures_coursestructure a,
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
+               and lower(a.course_id) not like '%test%'
                AND a.course_id NOT LIKE '%DEMO%'
                AND a.course_id NOT LIKE '%KMOOC%')
                            a
@@ -546,9 +551,10 @@ def course_user_total(date):
                               FROM (SELECT a.course_id, count(*) cnt
                                       FROM student_courseenrollment a, auth_user b
                                      WHERE     a.user_id = b.id
-                                           AND date_format(a.created, '%Y%m%d') between '20151014' and  "'''+date+'''"
+                                           AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and  "'''+date+'''"
                                            AND a.is_active = 1
                                            AND NOT (b.email) LIKE '%delete_%'
+                                           and lower(a.course_id) not like '%test%'
                                            AND a.course_id NOT LIKE '%DEMOk%'
                                     GROUP BY a.course_id) aa) b
                               ON a.course_id = b.course_id;
@@ -580,6 +586,7 @@ def course_age(date):
           FROM course_structures_coursestructure a,
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
+               and lower(a.course_id) not like '%test%'
                AND a.course_id NOT LIKE '%DEMO%'
                AND a.course_id NOT LIKE '%KMOOC%')
                a
@@ -592,10 +599,11 @@ def course_age(date):
                                auth_userprofile c
                          WHERE     a.user_id = b.id
                                AND b.id = c.user_id
-                               AND date_format(a.created, '%Y%m%d') BETWEEN '20151014' and
+                               AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') BETWEEN '20151014' and
                                                                         "'''+date+'''"
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
+                               and lower(a.course_id) not like '%test%'
                                AND a.course_id NOT LIKE '%DEMOk%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id
@@ -638,6 +646,7 @@ def course_edu(date):
           FROM course_structures_coursestructure a,
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
+               and lower(a.course_id) not like '%test%'
                AND a.course_id NOT LIKE '%DEMO%'
                AND a.course_id NOT LIKE '%KMOOC%')
                a
@@ -649,10 +658,11 @@ def course_edu(date):
                                auth_userprofile c
                          WHERE     a.user_id = b.id
                                AND b.id = c.user_id
-                               AND date_format(a.created, '%Y%m%d') BETWEEN '20151014'
+                               AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') BETWEEN '20151014'
                                                                         AND "'''+date+'''"
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
+                               and lower(a.course_id) not like '%test%'
                                AND a.course_id NOT LIKE '%DEMOk%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id
@@ -689,6 +699,7 @@ def course_univ(date):
                  WHERE 1=1
                    and a.course_id = b.course_id
                    and a.course_id NOT LIKE '%DEMOk%'
+                       and lower(a.course_id) not like '%test%'
                        AND a.course_id NOT LIKE '%KMOOC%'
                        AND a.course_id NOT LIKE '%edX%'
                 GROUP BY a.course_id)  a
@@ -700,9 +711,10 @@ def course_univ(date):
                           org
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format(a.created, '%Y%m%d') = "'''+date+'''"
+                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = "'''+date+'''"
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
+                       and lower(a.course_id) not like '%test%'
                        AND a.course_id NOT LIKE '%DEMOk%') b
                   ON a.org = b.org
         GROUP BY a.org
@@ -726,6 +738,7 @@ def course_univ_total(date):
                  WHERE 1=1
                    and a.course_id = b.course_id
                    and a.course_id NOT LIKE '%DEMOk%'
+                   and lower(a.course_id) not like '%test%'
                        AND a.course_id NOT LIKE '%KMOOC%'
                        AND a.course_id NOT LIKE '%edX%'
                 GROUP BY a.course_id)  a
@@ -737,9 +750,10 @@ def course_univ_total(date):
                           org
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format(a.created, '%Y%m%d') between '20151014' and "'''+date+'''"
+                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and "'''+date+'''"
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
+                       and lower(a.course_id) not like '%test%'
                        AND a.course_id NOT LIKE '%DEMOk%') b
                   ON a.org = b.org
         GROUP BY a.org
@@ -807,7 +821,7 @@ def member_statistics(date):
                sum(if(a.is_active = '1', 0, 1)) unactive,
                count(*)
           FROM auth_user a
-         WHERE date_format(a.date_joined, '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
+         WHERE date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
     ''')
     row = cur.fetchall()
     cur.close()
@@ -819,7 +833,7 @@ def country_statistics(date):
         SELECT b.country, count(*) cnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
-               AND date_format(a.date_joined, '%Y%m%d') BETWEEN '20151014'
+               AND date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014'
                                                             AND '''+date+'''
         GROUP BY b.country
         ORDER BY count(*) DESC;

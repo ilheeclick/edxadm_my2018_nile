@@ -10,16 +10,15 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 import os
 from operator import itemgetter
 import datetime
+from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 
+
+# 일일통계
 def statistics_excel(request, date):
-
-
-
-
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
-    client = MongoClient('192.168.44.11', 27017)
+    client = MongoClient(database_id, 27017)
     db = client.edxapp
     pb = ''
     ov = ''
@@ -27,7 +26,6 @@ def statistics_excel(request, date):
     courseOrgs = {}
     courseNames = {}
 
-    debug = False
 
     for c in course_ids_all:
         cid = str(c[0])
@@ -94,28 +92,6 @@ def statistics_excel(request, date):
                      top=Side(style='thin'),
                      bottom=Side(style='thin'))
 
-    dic_univ = {'KHUk':u'경희대학교',
-                'KoreaUnivK':u'고려대학교',
-                'PNUk':u'부산대학교',
-                'SNUk':u'서울대학교',
-                'SKKUk':u'성균관대학교',
-                'YSUk':u'연세대학교',
-                'EwhaK':u'이화여자대학교',
-                'POSTECHk':u'포항공과대학교',
-                'KAISTk':u'한국과학기술원',
-                'HYUk':u'한양대학교',
-                'INHAuniversityK':u'인하대학교',
-                'KUMOHk':u'금오공과대학교',
-                'CUKk':u'가톨릭대학교',
-                'BUFSk':u'부산외국어대학교',
-                'JEJUk':u'제주대학교',
-                'KNUk':u'경북대학교',
-                'YeungnamUnivK':u'영남대학교',
-                'KonYangK':u'건양대학교',
-                'DKUK':u'단국대학교',
-                '':u''
-                }
-
     user_join_new = statistics_query.user_join_new(date)
     user_join_total = statistics_query.user_join_total(date)
     course_count_distinct = statistics_query.course_count_distinct(date)
@@ -134,13 +110,13 @@ def statistics_excel(request, date):
     course_edu = statistics_query.course_edu(date)
 
     saveName = 'K-Mooc'+date+'.xlsx'
-    savePath = '/home/project/management/static/excel/' + saveName
+    savePath = EXCEL_PATH + saveName
 
-    if os.path.isfile(savePath) and False:
+    if os.path.isfile(savePath) and not debug:
         pass
 
     else:
-        wb = load_workbook('/home/project/management/static/excel/basic.xlsx')
+        wb = load_workbook(EXCEL_PATH + 'basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
         ws3 = wb['course_count_total']
@@ -150,24 +126,19 @@ def statistics_excel(request, date):
         #가입현황
         ws1['B4'] = user_join_new
         ws1['C4'] = user_join_total
-        ws1['D4'] = course_count_distinct
-        ws1['E4'] = course_count_new
-        ws1['F4'] = course_count_total
-
-        #학력구분
-        sort = [(9,0),(10,1),(11,2),(12,3),(13,4),
-                (14,5),(15,6),(16,7),(17,8)]
-
-        for (number, number1) in sort:
-            ws1['C' + str(number)] = edu_new[number1][0]
-            ws1['D' + str(number)] = edu_new[number1][1]
-
-        for (number, number1) in sort:
-            ws1['F' + str(number)] = edu_total[number1][0]
-            ws1['G' + str(number)] = edu_total[number1][1]
+        ws1['D4'] = course_count_new
+        ws1['E4'] = course_count_total
+        ws1['F4'] = course_count_distinct
 
         #연령구분
-        sort = [(23,0),(24,1),(25,2),(26,3),(27,4),(28,5)]
+        sort = [
+            (9,0),
+            (10,1),
+            (11,2),
+            (12,3),
+            (13,4),
+            (14,5)
+        ]
 
         for (number, number1) in sort:
             ws1['C' + str(number)] = age_new[number1][0]
@@ -177,8 +148,36 @@ def statistics_excel(request, date):
             ws1['F' + str(number)] = age_total[number1][0]
             ws1['G' + str(number)] = age_total[number1][1]
 
+        #학력구분
+        sort = [
+            (20,0),
+            (21,1),
+            (22,2),
+            (23,3),
+            (24,4),
+            (25,5),
+            (26,6),
+            (27,7),
+            (28,8)
+        ]
+
+        for (number, number1) in sort:
+            ws1['C' + str(number)] = edu_new[number1][0]
+            ws1['D' + str(number)] = edu_new[number1][1]
+
+        for (number, number1) in sort:
+            ws1['F' + str(number)] = edu_total[number1][0]
+            ws1['G' + str(number)] = edu_total[number1][1]
+
         #연령학력
-        sort = [(34,0),(35,1),(36,2),(37,3),(38,4),(39,5)]
+        sort = [
+            (34,0),
+            (35,1),
+            (36,2),
+            (37,3),
+            (38,4),
+            (39,5)
+        ]
 
         for (number, number1) in sort:
             ws1['C' + str(number)] = age_edu[number1][0]
@@ -243,24 +242,61 @@ def statistics_excel(request, date):
                 c = (dic_univ[c[0]],) + c
             else:
                 c = (c[0], ) + c
+
             print '1================================'
             print c
             print '================================='
             sortlist.append(c)
 
         sortlist.sort(key=itemgetter(0))
+
+        startCharNo1 = 72 # H
+        startCharNo2 = 65 # A
+        positionChar = ''
+        isExpension = False
+
         for s in sortlist:
             orgName = s[0]
             cnt = s[2]
 
-            # print cId, cName
+            if startCharNo1 > 90:
+                startCharNo1 = 65
 
-            ws2['G' + str(rn1)] = orgName
-            ws2['H' + str(rn1)] = cnt
+                if isExpension:
+                    startCharNo2 += 1
+                else:
+                    isExpension = True
+
+            if not isExpension:
+                positionChar = chr(startCharNo1)
+            else:
+                positionChar = chr(startCharNo2) + chr(startCharNo1)
+
+            print 'positionChar:', positionChar
+
+            ws2[positionChar + '2'] = orgName
+            ws2[positionChar + '3'] = cnt
+
             # set border
-            ws2['G' + str(rn1)].border = thin_border
-            ws2['H' + str(rn1)].border = thin_border
-            rn1 += 1
+            ws2[positionChar + '2'].border = thin_border
+            ws2[positionChar + '3'].border = thin_border
+
+            # print cId, cName
+            # H 열부터 횡으로 증가. Z 까지 갔을경우 AA 로 다시 시작
+
+            # 기존에 열으로 추가되는 로직
+            # ----------------------------------------------
+
+            # ws2['G' + str(rn1)] = orgName
+            # ws2['H' + str(rn1)] = cnt
+            # # set border
+            # ws2['G' + str(rn1)].border = thin_border
+            # ws2['H' + str(rn1)].border = thin_border
+            # rn1 += 1
+
+            # ----------------------------------------------
+
+            startCharNo1 += 1
 
 
         #코스별 수강자 누적
@@ -316,17 +352,38 @@ def statistics_excel(request, date):
             sortlist.append(c)
 
         sortlist.sort(key=itemgetter(0))
+
+        startCharNo1 = 72 # H
+        startCharNo2 = 65 # A
+        positionChar = ''
+        isExpension = False
+
         for s in sortlist:
             orgName = s[0]
             cnt = s[2]
-            # print cId, cName
 
-            ws3['G' + str(rn1)] = orgName
-            ws3['H' + str(rn1)] = cnt
+            if startCharNo1 > 90:
+                startCharNo1 = 65
+
+                if isExpension:
+                    startCharNo2 += 1
+                else:
+                    isExpension = True
+
+            if not isExpension:
+                positionChar = chr(startCharNo1)
+            else:
+                positionChar = chr(startCharNo2) + chr(startCharNo1)
+
+            print 'positionChar:', positionChar
+
+            ws3[positionChar + '2'] = orgName
+            ws3[positionChar + '3'] = cnt
             # set border
-            ws3['G' + str(rn1)].border = thin_border
-            ws3['H' + str(rn1)].border = thin_border
-            rn1 += 1
+            ws3[positionChar + '2'].border = thin_border
+            ws3[positionChar + '3'].border = thin_border
+
+            startCharNo1 += 1
 
         #코스별 연령
         rn1 = 3
@@ -449,6 +506,7 @@ def statistics_excel(request, date):
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
 
+
 def certificate_excel(request, courseId):
 
     print 'courseId', courseId
@@ -473,10 +531,10 @@ def certificate_excel(request, courseId):
     pb = ''
     ov = ''
 
-    client = MongoClient('192.168.44.11', 27017)
+    client = MongoClient(database_id, 27017)
     db = client.edxapp
 
-    wb = load_workbook('/home/project/management/static/excel/basic_cert.xlsx')
+    wb = load_workbook(EXCEL_PATH + '/basic_cert.xlsx')
 
     for c in certificates:
         cid = str(c[2])
@@ -519,9 +577,6 @@ def certificate_excel(request, courseId):
                      top=Side(style='thin'),
                      bottom=Side(style='thin'))
 
-    dic_univ = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
-                'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
-
     # dic_status = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
     #             'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
 
@@ -550,7 +605,7 @@ def certificate_excel(request, courseId):
         row += 1
 
     saveName = 'K-Mooc_certificate_' + str(cid)  + '_' + str(year) + str(month) + str(day) +'.xlsx'
-    savePath = '/home/project/management/static/excel/' + saveName
+    savePath = '/Users/redukyo/workspace/management3/static/excel/' + saveName
 
     wb.save(savePath)
 
@@ -558,291 +613,296 @@ def certificate_excel(request, courseId):
 
 def statistics_excel3(request, date):
 
-    member_statistics = statistics_query.member_statistics(date)
-    country_statistics = statistics_query.country_statistics(date)
-
-    wb = load_workbook('/home/project/management/static/excel/basic_month.xlsx')
-    thin_border = Border(left=Side(style='thin'),
-                     right=Side(style='thin'),
-                     top=Side(style='thin'),
-                     bottom=Side(style='thin'))
-    
-    COUNTRIES = {
-        "AF": "Afghanistan",
-        "AX": "Åland Islands",
-        "AL": "Albania",
-        "DZ": "Algeria",
-        "AS": "American Samoa",
-        "AD": "Andorra",
-        "AO": "Angola",
-        "AI": "Anguilla",
-        "AQ": "Antarctica",
-        "AG": "Antigua and Barbuda",
-        "AR": "Argentina",
-        "AM": "Armenia",
-        "AW": "Aruba",
-        "AU": "Australia",
-        "AT": "Austria",
-        "AZ": "Azerbaijan",
-        "BS": "Bahamas",
-        "BH": "Bahrain",
-        "BD": "Bangladesh",
-        "BB": "Barbados",
-        "BY": "Belarus",
-        "BE": "Belgium",
-        "BZ": "Belize",
-        "BJ": "Benin",
-        "BM": "Bermuda",
-        "BT": "Bhutan",
-        "BO": "Bolivia (Plurinational State of)",
-        "BQ": "Bonaire, Sint Eustatius and Saba",
-        "BA": "Bosnia and Herzegovina",
-        "BW": "Botswana",
-        "BV": "Bouvet Island",
-        "BR": "Brazil",
-        "IO": "British Indian Ocean Territory",
-        "BN": "Brunei Darussalam",
-        "BG": "Bulgaria",
-        "BF": "Burkina Faso",
-        "BI": "Burundi",
-        "CV": "Cabo Verde",
-        "KH": "Cambodia",
-        "CM": "Cameroon",
-        "CA": "Canada",
-        "KY": "Cayman Islands",
-        "CF": "Central African Republic",
-        "TD": "Chad",
-        "CL": "Chile",
-        "CN": "China",
-        "CX": "Christmas Island",
-        "CC": "Cocos (Keeling) Islands",
-        "CO": "Colombia",
-        "KM": "Comoros",
-        "CD": "Congo (the Democratic Republic of the)",
-        "CG": "Congo",
-        "CK": "Cook Islands",
-        "CR": "Costa Rica",
-        "CI": "Côte d'Ivoire",
-        "HR": "Croatia",
-        "CU": "Cuba",
-        "CW": "Curaçao",
-        "CY": "Cyprus",
-        "CZ": "Czech Republic",
-        "DK": "Denmark",
-        "DJ": "Djibouti",
-        "DM": "Dominica",
-        "DO": "Dominican Republic",
-        "EC": "Ecuador",
-        "EG": "Egypt",
-        "SV": "El Salvador",
-        "GQ": "Equatorial Guinea",
-        "ER": "Eritrea",
-        "EE": "Estonia",
-        "ET": "Ethiopia",
-        "FK": "Falkland Islands  [Malvinas]",
-        "FO": "Faroe Islands",
-        "FJ": "Fiji",
-        "FI": "Finland",
-        "FR": "France",
-        "GF": "French Guiana",
-        "PF": "French Polynesia",
-        "TF": "French Southern Territories",
-        "GA": "Gabon",
-        "GM": "Gambia",
-        "GE": "Georgia",
-        "DE": "Germany",
-        "GH": "Ghana",
-        "GI": "Gibraltar",
-        "GR": "Greece",
-        "GL": "Greenland",
-        "GD": "Grenada",
-        "GP": "Guadeloupe",
-        "GU": "Guam",
-        "GT": "Guatemala",
-        "GG": "Guernsey",
-        "GN": "Guinea",
-        "GW": "Guinea-Bissau",
-        "GY": "Guyana",
-        "HT": "Haiti",
-        "HM": "Heard Island and McDonald Islands",
-        "VA": "Holy See",
-        "HN": "Honduras",
-        "HK": "Hong Kong",
-        "HU": "Hungary",
-        "IS": "Iceland",
-        "IN": "India",
-        "ID": "Indonesia",
-        "IR": "Iran (Islamic Republic of)",
-        "IQ": "Iraq",
-        "IE": "Ireland",
-        "IM": "Isle of Man",
-        "IL": "Israel",
-        "IT": "Italy",
-        "JM": "Jamaica",
-        "JP": "Japan",
-        "JE": "Jersey",
-        "JO": "Jordan",
-        "KZ": "Kazakhstan",
-        "KE": "Kenya",
-        "KI": "Kiribati",
-        "KP": "Korea (the Democratic People's Republic of)",
-        "KR": "Korea (the Republic of)",
-        "KW": "Kuwait",
-        "KG": "Kyrgyzstan",
-        "LA": "Lao People's Democratic Republic",
-        "LV": "Latvia",
-        "LB": "Lebanon",
-        "LS": "Lesotho",
-        "LR": "Liberia",
-        "LY": "Libya",
-        "LI": "Liechtenstein",
-        "LT": "Lithuania",
-        "LU": "Luxembourg",
-        "MO": "Macao",
-        "MK": "Macedonia (the former Yugoslav Republic of)",
-        "MG": "Madagascar",
-        "MW": "Malawi",
-        "MY": "Malaysia",
-        "MV": "Maldives",
-        "ML": "Mali",
-        "MT": "Malta",
-        "MH": "Marshall Islands",
-        "MQ": "Martinique",
-        "MR": "Mauritania",
-        "MU": "Mauritius",
-        "YT": "Mayotte",
-        "MX": "Mexico",
-        "FM": "Micronesia (Federated States of)",
-        "MD": "Moldova (the Republic of)",
-        "MC": "Monaco",
-        "MN": "Mongolia",
-        "ME": "Montenegro",
-        "MS": "Montserrat",
-        "MA": "Morocco",
-        "MZ": "Mozambique",
-        "MM": "Myanmar",
-        "NA": "Namibia",
-        "NR": "Nauru",
-        "NP": "Nepal",
-        "NL": "Netherlands",
-        "NC": "New Caledonia",
-        "NZ": "New Zealand",
-        "NI": "Nicaragua",
-        "NE": "Niger",
-        "NG": "Nigeria",
-        "NU": "Niue",
-        "NF": "Norfolk Island",
-        "MP": "Northern Mariana Islands",
-        "NO": "Norway",
-        "OM": "Oman",
-        "PK": "Pakistan",
-        "PW": "Palau",
-        "PS": "Palestine, State of",
-        "PA": "Panama",
-        "PG": "Papua New Guinea",
-        "PY": "Paraguay",
-        "PE": "Peru",
-        "PH": "Philippines",
-        "PN": "Pitcairn",
-        "PL": "Poland",
-        "PT": "Portugal",
-        "PR": "Puerto Rico",
-        "QA": "Qatar",
-        "RE": "Réunion",
-        "RO": "Romania",
-        "RU": "Russian Federation",
-        "RW": "Rwanda",
-        "BL": "Saint Barthélemy",
-        "SH": "Saint Helena, Ascension and Tristan da Cunha",
-        "KN": "Saint Kitts and Nevis",
-        "LC": "Saint Lucia",
-        "MF": "Saint Martin (French part)",
-        "PM": "Saint Pierre and Miquelon",
-        "VC": "Saint Vincent and the Grenadines",
-        "WS": "Samoa",
-        "SM": "San Marino",
-        "ST": "Sao Tome and Principe",
-        "SA": "Saudi Arabia",
-        "SN": "Senegal",
-        "RS": "Serbia",
-        "SC": "Seychelles",
-        "SL": "Sierra Leone",
-        "SG": "Singapore",
-        "SX": "Sint Maarten (Dutch part)",
-        "SK": "Slovakia",
-        "SI": "Slovenia",
-        "SB": "Solomon Islands",
-        "SO": "Somalia",
-        "ZA": "South Africa",
-        "GS": "South Georgia and the South Sandwich Islands",
-        "SS": "South Sudan",
-        "ES": "Spain",
-        "LK": "Sri Lanka",
-        "SD": "Sudan",
-        "SR": "Suriname",
-        "SJ": "Svalbard and Jan Mayen",
-        "SZ": "Swaziland",
-        "SE": "Sweden",
-        "CH": "Switzerland",
-        "SY": "Syrian Arab Republic",
-        "TW": "Taiwan (Province of China)",
-        "TJ": "Tajikistan",
-        "TZ": "Tanzania, United Republic of",
-        "TH": "Thailand",
-        "TL": "Timor-Leste",
-        "TG": "Togo",
-        "TK": "Tokelau",
-        "TO": "Tonga",
-        "TT": "Trinidad and Tobago",
-        "TN": "Tunisia",
-        "TR": "Turkey",
-        "TM": "Turkmenistan",
-        "TC": "Turks and Caicos Islands",
-        "TV": "Tuvalu",
-        "UG": "Uganda",
-        "UA": "Ukraine",
-        "AE": "United Arab Emirates",
-        "GB": "United Kingdom of Great Britain and Northern Ireland",
-        "UM": "United States Minor Outlying Islands",
-        "US": "United States of America",
-        "UY": "Uruguay",
-        "UZ": "Uzbekistan",
-        "VU": "Vanuatu",
-        "VE": "Venezuela (Bolivarian Republic of)",
-        "VN": "Viet Nam",
-        "VG": "Virgin Islands (British)",
-        "VI": "Virgin Islands (U.S.)",
-        "WF": "Wallis and Futuna",
-        "EH": "Western Sahara",
-        "YE": "Yemen",
-        "ZM": "Zambia",
-        "ZW": "Zimbabwe",
-    }
-
-    ws1 = wb['Sheet1']
-
-    row = 2
-    for c in member_statistics:
-        ws1['B' + str(row+1)] = c[0]
-        ws1['B' + str(row+2)] = c[1]
-        ws1['B' + str(row+3)] = c[2]
-
-    row = 8
-    for c in country_statistics:
-
-        ws1['A' + str(row)] = c[0]
-        ws1['B' + str(row)] = c[1]
-        ws1['C' + str(row)] = COUNTRIES[c[0]]
-
-        ws1['A' + str(row)].border = thin_border
-        ws1['B' + str(row)].border = thin_border
-        ws1['C' + str(row)].border = thin_border
-        row += 1
-
     saveName = 'K-MoocMonth'+date+'.xlsx'
-    savePath = '/home/project/management/static/excel/' + saveName
+    savePath = EXCEL_PATH + saveName
 
-    wb.save(savePath)
+    if os.path.isfile(savePath) and not debug:
+        print '@@@ statistics_excel3 make pass'
+        pass
+    else:
+        print '@@@ statistics_excel3 make working'
+        member_statistics = statistics_query.member_statistics(date)
+        country_statistics = statistics_query.country_statistics(date)
+
+        wb = load_workbook(EXCEL_PATH + 'basic_month.xlsx')
+        thin_border = Border(left=Side(style='thin'),
+                         right=Side(style='thin'),
+                         top=Side(style='thin'),
+                         bottom=Side(style='thin'))
+
+        COUNTRIES = {
+            "AF": "Afghanistan",
+            "AX": "Åland Islands",
+            "AL": "Albania",
+            "DZ": "Algeria",
+            "AS": "American Samoa",
+            "AD": "Andorra",
+            "AO": "Angola",
+            "AI": "Anguilla",
+            "AQ": "Antarctica",
+            "AG": "Antigua and Barbuda",
+            "AR": "Argentina",
+            "AM": "Armenia",
+            "AW": "Aruba",
+            "AU": "Australia",
+            "AT": "Austria",
+            "AZ": "Azerbaijan",
+            "BS": "Bahamas",
+            "BH": "Bahrain",
+            "BD": "Bangladesh",
+            "BB": "Barbados",
+            "BY": "Belarus",
+            "BE": "Belgium",
+            "BZ": "Belize",
+            "BJ": "Benin",
+            "BM": "Bermuda",
+            "BT": "Bhutan",
+            "BO": "Bolivia (Plurinational State of)",
+            "BQ": "Bonaire, Sint Eustatius and Saba",
+            "BA": "Bosnia and Herzegovina",
+            "BW": "Botswana",
+            "BV": "Bouvet Island",
+            "BR": "Brazil",
+            "IO": "British Indian Ocean Territory",
+            "BN": "Brunei Darussalam",
+            "BG": "Bulgaria",
+            "BF": "Burkina Faso",
+            "BI": "Burundi",
+            "CV": "Cabo Verde",
+            "KH": "Cambodia",
+            "CM": "Cameroon",
+            "CA": "Canada",
+            "KY": "Cayman Islands",
+            "CF": "Central African Republic",
+            "TD": "Chad",
+            "CL": "Chile",
+            "CN": "China",
+            "CX": "Christmas Island",
+            "CC": "Cocos (Keeling) Islands",
+            "CO": "Colombia",
+            "KM": "Comoros",
+            "CD": "Congo (the Democratic Republic of the)",
+            "CG": "Congo",
+            "CK": "Cook Islands",
+            "CR": "Costa Rica",
+            "CI": "Côte d'Ivoire",
+            "HR": "Croatia",
+            "CU": "Cuba",
+            "CW": "Curaçao",
+            "CY": "Cyprus",
+            "CZ": "Czech Republic",
+            "DK": "Denmark",
+            "DJ": "Djibouti",
+            "DM": "Dominica",
+            "DO": "Dominican Republic",
+            "EC": "Ecuador",
+            "EG": "Egypt",
+            "SV": "El Salvador",
+            "GQ": "Equatorial Guinea",
+            "ER": "Eritrea",
+            "EE": "Estonia",
+            "ET": "Ethiopia",
+            "FK": "Falkland Islands  [Malvinas]",
+            "FO": "Faroe Islands",
+            "FJ": "Fiji",
+            "FI": "Finland",
+            "FR": "France",
+            "GF": "French Guiana",
+            "PF": "French Polynesia",
+            "TF": "French Southern Territories",
+            "GA": "Gabon",
+            "GM": "Gambia",
+            "GE": "Georgia",
+            "DE": "Germany",
+            "GH": "Ghana",
+            "GI": "Gibraltar",
+            "GR": "Greece",
+            "GL": "Greenland",
+            "GD": "Grenada",
+            "GP": "Guadeloupe",
+            "GU": "Guam",
+            "GT": "Guatemala",
+            "GG": "Guernsey",
+            "GN": "Guinea",
+            "GW": "Guinea-Bissau",
+            "GY": "Guyana",
+            "HT": "Haiti",
+            "HM": "Heard Island and McDonald Islands",
+            "VA": "Holy See",
+            "HN": "Honduras",
+            "HK": "Hong Kong",
+            "HU": "Hungary",
+            "IS": "Iceland",
+            "IN": "India",
+            "ID": "Indonesia",
+            "IR": "Iran (Islamic Republic of)",
+            "IQ": "Iraq",
+            "IE": "Ireland",
+            "IM": "Isle of Man",
+            "IL": "Israel",
+            "IT": "Italy",
+            "JM": "Jamaica",
+            "JP": "Japan",
+            "JE": "Jersey",
+            "JO": "Jordan",
+            "KZ": "Kazakhstan",
+            "KE": "Kenya",
+            "KI": "Kiribati",
+            "KP": "Korea (the Democratic People's Republic of)",
+            "KR": "Korea (the Republic of)",
+            "KW": "Kuwait",
+            "KG": "Kyrgyzstan",
+            "LA": "Lao People's Democratic Republic",
+            "LV": "Latvia",
+            "LB": "Lebanon",
+            "LS": "Lesotho",
+            "LR": "Liberia",
+            "LY": "Libya",
+            "LI": "Liechtenstein",
+            "LT": "Lithuania",
+            "LU": "Luxembourg",
+            "MO": "Macao",
+            "MK": "Macedonia (the former Yugoslav Republic of)",
+            "MG": "Madagascar",
+            "MW": "Malawi",
+            "MY": "Malaysia",
+            "MV": "Maldives",
+            "ML": "Mali",
+            "MT": "Malta",
+            "MH": "Marshall Islands",
+            "MQ": "Martinique",
+            "MR": "Mauritania",
+            "MU": "Mauritius",
+            "YT": "Mayotte",
+            "MX": "Mexico",
+            "FM": "Micronesia (Federated States of)",
+            "MD": "Moldova (the Republic of)",
+            "MC": "Monaco",
+            "MN": "Mongolia",
+            "ME": "Montenegro",
+            "MS": "Montserrat",
+            "MA": "Morocco",
+            "MZ": "Mozambique",
+            "MM": "Myanmar",
+            "NA": "Namibia",
+            "NR": "Nauru",
+            "NP": "Nepal",
+            "NL": "Netherlands",
+            "NC": "New Caledonia",
+            "NZ": "New Zealand",
+            "NI": "Nicaragua",
+            "NE": "Niger",
+            "NG": "Nigeria",
+            "NU": "Niue",
+            "NF": "Norfolk Island",
+            "MP": "Northern Mariana Islands",
+            "NO": "Norway",
+            "OM": "Oman",
+            "PK": "Pakistan",
+            "PW": "Palau",
+            "PS": "Palestine, State of",
+            "PA": "Panama",
+            "PG": "Papua New Guinea",
+            "PY": "Paraguay",
+            "PE": "Peru",
+            "PH": "Philippines",
+            "PN": "Pitcairn",
+            "PL": "Poland",
+            "PT": "Portugal",
+            "PR": "Puerto Rico",
+            "QA": "Qatar",
+            "RE": "Réunion",
+            "RO": "Romania",
+            "RU": "Russian Federation",
+            "RW": "Rwanda",
+            "BL": "Saint Barthélemy",
+            "SH": "Saint Helena, Ascension and Tristan da Cunha",
+            "KN": "Saint Kitts and Nevis",
+            "LC": "Saint Lucia",
+            "MF": "Saint Martin (French part)",
+            "PM": "Saint Pierre and Miquelon",
+            "VC": "Saint Vincent and the Grenadines",
+            "WS": "Samoa",
+            "SM": "San Marino",
+            "ST": "Sao Tome and Principe",
+            "SA": "Saudi Arabia",
+            "SN": "Senegal",
+            "RS": "Serbia",
+            "SC": "Seychelles",
+            "SL": "Sierra Leone",
+            "SG": "Singapore",
+            "SX": "Sint Maarten (Dutch part)",
+            "SK": "Slovakia",
+            "SI": "Slovenia",
+            "SB": "Solomon Islands",
+            "SO": "Somalia",
+            "ZA": "South Africa",
+            "GS": "South Georgia and the South Sandwich Islands",
+            "SS": "South Sudan",
+            "ES": "Spain",
+            "LK": "Sri Lanka",
+            "SD": "Sudan",
+            "SR": "Suriname",
+            "SJ": "Svalbard and Jan Mayen",
+            "SZ": "Swaziland",
+            "SE": "Sweden",
+            "CH": "Switzerland",
+            "SY": "Syrian Arab Republic",
+            "TW": "Taiwan (Province of China)",
+            "TJ": "Tajikistan",
+            "TZ": "Tanzania, United Republic of",
+            "TH": "Thailand",
+            "TL": "Timor-Leste",
+            "TG": "Togo",
+            "TK": "Tokelau",
+            "TO": "Tonga",
+            "TT": "Trinidad and Tobago",
+            "TN": "Tunisia",
+            "TR": "Turkey",
+            "TM": "Turkmenistan",
+            "TC": "Turks and Caicos Islands",
+            "TV": "Tuvalu",
+            "UG": "Uganda",
+            "UA": "Ukraine",
+            "AE": "United Arab Emirates",
+            "GB": "United Kingdom of Great Britain and Northern Ireland",
+            "UM": "United States Minor Outlying Islands",
+            "US": "United States of America",
+            "UY": "Uruguay",
+            "UZ": "Uzbekistan",
+            "VU": "Vanuatu",
+            "VE": "Venezuela (Bolivarian Republic of)",
+            "VN": "Viet Nam",
+            "VG": "Virgin Islands (British)",
+            "VI": "Virgin Islands (U.S.)",
+            "WF": "Wallis and Futuna",
+            "EH": "Western Sahara",
+            "YE": "Yemen",
+            "ZM": "Zambia",
+            "ZW": "Zimbabwe",
+        }
+
+        ws1 = wb['Sheet1']
+
+        row = 2
+        for c in member_statistics:
+            ws1['B' + str(row+1)] = c[0]
+            ws1['B' + str(row+2)] = c[1]
+            ws1['B' + str(row+3)] = c[2]
+
+        row = 8
+        for c in country_statistics:
+
+            ws1['A' + str(row)] = c[0]
+            ws1['B' + str(row)] = c[1]
+            ws1['C' + str(row)] = COUNTRIES[c[0]]
+
+            ws1['A' + str(row)].border = thin_border
+            ws1['B' + str(row)].border = thin_border
+            ws1['C' + str(row)].border = thin_border
+            row += 1
+
+        wb.save(savePath)
 
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
