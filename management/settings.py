@@ -146,5 +146,6 @@ dic_univ = {'KHUk':u'경희대학교',
                 'YeungnamUnivK':u'영남대학교',
                 'KonYangK':u'건양대학교',
                 'DKUK':u'단국대학교',
+                'CUKk':u'가톨릭대학교',
                 '':u''
                 }
