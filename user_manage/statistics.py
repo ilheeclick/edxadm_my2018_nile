@@ -11,6 +11,7 @@ import os
 from operator import itemgetter
 import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
+from openpyxl.styles import Alignment
 
 
 # 일일통계
@@ -274,12 +275,18 @@ def statistics_excel(request, date):
 
             print 'positionChar:', positionChar
 
+
+
             ws2[positionChar + '2'] = orgName
             ws2[positionChar + '3'] = cnt
+
+            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
 
             # set border
             ws2[positionChar + '2'].border = thin_border
             ws2[positionChar + '3'].border = thin_border
+
+
 
             # print cId, cName
             # H 열부터 횡으로 증가. Z 까지 갔을경우 AA 로 다시 시작
@@ -379,6 +386,9 @@ def statistics_excel(request, date):
 
             ws3[positionChar + '2'] = orgName
             ws3[positionChar + '3'] = cnt
+
+            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
+
             # set border
             ws3[positionChar + '2'].border = thin_border
             ws3[positionChar + '3'].border = thin_border
