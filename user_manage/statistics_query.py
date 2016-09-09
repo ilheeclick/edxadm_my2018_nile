@@ -23,7 +23,7 @@ def user_join_new(date):
     cur = connection.cursor()
     cur.execute('''Select count(*)
                 FROM auth_userprofile a, auth_user b
-                WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format(b.date_joined,'%Y%m%d') ="'''+ date +'''";''')
+                WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') ="'''+ date +'''";''')
     row = cur.fetchone()[0]
     cur.close()
 
@@ -820,8 +820,9 @@ def member_statistics(date):
         SELECT sum(if(a.is_active = '1', 1, 0)) active,
                sum(if(a.is_active = '1', 0, 1)) unactive,
                count(*)
-          FROM auth_user a
-         WHERE date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
+          FROM auth_user a, auth_userprofile b
+         WHERE a.id = b.user_id
+           and date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
     ''')
     row = cur.fetchall()
     cur.close()
