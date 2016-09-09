@@ -85,8 +85,8 @@ def course_count_new(date):
                           and a.is_active = 1
                           and not (b.email) like '%delete_%'
                           and lower(a.course_id) not like '%test%'
-                          AND a.course_id NOT LIKE '%DEMO%'
-                          AND a.course_id NOT LIKE '%KMOOC%';''')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%';''')
     row = cur.fetchone()[0]
     cur.close()
 
@@ -113,8 +113,8 @@ def course_count_total(date):
                            and a.is_active = 1
                            and not (b.email) like '%delete_%'
                            and lower(a.course_id) not like '%test%'
-                           AND a.course_id NOT LIKE '%DEMO%'
-                           AND a.course_id NOT LIKE '%KMOOC%';''')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%';''')
     row = cur.fetchone()[0]
     cur.close()
 
@@ -508,8 +508,8 @@ def course_user(date):
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
                and lower(a.course_id) not like '%test%'
-               AND a.course_id NOT LIKE '%DEMO%'
-               AND a.course_id NOT LIKE '%KMOOC%')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%')
                a
                LEFT JOIN
                (SELECT course_id, cnt
@@ -520,7 +520,8 @@ def course_user(date):
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
-                               AND a.course_id NOT LIKE '%DEMOk%'
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%'
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;'''
     # print query
@@ -543,8 +544,8 @@ def course_user_total(date):
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
                and lower(a.course_id) not like '%test%'
-               AND a.course_id NOT LIKE '%DEMO%'
-               AND a.course_id NOT LIKE '%KMOOC%')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%')
                            a
                            LEFT JOIN
                            (SELECT course_id, cnt
@@ -555,7 +556,8 @@ def course_user_total(date):
                                            AND a.is_active = 1
                                            AND NOT (b.email) LIKE '%delete_%'
                                            and lower(a.course_id) not like '%test%'
-                                           AND a.course_id NOT LIKE '%DEMOk%'
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%'
                                     GROUP BY a.course_id) aa) b
                               ON a.course_id = b.course_id;
                     ''')
@@ -587,8 +589,8 @@ def course_age(date):
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
                and lower(a.course_id) not like '%test%'
-               AND a.course_id NOT LIKE '%DEMO%'
-               AND a.course_id NOT LIKE '%KMOOC%')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%')
                a
                LEFT JOIN
                (SELECT course_id,
@@ -604,7 +606,8 @@ def course_age(date):
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
-                               AND a.course_id NOT LIKE '%DEMOk%') aa) b
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id
         ORDER BY a.course_id;
@@ -647,8 +650,8 @@ def course_edu(date):
                student_courseaccessrole b
          WHERE     a.course_id = b.course_id
                and lower(a.course_id) not like '%test%'
-               AND a.course_id NOT LIKE '%DEMO%'
-               AND a.course_id NOT LIKE '%KMOOC%')
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%')
                a
                LEFT JOIN
                (SELECT course_id, level_of_education
@@ -663,6 +666,8 @@ def course_edu(date):
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%'
                                AND a.course_id NOT LIKE '%DEMOk%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id
@@ -698,10 +703,9 @@ def course_univ(date):
                   FROM course_structures_coursestructure a, student_courseaccessrole b
                  WHERE 1=1
                    and a.course_id = b.course_id
-                   and a.course_id NOT LIKE '%DEMOk%'
                        and lower(a.course_id) not like '%test%'
-                       AND a.course_id NOT LIKE '%KMOOC%'
-                       AND a.course_id NOT LIKE '%edX%'
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%'
                 GROUP BY a.course_id)  a
                LEFT JOIN
                (SELECT substring(
@@ -715,7 +719,8 @@ def course_univ(date):
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
                        and lower(a.course_id) not like '%test%'
-                       AND a.course_id NOT LIKE '%DEMOk%') b
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
         GROUP BY a.org
         ORDER BY a.org;
@@ -739,8 +744,8 @@ def course_univ_total(date):
                    and a.course_id = b.course_id
                    and a.course_id NOT LIKE '%DEMOk%'
                    and lower(a.course_id) not like '%test%'
-                       AND a.course_id NOT LIKE '%KMOOC%'
-                       AND a.course_id NOT LIKE '%edX%'
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%'
                 GROUP BY a.course_id)  a
                LEFT JOIN
                (SELECT substring(
@@ -754,7 +759,8 @@ def course_univ_total(date):
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
                        and lower(a.course_id) not like '%test%'
-                       AND a.course_id NOT LIKE '%DEMOk%') b
+                          AND lower(a.course_id) NOT LIKE '%demo%'
+                          AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
         GROUP BY a.org
         ORDER BY a.org;

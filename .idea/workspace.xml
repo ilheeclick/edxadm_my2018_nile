@@ -86,49 +86,51 @@
       <file leaf-file-name="statistics_query.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3707483">
-              <caret line="810" column="24" selection-start-line="810" selection-start-column="24" selection-end-line="810" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.41836736">
+              <caret line="550" column="49" selection-start-line="550" selection-start-column="49" selection-end-line="550" selection-end-column="49" />
               <folding>
                 <element signature="e#25#42#0" expanded="true" />
-                <marker date="1473383315000" expanded="true" signature="417:656" placeholder="Select count..auth_userprofile..." />
-                <marker date="1473383315000" expanded="true" signature="815:1108" placeholder="Select count..auth_userprofile..." />
-                <marker date="1473383315000" expanded="true" signature="1616:2021" placeholder="select count..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="2646:3189" placeholder="select count..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="3927:4500" placeholder="select count..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="18716:20999" placeholder="SELECT b.aa,..@rn..." />
-                <marker date="1473383315000" expanded="true" signature="18941:19055" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1473383315000" expanded="true" signature="19008:19023" placeholder="SELECT @rn :..." />
-                <marker date="1473383315000" expanded="true" signature="19114:20944" placeholder="SELECT age, ..age..." />
-                <marker date="1473383315000" expanded="true" signature="19781:20915" placeholder="SELECT CASE ..date_format..." />
-                <marker date="1473383315000" expanded="true" signature="20362:20883" placeholder="SELECT (date..auth_userprofile..." />
-                <marker date="1473383315000" expanded="true" signature="23523:24771" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="23725:24046" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="24106:24721" placeholder="SELECT cours..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="24152:24717" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="24999:26449" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="25223:25544" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="25640:26387" placeholder="SELECT cours..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="25698:26383" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="26624:28676" placeholder="SELECT subst..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="27304:27625" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="27685:28568" placeholder="SELECT cours..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="27812:28564" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="28836:31230" placeholder="SELECT subst..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="29919:30240" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="30300:31122" placeholder="SELECT cours..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="30361:31118" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="31780:33303" placeholder="SELECT a.org..substring..." />
-                <marker date="1473383315000" expanded="true" signature="31827:32515" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="32561:33219" placeholder="SELECT subst..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="33458:34998" placeholder="SELECT a.org..substring..." />
-                <marker date="1473383315000" expanded="true" signature="33505:34189" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1473383315000" expanded="true" signature="34235:34914" placeholder="SELECT subst..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="35140:35568" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1473383315000" expanded="true" signature="35168:35315" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1473383315000" expanded="true" signature="35329:35439" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1473383315000" expanded="true" signature="35724:36634" placeholder="SELECT subst..certificates_generatedcertificate..." />
-                <marker date="1473383315000" expanded="true" signature="36802:37113" placeholder="SELECT sum(i..auth_user..." />
-                <marker date="1473383315000" expanded="true" signature="37281:37631" placeholder="SELECT b.cou..auth_user..." />
+                <marker date="1473409104000" expanded="true" signature="417:656" placeholder="Select count..auth_userprofile..." />
+                <marker date="1473409104000" expanded="true" signature="815:1108" placeholder="Select count..auth_userprofile..." />
+                <marker date="1473409104000" expanded="true" signature="1616:2021" placeholder="select count..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="2646:3202" placeholder="select count..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="3940:4524" placeholder="select count..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="18740:21023" placeholder="SELECT b.aa,..@rn..." />
+                <marker date="1473409104000" expanded="true" signature="18965:19079" placeholder="SELECT (@rn ..auth_user..." />
+                <marker date="1473409104000" expanded="true" signature="19032:19047" placeholder="SELECT @rn :..." />
+                <marker date="1473409104000" expanded="true" signature="19138:20968" placeholder="SELECT age, ..age..." />
+                <marker date="1473409104000" expanded="true" signature="19805:20939" placeholder="SELECT CASE ..date_format..." />
+                <marker date="1473409104000" expanded="true" signature="20386:20907" placeholder="SELECT (date..auth_userprofile..." />
+                <marker date="1473409104000" expanded="true" signature="23547:24898" placeholder="SELECT a.cou..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="23749:24105" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="24165:24848" placeholder="SELECT cours..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="24211:24844" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="25126:26667" placeholder="SELECT a.cou..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="25350:25706" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="25802:26605" placeholder="SELECT cours..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="25860:26601" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="26842:28997" placeholder="SELECT subst..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="27522:27878" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="27938:28889" placeholder="SELECT cours..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="28065:28885" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="29157:31720" placeholder="SELECT subst..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="30240:30596" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="30656:31612" placeholder="SELECT cours..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="30717:31608" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="32270:33835" placeholder="SELECT a.org..substring..." />
+                <marker date="1473409104000" expanded="true" signature="32317:32971" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="33017:33577" placeholder="SELECT subst..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="33017:33751" placeholder="SELECT subst..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="33990:35626" placeholder="SELECT a.org..substring..." />
+                <marker date="1473409104000" expanded="true" signature="34037:34741" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+                <marker date="1473409104000" expanded="true" signature="34787:35368" placeholder="SELECT subst..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="34787:35542" placeholder="SELECT subst..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="35768:36196" placeholder="SELECT a.cou..course_id..." />
+                <marker date="1473409104000" expanded="true" signature="35796:35943" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1473409104000" expanded="true" signature="35957:36067" placeholder="SELECT a.cou..student_courseenrollment..." />
+                <marker date="1473409104000" expanded="true" signature="36352:37262" placeholder="SELECT subst..certificates_generatedcertificate..." />
+                <marker date="1473409104000" expanded="true" signature="37430:37741" placeholder="SELECT sum(i..auth_user..." />
+                <marker date="1473409104000" expanded="true" signature="37909:38259" placeholder="SELECT b.cou..auth_user..." />
               </folding>
             </state>
           </provider>
@@ -988,49 +990,51 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/user_manage/statistics_query.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3707483">
-          <caret line="810" column="24" selection-start-line="810" selection-start-column="24" selection-end-line="810" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.41836736">
+          <caret line="550" column="49" selection-start-line="550" selection-start-column="49" selection-end-line="550" selection-end-column="49" />
           <folding>
             <element signature="e#25#42#0" expanded="true" />
-            <marker date="1473383315000" expanded="true" signature="417:656" placeholder="Select count..auth_userprofile..." />
-            <marker date="1473383315000" expanded="true" signature="815:1108" placeholder="Select count..auth_userprofile..." />
-            <marker date="1473383315000" expanded="true" signature="1616:2021" placeholder="select count..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="2646:3189" placeholder="select count..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="3927:4500" placeholder="select count..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="18716:20999" placeholder="SELECT b.aa,..@rn..." />
-            <marker date="1473383315000" expanded="true" signature="18941:19055" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1473383315000" expanded="true" signature="19008:19023" placeholder="SELECT @rn :..." />
-            <marker date="1473383315000" expanded="true" signature="19114:20944" placeholder="SELECT age, ..age..." />
-            <marker date="1473383315000" expanded="true" signature="19781:20915" placeholder="SELECT CASE ..date_format..." />
-            <marker date="1473383315000" expanded="true" signature="20362:20883" placeholder="SELECT (date..auth_userprofile..." />
-            <marker date="1473383315000" expanded="true" signature="23523:24771" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="23725:24046" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="24106:24721" placeholder="SELECT cours..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="24152:24717" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="24999:26449" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="25223:25544" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="25640:26387" placeholder="SELECT cours..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="25698:26383" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="26624:28676" placeholder="SELECT subst..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="27304:27625" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="27685:28568" placeholder="SELECT cours..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="27812:28564" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="28836:31230" placeholder="SELECT subst..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="29919:30240" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="30300:31122" placeholder="SELECT cours..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="30361:31118" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="31780:33303" placeholder="SELECT a.org..substring..." />
-            <marker date="1473383315000" expanded="true" signature="31827:32515" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="32561:33219" placeholder="SELECT subst..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="33458:34998" placeholder="SELECT a.org..substring..." />
-            <marker date="1473383315000" expanded="true" signature="33505:34189" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1473383315000" expanded="true" signature="34235:34914" placeholder="SELECT subst..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="35140:35568" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1473383315000" expanded="true" signature="35168:35315" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1473383315000" expanded="true" signature="35329:35439" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1473383315000" expanded="true" signature="35724:36634" placeholder="SELECT subst..certificates_generatedcertificate..." />
-            <marker date="1473383315000" expanded="true" signature="36802:37113" placeholder="SELECT sum(i..auth_user..." />
-            <marker date="1473383315000" expanded="true" signature="37281:37631" placeholder="SELECT b.cou..auth_user..." />
+            <marker date="1473409104000" expanded="true" signature="417:656" placeholder="Select count..auth_userprofile..." />
+            <marker date="1473409104000" expanded="true" signature="815:1108" placeholder="Select count..auth_userprofile..." />
+            <marker date="1473409104000" expanded="true" signature="1616:2021" placeholder="select count..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="2646:3202" placeholder="select count..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="3940:4524" placeholder="select count..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="18740:21023" placeholder="SELECT b.aa,..@rn..." />
+            <marker date="1473409104000" expanded="true" signature="18965:19079" placeholder="SELECT (@rn ..auth_user..." />
+            <marker date="1473409104000" expanded="true" signature="19032:19047" placeholder="SELECT @rn :..." />
+            <marker date="1473409104000" expanded="true" signature="19138:20968" placeholder="SELECT age, ..age..." />
+            <marker date="1473409104000" expanded="true" signature="19805:20939" placeholder="SELECT CASE ..date_format..." />
+            <marker date="1473409104000" expanded="true" signature="20386:20907" placeholder="SELECT (date..auth_userprofile..." />
+            <marker date="1473409104000" expanded="true" signature="23547:24898" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="23749:24105" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="24165:24848" placeholder="SELECT cours..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="24211:24844" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="25126:26667" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="25350:25706" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="25802:26605" placeholder="SELECT cours..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="25860:26601" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="26842:28997" placeholder="SELECT subst..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="27522:27878" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="27938:28889" placeholder="SELECT cours..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="28065:28885" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="29157:31720" placeholder="SELECT subst..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="30240:30596" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="30656:31612" placeholder="SELECT cours..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="30717:31608" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="32270:33835" placeholder="SELECT a.org..substring..." />
+            <marker date="1473409104000" expanded="true" signature="32317:32971" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="33017:33577" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="33017:33751" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="33990:35626" placeholder="SELECT a.org..substring..." />
+            <marker date="1473409104000" expanded="true" signature="34037:34741" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1473409104000" expanded="true" signature="34787:35368" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="34787:35542" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="35768:36196" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1473409104000" expanded="true" signature="35796:35943" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1473409104000" expanded="true" signature="35957:36067" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1473409104000" expanded="true" signature="36352:37262" placeholder="SELECT subst..certificates_generatedcertificate..." />
+            <marker date="1473409104000" expanded="true" signature="37430:37741" placeholder="SELECT sum(i..auth_user..." />
+            <marker date="1473409104000" expanded="true" signature="37909:38259" placeholder="SELECT b.cou..auth_user..." />
           </folding>
         </state>
       </provider>
