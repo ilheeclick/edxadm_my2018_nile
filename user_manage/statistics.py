@@ -12,10 +12,13 @@ from operator import itemgetter
 import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 from openpyxl.styles import Alignment
+from time import gmtime, strftime
 
 
 # 일일통계
 def statistics_excel(request, date):
+
+    if debug: print 'Step 1',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
@@ -27,7 +30,7 @@ def statistics_excel(request, date):
     courseOrgs = {}
     courseNames = {}
 
-
+    if debug: print 'Step 2',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     for c in course_ids_all:
         cid = str(c[0])
         courseId = cid
@@ -87,36 +90,59 @@ def statistics_excel(request, date):
             break
         cursor.close()
 
-
+    if debug: print 'Step 3',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     thin_border = Border(left=Side(style='thin'),
                      right=Side(style='thin'),
                      top=Side(style='thin'),
                      bottom=Side(style='thin'))
 
+    if debug: print 'query1',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     user_join_new = statistics_query.user_join_new(date)
+    if debug: print 'query2',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     user_join_total = statistics_query.user_join_total(date)
+    if debug: print 'query3',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_count_distinct = statistics_query.course_count_distinct(date)
+    if debug: print 'query4',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_count_new = statistics_query.course_count_new(date)
+    if debug: print 'query5',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_count_total = statistics_query.course_count_total(date)
+    if debug: print 'query6',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     edu_new = statistics_query.edu_new(date)
+    if debug: print 'query7',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     edu_total = statistics_query.edu_total(date)
+    if debug: print 'query8',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_new = statistics_query.age_new(date)
+    if debug: print 'query9',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_total = statistics_query.age_total(date)
+    if debug: print 'query10',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_edu = statistics_query.age_edu(date)
+    if debug: print 'query11',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_user = statistics_query.course_user(date)
+    if debug: print 'query12',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_univ = statistics_query.course_univ(date)
+    if debug: print 'query13',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_user_total =statistics_query.course_user_total(date)
+    if debug: print 'query14',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_univ_total =statistics_query.course_univ_total(date)
+    if debug: print 'query15',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_age = statistics_query.course_age(date)
+    if debug: print 'query16',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_edu = statistics_query.course_edu(date)
+
+    if debug: print 'Step 4',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
     saveName = 'K-Mooc'+date+'.xlsx'
     savePath = EXCEL_PATH + saveName
 
+
+
+
     if os.path.isfile(savePath) and not debug:
+        if debug: print 'pass'
         pass
 
     else:
+        if debug: print 'make'
         wb = load_workbook(EXCEL_PATH + 'basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
@@ -140,7 +166,7 @@ def statistics_excel(request, date):
             (13,4),
             (14,5)
         ]
-
+        if debug: print 'ws1 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
         for (number, number1) in sort:
             ws1['C' + str(number)] = age_new[number1][0]
             ws1['D' + str(number)] = age_new[number1][1]
@@ -190,15 +216,18 @@ def statistics_excel(request, date):
             ws1['I' + str(number)] = age_edu[number1][6]
             ws1['J' + str(number)] = age_edu[number1][7]
             ws1['K' + str(number)] = age_edu[number1][8]
+        if debug: print 'ws1 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 
         #======================================================================================================================================================
 
 
+        if debug: print 'ws2 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
         #코스별 수강자 # LJH수정
         # sorted(courseInfo.items(), key=itemgetter(1))
         rn1 = 3
         rn2 = 0
+
 
 
         sortlist = list()
@@ -305,6 +334,10 @@ def statistics_excel(request, date):
 
             startCharNo1 += 1
 
+        if debug: print 'ws2 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+        if debug: print 'ws3 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
 
         #코스별 수강자 누적
         # sorted(courseInfo.items(), key=itemgetter(1))
@@ -394,6 +427,10 @@ def statistics_excel(request, date):
             ws3[positionChar + '3'].border = thin_border
 
             startCharNo1 += 1
+        if debug: print 'ws3 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+
+        if debug: print 'ws4 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         #코스별 연령
         rn1 = 3
@@ -446,7 +483,9 @@ def statistics_excel(request, date):
             ws4['I' + str(rn1)].border = thin_border
             ws4['J' + str(rn1)].border = thin_border
             rn1 += 1
+        if debug: print 'ws4 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
+        if debug: print 'ws5 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         #코스별 학력
         rn1 = 3
@@ -511,8 +550,10 @@ def statistics_excel(request, date):
             rn1 += 1
 
 
-        wb.save(savePath)
+        if debug: print 'ws2 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
+        wb.save(savePath)
+        if debug: print 'Step 5',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     return HttpResponse('/manage/static/excel/' + saveName, content_type='application/vnd.ms-excel')
 
 

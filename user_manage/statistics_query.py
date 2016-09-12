@@ -610,7 +610,7 @@ def course_age(date):
                           AND lower(a.course_id) NOT LIKE '%nile%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id
-        ORDER BY a.course_id;
+        ;
 
     ''')
     row = cur.fetchall()
@@ -810,6 +810,7 @@ def certificateInfo(courseId):
                AND c.user_id = b.id
                AND a.course_id = c.course_id
                AND c.is_active = 1
+               AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
                AND a.course_id = "'''+courseId+'''"
         GROUP BY a.course_id, a.status
         ORDER BY a.course_id, a.status;
@@ -828,6 +829,7 @@ def member_statistics(date):
                count(*)
           FROM auth_user a, auth_userprofile b
          WHERE a.id = b.user_id
+           AND NOT (a.is_staff = 1 OR a.is_superuser = 1)
            and date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
     ''')
     row = cur.fetchall()
@@ -840,6 +842,7 @@ def country_statistics(date):
         SELECT b.country, count(*) cnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
+               AND NOT (a.is_staff = 1 OR a.is_superuser = 1)
                AND date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014'
                                                             AND '''+date+'''
         GROUP BY b.country

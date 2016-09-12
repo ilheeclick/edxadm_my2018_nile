@@ -123,9 +123,9 @@ STATICFILES_DIRS = (
 database_id = '192.168.44.11'
 
 # EXCEL_PATH = '/home/project/management/static/excel/'
-EXCEL_PATH = '/Users/redukyo/workspace/management3/static/excel/'
+EXCEL_PATH = '/Users/redukyo/workspace/management/static/excel/'
 
-debug = False
+debug = True
 
 dic_univ = {'KHUk':u'경희대학교',
                 'KoreaUnivK':u'고려대학교',
