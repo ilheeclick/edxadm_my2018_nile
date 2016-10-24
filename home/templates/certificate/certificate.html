@@ -1,0 +1,79 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}이수증 생성{% endblock %}
+{% block pagetitlename_header %}이수증 생성{% endblock %}
+{% block script_down %}
+<script>
+	{% include "certificate/script/certificate.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+	<!-- start: page -->
+
+<section class="panel panel-featured ">
+    <header class="panel-heading">
+        <div><h2 class="panel-title">이수증 생성</h2></div>
+    </header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4" align="center">
+                대학명 &nbsp;&nbsp;&nbsp;
+                <select id="org" style="width: 120px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+            <div class="col-md-4" align="center">
+                강좌명&nbsp;&nbsp;&nbsp;
+                <select id="course" style="width: 200px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+            <div class="col-md-4" align="center">
+                기관별 강좌번호&nbsp;&nbsp;&nbsp;
+                <select id="run" style="width: 110px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+        </div>
+
+        <br/>
+
+        <center>
+        <div>
+            <input class="btn btn-primary" id="search" type="button" value="검  색">
+        </div>
+        </center>
+
+
+    </div>
+    <div class="panel-body" >
+        <table class="table table-hover table-striped table-primary table-bordered" >
+            <thead>
+                <tr>
+                    <td width="15%">대학명</td>
+                    <td width="50%">강좌명</td>
+                    <td width="20%">기관별 강좌번호</td>
+                    <td width="15%">이수증 생성 여부</td>
+                </tr>
+            </thead>
+            <tbody id="certi_tbody">
+            </tbody>
+        </table>
+
+        <br/>
+
+        <center>
+        <div>
+            {% load staticfiles %}
+            <input class="btn btn-primary" id="create_certi" type="button" value="이수증 생성"><img src="{% static "image/progress.gif" %}" id="loading">
+        </div>
+        </center>
+    </div>
+
+
+
+</section>
+
+
+
+
+{% endblock %}

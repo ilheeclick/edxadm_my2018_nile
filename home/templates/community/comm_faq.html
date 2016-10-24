@@ -1,0 +1,72 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}FAQ{% endblock %}
+{% block pagetitlename_header %}FAQ{% endblock %}
+{% block script_down %}
+<script>
+	{% include "community/script/faq.js" %}
+
+</script>
+{% endblock %}
+<style>
+    a {
+        color: black;
+    }
+</style>
+{% block containor %}
+	<!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">FAQ</h2></div>
+        </header>
+        <div class="panel-body">
+            <form class="form-inline" >
+                <div class="form-group" >
+                    <label >검  색</label>&nbsp;&nbsp;
+                    <select class="form-control" style="width: 100px" id="search">
+                        <option id="subject">제목</option>
+                        <option id="content">내용</option>
+                    </select>
+                    <input type="text" class="form-control" style="width: 300px" id="textarea">
+                </div>
+                <div class="form-group">&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label>삭제여부</label>
+                    <select class="form-control" style="width: 100px" id="del_sel">
+                        <option>선택하세요</option>
+                        <option>전체 삭제</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="panel-body" align="right">
+            <a class="btn btn-default" id="search_notice">검  색</a>
+            <a class="btn btn-default" id="add_faq" href="/new_faq">신규등록</a>
+            <a class="btn btn-default" id="del_faq">삭  제</a>
+        </div>
+        <div class="panel-body "> 
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <th width="10%">No</th>
+                    <th width="60%">제목</th>
+                    <th width="20%">등록일</th>
+                    <th width="10%">삭제여부</th>
+                </thead>
+                <tbody id="faq_body">
+                </tbody>
+            </table>
+            <!-- 페이지 소스 넣을곳 -->
+            <div align="center">
+                <ul class="pagination" id="pagination"></ul>
+            <div>
+        </div>
+
+    </section>
+
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,71 @@
+        input[type='checkbox']{width: 20px;}
+        input[type='button']{cursor: pointer;}
+        h4{margin: 0}
+        body{min-width: 1440px;}
+        a {
+            text-decoration: none;
+            color: #555555
+        }
+        a:hover {
+            color: #FF6C6C !important;
+        }
+        a.on{
+            color: #CF36BB !important;
+        }
+        ul {
+            line-height: 25px;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+        }
+        .table1 td:nth-child(1) input, td:nth-child(2) input {width: 97%;}
+        .table1 td:nth-child(3) input:nth-child(1), td:nth-child(4) input:nth-child(1) {width: 40%;}
+        .table1 td:nth-child(3) input:nth-child(2), td:nth-child(4) input:nth-child(2) {width: 20%;}
+        .table1 td:nth-child(3) input:nth-child(3), td:nth-child(4) input:nth-child(3) {width: 20%;}
+
+        .table2 td:nth-child(1) input{width:83%}
+        .table2 td:nth-child(3) input, td:nth-child(3)  input,.table2 td:nth-child(4)  input {width: 97%;}
+        .table2 td:nth-child(5) input:nth-child(1), td:nth-child(6) input:nth-child(1) {width: 40%;}
+        .table2 td:nth-child(5) input:nth-child(2), td:nth-child(6) input:nth-child(2) {width: 20%;}
+        .table2 td:nth-child(5) input:nth-child(3), td:nth-child(6) input:nth-child(3) {width: 20%;}
+
+        .table14_9 table {
+            width:100%;
+            margin:15px 0;
+            border:0;
+        }
+        .table14_9 th {
+            font-weight:bold;
+            background-color:#FFD9EC;
+            color:#555555;
+            border-radius: 5px 5px 0 0;
+        }
+        .table14_9,.table14_9 th,.table14_9 td {
+            font-size:0.9em;
+            text-align:center;
+            padding:3px;
+            border-collapse:collapse;
+            border-bottom:1px solid #dddddd !important;
+        }
+        .table14_9 th,.table14_9 td {
+            border: 1px solid #ffffff;
+            border-width:1px
+        }
+        .table14_9 tr {
+            border: 1px solid #ffffff;
+        }
+        .table2 tbody tr:nth-child(odd){
+            background-color:#f7f7f7;
+        }
+        .table2 tbody tr:nth-child(even){
+            background-color:#ffffff;
+        }
+        .table2 tbody tr:hover{
+            background-color:#FFEBFF !important;
+        }
+
+        .left {border-right: 1px solid #cdeafe; float: left; width: 10%;min-height: 400px;}
+        .main {border: 0px solid red; float: left; width: 88%; margin-left: 10px; padding: 3px; display: none;}
+        #paging{font-size: 12px; margin: 10px; text-align: center;}
+        #paging a{padding: 0 3px; margin: 0 5px; color: #999999; font-weight: bold;font-family: verdana;box-shadow: 1px 1px 4px 0 #aaaaaa;}

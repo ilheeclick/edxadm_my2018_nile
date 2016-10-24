@@ -1,0 +1,86 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}개발 현황{% endblock %}
+{% block pagetitlename_header %}개발 현황{% endblock %}
+{#{% block script_down %}#}
+{#<script>#}
+{#	{% include "tch/script/modify_auth.js" %}#}
+{#	{% include "tch/script/input_answer.js" %}#}
+{#</script>#}
+{#{% endblock %}#}
+{% block containor %}
+	<!-- start: page -->
+
+<section class="panel panel-featured ">
+    <header class="panel-heading">
+        <div><h2 class="panel-title">대학별 이수증 발급 현황</h2></div>
+    </header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4" align="center">
+                대학명 &nbsp;&nbsp;&nbsp;
+                <select style="width: 100px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+            <div class="col-md-4" align="center">
+                강좌명&nbsp;&nbsp;&nbsp;
+                <select style="width: 200px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+            <div class="col-md-4" align="center">
+                기관별 강좌번호&nbsp;&nbsp;&nbsp;
+                <select style="width: 100px">
+                    <option>선택하세요</option>
+                </select>
+            </div>
+        </div>
+        <br/>
+        <div align="right">
+            <input class="btn btn-primary" type="button" value="검  색">
+            <input class="btn btn-success" type="button" value="엑셀다운로드">
+        </div>
+    </div>
+
+    <div class="panel-body" >
+        <table class="table table-hover table-striped table-primary table-bordered" >
+            <thead>
+                <tr>
+                    <td>대학명</td>
+                    <td>강좌명</td>
+                    <td>기관별 강좌번호</td>
+                    <td>종강일자</td>
+                    <td>이수증 생성일자</td>
+                    <td>수강 신청자수</td>
+                    <td>이수자</td>
+                    <td>미이수자</td>
+                    <td>아수율</td>
+                    <td>학습활동 참여자</td>
+                    <td>참여율</td>
+                    <td>학습활동 참여자 대비 이수율</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>고려대학교</td>
+                    <td>일반인을 위한 상대성이론</td>
+                    <td>2015_A04</td>
+                    <td>미생성</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
+
+{% endblock %}

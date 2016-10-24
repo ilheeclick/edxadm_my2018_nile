@@ -1,0 +1,68 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}자료실{% endblock %}
+{% block pagetitlename_header %}자료실{% endblock %}
+{% block script_down %}
+<script>
+	{% include "community/script/refer.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">자료실 신규 등록</h2></div>
+        </header>
+        <div class="panel-body">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    제     목
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" id="refertitle" class="form-control" placeholder="제목을 입력하세요." required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
+                <div id="summernote_content" class="col-sm-10">
+                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">첨     부<span class="required">*</span></label>
+                <div class="col-sm-10">
+{#                    <input type="text" id="referfile" class="form-control" placeholder="링크 정보를 입력하세요." required/>#}
+{#                    <input type="file"/>#}
+                    {% csrf_token %}
+                    <form id ="uploadform" method="post" enctype="multipart/form-data" action="/new_refer/" method="post" enctype="multipart/form-data">
+                        <input type="file"
+                               name="file" id = "uploadfile"/>
+                        <input id = "fileupload" name="fileupload" type="button" value="UPLOAD" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-3" align="left">
+                    <a class="btn btn-default" href="/comm_reference_room">목록으로</a>
+                </div>
+                <div class="col-sm-9" align="right">
+                    <button class="btn btn-primary" id="refer_save" >저     장</button>
+                    <button class="btn btn-default" id="refer_del" >삭     제</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+
+
+
+
+{% endblock %}

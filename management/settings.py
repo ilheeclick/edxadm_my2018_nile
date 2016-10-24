@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_manage',
+    'user_manage1',
+    'home',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'management.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates1')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +83,7 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD' : 'password',
-        'HOST': '192.168.44.11',
+        'HOST': '192.168.33.12',
         'PORT': '3306',
     }
 }
@@ -104,14 +105,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/manage/static/'
+STATIC_URL = '/home/static/'
 
 STATICFILES_DIRS = (
      ("css", os.path.join(BASE_DIR, 'static/css')),
      ("image", os.path.join(BASE_DIR, 'static/image')),
      ("js", os.path.join(BASE_DIR, 'static/js')),
      ("font", os.path.join(BASE_DIR, 'static/font')),
-     ("excel", os.path.join(BASE_DIR, 'static/excel')),
+     ("excel", os.path.join(BASE_DIR, 'home/static/excel')),
       # Put strings here, like "/home/html/static" or "C:/www/django/static".
       # Always use forward slashes, even on Windows.
       # Don't forget to use absolute paths, not relative paths.
@@ -120,10 +121,13 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 # global variables ===========================================================================================
 # ============================================================================================================
-database_id = '192.168.44.11'
+database_id = '192.168.33.12'
 
 # EXCEL_PATH = '/home/project/management/static/excel/'
-EXCEL_PATH = '/Users/redukyo/workspace/management/static/excel/'
+EXCEL_PATH = '/home/vagrant/management/management/home/static/excel/'
+# EXCEL_PATH = '/home/vagrant/management/management/static/excel/'
+UPLOAD_DIR = '/home/vagrant/management/management/'
+
 
 debug = True
 
@@ -147,5 +151,5 @@ dic_univ = {'KHUk':u'경희대학교',
                 'KonYangK':u'건양대학교',
                 'DKUK':u'단국대학교',
                 'CUKk':u'가톨릭대학교',
-                '':u''
+                # '':u''
                 }

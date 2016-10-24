@@ -15,24 +15,45 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from user_manage.views import user_manage, excel_manage
-from user_manage.statistics import statistics_excel, certificate_excel, statistics_excel3
-from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
+from user_manage1.views import user_manage, excel_manage
+from user_manage1.statistics import statistics_excel, certificate_excel, statistics_excel3
+from home.statistics import statistics_excel, statistics_excel1
+from user_manage1.notice import notice_reg, notice_list, notice_mod, notice_del
+from home import views
 
 urlpatterns = [
+    url(r'^admin/', admin.site.urls),
     url(r'^manage/$', user_manage),
     # url(r'^excel_download/?$', statistics_excel),
-    url(r'^manage/excel_select/$', excel_manage),
-    url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),
-    url(r'^manage/excel_download3/(?P<date>.*?)$', statistics_excel3),
-    url(r'^manage/excel_download2/(?P<courseId>.*?)$', certificate_excel),
+    # url(r'^manage/excel_select/$', excel_manage),
+    url(r'^excel_download/(?P<date>.*?)$', statistics_excel),
+    url(r'^excel_download1/(?P<date>.*?)$', statistics_excel1),
+    # url(r'^manage/excel_download2/(?P<courseId>.*?)$', certificate_excel),
+    # url(r'^manage/notice/reg$', notice_reg),
+    # url(r'^manage/notice/list$', notice_list),
+    # url(r'^manage/notice/mod$', notice_mod),
+    # url(r'^manage/notice/del$', notice_del),
 
-    url(r'^manage/notice/reg$', notice_reg),
-    url(r'^manage/notice/list$', notice_list),
-    url(r'^manage/notice/mod$', notice_mod),
-    url(r'^manage/notice/del$', notice_del),
-    #url(r'^', user_manage),
-    #url(r'^admin/', google_test),
-    #url(r'^admin/', include(admin.site.urls)),
-    #url(r'^manage/', include('user_manage.urls')),
+    # stastic url
+    url(r'^$', views.stastic_index, name='stastic_index'),
+    url(r'^month_stastic/', views.month_stastic, name='month_stastic'),
+    # state url
+    url(r'^mana_state/', views.mana_state, name='mana_state'),
+    url(r'^dev_state/', views.dev_state, name='dev_state'),
+    # certificate url
+    url(r'^certificate/',views.certificate, name='certificate'),
+    url(r'^per_certificate/',views.per_certificate, name='per_certificate'),
+    url(r'^uni_certificate/',views.uni_certificate, name='uni_certificate'),
+    # community url
+    url(r'^comm_notice/', views.comm_notice, name='comm_notice'),
+    url(r'^new_notice/', views.new_notice, name='new_notice'),
+    url(r'^modi_notice/(?P<id>.*?)$', views.modi_notice, name='modi_notice'),
+    url(r'^comm_faq/', views.comm_faq, name='comm_faq'),
+    url(r'^new_faq/', views.new_faq, name='new_faq'),
+    url(r'^modi_faq/(?P<id>.*?)$', views.modi_faq, name='modi_faq'),
+
+    url(r'^comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
+    url(r'^new_refer/', views.new_refer, name='new_refer'),
+    # monitoring url
+    url(r'^moni_storage/', views.moni_storage, name='moni_storage'),
 ]

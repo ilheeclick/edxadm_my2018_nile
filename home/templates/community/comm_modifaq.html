@@ -1,0 +1,57 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}FAQ{% endblock %}
+{% block pagetitlename_header %}FAQ{% endblock %}
+{% block script_down %}
+<script>
+	{% include "community/script/modfaq.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">FAQ 내용 수정</h2></div>
+        </header>
+        <div class="panel-body">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    질문 내용
+                    <span class="required">*</span>
+                </label>
+{#                    <textarea rows="10" class="form-control" id="noticecontent" placeholder="내용을 입력하세요." required></textarea>#}
+                <div id="summernote_content" class="col-sm-10">
+                    <div class="summernote1" data-plugin-summernote data-plugin-options='{ "height": 200, "codemirror": { "theme": "ambiance" }}'> {{ faq_question }}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">답     변 <span class="required">*</span></label>
+{#                    <textarea rows="20" class="form-control" id="noticecontent" placeholder="내용을 입력하세요." required></textarea>#}
+                <div id="summernote_content" class="col-sm-10">
+                    <div class="summernote2" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'> {{ faq_answer }}</div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-3" align="left">
+                    <a class="btn btn-default" href="/comm_faq">목록으로</a>
+                </div>
+                <div class="col-sm-9" align="right">
+                    <button class="btn btn-primary" id="faq_mod" >저     장</button>
+{#                    <button class="btn btn-default" id="faq_del" >삭     제</button>#}
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+
+
+
+
+{% endblock %}
