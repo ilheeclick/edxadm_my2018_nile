@@ -64,6 +64,8 @@ def certificate(request):
 									course_list.append(dn)
 									pb_dict[str(pb)] = dn
 									cursor.close()
+
+
 			data = json.dumps(pb_dict, cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'run':
 			course_pb = request.GET['course']
@@ -127,89 +129,67 @@ def certificate(request):
 				subprocess.call('ssh vagrant@192.168.33.12 ./test.sh '+org_id+' '+course+' '+run+'', shell=True)
 				print '-----end create certificate !!-----'
 				data=json.dumps('success')
-		elif request.GET['method'] == 'uni_certificate' :
-			run = ''
-			value_list=[]
-			for value in dic_univ:
-				org = value
-				cursor = db.modulestore.active_versions.find({'org':value})
-				for document in cursor:
-					pb = document.get('versions').get('published-branch')
-					run = document.get('run')
-					cursor.close()
-					cursor = db.modulestore.structures.find({'_id':pb})
-					for document in cursor:
-						blocks = document.get('blocks')
-						for block in blocks:
-							blocktype = block.get('block_type')
-							if blocktype == 'course':
-								fields = block.get('fields')
-								for field in fields:
-									if field == 'display_name':
-										course = fields['display_name']
-										value_list.append(dic_univ[org])
-										value_list.append(course)
-										value_list.append(run)
-										#이수증 생성 날짜
-										cur = connection.cursor()
-										query = "SELECT DISTINCT created_date FROM certificates_generatedcertificate WHERE course_id LIKE '%"+run+"' LIMIT 1"
-										cur.execute(query)
-										row = cur.fetchall()
+		elif request.GET['method'] == 'uni_certi' :
+			cur = connection.cursor()
+			query = """
+				SELECT course_id,
+					   date_format(min(created_date),'%Y/%m/%d') cdate,
+					   sum(if(status = 'downloadable', 1, 0)) downcnt,
+					   sum(if(status = 'notpassing', 1, 0)) notcnt,
+					   count(*) cnt
+				  FROM certificates_generatedcertificate
+			"""
+			if 'org_id' in request.GET:
+				query+="WHERE course_id like '%"+request.GET['org_id']+"%'"
+			if 'run' in request.GET:
+				query+=" and course_id LIKE '%"+request.GET['run']+"%'"
+			query+="GROUP BY course_id"
+			cur.execute(query)
+			course_list = cur.fetchall()
+			cur.close()
+			course_orgs = {}
+			course_end = {}
+			course_name = {}
 
-										value_list.append(row)
-										query = "SELECT COUNT(course_id) FROM student_courseenrollment WHERE course_id LIKE '%"+run+"'"
-										cur.execute(query)
-										row = cur.fetchall()
-										cur.close()
-										value_list.append(row[0])
+			certi_list = []
+			for c, cdate, downcnt, notcnt, cnt in course_list:
+				value_list = []
+				# print c
+				# cid = str(c[0])
+				# cid = str(c)
+				course_id = c
+				cid = c.split('+')[1]
+				run = c.split('+')[2]
+				cer_per = (downcnt/cnt)*100
+				cer_percent = round(cer_per,2)
 
-									if field == 'end':
-										end = fields['end']
-										end_date = datetime.datetime.strptime(str(end)[0:10], "%Y-%m-%d").date()
-										value_list.append(end_date)
-										cursor.close()
-										end_date = datetime.datetime.strptime(str(end)[0:10], "%Y-%m-%d").date()
+				# db.modulestore.active_versions --------------------------------------
+				cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
+				pb = cursor.get('versions').get('published-branch')
+				# course_orgs
+				course_orgs[course_id] = cursor.get('org')
 
+				# db.modulestore.structures --------------------------------------
+				cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},{"blocks":{"$elemMatch":{"block_type":"course"}}})
 
-			print value_list
-			data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+				course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
+				course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_ends
 
+				print course_orgs[course_id],course_name, run, course_end, cdate, cnt, downcnt, notcnt, cer_percent
+				value_list.append(course_orgs[course_id])
+				value_list.append(course_name)
+				value_list.append(run)
+				value_list.append(course_end)
+				value_list.append(cdate)
+				value_list.append(cnt)
+				value_list.append(downcnt)
+				value_list.append(notcnt)
+				value_list.append(cer_percent)
 
-            #
-			# for pb in pb_list:
-
-
-
-
-
-		# elif request.GET['method'] == 'uni_certificate':
-		# 	course_pb = request.GET['course_id']
-		# 	run = request.GET['run']
-		# 	print 'run', run
-		# 	cursor = db.modulestore.structures.find({'_id':ObjectId(course_pb)})
-		# 	for document in cursor:
-		# 		blocks = document.get('blocks')
-		# 		for block in blocks:
-		# 			blocktype = block.get('block_type')
-		# 			if blocktype == 'course':
-		# 				fields = block.get('fields')
-		# 				for field in fields:
-		# 					if field == 'end':
-		# 						end = fields['end']
-		# 	cursor.close()
-		# 	# 종강일자
-		# 	end_date = datetime.datetime.strptime(str(end)[0:10], "%Y-%m-%d").date()
-		# 	cur = connection.cursor()
-		# 	query = "SELECT created_date FROM certificates_generatedcertificate WHERE course_id = 'course-v1:' LIMIT 1"
-		# 	cur.execute(query)
-		# 	row = cur.fetchall()
-		# 	cur.close()
-
-
-
-
-
-
+				# print "value_list == ",value_list
+				certi_list.append(value_list)
+				# print "certi_list ==", certi_list
+			data = json.dumps(list(certi_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data, 'applications/json')
 
 	return render(request, 'certificate/certificate.html')
