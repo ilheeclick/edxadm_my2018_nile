@@ -3,7 +3,8 @@
 {% block pagetitlename_header %}대학별 이수증 발급 현황{% endblock %}
 {% block script_down %}
 <script>
-	{% include "certificate/script/certificate.js" %}
+	{% include "certificate/script/uni_certifiate.js" %}
+    {% include "certificate/script/uni_certi.datatables.ajax.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -15,24 +16,24 @@
     </header>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4" align="center">
+            <div class="col-md-5" align="center">
                 대학명 &nbsp;&nbsp;&nbsp;
-                <select style="width: 100px" id="org">
+                <select id="org" style="width: 120px">
                     <option>선택하세요</option>
                 </select>
             </div>
-            <div class="col-md-4" align="center">
+            <div class="col-md-7" align="center">
                 강좌명&nbsp;&nbsp;&nbsp;
-                <select style="width: 200px" id="course">
+                <select id="course" style="width: 350px ">
                     <option>선택하세요</option>
                 </select>
             </div>
-            <div class="col-md-4" align="center">
-                기관별 강좌번호&nbsp;&nbsp;&nbsp;
-                <select style="width: 100px" id="run">
-                    <option>선택하세요</option>
-                </select>
-            </div>
+{#            <div class="col-md-4" align="center">#}
+{#                기관별 강좌번호&nbsp;&nbsp;&nbsp;#}
+{#                <select id="run" style="width: 110px">#}
+{#                    <option>선택하세요</option>#}
+{#                </select>#}
+{#            </div>#}
         </div>
 
         <br/>
@@ -47,7 +48,7 @@
     </div>
 
     <div class="panel-body" >
-        <table class="table table-hover table-striped table-primary table-bordered" >
+        <table class="table table-hover table-striped table-primary table-bordered" id="datatable-ajax" data-url="" style="width: 100%;">
             <thead>
                 <tr>
                     <td width="">대학명</td>
@@ -59,9 +60,10 @@
                     <td width="">이수자</td>
                     <td width="">미이수자</td>
                     <td width="">아수율</td>
-{#                    <td width="">학습활동 참여자</td>#}
+{#                    <td width="">학습 참여자</td>#}
 {#                    <td width="">참여율</td>#}
-{#                    <td width="">학습활동 참여자 대비 이수율</td>#}
+{#                    <td width="">학습 참여자 대비 이수율</td>#}
+                    <td>이수증 생성</td>
                 </tr>
             </thead>
             <tbody id="uni_body">

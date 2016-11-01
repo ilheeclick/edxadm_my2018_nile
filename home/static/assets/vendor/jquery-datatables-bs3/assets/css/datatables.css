@@ -8,7 +8,7 @@ div.dataTables_length select {
 }
 
 div.dataTables_filter label {
-	float: right;
+	/*float: right;*/
 }
 
 div.dataTables_info {

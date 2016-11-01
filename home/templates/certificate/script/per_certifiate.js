@@ -14,7 +14,7 @@ $(document).ready(function(){
             method : 'org'
         }
     }).done(function(data){
-        //console.log(data)
+        //console.log(data)`
         html+="<option>선택하세요.</option>";
         for(var key in data){
             //alert(data[key]);
@@ -23,31 +23,11 @@ $(document).ready(function(){
         $('#org').html(html);
     });
 
-
-    //초기 이수현황 출력
-    //$.ajax({
-    //    url : '/certificate/',
-    //    data : {
-    //        method : 'uni_certi'
-    //    }
-    //}).done(function(data){
-    //    for(var i=0; i<data.length; i++){
-    //        value_list = data[i].toString().split(',');
-    //        html2+="<tr>";
-    //        for(var j=0; j<value_list.length; j++){
-    //            //console.log(i+"/"+value_list[j])
-    //            html2+="<td>"+value_list[j]+"</td>"
-    //        }
-    //        html2+="</tr>"
-    //    }
-    //    $('#uni_body').html(html2)
-    //});
-
     //대학별 이수증 검색 처리
-    //$('#uni_search').on('click', function(){
+    //$('#per_search').on('click', function(){
     //    var org = $('#org').find('option:selected').val();
-    //    var course= $('#course').find('option:selected').val();
     //    var org_id = $('#org').find('option:selected').attr('id');
+    //    var course= $('#course').find('option:selected').val();
     //    var run= $('#course').find('option:selected').attr('name');
     //    var course_id= $('#course').find('option:selected').attr('id');
     //    var html="";
@@ -60,7 +40,7 @@ $(document).ready(function(){
     //        $.ajax({
     //            url : '/certificate/',
     //            data : {
-    //                method : 'uni_certi',
+    //                method : 'per_certi',
     //                org_id : org_id,
     //                run : run
     //            }
@@ -77,33 +57,7 @@ $(document).ready(function(){
     //                    }
     //                    html2+="</tr>"
     //                }
-    //                $('#uni_body').html(html2)
-    //            }
-    //        });
-    //    }
-    //    else{
-    //        var html2="";
-    //        $.ajax({
-    //            url : '/certificate/',
-    //            data : {
-    //                method : 'uni_certi',
-    //                org_id : org_id
-    //                //course_id : course_id,
-    //            }
-    //        }).done(function(data){
-    //            console.log(data);
-    //            if(data.length == null || data == ''){
-    //                alert('정보가 없습니다.')
-    //            }else{
-    //                for(var i=0; i<data.length; i++){
-    //                    value_list = data[i].toString().split(',');
-    //                    html2+="<tr>"
-    //                    for(var j=0; j<value_list.length; j++){
-    //                        html2+="<td>"+value_list[j]+"</td>"
-    //                    }
-    //                    html2+="</tr>"
-    //                }
-    //                $('#uni_body').html(html2)
+    //                $('#per_body').html(html2)
     //            }
     //        });
     //    }
@@ -135,27 +89,7 @@ $(document).on('change', '#org', function(){
     }
 });
 
-////기관별 강좌번호 처리
-//$(document).on('change', '#course', function(){
-//    var course = $(this).find('option:selected').attr('id');
-//    var html = "";
-//    if(course == '' || course == null){
-//        alert('error');
-//    }else{
-//        html="";
-//        $.ajax({
-//            url : '/certificate/',
-//            data : {
-//                method : 'run',
-//                course : course
-//            }
-//        }).done(function(data){
-//            html+="<option>선택하세요</option>";
-//            html+="<option id="+data+">"+data+"</option>";
-//            $('#run').html(html);
-//        })
-//    }
-//});
+
 
 
 

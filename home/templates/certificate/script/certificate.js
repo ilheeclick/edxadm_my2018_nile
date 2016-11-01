@@ -22,100 +22,15 @@ $(document).ready(function(){
         }
         $('#org').html(html);
     });
-    //초기 이수현황 출력
-    $.ajax({
-        url : '/certificate/',
-        data : {
-            method : 'uni_certi'
-        }
-    }).done(function(data){
-        for(var i=0; i<data.length; i++){
-            value_list = data[i].toString().split(',');
-            html2+="<tr>";
-            for(var j=0; j<value_list.length; j++){
-                //console.log(i+"/"+value_list[j])
-                html2+="<td>"+value_list[j]+"</td>"
-            }
-            html2+="</tr>"
-        }
-        $('#uni_body').html(html2)
-    });
 
-    //대학별 이수증 검색 처리
-    $('#uni_search').on('click', function(){
-        var org = $('#org').find('option:selected').val();
-        var org_id = $('#org').find('option:selected').attr('id');
-        var course= $('#course').find('option:selected').val();
-        var run= $('#run').find('option:selected').val();
-        var course_id= $('#course').find('option:selected').attr('id');
-        var html="";
-        //alert(org_id+' / '+course_id+' / '+run);
-        if($('#org').find('option:selected').attr('id') == null || $('#org').find('option:selected').attr('id') == ''){
-            alert('대학명을 선택하세요.');
-        }
-        else if($('#org').find('option:selected').attr('id') != null && $('#course').find('option:selected').attr('id') != null && $('#run').find('option:selected').attr('id') == null){
-            alert('강좌번호를 선택하세요.');
-        }
-        else if($('#org').find('option:selected').attr('id') != null && $('#course').find('option:selected').attr('id') != null && $('#run').find('option:selected').attr('id') != null){
-            var html2="";
-            $.ajax({
-                url : '/certificate/',
-                data : {
-                    method : 'uni_certi',
-                    org_id : org_id,
-                    run : run
-                }
-            }).done(function(data){
-                console.log(data);
-                if(data.length == null || data == ''){
-                    alert('정보가 없습니다.')
-                }else{
-                    for(var i=0; i<data.length; i++){
-                        value_list = data[i].toString().split(',');
-                        html2+="<tr>"
-                        for(var j=0; j<value_list.length; j++){
-                            html2+="<td>"+value_list[j]+"</td>"
-                        }
-                        html2+="</tr>"
-                    }
-                    $('#uni_body').html(html2)
-                }
-            });
-        }
-        else{
-            var html2="";
-            $.ajax({
-                url : '/certificate/',
-                data : {
-                    method : 'uni_certi',
-                    org_id : org_id
-                    //course_id : course_id,
-                }
-            }).done(function(data){
-                console.log(data);
-                if(data.length == null || data == ''){
-                    alert('정보가 없습니다.')
-                }else{
-                    for(var i=0; i<data.length; i++){
-                        value_list = data[i].toString().split(',');
-                        html2+="<tr>"
-                        for(var j=0; j<value_list.length; j++){
-                            html2+="<td>"+value_list[j]+"</td>"
-                        }
-                        html2+="</tr>"
-                    }
-                    $('#uni_body').html(html2)
-                }
-            });
-        }
-    });
 });
 
-//강좌명 처리
+
+//강좌명 기관번호 처리
 $(document).on('change', '#org', function(){
     var org = $(this).find('option:selected').attr('id');
     var html = "";
-
+    var course = "";
     if(org == '' || org == null){
         alert('학교를 선택하세요.');
     }else{
@@ -128,45 +43,22 @@ $(document).on('change', '#org', function(){
             }
         }).done(function(data){
             html+="<option>선택하세요</option>";
-            if(data != ''){
-                for(var key in data){
-                    html+="<option id="+key+">"+data[key]+"</option>"
-                }
+            for(var i=0; i<data.length;i++){
+                html+="<option id="+data[i][0]+" name="+data[i][2]+">"+data[i][1]+"   ("+data[i][2]+")</option>";
+                $('#course').html(html);
             }
-            $('#course').html(html);
         });
     }
 });
 
-//기관별 강좌번호 처리
-$(document).on('change', '#course', function(){
-    var course = $(this).find('option:selected').attr('id');
-    var html = "";
-    if(course == '' || course == null){
-        alert('error');
-    }else{
-        html="";
-        $.ajax({
-            url : '/certificate/',
-            data : {
-                method : 'run',
-                course : course
-            }
-        }).done(function(data){
-            html+="<option>선택하세요</option>";
-            html+="<option id="+data+">"+data+"</option>";
-            $('#run').html(html);
-        })
-    }
-});
 
 //이수증 생성 처리
 $('#create_certi').on('click', function(){
     var ready_certi = $('#uni').val();
     var org_id = $('#org').find('option:selected').attr('id');
     var course_pb= $('#course').find('option:selected').attr('id');
-    var run= $('#run').find('option:selected').val();
-    //alert('org_id == '+org_id+' course_id == '+course_id+' run == '+run);
+    var run= $('#course').find('option:selected').attr('name');
+    //alert('org_id == '+org_id+' course_pb == '+course_pb+' run == '+run);
 
     if(ready_certi == ''){
         $('#loading').show();
@@ -196,13 +88,14 @@ $('#create_certi').on('click', function(){
 $('#search').on('click', function(){
     var org = $('#org').find('option:selected').val();
     var course= $('#course').find('option:selected').val();
-    var run= $('#run').find('option:selected').val();
+    //var run= $('#run').find('option:selected').val();
+    var run= $('#course').find('option:selected').attr('name');
     //var org_id = $('#org').find('option:selected').attr('id');
     var course_id= $('#course').find('option:selected').attr('id');
     var html="";
 
     //alert(org+' / '+course+' / '+run);
-    if($('#run').find('option:selected').attr('id') == null || $('#run').find('option:selected').attr('id') == ''){
+    if($('#course').find('option:selected').attr('id') == null || $('#course').find('option:selected').attr('id') == ''){
         alert('강좌를 선택하세요');
     }else{
         var html="";

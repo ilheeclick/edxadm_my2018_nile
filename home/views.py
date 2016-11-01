@@ -14,6 +14,8 @@ import datetime
 
 
 import subprocess
+import sys
+
 
 # Create your views here.
 
@@ -37,36 +39,42 @@ def certificate(request):
 	db = client.edxapp
 	pb_list = []
 	pb_dict = dict()
-	course_list=[]
+
 	if request.is_ajax():
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'org':
 			data = json.dumps(dic_univ, cls=DjangoJSONEncoder, ensure_ascii=False)
 
 		elif request.GET['method'] == 'course':
+			course_list=[]
 			org = request.GET['org']
-			cursor = db.modulestore.active_versions.find({'org':org})
-			for document in cursor:
-				pb_list.append(document.get('versions').get('published-branch'))
-			cursor.close()
+			cur = connection.cursor()
 
-			for pb in pb_list:
-				cursor = db.modulestore.structures.find({'_id':pb})
-				for document in cursor:
-					blocks = document.get('blocks')
-					for block in blocks:
-						blocktype = block.get('block_type')
-						if blocktype == 'course':
-							fields = block.get('fields')
-							for field in fields:
-								if field == 'display_name':
-									dn = fields['display_name']
-									course_list.append(dn)
-									pb_dict[str(pb)] = dn
-									cursor.close()
+			query = "select course_id from certificates_generatedcertificate where course_id like '%"+org+"%' group by course_id"
+			cur.execute(query)
+			course = cur.fetchall()
+			cur.close()
 
+			for c in course:
+				value_list = []
 
-			data = json.dumps(pb_dict, cls=DjangoJSONEncoder, ensure_ascii=False)
+				print "c[0]",c[0]
+				course_id = c[0]
+
+				cid = course_id.split('+')[1]
+				run = course_id.split('+')[2]
+				cursor = db.modulestore.active_versions.find_one({'course':cid, 'run':run})
+				pb = cursor.get('versions').get('published-branch')
+
+				cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},{"blocks":{"$elemMatch":{"block_type":"course"}}})
+				course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
+				value_list.append(str(pb))
+				value_list.append(course_name)
+				value_list.append(run)
+				print value_list
+				course_list.append(value_list)
+			data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
 		elif request.GET['method'] == 'run':
 			course_pb = request.GET['course']
 			print 'course_pb', course_pb
@@ -98,42 +106,47 @@ def certificate(request):
 				data = json.dumps(certi, cls=DjangoJSONEncoder, ensure_ascii=False)
 
 		elif request.GET['method'] == 'create_certi':
-			org_id = request.GET['org_id']
-			course_pb = request.GET['course_pb']
+			org_name = request.GET['org_name']
 			run = request.GET['run']
-			course = ''
-			end=''
-			cursor = db.modulestore.active_versions.find({'versions.published-branch':ObjectId(course_pb)})
-			for document in cursor:
-				course = document.get('course')
-			cursor.close()
-			cursor = db.modulestore.structures.find({'_id':ObjectId(course_pb)})
-			for document in cursor:
-				blocks = document.get('blocks')
-				for block in blocks:
-					blocktype = block.get('block_type')
-					if blocktype == 'course':
-						fields = block.get('fields')
-						for field in fields:
-							if field == 'end':
-								end = fields['end']
-			cursor.close()
-			# print str(end)[0:10]
-			end_date = datetime.datetime.strptime(str(end)[0:10], "%Y-%m-%d").date()
-			today = datetime.date.today()
+			for org, name in dic_univ.iteritems():
+				if name == org_name:
+					org_id = org
+			# print org_id
+			cur = connection.cursor()
+			query = "select course_id from certificates_generatedcertificate where course_id like '%"+org_id+"%' and course_id like '%"+run+"%' group by course_id"
+			cur.execute(query)
+			course = cur.fetchall()
+			cur.close()
 
-			if end_date > today:
-				data=json.dumps('Error')
-			else:
-				print '-----ready make certificate !!-----'
-				subprocess.call('ssh vagrant@192.168.33.12 ./test.sh '+org_id+' '+course+' '+run+'', shell=True)
-				print '-----end create certificate !!-----'
-				data=json.dumps('success')
+			for c in course:
+				value_list = []
+				print "c[0]",c[0]
+				course_id = c[0]
+
+				cid = course_id.split('+')[1]
+				run = course_id.split('+')[2]
+				print org_id,'/',cid,'/',run
+
+				cursor = db.modulestore.active_versions.find_one({'course':cid, 'run':run})
+				pb = cursor.get('versions').get('published-branch')
+
+				cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},{"blocks":{"$elemMatch":{"block_type":"course"}}})
+				course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_names
+				end_date = datetime.datetime.strptime(str(course_end)[0:10], "%Y-%m-%d").date()
+				today = datetime.date.today()
+
+				if end_date > today:
+					data=json.dumps('Error')
+				else:
+					print '-----ready make certificate !!-----'
+					subprocess.call('ssh vagrant@192.168.33.12 ./test.sh '+org_id+' '+cid+' '+run+'', shell=True)
+					print '-----end create certificate !!-----'
+					data = json.dumps('Success')
 		elif request.GET['method'] == 'uni_certi' :
 			cur = connection.cursor()
 			query = """
 				SELECT course_id,
-					   date_format(min(created_date),'%Y/%m/%d') cdate,
+					   date_format(min(created_date),'%Y-%m-%d') cdate,
 					   sum(if(status = 'downloadable', 1, 0)) downcnt,
 					   sum(if(status = 'notpassing', 1, 0)) notcnt,
 					   count(*) cnt
@@ -143,7 +156,7 @@ def certificate(request):
 				query+="WHERE course_id like '%"+request.GET['org_id']+"%'"
 			if 'run' in request.GET:
 				query+=" and course_id LIKE '%"+request.GET['run']+"%'"
-			query+="GROUP BY course_id"
+			query+="GROUP BY course_id ORDER BY created_date DESC"
 			cur.execute(query)
 			course_list = cur.fetchall()
 			cur.close()
@@ -175,11 +188,13 @@ def certificate(request):
 				course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
 				course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_ends
 
-				print course_orgs[course_id],course_name, run, course_end, cdate, cnt, downcnt, notcnt, cer_percent
-				value_list.append(course_orgs[course_id])
+				# print course_orgs[course_id],course_name, run, course_end, cdate, cnt, downcnt, notcnt, cer_percent
+				end_date = datetime.datetime.strptime(str(course_end)[0:10], "%Y-%m-%d").date()
+
+				value_list.append(dic_univ[course_orgs[course_id]])
 				value_list.append(course_name)
 				value_list.append(run)
-				value_list.append(course_end)
+				value_list.append(end_date)
 				value_list.append(cdate)
 				value_list.append(cnt)
 				value_list.append(downcnt)
@@ -195,6 +210,114 @@ def certificate(request):
 	return render(request, 'certificate/certificate.html')
 
 def per_certificate(request):
+	client = MongoClient(database_id, 27017)
+	db = client.edxapp
+	reload(sys)
+	sys.setdefaultencoding('utf-8')
+	alist = []
+	if request.is_ajax() :
+		data = json.dumps('fail')
+		if request.GET['method'] == 'per_certi':
+			org_id = request.GET['org_id']
+			run = request.GET['run']
+			cur = connection.cursor()
+			query = """
+				SELECT course_id
+				  FROM certificates_generatedcertificate
+			"""
+			if 'org_id' in request.GET:
+				query+="WHERE course_id like '%"+org_id+"%'"
+			if 'run' in request.GET:
+				query+=" and course_id LIKE '%"+run+"%'"
+			query+="GROUP BY course_id"
+			cur.execute(query)
+			course_list = cur.fetchall()
+			cur.close()
+
+			for c in course_list:
+				value_list = []
+				course_id = c
+				cid = c[0].split('+')[1]
+				course = org_id+'+'+cid+'+'+run
+				cur = connection.cursor()
+				# print dic_univ[org_id], cid, run, course
+				query = """
+						select @RNUM := @RNUM + 1 AS NO, a.name, b.email,'"""+dic_univ[org_id]+"""' org, '"""+cid+"""' course, '"""+run+"""' run,
+							   case when a.status = 'downloadable' then '생성완료'
+									when a.status = 'notpassing' then '생성 전'
+									when a.status = 'generated' then '생성오류' else '' end status
+						  from ( SELECT @RNUM := 0 ) c, certificates_generatedcertificate a inner join auth_user b
+							on (a.user_id = b.id)
+						 where a.course_id like '%"""+str(course)+"""%'
+						 limit 2000
+ 				"""
+
+				cur.execute(query)
+				row = cur.fetchall()
+				cur.close()
+				# print str(row)
+
+			data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'email_search':
+			course = ""
+			user_list=[]
+
+			email = request.GET['email']
+			cur = connection.cursor()
+			query = """
+					select course_id, email
+					from certificates_generatedcertificate a inner join auth_user b
+					on a.user_id = b.id
+					where b.email like '%"""+email+"""%'
+			"""
+			if 'org_id' in request.GET:
+				query+="and a.course_id like '%"+request.GET['org_id']+"%'"
+			if 'run' in request.GET:
+				query+=" and a.course_id LIKE '%"+request.GET['run']+"%'"
+			cur.execute(query)
+			course_list = cur.fetchall()
+			cur.close()
+			i=1
+			for c, email in course_list:
+				value_list=[]
+				course_id = c
+				org_start= c.find(':')+1
+				org_end = c.find('+', org_start)
+				org = c[org_start:org_end]
+				cid = c.split('+')[1]
+				run = c.split('+')[2]
+
+				cur = connection.cursor()
+				# print dic_univ[org_id], cid, run, course
+				query = """
+						select a.name, b.email,'"""+dic_univ[org]+"""' org, '"""+cid+"""' course, '"""+run+"""' run,
+							   case when a.status = 'downloadable' then '생성완료'
+									when a.status = 'notpassing' then '생성 전'
+									when a.status = 'generated' then '생성오류' else '' end status
+						  from ( SELECT @RNUM := 0 ) c, certificates_generatedcertificate a inner join auth_user b
+							on (a.user_id = b.id)
+						 where b.email like '%"""+email+"""%'
+
+ 				"""
+
+				cur.execute(query)
+				row = cur.fetchone()
+				cur.close()
+				value_list.append(i)
+				value_list.append(row[0])
+				value_list.append(row[1])
+				value_list.append(row[2])
+				value_list.append(row[3])
+				value_list.append(row[4])
+				value_list.append(row[5])
+				user_list.append(value_list)
+				i+=1
+
+			data = json.dumps(list(user_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+
+		return HttpResponse(data, 'applications/json')
+
 	return render(request,'certificate/per_certificate.html')
 
 def uni_certificate(request):
