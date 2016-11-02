@@ -187,13 +187,13 @@
                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                             <span>이수증</span>
                                         </a>
-                                        <ul class="nav nav-children">
-                                            <li id="create_certificate">
-                                                <a href="/certificate">
-                                                    이수증 생성
-                                                </a>
-                                            </li>
-                                        </ul>
+{#                                        <ul class="nav nav-children">#}
+{#                                            <li id="create_certificate">#}
+{#                                                <a href="/certificate">#}
+{#                                                    이수증 생성#}
+{#                                                </a>#}
+{#                                            </li>#}
+{#                                        </ul>#}
                                         <ul class="nav nav-children">
                                             <li id="uni_certificate">
                                                 <a href="/uni_certificate">
@@ -204,7 +204,7 @@
                                         <ul class="nav nav-children">
                                             <li id="per_certificate">
                                                 <a href="/per_certificate">
-                                                    개인별 이수증 발급 현황
+                                                    사용자별 이수증 발급 현황
                                                 </a>
                                             </li>
                                         </ul>
@@ -212,7 +212,7 @@
 									<li class="nav nav-parent" id="community">
 										<a>
 											<i class="fa fa-bullhorn" aria-hidden="true"></i>
-											<span>커뮤니티</span>
+											<span>게시판</span>
 										</a>
                                         <ul class="nav nav-children">
                                             <li id="comm_notice">
@@ -458,7 +458,7 @@
                             $('#certificate').addClass('nav-active');
                             $('#uni_certificate').addClass('nav-active');
                             break;
-                        case '개인별 이수증 발급 현황':
+                        case '사용자별 이수증 발급 현황':
                             if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
                             $('#certificate').addClass('nav-active');
                             $('#per_certificate').addClass('nav-active');

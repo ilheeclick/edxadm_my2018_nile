@@ -18,13 +18,13 @@ Theme Version: 	1.5.2
 
 			"columnDefs":[
 				{
-					"targets": -1,
-					//"visible": true,
-					//"searchable": false,
-					//"ordering": false,
+					//"targets": -1,
+					"visible": true,
+					"searchable": false,
+					"ordering": false,
 					"data":null,
-					//"deferRender": true,
-					"defaultContent": "<input>ddd</input>"
+					"deferRender": true,
+					//"defaultContent": "<input>ddd</input>"
 				}
 
 		],
@@ -131,7 +131,7 @@ Theme Version: 	1.5.2
 						run : run
 					}
 				}).done(function(data){
-
+					console.log(data[1])
 					t.clear();
 					if(data.length == 0 || data == null){
 						alert('정보가 없습니다.')

@@ -1,8 +1,9 @@
 $(document).ready(function(){
     var value_list;
-    var id = {{ id }}
+    var id = {{id}}
+    var use_yn = '{{use_yn}}';
     $.ajax({
-        url : '/modi_faq/'+id,
+        url : '/modi_faq/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -43,4 +44,22 @@ $('#faq_mod').on('click', function(){
     }catch(e){
         alert(e);
     }
+});
+
+//삭제 처리
+$('#del_faq').on('click', function(){
+    var id = {{id}}
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url:'/comm_faq/',
+        data:{
+            faq_id:id,
+            use_yn:use_yn,
+            method:'faq_del'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/comm_faq'
+    });
 });

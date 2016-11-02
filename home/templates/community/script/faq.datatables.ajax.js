@@ -18,7 +18,7 @@ Theme Version: 	1.5.2
 			"order": [[ 2, "asc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'notice_list'});
+				 aoData.push({ "name": 'method', "value": 'faq_list'});
 			},
 			"columnDefs":[
 				{
@@ -80,10 +80,11 @@ Theme Version: 	1.5.2
 			cell = $(this).closest('td');
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
+			//alert('data[0] == '+data[0]+' data[1] == '+data[1]);
 
-			location.href='/modi_notice/'+data[0]+'/'+data[1]
+			location.href='/modi_faq/'+data[0]+'/'+data[1]
 		});
-
+		
 	};
 
 	$(function() {

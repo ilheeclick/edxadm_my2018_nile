@@ -115,7 +115,7 @@ Theme Version: 	1.5.2
 						//course_id : course_id,
 					}
 				}).done(function(data){
-					//console.log(data);
+					//console.log(data);8
 					t.clear();
 					if(data.length == null || data == ''){
 						alert('정보가 없습니다.')

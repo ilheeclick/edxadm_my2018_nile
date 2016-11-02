@@ -326,74 +326,60 @@ def uni_certificate(request):
 # community view
 def comm_notice(request):
 	noti_list = []
-	data=json.dumps({'status':"fail"})
 	if request.is_ajax():
+		aaData={}
 		if request.GET['method'] == 'notice_list':
-			page = request.GET['page']
-			if page == '1' :
-				page = (int(request.GET['page']) -1)
-				cur = connection.cursor()
-				query = "SELECT board_id, subject, SUBSTRING(reg_date,1,11), use_yn FROM tb_board WHERE section ='N' "
-				if 'search_con' in request.GET :
-					title = request.GET['search_con']
-					search = request.GET['search_search']
-					query += "and "+title+" like '%"+search+"%'"
+			cur = connection.cursor()
+			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+					"case when use_yn = 'Y' then '보임'" \
+					"	  when use_yn = 'N' then '숨김'" \
+					"	  else '' end use_yn," \
+					"case when odby = '0' then ''" \
+					"	  else odby end odby " \
+					"FROM tb_board WHERE section ='N' "
+			if 'search_con' in request.GET :
+				title = request.GET['search_con']
+				search = request.GET['search_search']
+				query += "and "+title+" like '%"+search+"%'"
 
-				query += " ORDER BY board_id DESC LIMIT %s,10" % (page)
+			# query += " ORDER BY board_id"
 
-				print 'query', query
+			# print 'query', query
 
-				cur.execute(query)
-				row = cur.fetchall()
-				cur.close()
-				for noti in row:
-					notice = noti
-					noti_list.append(notice)
-			else:
-				page = 10*(int(request.GET['page']) -1)
-				cur = connection.cursor()
-				query = "SELECT board_id, subject, SUBSTRING(reg_date,1,11), use_yn FROM tb_board WHERE section ='N' "
-				query += "ORDER BY board_id DESC LIMIT %s,10" % (page)
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			index = 1
+			for noti in row:
+				value_list = []
+				notice = noti
+				# print notice
+				value_list.append(notice[0])
+				value_list.append(notice[1])
+				value_list.append(index)
+				value_list.append(notice[2])
+				value_list.append(notice[3])
+				value_list.append(notice[4])
+				value_list.append(notice[5])
+				noti_list.append(value_list)
+				index+=1
 
-				print 'query', query
-
-				cur.execute(query)
-				row = cur.fetchall()
-				cur.close()
-				for noti in row:
-					notice = noti
-					noti_list.append(notice)
-			data = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-
+			aaData = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'notice_del' :
 			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = ''
+			if use_yn == 'Y':
+				yn='N'
+			else:
+				yn='Y'
+			# print 'use_yn == ',use_yn,' yn == ',yn
 			cur = connection.cursor()
-			query = " update tb_board set use_yn = 'N' where board_id="+noti_id
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
 			cur.execute(query)
 			cur.close()
-			data = json.dumps({'status':"success"})
-
-		elif request.GET['method'] == 'total_page':
-			if 'search_con' in request.GET:
-				subject = request.GET['search_con']
-				search = request.GET['search_search']
-				cur = connection.cursor()
-				cur.execute('''
-				select ceil(count(board_id)/10) from tb_board where section="N" and '''+subject+''' like "%'''+search+'''%"
-				''')
-				row = cur.fetchall()
-				cur.close()
-				print '1'
-			else:
-				cur = connection.cursor()
-				cur.execute('''
-				select ceil(count(board_id)/10) from tb_board where section="N"
-				''')
-				row = cur.fetchall()
-				cur.close()
-				print '2'
-			data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
-		return HttpResponse(data,'applications/json')
+			aaData = json.dumps('success')
+		return HttpResponse(aaData,'applications/json')
 
 	return render(request, 'community/comm_notice.html')
 
@@ -415,10 +401,11 @@ def new_notice(request):
 		if request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
-
 			noti_id = request.POST.get('noti_id')
+			odby = request.POST.get('odby')
+
 			cur = connection.cursor()
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"' where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
 
 
 			cur.execute(query)
@@ -429,20 +416,22 @@ def new_notice(request):
 
 	return render(request, 'community/comm_newnotice.html')
 
-def modi_notice(request, id):
+def modi_notice(request, id, use_yn):
 	mod_notice = []
+
 	if request.is_ajax():
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content from tb_board WHERE board_id = "+id
+			query = "SELECT subject, content, odby from tb_board WHERE board_id = "+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
-			print 'query', query
+			# print 'query', query
 
 			for n in row :
 				notice = n
+				print notice
 				mod_notice.append(notice)
 
 		data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -450,7 +439,8 @@ def modi_notice(request, id):
 
 
 	variables = RequestContext(request, {
-		'id' : id
+		'id' : id,
+		'use_yn' : use_yn
     })
 
 	return render_to_response('community/comm_modinotice.html',variables)
@@ -461,47 +451,57 @@ def comm_faq(request):
 	data=json.dumps({'status':"fail"})
 	if request.is_ajax():
 		if request.GET['method'] == 'faq_list':
-			page = request.GET['page']
-			if page == '1' :
-				page = (int(request.GET['page']) -1)
-				cur = connection.cursor()
-				query = "SELECT board_id, subject, SUBSTRING(reg_date,1,11), use_yn FROM tb_board WHERE section = 'F' "
-				if 'search_con' in request.GET :
-					title = request.GET['search_con']
-					search = request.GET['search_search']
-					query += "and "+title+" like '%"+search+"%'"
+			aaData={}
+			cur = connection.cursor()
+			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+					"case when use_yn = 'Y' then '보임'" \
+					"	  when use_yn = 'N' then '숨김'" \
+					"	  else '' end use_yn " \
+					"FROM tb_board WHERE section ='F' "
+			if 'search_con' in request.GET :
+				title = request.GET['search_con']
+				search = request.GET['search_search']
+				query += "and "+title+" like '%"+search+"%'"
 
-				query +=" ORDER BY board_id ASC LIMIT %s,10 " % (page)
-				print 'query', query
+			# query += " ORDER BY board_id"
 
-				cur.execute(query)
-				row = cur.fetchall()
-				cur.close()
-				for f in row:
-					faq = f
-					faq_list.append(faq)
-			else:
-				page = 10*(int(request.GET['page']) -1)
-				cur = connection.cursor()
-				query = "SELECT board_id, subject, SUBSTRING(reg_date, 1, 11), use_yn FROM tb_board WHERE section = 'F' "
-				query += "ORDER BY board_id DESC LIMIT %s,10" % (page)
+			# print 'query', query
 
-				print 'query', query
-				cur.execute(query)
-				row = cur.fetchall()
-				cur.close()
-				for f in row:
-					faq = f
-					faq_list.append(faq)
-			data = json.dumps(list(faq_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			index = 1
+			for f in row:
+				value_list = []
+				faq = f
+				# print faq
+				value_list.append(faq[0])
+				value_list.append(faq[1])
+				value_list.append(index)
+				value_list.append(faq[2])
+				value_list.append(faq[3])
+				value_list.append(faq[4])
+				faq_list.append(value_list)
+				index+=1
+
+			aaData = json.dumps(list(faq_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+			return HttpResponse(aaData,'applications/json')
 
 		elif request.GET['method'] == 'faq_del' :
 			faq_id = request.GET['faq_id']
+			use_yn = request.GET['use_yn']
+			yn = ''
+			if use_yn == 'Y':
+				yn='N'
+			else:
+				yn='Y'
+			# print 'use_yn == ',use_yn,' yn == ',yn
 			cur = connection.cursor()
-			query = " update tb_board set use_yn = 'N' where board_id="+faq_id
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+faq_id
 			cur.execute(query)
 			cur.close()
-			data = json.dumps({'status':"success"})
+			aaData = json.dumps('success')
+			return HttpResponse(aaData,'applications/json')
 
 		elif request.GET['method'] == 'total_page':
 			if 'search_con' in request.GET:
@@ -555,9 +555,8 @@ def new_faq(request):
 
 	return render(request, 'community/comm_newfaq.html')
 
-def modi_faq(request, id):
+def modi_faq(request, id, use_yn):
 	mod_faq = []
-
 	if request.is_ajax():
 		data = json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
@@ -567,7 +566,6 @@ def modi_faq(request, id):
 			row = cur.fetchall()
 			cur.close()
 			print 'query', query
-
 			for f in row :
 				faq = f
 				mod_faq.append(faq)
@@ -575,7 +573,8 @@ def modi_faq(request, id):
 		return HttpResponse(data, 'applications/json')
 
 	variables = RequestContext(request, {
-		'id' : id
+		'id' : id,
+		'use_yn' : use_yn
     })
 
 	return render_to_response('community/comm_modifaq.html',variables)
