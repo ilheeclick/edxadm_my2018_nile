@@ -7,24 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/home/templates/community/script/faq.datatables.ajax.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/home/templates/community/script/test.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/home/templates/stastic/month_stastic.html" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" afterPath="$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js" afterPath="$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/per_certificate.html" afterPath="$PROJECT_DIR$/home/templates/certificate/per_certificate.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/uni_certificate.html" afterPath="$PROJECT_DIR$/home/templates/certificate/uni_certificate.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_faq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_notice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_notice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/faq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/faq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/container/main_base.html" afterPath="$PROJECT_DIR$/home/templates/container/main_base.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/views.py" afterPath="$PROJECT_DIR$/home/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/management/urls.py" afterPath="$PROJECT_DIR$/management/urls.py" />
     </list>
@@ -74,21 +63,21 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="uni_certi.datatables.ajax.js" pinned="false" current-in-tab="false">
+            <file leaf-file-name="uni_certi.datatables.ajax.js" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0">
-                    <caret line="137" column="20" selection-start-line="137" selection-start-column="20" selection-end-line="137" selection-end-column="20" />
+                  <state vertical-scroll-proportion="2.1694915">
+                    <caret line="132" column="21" selection-start-line="132" selection-start-column="21" selection-end-line="132" selection-end-column="21" />
                     <folding />
                   </state>
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="faq.js" pinned="false" current-in-tab="true">
+            <file leaf-file-name="faq.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="-1.5084746">
-                    <caret line="20" column="28" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
+                  <state vertical-scroll-proportion="0.0">
+                    <caret line="23" column="26" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
                     <folding />
                   </state>
                 </provider>
@@ -105,91 +94,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main_base.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.5686274">
-              <caret line="344" column="73" selection-start-line="344" selection-start-column="73" selection-end-line="344" selection-end-column="73" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/home/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7435028">
-              <caret line="365" column="0" selection-start-line="365" selection-start-column="0" selection-end-line="365" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5084746">
+              <caret line="394" column="35" selection-start-line="394" selection-start-column="35" selection-end-line="394" selection-end-column="35" />
               <folding>
                 <element signature="e#24#89#0" expanded="true" />
-                <marker date="1478074996000" expanded="true" signature="1355:1433" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="1355:1462" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3016:3147" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3022:3103" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3022:3137" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3022:3147" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3604:3716" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="3604:3745" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="4847:5096" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="7559:7620" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8109:8586" placeholder="select a.nam..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9029" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9037" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9054" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9065" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9080" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="8937:9096" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1478074996000" expanded="true" signature="10907:11195" placeholder="SELECT board..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="12200:12226" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="12200:12235" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="12200:12236" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="12200:12261" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="12200:12262" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="12764:12818" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="13207:13330" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="13720:13781" placeholder="SELECT subje..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="14433:14651" placeholder="SELECT board..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="15641:15703" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="16052:16159" placeholder="select ceil(..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="16272:16335" placeholder="select ceil(..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="16961:17015" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="17386:17491" placeholder="update edxap..." />
-                <marker date="1478074996000" expanded="true" signature="17870:17925" placeholder="SELECT subje..tb_board..." />
-                <marker date="1478074996000" expanded="true" signature="18966:19039" placeholder="insert into edxapp.reference_room..." />
+                <marker date="1478166091000" expanded="true" signature="1355:1433" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="1355:1462" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3016:3147" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3022:3103" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3022:3137" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3022:3147" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3604:3716" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="3604:3745" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="4847:5096" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="7559:7620" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8109:8586" placeholder="select a.nam..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9029" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9037" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9054" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9065" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9080" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="8937:9096" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1478166091000" expanded="true" signature="10907:11195" placeholder="SELECT board..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="12200:12226" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="12200:12235" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="12200:12236" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="12200:12261" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="12200:12262" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="13089:13143" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="13534:13657" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="14384:14445" placeholder="SELECT subje..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="15097:15315" placeholder="SELECT board..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="16305:16367" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="16716:16823" placeholder="select ceil(..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="16936:16999" placeholder="select ceil(..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="17625:17679" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="18050:18155" placeholder="update edxap..." />
+                <marker date="1478166091000" expanded="true" signature="18534:18589" placeholder="SELECT subje..tb_board..." />
+                <marker date="1478166091000" expanded="true" signature="19630:19703" placeholder="insert into edxapp.reference_room..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="comm_notice.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_notice.html">
+      <file leaf-file-name="notice.datatables.ajax.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-20.625">
-              <caret line="33" column="46" selection-start-line="33" selection-start-column="46" selection-end-line="33" selection-end-column="46" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="37" column="17" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
               <folding>
-                <element signature="e#544#575#0#HTML" expanded="true" />
+                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="comm_modinotice.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/management/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-26.25">
-              <caret line="43" column="85" selection-start-line="43" selection-start-column="85" selection-end-line="43" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="50" column="56" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modnotice.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
+      <file leaf-file-name="comm_newnotice.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newnotice.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-17.0">
+              <caret line="45" column="61" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="61" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="notice.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="41" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+              <caret line="127" column="47" selection-start-line="127" selection-start-column="47" selection-end-line="127" selection-end-column="47" />
               <folding>
-                <marker date="1478074586000" expanded="true" signature="878:1313" placeholder="..." />
+                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -237,7 +226,6 @@
         <option value="$PROJECT_DIR$/user_manage1/statistics.py" />
         <option value="$PROJECT_DIR$/home/static/assets/stylesheets/skins/default.css" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_newfaq.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
         <option value="$PROJECT_DIR$/management/settings.py" />
         <option value="$PROJECT_DIR$/home/statistics.py" />
         <option value="$PROJECT_DIR$/home/test.py" />
@@ -253,17 +241,18 @@
         <option value="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/certificate/per_certificate.html" />
         <option value="$PROJECT_DIR$/home/templates/certificate/uni_certificate.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
-        <option value="$PROJECT_DIR$/management/urls.py" />
         <option value="$PROJECT_DIR$/home/templates/community/script/faq.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" />
         <option value="$PROJECT_DIR$/home/templates/community/script/faq.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_notice.html" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
+        <option value="$PROJECT_DIR$/management/urls.py" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
         <option value="$PROJECT_DIR$/home/views.py" />
       </list>
     </option>
@@ -303,8 +292,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -320,20 +307,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates1" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -431,8 +404,72 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="certificate" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="excel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -453,19 +490,19 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/home/templates/community/script" />
+      <recent name="$PROJECT_DIR$/home/static/excel" />
+      <recent name="$PROJECT_DIR$/home/templates/certificate/script" />
+      <recent name="$PROJECT_DIR$/home/templates/community" />
+      <recent name="$PROJECT_DIR$/home/static/assets/javascripts" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/home/static/assets/javascripts" />
       <recent name="$PROJECT_DIR$/notice" />
       <recent name="$PROJECT_DIR$/templates" />
       <recent name="$PROJECT_DIR$/static/templates" />
       <recent name="$PROJECT_DIR$/static/image" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/home/templates/community/script" />
-      <recent name="$PROJECT_DIR$/home/templates/certificate/script" />
-      <recent name="$PROJECT_DIR$/home/templates/community" />
-      <recent name="$PROJECT_DIR$/home/static/assets/javascripts" />
-      <recent name="$PROJECT_DIR$/home" />
     </key>
   </component>
   <component name="RunManager" selected="Python.manage">
@@ -802,11 +839,10 @@
     <frame x="0" y="23" width="1920" height="1005" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19542067" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19755058" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.492233" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5113636" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21796276" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21894737" sideWeight="0.4912" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24951456" sideWeight="0.4945055" order="1" side_tool="false" content_ui="tabs" />
@@ -820,6 +856,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2354874" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21796276" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="manage.py@management" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18921669" sideWeight="0.48863637" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33296824" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -875,25 +912,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="35" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm50/remote_sources/1677685254/-1227933812/django/core/servers/basehttp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3321859">
-          <caret line="98" column="0" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm50/remote_sources/1677685254/201544331/wsgiref/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35800344">
-          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm50/remote_sources/1677685254/-1227933812/django/contrib/staticfiles/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.79345953">
@@ -1015,34 +1038,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/statistics_query.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="704" column="29" selection-start-line="704" selection-start-column="29" selection-end-line="704" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/statistics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="46" selection-start-line="66" selection-start-column="46" selection-end-line="66" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm50/remote_sources/1677685254/-1227933812/django/core/handlers/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/certificate/certificate.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6968641">
-          <caret line="47" column="29" selection-start-line="47" selection-start-column="29" selection-end-line="47" selection-end-column="29" />
-          <folding>
-            <element signature="e#849#870#0#HTML" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1058,9 +1057,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="36" selection-start-line="10" selection-start-column="36" selection-end-line="10" selection-end-column="36" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1083,7 +1079,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="83" column="15" selection-start-line="83" selection-start-column="15" selection-end-line="83" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1100,16 +1095,6 @@
         <state vertical-scroll-proportion="0.45296168">
           <caret line="174" column="32" selection-start-line="174" selection-start-column="32" selection-end-line="174" selection-end-column="32" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20112994">
-          <caret line="14642" column="32" selection-start-line="14642" selection-start-column="32" selection-end-line="14642" selection-end-column="32" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1135,7 +1120,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.084745765">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1159,27 +1143,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/management/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="52" column="19" selection-start-line="52" selection-start-column="11" selection-end-line="52" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="137" column="20" selection-start-line="137" selection-start-column="20" selection-end-line="137" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/modfaq.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.16949153">
           <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1195,25 +1162,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.69491524">
           <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5084746">
-          <caret line="20" column="28" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47457626">
-          <caret line="28" column="32" selection-start-line="28" selection-start-column="32" selection-end-line="28" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1222,52 +1170,16 @@
         <state vertical-scroll-proportion="0.40069687">
           <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
           <folding>
-            <element signature="e#503#526#0#HTML" expanded="true" />
-            <element signature="e#579#610#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newnotice.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4878049">
-          <caret line="28" column="36" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-26.25">
-          <caret line="43" column="85" selection-start-line="43" selection-start-column="85" selection-end-line="43" selection-end-column="85" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_notice.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-20.625">
-          <caret line="33" column="46" selection-start-line="33" selection-start-column="46" selection-end-line="33" selection-end-column="46" />
-          <folding>
-            <element signature="e#544#575#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3220339">
-          <caret line="53" column="38" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#503#526#0#HTML" expanded="false" />
+            <element signature="e#579#610#0#HTML" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="41" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.5254237">
+          <caret line="45" column="51" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
           <folding>
             <marker date="1478074586000" expanded="true" signature="878:1313" placeholder="..." />
           </folding>
@@ -1276,52 +1188,203 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.5686274">
+        <state vertical-scroll-proportion="0.19163764">
           <caret line="344" column="73" selection-start-line="344" selection-start-column="73" selection-end-line="344" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/certificate.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59465736">
+          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-20.625">
+          <caret line="73" column="64" selection-start-line="73" selection-start-column="64" selection-end-line="73" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.094076656">
+          <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6926554">
+          <caret line="3605" column="33" selection-start-line="3605" selection-start-column="33" selection-end-line="3605" selection-end-column="33" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/statistics_query.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3220339">
+          <caret line="20" column="17" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="17" />
+          <folding>
+            <marker date="1476154301000" expanded="true" signature="417:656" placeholder="Select count..auth_userprofile..." />
+            <marker date="1476154301000" expanded="true" signature="815:1108" placeholder="Select count..auth_userprofile..." />
+            <marker date="1476154301000" expanded="true" signature="1616:2021" placeholder="select count..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="2646:3202" placeholder="select count..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="3940:4524" placeholder="select count..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="18740:21023" placeholder="SELECT b.aa,..rn..." />
+            <marker date="1476154301000" expanded="true" signature="18965:19079" placeholder="SELECT (@rn ..auth_user..." />
+            <marker date="1476154301000" expanded="true" signature="19032:19047" placeholder="SELECT @rn :..." />
+            <marker date="1476154301000" expanded="true" signature="19138:20968" placeholder="SELECT age, ..age..." />
+            <marker date="1476154301000" expanded="true" signature="19805:20939" placeholder="SELECT CASE ..date_format..." />
+            <marker date="1476154301000" expanded="true" signature="20386:20907" placeholder="SELECT (date..auth_userprofile..." />
+            <marker date="1476154301000" expanded="true" signature="23547:24886" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="23749:24083" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="24143:24836" placeholder="SELECT cours..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="24189:24832" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="25114:26667" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="25338:25672" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="25768:26605" placeholder="SELECT cours..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="25826:26601" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="26842:28956" placeholder="SELECT subst..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="27522:27856" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="27916:28877" placeholder="SELECT cours..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="28043:28873" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="29125:31642" placeholder="SELECT subst..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="30208:30542" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="30602:31534" placeholder="SELECT cours..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="30663:31498" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="31783:32108" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="32265:33830" placeholder="SELECT a.org..substring..." />
+            <marker date="1476154301000" expanded="true" signature="32312:32966" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="33012:33746" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="33985:35621" placeholder="SELECT a.org..substring..." />
+            <marker date="1476154301000" expanded="true" signature="34032:34736" placeholder="SELECT DISTI..course_structures_coursestructure..." />
+            <marker date="1476154301000" expanded="true" signature="34782:35537" placeholder="SELECT subst..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="35763:36191" placeholder="SELECT a.cou..course_id..." />
+            <marker date="1476154301000" expanded="true" signature="35791:35938" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1476154301000" expanded="true" signature="35952:36062" placeholder="SELECT a.cou..student_courseenrollment..." />
+            <marker date="1476154301000" expanded="true" signature="36347:37319" placeholder="SELECT subst..certificates_generatedcertificate..." />
+            <marker date="1476154301000" expanded="true" signature="37487:37856" placeholder="SELECT sum(i..auth_user..." />
+            <marker date="1476154301000" expanded="true" signature="38024:38436" placeholder="SELECT b.cou..auth_user..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/statistics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.45571095">
+          <caret line="101" column="50" selection-start-line="101" selection-start-column="37" selection-end-line="101" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_notice.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5923345">
+          <caret line="34" column="21" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="26" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/management/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="56" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newnotice.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.0">
+          <caret line="45" column="61" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="127" column="47" selection-start-line="127" selection-start-column="47" selection-end-line="127" selection-end-column="47" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="17" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.1694915">
+          <caret line="132" column="21" selection-start-line="132" selection-start-column="21" selection-end-line="132" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7435028">
-          <caret line="365" column="0" selection-start-line="365" selection-start-column="0" selection-end-line="365" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5084746">
+          <caret line="394" column="35" selection-start-line="394" selection-start-column="35" selection-end-line="394" selection-end-column="35" />
           <folding>
             <element signature="e#24#89#0" expanded="true" />
-            <marker date="1478074996000" expanded="true" signature="1355:1433" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="1355:1462" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3016:3147" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3022:3103" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3022:3137" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3022:3147" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3604:3716" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="3604:3745" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="4847:5096" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="7559:7620" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8109:8586" placeholder="select a.nam..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9029" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9037" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9054" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9065" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9080" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="8937:9096" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1478074996000" expanded="true" signature="10907:11195" placeholder="SELECT board..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="12200:12226" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="12200:12235" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="12200:12236" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="12200:12261" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="12200:12262" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="12764:12818" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="13207:13330" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="13720:13781" placeholder="SELECT subje..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="14433:14651" placeholder="SELECT board..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="15641:15703" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="16052:16159" placeholder="select ceil(..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="16272:16335" placeholder="select ceil(..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="16961:17015" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="17386:17491" placeholder="update edxap..." />
-            <marker date="1478074996000" expanded="true" signature="17870:17925" placeholder="SELECT subje..tb_board..." />
-            <marker date="1478074996000" expanded="true" signature="18966:19039" placeholder="insert into edxapp.reference_room..." />
+            <marker date="1478166091000" expanded="true" signature="1355:1433" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="1355:1462" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3016:3147" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3022:3103" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3022:3137" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3022:3147" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3604:3716" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="3604:3745" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="4847:5096" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="7559:7620" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8109:8586" placeholder="select a.nam..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9029" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9037" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9054" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9065" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9080" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="8937:9096" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1478166091000" expanded="true" signature="10907:11195" placeholder="SELECT board..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="12200:12226" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="12200:12235" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="12200:12236" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="12200:12261" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="12200:12262" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="13089:13143" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="13534:13657" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="14384:14445" placeholder="SELECT subje..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="15097:15315" placeholder="SELECT board..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="16305:16367" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="16716:16823" placeholder="select ceil(..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="16936:16999" placeholder="select ceil(..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="17625:17679" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="18050:18155" placeholder="update edxap..." />
+            <marker date="1478166091000" expanded="true" signature="18534:18589" placeholder="SELECT subje..tb_board..." />
+            <marker date="1478166091000" expanded="true" signature="19630:19703" placeholder="insert into edxapp.reference_room..." />
           </folding>
         </state>
       </provider>

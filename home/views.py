@@ -379,12 +379,28 @@ def comm_notice(request):
 			cur.execute(query)
 			cur.close()
 			aaData = json.dumps('success')
+		elif request.GET['method'] == 'file_upload' :
+			print 'file_upload'
 		return HttpResponse(aaData,'applications/json')
 
 	return render(request, 'community/comm_notice.html')
 
 def new_notice(request):
-	if request.method == 'POST':
+	if 'file' in request.FILES:
+		file = request.FILES['file']
+		print file
+		filename = file._name
+
+		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
+		for chunk in file.chunks():
+			fp.write(chunk)
+		fp.close()
+
+		data ='성공'
+
+		print data
+
+	elif request.method == 'POST':
 		data = json.dumps({'status':"fail", 'msg':"오류가 발생했습니다"})
 		if request.POST['method'] == 'add':
 			title = request.POST.get('nt_title')
@@ -398,7 +414,7 @@ def new_notice(request):
 			cur.close()
 			data = json.dumps({'status' : "success"})
 
-		if request.POST['method'] == 'modi':
+		elif request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
 			noti_id = request.POST.get('noti_id')
@@ -413,8 +429,25 @@ def new_notice(request):
 			data = json.dumps({'status' : "success"})
 
 		return HttpResponse(data, 'applications/json')
-
 	return render(request, 'community/comm_newnotice.html')
+
+def file_upload(request):
+	if 'file' in request.FILES:
+		print 'ddddddd'
+		file = request.FILES['file']
+		print file
+		filename = file._name
+		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
+		for chunk in file.chunks():
+			fp.write(chunk)
+		fp.close()
+
+		data ='성공'
+
+		print data
+
+	return HttpResponse('application/json')
+
 
 def modi_notice(request, id, use_yn):
 	mod_notice = []

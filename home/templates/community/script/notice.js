@@ -125,38 +125,38 @@ $('#notice_save').on('click', function(e){
     }
 });
 
+$(document).on('click', '#upexcel', function(){
 
-//$('#del_notice').on('click', function(){
-//    var action_mode = 'notice_del';
-//    if ($('#del_sel').val() == '전체 삭제'){
-//        $("input[name^='ck']").prop('checked', true);
-//    }else if($('#del_sel').val() == '선택하세요'){
-//        $(this).prop('checked', true);
-//    }
-//    else{
-//        $("input[name^='ck']").prop('checked', false);
-//        $("input[name^='ck']").removeAttr('checked');
-//    }
-//    if($("input[name^='ck']:checked").length != 0) {
-//        $("input[name^='ck']").each(function () {
-//            if ($(this).is(':checked') == true) {
-//                //alert($(this).attr('id'));
-//                $.ajax({
-//                    url:'/comm_notice/',
-//                    data:{
-//                        noti_id:$(this).attr('id'),
-//                        method:action_mode
-//                    }
-//                }).done(function(){
-//                    location.href='/comm_notice'
-//                });
-//            }
-//        });
-//    }else{
-//        alert('삭제할 항목을 선택하세요.')
-//    }
-//});
+    $('#uploadform').ajaxForm({
+        type: "POST",
+        url:'new_notice',
+        beforeSubmit: function (data,form,option) {
+            if( $("#uploadexcel").val() != "" ){
 
+                var ext = $('#uploadexcel').val().split('.').pop().toLowerCase();
+
+                if($.inArray(ext, ['xls','xlsx']) == -1) {
+                    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                    return false;
+                }
+            }else{
+                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                return false;
+            }
+        },
+        success: function(){
+            //성공후 서버에서 받은 데이터 처리
+            alert("업로드에 성공했습니다.");
+
+        },
+        error: function() {
+
+            alert("업로드에 실패했습니다.");
+            alert(error);
+        }
+    });
+
+});
 
 
 

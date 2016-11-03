@@ -11,32 +11,47 @@ Theme Version: 	1.5.2
 	var datatableInit = function() {
 
 		var $table = $('#datatable-ajax');
+
+
 		$table.dataTable({
 			bProcessing: true,
 			sAjaxSource: $table.data('url'),
-			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+			dom: 'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 			"order": [[ 2, "asc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
 				 aoData.push({ "name": 'method', "value": 'notice_list'});
 			},
+
 			"columnDefs":[
 				{
 					"targets": [0],
-					"visible": false,
+					"visible": true,
 					"searchable": false,
 					"orderable": false,
 					"data":null,
 					//"deferRender": true
-					//"defaultContent": "<td>dd</td>"
+					"defaultContent": "<td>" +
+					"<input type='checkbox' />" +
+					"</td>"
 				},
 				{
 					"targets": [1],
 					"visible": false,
 					"searchable": false,
 					"orderable": false,
-					"data":null,
+					"data":null
 				}
+				//{
+				//	"targets": -1,
+				//	"visible" : true,
+				//	//"searchable": false,
+				//	"data":null,
+				//	"defaultContent": "<td>" +
+				//	"<input class='btn btn-success' type='button' value='올림'/>" +
+				//	"<input class='btn btn-warning' type='button' value='내림'/>" +
+				//	"</td>"
+				//}
 			],
 			"paginate": true,
 			"initComplete": function(settings, json){
@@ -71,7 +86,8 @@ Theme Version: 	1.5.2
 			}
 		});
 
-		$table.on('click','td',function(){
+
+		$table.on('click','tr',function(){
 			var $row;
 			var cell;
 			var data;
@@ -80,9 +96,11 @@ Theme Version: 	1.5.2
 			cell = $(this).closest('td');
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
-
+			//alert(data[2]);
 			location.href='/modi_notice/'+data[0]+'/'+data[1]
 		});
+
+
 
 	};
 
