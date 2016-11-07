@@ -41,14 +41,15 @@
 
         <div align="right">
             <input class="btn btn-primary" type="button" value="검  색" id="uni_search">
-            <input class="btn btn-success" type="button" value="엑셀다운로드">
+{#            <input class="btn btn-success" type="button" value="엑셀다운로드">#}
         </div>
 
     </div>
 
     <div class="panel-body" style="padding-top: 0;">
         <hr/>
-        <table class="table table-hover table-striped table-primary table-bordered" id="datatable-ajax" data-url="" style="width: 100%;">
+        {% load static %}
+        <table class="table table-hover table-striped table-primary table-bordered" id="datatable-ajax" data-url="" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
             <thead>
                 <tr>
                     <td width="">대학명</td>

@@ -11,7 +11,7 @@ from management.settings import dic_univ,database_id,debug
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
-
+import os
 
 import subprocess
 import sys
@@ -387,31 +387,60 @@ def comm_notice(request):
 
 def new_notice(request):
 	if 'file' in request.FILES:
+		value_list = []
 		file = request.FILES['file']
-		print file
+		filename=''
+		file_ext=''
+		file_size=''
+		# print file
 		filename = file._name
+		file_ext = filename.split('.')[1]
 
-		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
+		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
 		for chunk in file.chunks():
 			fp.write(chunk)
 		fp.close()
-
 		data ='성공'
 
-		print data
+		n = os.path.getsize('home/static/excel/notice_file/'+filename)
+		file_size = str(n / 1024)+"KB"                       # 킬로바이트 단위로
+
+		value_list.append(filename)
+		value_list.append(file_ext)
+		value_list.append(file_size)
+		data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		return HttpResponse(data, 'applications/json')
 
 	elif request.method == 'POST':
 		data = json.dumps({'status':"fail", 'msg':"오류가 발생했습니다"})
 		if request.POST['method'] == 'add':
+
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
 			section = request.POST.get('notice')
+			upload_file = request.POST.get('uploadfile')
+			file_name = request.POST.get('file_name')
+			file_ext = request.POST.get('file_ext')
+			file_size = request.POST.get('file_size')
+			# print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
 			query = "insert into edxapp.tb_board(subject, content, section)"
 			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
 			cur.execute(query)
+
+			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
+			cur.execute(query2)
+			board_id = cur.fetchall()
 			cur.close()
+			# print board_id[0][0]
+			if upload_file != '' :
+				cur = connection.cursor()
+				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
+				cur.execute(query)
+				cur.close()
+
 			data = json.dumps({'status' : "success"})
 
 		elif request.POST['method'] == 'modi':
@@ -429,24 +458,25 @@ def new_notice(request):
 			data = json.dumps({'status' : "success"})
 
 		return HttpResponse(data, 'applications/json')
+
 	return render(request, 'community/comm_newnotice.html')
 
-def file_upload(request):
-	if 'file' in request.FILES:
-		print 'ddddddd'
-		file = request.FILES['file']
-		print file
-		filename = file._name
-		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
-		for chunk in file.chunks():
-			fp.write(chunk)
-		fp.close()
-
-		data ='성공'
-
-		print data
-
-	return HttpResponse('application/json')
+# def file_upload(request):
+# 	if 'file' in request.FILES:
+#
+# 		file = request.FILES['file']
+# 		print file
+# 		filename = file._name
+# 		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
+# 		for chunk in file.chunks():
+# 			fp.write(chunk)
+# 		fp.close()
+#
+# 		data ='성공'
+#
+# 		print data
+#
+# 	return HttpResponse('application/json')
 
 
 def modi_notice(request, id, use_yn):

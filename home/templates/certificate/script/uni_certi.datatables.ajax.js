@@ -15,7 +15,21 @@ Theme Version: 	1.5.2
 			bProcessing: true,
 			sAjaxSource: $table.data('url'),
 
-			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+			dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+			oTableTools: {
+				sSwfPath: $table.data('swf-path'),
+				aButtons: [
+					{
+						sExtends: 'xls',
+						sButtonText: 'Excel'
+					},
+					{
+						sExtends: 'print',
+						sButtonText: 'Print',
+						sInfo: 'Please press CTR+P to print or ESC to quit'
+					}
+				]
+			},
 
 			"columnDefs":[
 				{
@@ -37,7 +51,8 @@ Theme Version: 	1.5.2
 				$('input[type="search"]').attr('placeholder', '검색하세요');
 				$('input[type="search"]').attr('class', 'form-control');
 				$('input[type="search"]').css('width', '200px');
-
+				$('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
+				$('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
 				$("div.toolbar").html('<b>결과 내 검색</b>');
 				this.api().columns().every( function (i) {
 

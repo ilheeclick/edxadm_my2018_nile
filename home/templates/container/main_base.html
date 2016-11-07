@@ -1,5 +1,4 @@
 <!doctype html>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html class="fixed" xmlns="http://www.w3.org/1999/html">
 
 	<head>
@@ -379,6 +378,10 @@
         <script src='{% static "assets/vendor/select2/js/select2.js" %}'></script>
 		<script src='{% static "assets/vendor/jquery-datatables/media/js/jquery.dataTables.js" %}'></script>
 		<script src='{% static "assets/vendor/jquery-datatables-bs3/assets/js/datatables.js" %}'></script>
+        <script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.js" %}'></script>
+        <script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.rowReorder.js" %}'></script>
+
+        <script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.select.min.js" %}'></script>
 
         <script src='{% static "assets/vendor/codemirror/lib/codemirror.js" %}'></script>
         <script src='{% static "assets/vendor/summernote/summernote.js" %}'></script>
@@ -400,7 +403,7 @@
 
         <!-- Theme Initialization Files -->
         <script src='{% static "assets/javascripts/theme.init.js"%}' ></script>
-
+{#        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/rowreorder/1.1.2/js/dataTables.rowReorder.min.js"></script>#}
 
         {% block script_down %}{% endblock %}
 

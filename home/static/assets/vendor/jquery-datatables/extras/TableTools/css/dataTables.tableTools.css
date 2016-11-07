@@ -122,7 +122,7 @@ a.DTTT_button:focus {
 	text-shadow: 0 1px 0 #c4def1;
 	outline: none;
 
-	background-color: #a3d0ef 100%;
+	background-color: #a3d0ef;
 	background-image: -webkit-linear-gradient(top, #a3d0ef 0%, #79ace9 65%, #a3d0ef 100%);
 	background-image:    -moz-linear-gradient(top, #a3d0ef 0%, #79ace9 65%, #a3d0ef 100%);
 	background-image:     -ms-linear-gradient(top, #a3d0ef 0%, #79ace9 65%, #a3d0ef 100%);
