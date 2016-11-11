@@ -1,10 +1,9 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}공지사항{% endblock %}
-{% block pagetitlename_header %}공지사항{% endblock %}
+{% block pagetitlename %}K-MOOC 소식{% endblock %}
+{% block pagetitlename_header %}K-MOOC 소식{% endblock %}
 {% block script_down %}
 <script>
-	{% include "community/script/modnotice.js" %}
-    {% include "community/script/test.js" %}
+	{% include "community/script/mod_knews.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -14,7 +13,7 @@
 <div class="row">
     <section class="panel panel-featured ">
         <header class="panel-heading">
-            <div><h2 class="panel-title">공지사항 내용 수정</h2></div>
+            <div><h2 class="panel-title">K-MOOC 소식 내용 수정</h2></div>
         </header>
         <div class="panel-body">
             {% csrf_token %}
@@ -24,7 +23,7 @@
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="noticetitle" class="form-control" placeholder="제목을 입력하세요."  required/>
+                    <input type="text" id="knews_title" class="form-control" placeholder="제목을 입력하세요."  required/>
                 </div>
             </div>
             <div class="form-group">
@@ -33,32 +32,17 @@
                     <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    파     일
-                </label>
-                <div class="col-md-10">
-                    <form id="uploadform" enctype="multipart/form-data" method="post">
-                        <div id="saved_file">
-                        </div>
-                        {% csrf_token %}
-                        <input type="file" name="file" id = "uploadfile" />
-                        <button type="submit" id="fileupload">upload</button>
-
-                    </form>
-                </div>
-            </div>
         </div>
         <footer class="panel-footer">
             <div class="row">
                 <div class="col-sm-3" align="left">
-                    <a class="btn btn-default" href="/comm_notice">목록으로</a>
+                    <a class="btn btn-default" href="/comm_k_news">목록으로</a>
                 </div>
                 <div class="col-sm-9" align="right">
                     우선순위 설정&nbsp;&nbsp;&nbsp;
                     <input id="odby" type="number" value="0">
-                    <button class="btn btn-default" id="notice_del" >보임 / 숨김</button>
-                    <button class="btn btn-primary" id="notice_mod" >저     장</button>
+                    <button class="btn btn-default" id="knews_del" >보임 / 숨김</button>
+                    <button class="btn btn-primary" id="knews_mod" >저     장</button>
                 </div>
             </div>
         </footer>

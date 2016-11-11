@@ -17,10 +17,10 @@ Theme Version: 	1.5.2
 			sAjaxSource: $table.data('url'),
 			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 			//sDom: 'T<"clear">lfrtip',
-			"order": [[ 2, "desc" ]],
+			"order": [[ 2, "asc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'notice_list'});
+				 aoData.push({ "name": 'method', "value": 'knews_list'});
 			},
 
 
@@ -44,8 +44,6 @@ Theme Version: 	1.5.2
 					"targets": [0],
 					"visible": false,
 					"searchable": false,
-
-
 					"data":null,
 					//"deferRender": true
 					//"defaultContent": "<td>" +
@@ -59,16 +57,6 @@ Theme Version: 	1.5.2
 
 					"data":null
 				}
-				//{
-				//	"targets": -1,
-				//	"visible" : true,
-				//	//"searchable": false,
-				//	"data":null,
-				//	"defaultContent": "<td>" +
-				//	"<input class='btn btn-success' type='button' value='올림'/>" +
-				//	"<input class='btn btn-warning' type='button' value='내림'/>" +
-				//	"</td>"
-				//}
 			],
 
 			"paginate": true,
@@ -106,22 +94,6 @@ Theme Version: 	1.5.2
 			}
 		});
 
-		$table.on( 'row-reorder', function ( e, diff, edit ) {
-
-			//alert(e);
-			//var result = 'Reorder started on row: '+edit.triggerRow.data()[1]+'<br>';
-            //
-			//for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
-			//	var rowData = table.row( diff[i].node ).data();
-            //
-			//	result += rowData[1]+' updated to be in position '+
-			//		diff[i].newData+' (was '+diff[i].oldData+')<br>';
-			//}
-            //
-			//$('#result').html( 'Event result:<br>'+result );
-		} );
-
-
 
 		$table.on('click','tr',function(){
 			var $row;
@@ -133,13 +105,10 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
 			//alert(data[2]);
-			location.href='/modi_notice/'+data[0]+'/'+data[1]
+			location.href='/modi_knews/'+data[0]+'/'+data[1]
 		});
 
-
-
 	};
-
 
 	$(function() {
 		datatableInit();

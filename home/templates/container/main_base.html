@@ -221,6 +221,13 @@
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
+                                            <li id="comm_k_news">
+                                                <a href="/comm_k_news">
+                                                    K-MOOC 소식
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <ul class="nav nav-children">
                                             <li id="comm_faq">
                                                 <a href="/comm_faq">
                                                     FAQ
@@ -436,11 +443,6 @@
                             $('#stastic').addClass('nav-active');
                             $('#day_stastic').addClass('nav-active');
                             break;
-{#                        case '월별 통계':#}
-{#                            if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');#}
-{#                            $('#stastic').addClass('nav-active');#}
-{#                            $('#month_stastic').addClass('nav-active');#}
-{#                            break;#}
                         case '운영 현황':
                             if (is_expanded != 'none') $('#state').addClass('nav-expanded');
                             $('#state').addClass('nav-active');
@@ -470,6 +472,11 @@
                             if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                             $('#community').addClass('nav-active');
                             $('#comm_notice').addClass('nav-active');
+                            break;
+                        case 'K-MOOC 소식':
+                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                            $('#community').addClass('nav-active');
+                            $('#comm_k_news').addClass('nav-active');
                             break;
                         case 'FAQ':
                             if (is_expanded != 'none') $('#community').addClass('nav-expanded');

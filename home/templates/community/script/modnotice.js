@@ -1,18 +1,44 @@
+var file_name, file_ext, file_size;
 $(document).ready(function(){
     var value_list;
     var id = {{id}}
-    var use_yn = '{{use_yn}}';
+    var use_yn = '{{use_yn}}'
+    var html = "";
     $.ajax({
         url : '/modi_notice/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
     }).done(function(data){
-        value_list = data[0].toString().split(',');
+        console.log(data)
+        value_list = data.toString().split(',');
         $('#noticetitle').val(value_list[0]);
         $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
         $('#odby').val(value_list[2]);
+        for(var i=3;i<value_list.length;i++){
+            html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
+            "<br>";
+        }
+        $('#saved_file').html(html);
     })
+});
+
+
+$(document).on('click', '#saved_file > a', function(){
+    var file_name = $(this).text();
+    var board_id = {{id}}
+    var use_yn = '{{use_yn}}'
+
+    $.ajax({
+        url : '/modi_notice/'+board_id+'/'+use_yn,
+            data : {
+                method : 'file_download',
+                file_name : file_name
+            }
+    }).done(function(data){
+        $("#download").prop("href", data);
+        location.href=$("#download").attr('href');
+    });
 });
 
 
@@ -21,8 +47,8 @@ $('#notice_mod').on('click', function(e){
     try{
         var action_mode;
         var noticetitle, noticecontent, notice, noti_id, odby;
-
-
+        var uploadfile = $('#uploadfile').val().substr(12);
+        //alert(uploadfile);
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
         odby = $('#odby').val();
@@ -36,6 +62,10 @@ $('#notice_mod').on('click', function(e){
             nt_title: noticetitle,
             nt_cont: noticecontent,
             noti_id : noti_id,
+            uploadfile : uploadfile,
+            file_name : file_name,
+            file_ext : file_ext,
+            file_size : file_size,
             notice: 'N',
             odby: odby,
             method: action_mode
@@ -49,6 +79,46 @@ $('#notice_mod').on('click', function(e){
         alert(e);
     }
 });
+//파일 업로드
+$(document).on('click', '#fileupload', function(){
+    $('#uploadform').ajaxForm({
+        type: "POST",
+        url:'/new_notice/',
+        beforeSubmit: function (data,form,option) {
+            if( $("#uploadfile").val() != "" ){
+
+                var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
+
+                //if($.inArray(ext, ['xls','xlsx']) == -1) {
+                //    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                //    return false;
+                //}
+            }else{
+                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                return false;
+            }
+        },
+        success: function(adata){
+            //성공후 서버에서 받은 데이터 처리
+            alert("업로드에 성공했습니다.");
+            file_name=adata[0];
+            file_ext=adata[1];
+            file_size=adata[2]
+
+        },
+        error: function() {
+
+            alert("업로드에 실패했습니다.");
+            alert(error);
+        }
+    })
+});
+
+
+
+
+
+
 //삭제 처리
 $('#notice_del').on('click', function(){
     var id = {{id}}

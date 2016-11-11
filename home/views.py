@@ -15,6 +15,8 @@ import os
 
 import subprocess
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 # Create your views here.
@@ -449,6 +451,190 @@ def new_notice(request):
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
 
+			upload_file = request.POST.get('uploadfile')
+			file_name = request.POST.get('file_name')
+			file_ext = request.POST.get('file_ext')
+			file_size = request.POST.get('file_size')
+
+			cur = connection.cursor()
+			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"' where board_id = '"+noti_id+"'"
+			cur.execute(query)
+			cur.close()
+
+			if upload_file != '' :
+				cur = connection.cursor()
+				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+						"VALUES ('"+str(noti_id)+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
+				cur.execute(query)
+				cur.close()
+			data = json.dumps({'status' : "success"})
+
+		return HttpResponse(data, 'applications/json')
+
+	return render(request, 'community/comm_newnotice.html')
+
+def modi_notice(request, id, use_yn):
+	mod_notice = []
+
+	if request.is_ajax():
+		data=json.dumps({'status':"fail"})
+		if request.GET['method'] == 'modi':
+			cur = connection.cursor()
+			query = "SELECT subject, content, odby from tb_board WHERE section = 'N' and board_id = "+id
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			# print 'query', query
+
+			cur = connection.cursor()
+			query ="select attatch_file_name from tb_board_attach where board_id = "+id
+			cur.execute(query)
+			files = cur.fetchall()
+			cur.close()
+			print 'files == ',files
+
+			mod_notice.append(row[0][0])
+			mod_notice.append(row[0][1])
+			mod_notice.append(row[0][2])
+			if files:
+				mod_notice.append(files)
+			print 'mod_notice == ',mod_notice
+			data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'file_download' :
+			file_name = request.GET['file_name']
+			print 'file_name == ',file_name
+			data = json.dumps('/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+
+
+		return HttpResponse(data, 'applications/json')
+
+
+	variables = RequestContext(request, {
+		'id' : id,
+		'use_yn' : use_yn
+    })
+
+	return render_to_response('community/comm_modinotice.html',variables)
+
+def comm_k_news(request):
+	knews_list = []
+	if request.is_ajax():
+		aaData={}
+		if request.GET['method'] == 'knews_list':
+			cur = connection.cursor()
+			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+					"case when use_yn = 'Y' then '보임'" \
+					"	  when use_yn = 'N' then '숨김'" \
+					"	  else '' end use_yn," \
+					"case when odby = '0' then ''" \
+					"	  else odby end odby " \
+					"FROM tb_board WHERE section ='K' "
+			if 'search_con' in request.GET :
+				title = request.GET['search_con']
+				search = request.GET['search_search']
+				query += "and "+title+" like '%"+search+"%'"
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			index = 1
+			for news in row:
+				value_list = []
+				k_news = news
+				# print notice
+				value_list.append(k_news[0])
+				value_list.append(k_news[1])
+				value_list.append(index)
+				value_list.append(k_news[2])
+				value_list.append(k_news[3])
+				value_list.append(k_news[4])
+				value_list.append(k_news[5])
+				knews_list.append(value_list)
+				index+=1
+
+			aaData = json.dumps(list(knews_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'knews_del' :
+			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = ''
+			if use_yn == 'Y':
+				yn='N'
+			else:
+				yn='Y'
+			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+		return HttpResponse(aaData,'applications/json')
+
+	return render(request, 'community/comm_k_news.html')
+
+def new_knews(request):
+	if 'file' in request.FILES:
+		value_list = []
+		file = request.FILES['file']
+		filename=''
+		file_ext=''
+		file_size=''
+		# print file
+		filename = file._name
+		file_ext = filename.split('.')[1]
+
+		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+		for chunk in file.chunks():
+			fp.write(chunk)
+		fp.close()
+		data ='성공'
+
+		n = os.path.getsize('home/static/excel/notice_file/'+filename)
+		file_size = str(n / 1024)+"KB"                       # 킬로바이트 단위로
+
+		value_list.append(filename)
+		value_list.append(file_ext)
+		value_list.append(file_size)
+		data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		return HttpResponse(data, 'applications/json')
+
+	elif request.method == 'POST':
+		data = json.dumps({'status':"fail", 'msg':"오류가 발생했습니다"})
+		if request.POST['method'] == 'add':
+
+			title = request.POST.get('knews_title')
+			content = request.POST.get('knews_content')
+			section = request.POST.get('k_news')
+			upload_file = request.POST.get('uploadfile')
+			file_name = request.POST.get('file_name')
+			file_ext = request.POST.get('file_ext')
+			file_size = request.POST.get('file_size')
+			# print file_name,'/',file_ext,'/',file_size
+
+			cur = connection.cursor()
+			query = "insert into edxapp.tb_board(subject, content, section)"
+			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
+			cur.execute(query)
+
+			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
+			cur.execute(query2)
+			board_id = cur.fetchall()
+			cur.close()
+			# print board_id[0][0]
+			if upload_file != '' :
+				cur = connection.cursor()
+				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
+				cur.execute(query)
+				cur.close()
+
+			data = json.dumps({'status' : "success"})
+
+		elif request.POST['method'] == 'modi':
+			title = request.POST.get('nt_title')
+			content = request.POST.get('nt_cont')
+			noti_id = request.POST.get('noti_id')
+			odby = request.POST.get('odby')
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
 
@@ -458,29 +644,11 @@ def new_notice(request):
 			data = json.dumps({'status' : "success"})
 
 		return HttpResponse(data, 'applications/json')
+	return render(request,'community/comm_newknews.html')
 
-	return render(request, 'community/comm_newnotice.html')
+def modi_knews(request, id, use_yn):
+	mod_knews = []
 
-# def file_upload(request):
-# 	if 'file' in request.FILES:
-#
-# 		file = request.FILES['file']
-# 		print file
-# 		filename = file._name
-# 		fp = open('%s/%s' % ('home/static/excel/', filename) , 'wb')
-# 		for chunk in file.chunks():
-# 			fp.write(chunk)
-# 		fp.close()
-#
-# 		data ='성공'
-#
-# 		print data
-#
-# 	return HttpResponse('application/json')
-
-
-def modi_notice(request, id, use_yn):
-	mod_notice = []
 
 	if request.is_ajax():
 		data=json.dumps({'status':"fail"})
@@ -492,12 +660,12 @@ def modi_notice(request, id, use_yn):
 			cur.close()
 			# print 'query', query
 
-			for n in row :
-				notice = n
-				print notice
-				mod_notice.append(notice)
+			for k in row :
+				k_news = k
+				print k_news
+				mod_knews.append(k_news)
 
-		data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
+		data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data, 'applications/json')
 
 
@@ -506,7 +674,7 @@ def modi_notice(request, id, use_yn):
 		'use_yn' : use_yn
     })
 
-	return render_to_response('community/comm_modinotice.html',variables)
+	return render_to_response('community/comm_modi_knews.html',variables)
 
 
 def comm_faq(request):
@@ -644,43 +812,169 @@ def modi_faq(request, id, use_yn):
 
 
 def comm_reference_room(request):
+	refer_list = []
+	if request.is_ajax():
+		aaData={}
+		if request.GET['method'] == 'refer_list':
+			cur = connection.cursor()
+			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+					"case when use_yn = 'Y' then '보임'" \
+					"	  when use_yn = 'N' then '숨김'" \
+					"	  else '' end use_yn," \
+					"case when odby = '0' then ''" \
+					"	  else odby end odby " \
+					"FROM tb_board WHERE section ='R' "
+			if 'search_con' in request.GET :
+				title = request.GET['search_con']
+				search = request.GET['search_search']
+				query += "and "+title+" like '%"+search+"%'"
+
+			# query += " ORDER BY board_id"
+
+			# print 'query', query
+
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			index = 1
+			for r in row:
+				value_list = []
+				refer = r
+				# print notice
+				value_list.append(refer[0])
+				value_list.append(refer[1])
+				value_list.append(index)
+				value_list.append(refer[2])
+				value_list.append(refer[3])
+				value_list.append(refer[4])
+				value_list.append(refer[5])
+				refer_list.append(value_list)
+				index+=1
+
+			aaData = json.dumps(list(refer_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'refer_del' :
+			refer_id = request.GET['refer_id']
+			use_yn = request.GET['use_yn']
+			yn = ''
+			if use_yn == 'Y':
+				yn='N'
+			else:
+				yn='Y'
+			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+refer_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+
+		return HttpResponse(aaData,'applications/json')
 	return render(request, 'community/comm_reference_room.html')
 
 def new_refer(request):
-	if request.method == 'POST':
-		# data = json.dumps({'status' : "fail"})
-		# if 'file' in request.FILES:
-		# 	print 'file_upload'
-		# 	file = request.FILES['file']
-		# 	filename = file._name
-		# 	fq = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
-		# 	for chunk in file.chunks():
-		# 		fq.write(chunk)
-		# 	fq.close()
-		if request.POST.get('method') == 'add':
-			refer_title = request.POST.get('refer_title')
-			refer_cont = request.POST.get('refer_cont')
+	if 'file' in request.FILES:
+		value_list = []
+		file = request.FILES['file']
+		filename=''
+		file_ext=''
+		file_size=''
+		# print file
+		filename = file._name
+		file_ext = filename.split('.')[1]
+
+		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+		for chunk in file.chunks():
+			fp.write(chunk)
+		fp.close()
+		data ='성공'
+
+		n = os.path.getsize('home/static/excel/notice_file/'+filename)
+		file_size = str(n / 1024)+"KB"                       # 킬로바이트 단위로
+
+		value_list.append(filename)
+		value_list.append(file_ext)
+		value_list.append(file_size)
+		data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		return HttpResponse(data, 'applications/json')
+
+	elif request.method == 'POST':
+		data = json.dumps({'status':"fail", 'msg':"오류가 발생했습니다"})
+		if request.POST['method'] == 'add':
+
+			title = request.POST.get('refer_title')
+			content = request.POST.get('refer_cont')
+			section = request.POST.get('refer')
+			upload_file = request.POST.get('uploadfile')
+			file_name = request.POST.get('file_name')
+			file_ext = request.POST.get('file_ext')
+			file_size = request.POST.get('file_size')
+			# print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
-			query = "insert into edxapp.reference_room(refer_title, refer_content, refer_del )"
-			query += "value ('"+refer_title+"','"+refer_cont+"','x')"
+			query = "insert into edxapp.tb_board(subject, content, section)"
+			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
 			cur.execute(query)
+
+			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
+			cur.execute(query2)
+			board_id = cur.fetchall()
 			cur.close()
-			print 'file_upload'
-			file = request.FILES['file']
-			filename = file._name
-			fq = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
-			for chunk in file.chunks():
-				fq.write(chunk)
-			fq.close()
-			print 'file_uploaded'
+			# print board_id[0][0]
+			if upload_file != '' :
+				cur = connection.cursor()
+				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
+				cur.execute(query)
+				cur.close()
+
 			data = json.dumps({'status' : "success"})
 
+		elif request.POST['method'] == 'modi':
+			title = request.POST.get('refer_title')
+			content = request.POST.get('refer_cont')
+			refer_id = request.POST.get('refer_id')
+			odby = request.POST.get('odby')
 
+			cur = connection.cursor()
+			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"' where board_id = '"+refer_id+"'"
+
+
+			cur.execute(query)
+			cur.close()
+			data = json.dumps({'status' : "success"})
+
+		return HttpResponse(data, 'applications/json')
+
+	return render(request, 'community/comm_newrefer.html')
+
+def modi_refer(request, id, use_yn):
+	mod_refer = []
 
 	if request.is_ajax():
-		print "ajax ready"
-	return render(request, 'community/comm_newrefer.html')
+		data=json.dumps({'status':"fail"})
+		if request.GET['method'] == 'modi':
+			cur = connection.cursor()
+			query = "SELECT subject, content, odby from tb_board WHERE board_id = "+id
+			cur.execute(query)
+			row = cur.fetchall()
+			cur.close()
+			# print 'query', query
+
+			for n in row :
+				notice = n
+				print notice
+				mod_refer.append(notice)
+
+		data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+		return HttpResponse(data, 'applications/json')
+
+
+	variables = RequestContext(request, {
+		'id' : id,
+		'use_yn' : use_yn
+    })
+
+	return render_to_response('community/comm_modirefer.html',variables)
 
 # monitoring view
 def moni_storage(request):

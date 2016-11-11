@@ -1,12 +1,10 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}공지사항{% endblock %}
-{% block pagetitlename_header %}공지사항{% endblock %}
+{% block pagetitlename %}K-MOOC 소식{% endblock %}
+{% block pagetitlename_header %}K-MOOC 소식{% endblock %}
 {% block script_down %}
 <script>
     {% include "community/script/test.js" %}
-    {% include "community/script/notice.js" %}
-
-
+    {% include "community/script/k_news.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -16,7 +14,7 @@
 <div class="row">
     <section class="panel panel-featured ">
         <header class="panel-heading">
-            <div><h2 class="panel-title">공지사항 신규 등록</h2></div>
+            <div><h2 class="panel-title">K-MOOC 소식 신규 등록</h2></div>
         </header>
         <div class="panel-body">
             {% csrf_token %}
@@ -40,23 +38,23 @@
                 <label class="col-sm-2 control-label">
                     파     일
                 </label>
-                <div class="col-md-3">
-                    <form id="uploadform" enctype="multipart/form-data" method="post">
-                        {% csrf_token %}
-                        <input type="file" name="file" id = "uploadfile"/>
-                        <button type="submit" id="fileupload">upload</button>
-                    </form>
-                </div>
+                    <div class="col-md-3">
+                        <form id="uploadform" enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            <input type="file" name="file" id = "uploadfile"/>
+                            <button type="submit" id="fileupload">upload</button>
+                        </form>
+                    </div>
+
             </div>
         </div>
         <footer class="panel-footer">
             <div class="row">
                 <div class="col-sm-3" align="left">
-                    <a class="btn btn-default" href="/comm_notice">목록으로</a>
+                    <a class="btn btn-default" href="/comm_k_news">목록으로</a>
                 </div>
                 <div class="col-sm-9" align="right">
-                    <button class="btn btn-primary" id="notice_save" >저     장</button>
-{#                    <button class="btn btn-default" id="notice_del" >삭     제</button>#}
+                    <button class="btn btn-primary" id="knews_save" >저     장</button>
                 </div>
             </div>
         </footer>

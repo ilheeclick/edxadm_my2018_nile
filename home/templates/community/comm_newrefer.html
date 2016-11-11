@@ -3,7 +3,8 @@
 {% block pagetitlename_header %}자료실{% endblock %}
 {% block script_down %}
 <script>
-	{% include "community/script/refer.js" %}
+    {% include "community/script/test.js" %}
+    {% include "community/script/refer.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -29,21 +30,25 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
                 <div id="summernote_content" class="col-sm-10">
-                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'> </div>
+                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">첨     부<span class="required">*</span></label>
-                <div class="col-sm-10">
-{#                    <input type="text" id="referfile" class="form-control" placeholder="링크 정보를 입력하세요." required/>#}
-{#                    <input type="file"/>#}
-                    {% csrf_token %}
-                    <form id ="uploadform" method="post" enctype="multipart/form-data" action="/new_refer/" method="post" enctype="multipart/form-data">
-                        <input type="file"
-                               name="file" id = "uploadfile"/>
-                        <input id = "fileupload" name="fileupload" type="button" value="UPLOAD" />
-                    </form>
-                </div>
+                <label class="col-sm-2 control-label">
+                    파     일
+{#                    <span class="required">*</span>#}
+                </label>
+                    <div class="col-md-3">
+                        <form id="uploadform" enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            <input type="file" name="file" id = "uploadfile"/>
+                            <button type="submit" id="fileupload">upload</button>
+                        </form>
+                    </div>
+{#                    <div class="col-md-7" align="right">#}
+{#                        #}
+{#                    </div>#}
             </div>
         </div>
         <footer class="panel-footer">
@@ -53,7 +58,7 @@
                 </div>
                 <div class="col-sm-9" align="right">
                     <button class="btn btn-primary" id="refer_save" >저     장</button>
-                    <button class="btn btn-default" id="refer_del" >삭     제</button>
+{#                    <button class="btn btn-default" id="notice_del" >삭     제</button>#}
                 </div>
             </div>
         </footer>

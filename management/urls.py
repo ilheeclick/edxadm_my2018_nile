@@ -48,12 +48,15 @@ urlpatterns = [
     url(r'^comm_notice/', views.comm_notice, name='comm_notice'),
     url(r'^new_notice/', views.new_notice, name='new_notice'),
     url(r'^modi_notice/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_notice, name='modi_notice'),
+    url(r'^comm_k_news/', views.comm_k_news, name='comm_k_news'),
+    url(r'^new_knews/', views.new_knews, name='new_knews'),
+    url(r'^modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
     url(r'^comm_faq/', views.comm_faq, name='comm_faq'),
     url(r'^new_faq/', views.new_faq, name='new_faq'),
     url(r'^modi_faq/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_faq, name='modi_faq'),
-    # url(r'^file_upload/',views.file_upload, name='file_upload'),
     url(r'^comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^new_refer/', views.new_refer, name='new_refer'),
+    url(r'^modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
     # monitoring url
     url(r'^moni_storage/', views.moni_storage, name='moni_storage'),
 ]

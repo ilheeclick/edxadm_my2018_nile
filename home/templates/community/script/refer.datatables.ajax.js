@@ -20,25 +20,25 @@ Theme Version: 	1.5.2
 			"order": [[ 2, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'notice_list'});
+				 aoData.push({ "name": 'method', "value": 'refer_list'});
 			},
 
 
-			dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-			oTableTools: {
-				sSwfPath: $table.data('swf-path'),
-				aButtons: [
-					{
-						sExtends: 'xls',
-						sButtonText: 'Excel'
-					},
-					{
-						sExtends: 'print',
-						sButtonText: 'Print',
-						sInfo: 'Please press CTR+P to print or ESC to quit'
-					}
-				]
-			},
+			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+			//oTableTools: {
+			//	sSwfPath: $table.data('swf-path'),
+			//	aButtons: [
+			//		{
+			//			sExtends: 'xls',
+			//			sButtonText: 'Excel'
+			//		},
+			//		{
+			//			sExtends: 'print',
+			//			sButtonText: 'Print',
+			//			sInfo: 'Please press CTR+P to print or ESC to quit'
+			//		}
+			//	]
+			//},
 			"columnDefs":[
 				{
 					"targets": [0],
@@ -133,7 +133,7 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
 			//alert(data[2]);
-			location.href='/modi_notice/'+data[0]+'/'+data[1]
+			location.href='/modi_refer/'+data[0]+'/'+data[1]
 		});
 
 

@@ -1,9 +1,9 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}공지사항{% endblock %}
-{% block pagetitlename_header %}공지사항{% endblock %}
+{% block pagetitlename %}K-MOOC 소식{% endblock %}
+{% block pagetitlename_header %}K-MOOC 소식{% endblock %}
 {% block script_down %}
 <script>
-	{% include "community/script/notice.datatables.ajax.js" %}
+	{% include "community/script/k_news.datatables.ajax.js" %}
 </script>
 
 
@@ -13,13 +13,12 @@
 
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">공지사항</h2></div>
+        <div><h2 class="panel-title">K-MOOC 소식</h2></div>
     </header>
 
     <div class="panel-body" style="padding-top: 0;"> 
         <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-
-            <a class="btn btn-default" id="add_notice" href="/new_notice">신규등록</a>
+            <a class="btn btn-default" id="add_notice" href="/new_knews">신규등록</a>
 
         </div>
         {% load static %}
@@ -32,10 +31,10 @@
                     <td>제목</td>
                     <td>등록일</td>
                     <td>삭제여부</td>
-{#                    <td width="15%"> 우선 순위 변경</td>#}
+
                 </tr>
             </thead>
-            <tbody id="notice_body">
+            <tbody id="k_news_body">
 
             </tbody>
         </table>

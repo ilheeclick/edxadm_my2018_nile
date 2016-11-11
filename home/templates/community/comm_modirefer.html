@@ -1,10 +1,9 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}공지사항{% endblock %}
-{% block pagetitlename_header %}공지사항{% endblock %}
+{% block pagetitlename %}자료실{% endblock %}
+{% block pagetitlename_header %}자료실{% endblock %}
 {% block script_down %}
 <script>
-	{% include "community/script/modnotice.js" %}
-    {% include "community/script/test.js" %}
+    {% include "community/script/modrefer.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -24,28 +23,13 @@
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="noticetitle" class="form-control" placeholder="제목을 입력하세요."  required/>
+                    <input type="text" id="refertitle" class="form-control" placeholder="제목을 입력하세요."  required/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
                 <div id="summernote_content" class="col-sm-10">
                     <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    파     일
-                </label>
-                <div class="col-md-10">
-                    <form id="uploadform" enctype="multipart/form-data" method="post">
-                        <div id="saved_file">
-                        </div>
-                        {% csrf_token %}
-                        <input type="file" name="file" id = "uploadfile" />
-                        <button type="submit" id="fileupload">upload</button>
-
-                    </form>
                 </div>
             </div>
         </div>
@@ -57,8 +41,8 @@
                 <div class="col-sm-9" align="right">
                     우선순위 설정&nbsp;&nbsp;&nbsp;
                     <input id="odby" type="number" value="0">
-                    <button class="btn btn-default" id="notice_del" >보임 / 숨김</button>
-                    <button class="btn btn-primary" id="notice_mod" >저     장</button>
+                    <button class="btn btn-default" id="refer_del" >보임 / 숨김</button>
+                    <button class="btn btn-primary" id="refer_mod" >저     장</button>
                 </div>
             </div>
         </footer>

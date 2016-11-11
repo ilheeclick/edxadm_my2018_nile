@@ -1,31 +1,30 @@
-
 var file_name, file_ext, file_size;
 //신규 등록
-$('#notice_save').on('click', function(e){
+$('#knews_save').on('click', function(e){
     try{
         //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
-        var noticetitle, noticecontent, notice, uploadfile;
+        var knews_title, knews_content, uploadfile;
         uploadfile = $('#uploadfile').val().substr(12);
-        noticetitle = $('#noticetitle').val();
+        knews_title = $('#noticetitle').val();
         //noticecontent = $('#noticecontent').val();
-        noticecontent = $('.summernote').summernote('code');
+        knews_content = $('.summernote').summernote('code');
         //alert(noticetitle + ' / '  + noticecontent);
         action_mode = 'add';
 
         /* insert to database */
-        $.post("/new_notice/", {
+        $.post("/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: noticetitle,
-            nt_cont: noticecontent,
+            knews_title: knews_title,
+            knews_content: knews_content,
             uploadfile: uploadfile,
             file_name: file_name,
             file_ext: file_ext,
             file_size: file_size,
-            notice: 'N',
+            k_news: 'K',
             method: action_mode
         }).done(function(data){
-            location.href='/comm_notice';
+            location.href='/comm_k_news';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -38,7 +37,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'new_notice',
+        url:'new_knews',
 
 
         beforeSubmit: function (data,form,option) {
