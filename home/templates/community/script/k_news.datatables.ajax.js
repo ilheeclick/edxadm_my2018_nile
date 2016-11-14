@@ -17,7 +17,7 @@ Theme Version: 	1.5.2
 			sAjaxSource: $table.data('url'),
 			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 			//sDom: 'T<"clear">lfrtip',
-			"order": [[ 2, "asc" ]],
+			"order": [[ 2, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
 				 aoData.push({ "name": 'method', "value": 'knews_list'});

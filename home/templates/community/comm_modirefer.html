@@ -32,6 +32,21 @@
                     <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    파     일
+                </label>
+                <div class="col-md-10">
+                    <form id="uploadform" enctype="multipart/form-data" method="post">
+                        <div id="saved_file">
+                        </div>
+                        {% csrf_token %}
+                        <input type="file" name="file" id = "uploadfile" />
+                        <button type="submit" id="fileupload">upload</button>
+
+                    </form>
+                </div>
+            </div>
         </div>
         <footer class="panel-footer">
             <div class="row">

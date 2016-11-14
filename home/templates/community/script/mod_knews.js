@@ -1,18 +1,42 @@
 $(document).ready(function(){
     var value_list;
-    var id = {{id}}
+    var id = {{id}};
     var use_yn = '{{use_yn}}';
+    var html = "";
     $.ajax({
         url : '/modi_knews/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
     }).done(function(data){
-        value_list = data[0].toString().split(',');
+        value_list = data.toString().split(',');
         $('#knews_title').val(value_list[0]);
         $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
         $('#odby').val(value_list[2]);
+        for(var i=3;i<value_list.length;i++){
+            html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
+            "<br>";
+        }
+        $('#saved_file').html(html);
     })
+});
+
+//파일 다운로드
+$(document).on('click', '#saved_file > a', function(){
+    var file_name = $(this).text();
+    var board_id = {{id}};
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url : '/modi_knews/'+board_id+'/'+use_yn,
+            data : {
+                method : 'file_download',
+                file_name : file_name
+            }
+    }).done(function(data){
+        $("#download").prop("href", data);
+        location.href=$("#download").attr('href');
+    });
 });
 
 

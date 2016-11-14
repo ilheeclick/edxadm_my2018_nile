@@ -488,7 +488,8 @@ def modi_notice(request, id, use_yn):
 			# print 'query', query
 
 			cur = connection.cursor()
-			query ="select attatch_file_name from tb_board_attach where board_id = "+id
+			query ="select attatch_file_name from tb_board_attach " \
+				   "where board_id = "+id
 			cur.execute(query)
 			files = cur.fetchall()
 			cur.close()
@@ -654,18 +655,30 @@ def modi_knews(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby from tb_board WHERE board_id = "+id
+			query = "SELECT subject, content, odby from tb_board WHERE section = 'K' and board_id = "+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
 			# print 'query', query
 
-			for k in row :
-				k_news = k
-				print k_news
-				mod_knews.append(k_news)
+			cur = connection.cursor()
+			query ="select attatch_file_name from tb_board_attach where board_id = "+id
+			cur.execute(query)
+			files = cur.fetchall()
+			cur.close()
+			print 'files == ',files
 
-		data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
+			mod_knews.append(row[0][0])
+			mod_knews.append(row[0][1])
+			mod_knews.append(row[0][2])
+			if files:
+				mod_knews.append(files)
+			print 'mod_knews == ',mod_knews
+			data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'file_download' :
+			file_name = request.GET['file_name']
+			print 'file_name == ',file_name
+			data = json.dumps('/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data, 'applications/json')
 
 
@@ -954,18 +967,30 @@ def modi_refer(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby from tb_board WHERE board_id = "+id
+			query = "SELECT subject, content, odby from tb_board WHERE section = 'R' and board_id = "+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
 			# print 'query', query
 
-			for n in row :
-				notice = n
-				print notice
-				mod_refer.append(notice)
+			cur = connection.cursor()
+			query ="select attatch_file_name from tb_board_attach where board_id = "+id
+			cur.execute(query)
+			files = cur.fetchall()
+			cur.close()
+			print 'files == ',files
 
-		data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+			mod_refer.append(row[0][0])
+			mod_refer.append(row[0][1])
+			mod_refer.append(row[0][2])
+			if files:
+				mod_refer.append(files)
+			print 'mod_knews == ',mod_refer
+			data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+		elif request.GET['method'] == 'file_download' :
+			file_name = request.GET['file_name']
+			print 'file_name == ',file_name
+			data = json.dumps('/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data, 'applications/json')
 
 

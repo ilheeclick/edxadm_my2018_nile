@@ -10,7 +10,7 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        console.log(data)
+        //console.log(data);
         value_list = data.toString().split(',');
         $('#noticetitle').val(value_list[0]);
         $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
@@ -23,11 +23,11 @@ $(document).ready(function(){
     })
 });
 
-
+//파일 다운로드
 $(document).on('click', '#saved_file > a', function(){
     var file_name = $(this).text();
-    var board_id = {{id}}
-    var use_yn = '{{use_yn}}'
+    var board_id = {{id}};
+    var use_yn = '{{use_yn}}';
 
     $.ajax({
         url : '/modi_notice/'+board_id+'/'+use_yn,
