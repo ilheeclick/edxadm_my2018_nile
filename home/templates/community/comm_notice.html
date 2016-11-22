@@ -26,18 +26,25 @@
         <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_notice" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
             <thead>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td>No</td>
-                    <td>제목</td>
-                    <td>등록일</td>
-                    <td>삭제여부</td>
+                    <th>ID</th>
+                    <th width="10%">No</th>
+                    <th width="10%">머리글</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>작성일</th>
+                    <th>삭제여부</th>
 {#                    <td width="15%"> 우선 순위 변경</td>#}
                 </tr>
             </thead>
             <tbody id="notice_body">
-
             </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th width="10%">No</th>
+                    <th width="10%">머리글</th>
+                </tr>
+            </tfoot>
         </table>
 
     </div>

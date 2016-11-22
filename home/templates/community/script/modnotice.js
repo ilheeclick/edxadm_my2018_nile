@@ -10,16 +10,20 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        //console.log(data);
-        value_list = data.toString().split(',');
-        $('#noticetitle').val(value_list[0]);
-        $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
-        $('#odby').val(value_list[2]);
-        for(var i=3;i<value_list.length;i++){
-            html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
-            "<br>";
+        //console.log(value_list);
+        console.log(data);
+        if(data[4] != null){
+            value_list = data[4].toString().split(',');
+            for(var i=0;i<value_list.length;i++){
+                html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
+                "<br>";
+            }
+            $('#saved_file').html(html);
         }
-        $('#saved_file').html(html);
+        $('#noticetitle').val(data[0]);
+        $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
+        $('#odby').val(data[2]);
+        $('#head_title').val(data[3]);
     })
 });
 
@@ -48,6 +52,7 @@ $('#notice_mod').on('click', function(e){
         var action_mode;
         var noticetitle, noticecontent, notice, noti_id, odby;
         var uploadfile = $('#uploadfile').val().substr(12);
+        var head_title =  $('#head_title').find('option:selected').val();
         //alert(uploadfile);
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
@@ -62,6 +67,7 @@ $('#notice_mod').on('click', function(e){
             nt_title: noticetitle,
             nt_cont: noticecontent,
             noti_id : noti_id,
+            head_title : head_title,
             uploadfile : uploadfile,
             file_name : file_name,
             file_ext : file_ext,
@@ -83,7 +89,7 @@ $('#notice_mod').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/new_notice/',
+        url:'/new_knews/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
 

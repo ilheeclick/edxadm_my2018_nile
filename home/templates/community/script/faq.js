@@ -51,56 +51,31 @@
 //        });
 //    });
 //});
-//
-//
-////검색 처리
-//$('#search_notice').on('click', function(){
-//    var search_con = $('#search option:selected').attr('id');
-//    var search_search = $('#textarea').val();
-//    var value_list;
-//    var action_mode="faq_list";
-//    var html;
-//    //alert(faq_page);
-//    html = "";
-//    //alert(search_con + " / " + search_search);
+
+//$(document).ready(function(){
+//    //var select =  $('#head_title').find('option:selected').val();
 //    $.ajax({
-//        url:'/comm_faq/',
-//            data:{
-//                method: action_mode,
-//                search_con : search_con,
-//                search_search : search_search,
-//                page : faq_page
-//            }
-//    }).done(function (data) {
-//        value_list = data[0].toString().split(',');
-//        for(var i=0; i<data.length; i++){
-//            html+='<tr id="faq_tr">'
-//            for(var j=0; j<value_list.length; j++){
-//                if(j==0){
-//                    html+='<td><input type="checkbox" id="'+data[i][j]+'" name="ck">  '+data[i][j]+'</td>'
-//                }
-//                else if(j==1){
-//                    html+='<td id="title"><a href="/modi_faq/'+data[i][j-1]+'" >'+data[i][j]+'</a></td>'
-//                }
-//                else{
-//                    html+='<td>'+data[i][j]+'</td>'
-//                }
-//            }
-//            html+='</tr>'
+//        url : '/comm_faq',
+//        data : {
+//            method : 'head_list'
 //        }
-//        $('#faq_body').html(html);
-//    });
+//    })
 //
 //});
 
 
+
 //신규 등록
 $('#faq_save').on('click', function(e){
+    var select =  $('#head_title').find('option:selected').val();
+    //alert(select);
     try{
         var action_mode;
         var faq_question,faq_answer;
+        var head_title =  $('#head_title').find('option:selected').val();
 
-        faq_question = $('.summernote1').summernote('code');
+        //faq_question = $('.summernote1').summernote('code');
+        faq_question = $('#noticecontent').val();
         faq_answer = $('.summernote2').summernote('code');
         //alert(faq_question + ' / '  + faq_answer);
         action_mode = 'add';
@@ -110,10 +85,11 @@ $('#faq_save').on('click', function(e){
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             faq_question: faq_question,
             faq_answer: faq_answer,
+            head_title : head_title,
             section : 'F',
             method: action_mode
         }).done(function(data){
-            console.log(data)
+            //console.log(data);
             location.href='/comm_faq';
 
         }).fail(function(error) {

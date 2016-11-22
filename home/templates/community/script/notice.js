@@ -6,6 +6,7 @@ $('#notice_save').on('click', function(e){
         //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
         var noticetitle, noticecontent, notice, uploadfile;
+        var head_title =  $('#head_title').find('option:selected').val();
         uploadfile = $('#uploadfile').val().substr(12);
         noticetitle = $('#noticetitle').val();
         //noticecontent = $('#noticecontent').val();
@@ -18,6 +19,7 @@ $('#notice_save').on('click', function(e){
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: noticetitle,
             nt_cont: noticecontent,
+            head_title: head_title,
             uploadfile: uploadfile,
             file_name: file_name,
             file_ext: file_ext,

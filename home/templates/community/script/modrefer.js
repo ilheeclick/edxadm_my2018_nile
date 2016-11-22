@@ -9,15 +9,18 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        value_list = data.toString().split(',');
-        $('#refertitle').val(value_list[0]);
-        $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
-        $('#odby').val(value_list[2]);
-        for(var i=3;i<value_list.length;i++){
-            html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
-            "<br>";
+
+        if(data[3] != null){
+            value_list = data[3].toString().split(',');
+            for(var i=0;i<value_list.length;i++){
+                html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
+                "<br>";
+            }
+            $('#saved_file').html(html);
         }
-        $('#saved_file').html(html);
+        $('#refertitle').val(data[0]);
+        $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
+        $('#odby').val(data[2]);
     })
 });
 

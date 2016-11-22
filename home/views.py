@@ -332,12 +332,13 @@ def comm_notice(request):
 		aaData={}
 		if request.GET['method'] == 'notice_list':
 			cur = connection.cursor()
-			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
 					"case when use_yn = 'Y' then '보임'" \
 					"	  when use_yn = 'N' then '숨김'" \
 					"	  else '' end use_yn," \
 					"case when odby = '0' then ''" \
-					"	  else odby end odby " \
+					"	  else odby end odby," \
+					"head_title " \
 					"FROM tb_board WHERE section ='N' "
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -357,9 +358,10 @@ def comm_notice(request):
 				notice = noti
 				# print notice
 				value_list.append(notice[0])
-				value_list.append(notice[1])
 				value_list.append(index)
+				value_list.append(notice[6])
 				value_list.append(notice[2])
+				value_list.append(notice[1])
 				value_list.append(notice[3])
 				value_list.append(notice[4])
 				value_list.append(notice[5])
@@ -367,6 +369,7 @@ def comm_notice(request):
 				index+=1
 
 			aaData = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
 		elif request.GET['method'] == 'notice_del' :
 			noti_id = request.GET['noti_id']
 			use_yn = request.GET['use_yn']
@@ -394,7 +397,7 @@ def new_notice(request):
 		filename=''
 		file_ext=''
 		file_size=''
-		# print file
+		print file
 		filename = file._name
 		file_ext = filename.split('.')[1]
 
@@ -420,6 +423,7 @@ def new_notice(request):
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
 			section = request.POST.get('notice')
+			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
 			file_ext = request.POST.get('file_ext')
@@ -427,8 +431,8 @@ def new_notice(request):
 			# print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
-			query = "insert into edxapp.tb_board(subject, content, section)"
-			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
+			query = "insert into edxapp.tb_board(subject, content, head_title, section)"
+			query +=" VALUES ('"+title+"', '"+content+"', '"+head_title+"', '"+section+"') "
 			cur.execute(query)
 
 			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
@@ -450,6 +454,7 @@ def new_notice(request):
 			content = request.POST.get('nt_cont')
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
+			head_title = request.POST.get('head_title')
 
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
@@ -458,7 +463,7 @@ def new_notice(request):
 
 			cur = connection.cursor()
 			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"' where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', head_title = '"+head_title+"', mod_date = now() where board_id = '"+noti_id+"'"
 			cur.execute(query)
 			cur.close()
 
@@ -481,11 +486,15 @@ def modi_notice(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby from tb_board WHERE section = 'N' and board_id = "+id
+			query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
 			# print 'query', query
+			# print 'row[0] == ',row[0][0]
+			# print 'row[1] == ',row[0][1]
+			# print 'row[2] == ',row[0][2]
+			# print 'row[3] == ',row[0][3]
 
 			cur = connection.cursor()
 			query ="select attatch_file_name from tb_board_attach " \
@@ -493,18 +502,21 @@ def modi_notice(request, id, use_yn):
 			cur.execute(query)
 			files = cur.fetchall()
 			cur.close()
-			print 'files == ',files
+			# print 'files == ',files
 
 			mod_notice.append(row[0][0])
 			mod_notice.append(row[0][1])
 			mod_notice.append(row[0][2])
+			mod_notice.append(row[0][3])
+
 			if files:
 				mod_notice.append(files)
-			print 'mod_notice == ',mod_notice
+			# print 'mod_notice == ',mod_notice
+
 			data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
-			print 'file_name == ',file_name
+			# print 'file_name == ',file_name
 			data = json.dumps('/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
 
@@ -524,7 +536,7 @@ def comm_k_news(request):
 		aaData={}
 		if request.GET['method'] == 'knews_list':
 			cur = connection.cursor()
-			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
 					"case when use_yn = 'Y' then '보임'" \
 					"	  when use_yn = 'N' then '숨김'" \
 					"	  else '' end use_yn," \
@@ -544,9 +556,9 @@ def comm_k_news(request):
 				k_news = news
 				# print notice
 				value_list.append(k_news[0])
-				value_list.append(k_news[1])
 				value_list.append(index)
 				value_list.append(k_news[2])
+				value_list.append(k_news[1])
 				value_list.append(k_news[3])
 				value_list.append(k_news[4])
 				value_list.append(k_news[5])
@@ -636,12 +648,22 @@ def new_knews(request):
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
 
+			upload_file = request.POST.get('uploadfile')
+			file_name = request.POST.get('file_name')
+			file_ext = request.POST.get('file_ext')
+			file_size = request.POST.get('file_size')
+
 			cur = connection.cursor()
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
-
-
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"', mod_date = now() where board_id = '"+noti_id+"'"
 			cur.execute(query)
 			cur.close()
+
+			if upload_file != '' :
+				cur = connection.cursor()
+				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+						"VALUES ('"+str(noti_id)+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
+				cur.execute(query)
+				cur.close()
 			data = json.dumps({'status' : "success"})
 
 		return HttpResponse(data, 'applications/json')
@@ -666,19 +688,17 @@ def modi_knews(request, id, use_yn):
 			cur.execute(query)
 			files = cur.fetchall()
 			cur.close()
-			print 'files == ',files
+			# print id
+			# print 'files == ',files
 
 			mod_knews.append(row[0][0])
 			mod_knews.append(row[0][1])
 			mod_knews.append(row[0][2])
 			if files:
 				mod_knews.append(files)
-			print 'mod_knews == ',mod_knews
+
 			data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
-		elif request.GET['method'] == 'file_download' :
-			file_name = request.GET['file_name']
-			print 'file_name == ',file_name
-			data = json.dumps('/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+
 		return HttpResponse(data, 'applications/json')
 
 
@@ -697,10 +717,11 @@ def comm_faq(request):
 		if request.GET['method'] == 'faq_list':
 			aaData={}
 			cur = connection.cursor()
-			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
+			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
 					"case when use_yn = 'Y' then '보임'" \
 					"	  when use_yn = 'N' then '숨김'" \
-					"	  else '' end use_yn " \
+					"	  else '' end use_yn," \
+					"head_title " \
 					"FROM tb_board WHERE section ='F' "
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -720,14 +741,15 @@ def comm_faq(request):
 				faq = f
 				# print faq
 				value_list.append(faq[0])
-				value_list.append(faq[1])
 				value_list.append(index)
+				value_list.append(faq[5])
 				value_list.append(faq[2])
+				value_list.append(faq[1])
 				value_list.append(faq[3])
 				value_list.append(faq[4])
 				faq_list.append(value_list)
 				index+=1
-
+			# print 'faq_list == ',faq_list
 			aaData = json.dumps(list(faq_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 			return HttpResponse(aaData,'applications/json')
 
@@ -747,24 +769,25 @@ def comm_faq(request):
 			aaData = json.dumps('success')
 			return HttpResponse(aaData,'applications/json')
 
-		elif request.GET['method'] == 'total_page':
-			if 'search_con' in request.GET:
-				subject = request.GET['search_con']
-				search = request.GET['search_search']
-				cur = connection.cursor()
-				cur.execute('''
-				select ceil(count(board_id)/10) from tb_board where section="F" and '''+subject+''' like "%'''+search+'''%"
-				''')
-				row = cur.fetchall()
-				cur.close()
-			else:
-				cur =connection.cursor()
-				cur.execute('''
-				select ceil(count(board_id)/10) from tb_board where section="F"
-				''')
-				row =cur.fetchall()
-				cur.close()
-			data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+		# elif request.GET['method'] == 'total_page':
+		# 	if 'search_con' in request.GET:
+		# 		subject = request.GET['search_con']
+		# 		search = request.GET['search_search']
+		# 		cur = connection.cursor()
+		# 		cur.execute('''
+		# 		select ceil(count(board_id)/10) from tb_board where section="F" and '''+subject+''' like "%'''+search+'''%"
+		# 		''')
+		# 		row = cur.fetchall()
+		# 		cur.close()
+		# 	else:
+		# 		cur =connection.cursor()
+		# 		cur.execute('''
+		# 		select ceil(count(board_id)/10) from tb_board where section="F"
+		# 		''')
+		# 		row =cur.fetchall()
+		# 		cur.close()
+		# 	data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data,'applications/json')
 
 	return render(request, 'community/comm_faq.html')
@@ -773,14 +796,15 @@ def new_faq(request):
 	if request.method == 'POST':
 		data = json.dumps({'status' : "fail"})
 		if request.POST.get('method') == 'add':
+			head_title = request.POST.get('head_title')
 			faq_question = request.POST.get('faq_question')
 			faq_answer = request.POST.get('faq_answer')
 			section = request.POST.get('section')
 
-			print 'faq_question', faq_question, 'faq_answer', faq_answer, 'section', section
+			print 'head_title == ',head_title,' faq_question == ', faq_question, ' faq_answer == ', faq_answer, ' section == ', section
 			cur = connection.cursor()
-			query = "insert into edxapp.tb_board(subject, content, section)"
-			query +=" VALUES ('"+faq_question+"', '"+faq_answer+"', '"+section+"') "
+			query = "insert into edxapp.tb_board(subject, content, section, head_title)"
+			query +=" VALUES ('"+faq_question+"', '"+faq_answer+"', '"+section+"', '"+head_title+"') "
 			cur.execute(query)
 			cur.close()
 			data = json.dumps({'status' : "success"})
@@ -788,10 +812,10 @@ def new_faq(request):
 		if request.POST['method'] == 'modi':
 			question = request.POST.get('faq_question')
 			answer = request.POST.get('faq_answer')
-
+			head_title = request.POST.get('head_title')
 			faq_id = request.POST.get('faq_id')
 			cur = connection.cursor()
-			query = "update edxapp.tb_board set subject = '"+question+"', content = '"+answer+"' where board_id = '"+faq_id+"'"
+			query = "update edxapp.tb_board set subject = '"+question+"', content = '"+answer+"', head_title = '"+head_title+"', mod_date = now() where board_id = '"+faq_id+"'"
 			cur.execute(query)
 			cur.close()
 			data = json.dumps({'status' : "success"})
@@ -805,7 +829,7 @@ def modi_faq(request, id, use_yn):
 		data = json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content from tb_board WHERE board_id = "+id
+			query = "SELECT subject, content, head_title from tb_board WHERE board_id = "+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -949,7 +973,7 @@ def new_refer(request):
 
 			cur = connection.cursor()
 			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"' where board_id = '"+refer_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', mod_date = now() where board_id = '"+refer_id+"'"
 
 
 			cur.execute(query)

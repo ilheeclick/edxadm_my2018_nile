@@ -17,7 +17,7 @@ Theme Version: 	1.5.2
 			sAjaxSource: $table.data('url'),
 			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 			//sDom: 'T<"clear">lfrtip',
-			"order": [[ 2, "desc" ]],
+			"order": [[ 1, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
 				 aoData.push({ "name": 'method', "value": 'notice_list'});
@@ -30,11 +30,13 @@ Theme Version: 	1.5.2
 				aButtons: [
 					{
 						sExtends: 'xls',
-						sButtonText: 'Excel'
+						sButtonText: 'Excel',
+						bFooter: false
 					},
 					{
 						sExtends: 'print',
 						sButtonText: 'Print',
+						bFooter: false,
 						sInfo: 'Please press CTR+P to print or ESC to quit'
 					}
 				]
@@ -43,32 +45,16 @@ Theme Version: 	1.5.2
 				{
 					"targets": [0],
 					"visible": false,
-					"searchable": false,
-
-
-					"data":null,
 					//"deferRender": true
 					//"defaultContent": "<td>" +
 					//"<input type='checkbox' />" +
 					//"</td>"
 				},
 				{
-					"targets": [1],
+					"targets": [4],
 					"visible": false,
-					"searchable": false,
 
-					"data":null
 				}
-				//{
-				//	"targets": -1,
-				//	"visible" : true,
-				//	//"searchable": false,
-				//	"data":null,
-				//	"defaultContent": "<td>" +
-				//	"<input class='btn btn-success' type='button' value='올림'/>" +
-				//	"<input class='btn btn-warning' type='button' value='내림'/>" +
-				//	"</td>"
-				//}
 			],
 
 			"paginate": true,
@@ -79,6 +65,7 @@ Theme Version: 	1.5.2
 				//$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
 				$('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
 				$('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
+
 				$("div.toolbar").html('<b>결과 내 검색</b>');
 				this.api().columns().every( function (i) {
 
@@ -88,7 +75,7 @@ Theme Version: 	1.5.2
 
 					var column = this;
 					var select = $('<select style="width: 100%;"><option value=""></option></select>')
-						.appendTo( $(column.footer()).empty()).select2({placeholder: '검색필터', allowClear: true}).attr('width', '100%')
+						.appendTo( $(column.footer()).empty()).select2({placeholder: '선택하세요.', allowClear: true}).attr('width', '100%')
 						.on( 'change', function () {
 							var val = $.fn.dataTable.util.escapeRegex(
 								$(this).val()

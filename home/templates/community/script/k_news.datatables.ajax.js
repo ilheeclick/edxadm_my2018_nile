@@ -17,7 +17,7 @@ Theme Version: 	1.5.2
 			sAjaxSource: $table.data('url'),
 			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 			//sDom: 'T<"clear">lfrtip',
-			"order": [[ 2, "desc" ]],
+			"order": [[ 1, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
 				 aoData.push({ "name": 'method', "value": 'knews_list'});
@@ -43,19 +43,12 @@ Theme Version: 	1.5.2
 				{
 					"targets": [0],
 					"visible": false,
-					"searchable": false,
-					"data":null,
-					//"deferRender": true
-					//"defaultContent": "<td>" +
-					//"<input type='checkbox' />" +
-					//"</td>"
+					//"searchable": false,
 				},
 				{
-					"targets": [1],
+					"targets": [3],
 					"visible": false,
-					"searchable": false,
-
-					"data":null
+					//"searchable": false,
 				}
 			],
 

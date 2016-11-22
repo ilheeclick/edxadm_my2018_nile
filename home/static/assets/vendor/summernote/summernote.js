@@ -1729,7 +1729,8 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      //options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['ko-KR'], $.summernote.lang[options.lang]);
 
       this.each(function (idx, note) {
         var $note = $(note);
@@ -4070,6 +4071,7 @@
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
+        alert(files);
         context.triggerEvent('image.upload', files);
       // else insert Image as dataURL
       } else {

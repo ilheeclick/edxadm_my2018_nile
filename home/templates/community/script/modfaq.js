@@ -8,9 +8,13 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
+        //console.log(data)
         value_list = data[0].toString().split(',');
-        $('.summernote1').summernote('code', value_list[0].replace(/\&\^\&/g, ','));
-        $('.summernote2').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
+        //console.log(value_list);
+        //$('.summernote1').summernote('code', value_list[0].replace(/\&\^\&/g, ','));
+        $('#noticecontent').html(data[0][0]);
+        $('.summernote2').summernote('code',data[0][1].replace(/\&\^\&/g));
+        $('#head_title').val(data[0][2])
     })
 });
 
@@ -19,9 +23,11 @@ $('#faq_mod').on('click', function(){
     try{
         var action_mode;
         var faq_question, faq_answer, faq_id;
+        var head_title =  $('#head_title').find('option:selected').val();
 
-        faq_question = $('.summernote1').summernote('code');
+        faq_question = $('#noticecontent').val();
         faq_answer = $('.summernote2').summernote('code');
+
         action_mode = 'modi';
         faq_id = {{ id }}
         //alert(faq_question+' / '+faq_answer+' / '+noti_id);
@@ -33,6 +39,7 @@ $('#faq_mod').on('click', function(){
             faq_question: faq_question,
             faq_answer: faq_answer,
             faq_id : faq_id,
+            head_title : head_title,
             notice: 'F',
             method: action_mode
         }).done(function(data){

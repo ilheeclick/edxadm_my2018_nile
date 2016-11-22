@@ -1,3 +1,4 @@
+var file_name, file_ext, file_size;
 $(document).ready(function(){
     var value_list;
     var id = {{id}};
@@ -9,15 +10,18 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        value_list = data.toString().split(',');
-        $('#knews_title').val(value_list[0]);
-        $('.summernote').summernote('code', value_list[1].replace(/\&\^\&/g, ','));
-        $('#odby').val(value_list[2]);
-        for(var i=3;i<value_list.length;i++){
-            html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
-            "<br>";
+
+        if(data[3] != null){
+            value_list = data[3].toString().split(',');
+            for(var i=0;i<value_list.length;i++){
+                html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
+                "<br>";
+            }
+            $('#saved_file').html(html);
         }
-        $('#saved_file').html(html);
+        $('#knews_title').val(data[0]);
+        $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
+        $('#odby').val(data[2]);
     })
 });
 
@@ -45,14 +49,14 @@ $('#knews_mod').on('click', function(e){
     try{
         var action_mode;
         var knews_title, knews_content, knews_id, odby;
-
+        var uploadfile = $('#uploadfile').val().substr(12);
 
         knews_title = $('#knews_title').val();
         knews_content = $('.summernote').summernote('code');
         odby = $('#odby').val();
         action_mode = 'modi';
         knews_id = {{id}}
-
+        //alert(uploadfile+'/'+file_name+'/'+file_ext+'/'+file_size)
 
         /* insert to database */
         $.post("/new_knews/", {
@@ -60,6 +64,10 @@ $('#knews_mod').on('click', function(e){
             nt_title: knews_title,
             nt_cont: knews_content,
             noti_id : knews_id,
+            uploadfile : uploadfile,
+            file_name : file_name,
+            file_ext : file_ext,
+            file_size : file_size,
             notice: 'K',
             odby: odby,
             method: action_mode
@@ -89,4 +97,39 @@ $('#knews_del').on('click', function(){
         console.log(data);
         location.href='/comm_k_news'
     });
+});
+
+//파일 업로드
+$(document).on('click', '#fileupload', function(){
+    $('#uploadform').ajaxForm({
+        type: "POST",
+        url:'/new_notice/',
+        beforeSubmit: function (data,form,option) {
+            if( $("#uploadfile").val() != "" ){
+
+                var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
+
+                //if($.inArray(ext, ['xls','xlsx']) == -1) {
+                //    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                //    return false;
+                //}
+            }else{
+                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                return false;
+            }
+        },
+        success: function(adata){
+            //성공후 서버에서 받은 데이터 처리
+            alert("업로드에 성공했습니다.");
+            file_name=adata[0];
+            file_ext=adata[1];
+            file_size=adata[2]
+
+        },
+        error: function() {
+
+            alert("업로드에 실패했습니다.");
+            alert(error);
+        }
+    })
 });
