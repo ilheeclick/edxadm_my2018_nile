@@ -4,6 +4,7 @@
 {% block script_down %}
 <script>
     {% include "community/script/modrefer.js" %}
+    {% include "community/script/test.js" %}
 </script>
 {% endblock %}
 {% block containor %}
@@ -43,7 +44,6 @@
                         {% csrf_token %}
                         <input type="file" name="file" id = "uploadfile" />
                         <button type="submit" id="fileupload">upload</button>
-
                     </form>
                 </div>
             </div>

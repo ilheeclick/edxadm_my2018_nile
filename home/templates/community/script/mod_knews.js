@@ -38,6 +38,7 @@ $(document).on('click', '#saved_file > a', function(){
                 file_name : file_name
             }
     }).done(function(data){
+        console.log(data);
         $("#download").prop("href", data);
         location.href=$("#download").attr('href');
     });
@@ -75,7 +76,8 @@ $('#knews_mod').on('click', function(e){
             location.href='/comm_k_news';
 
         }).fail(function(error) {
-            alert('error = ' + error.responseJSON);
+            //alert('error = ' + error.responseJSON);
+            alert('파일명이 잘못되었습니다.');
         });
     }catch(e){
         alert(e);
@@ -85,7 +87,6 @@ $('#knews_mod').on('click', function(e){
 $('#knews_del').on('click', function(){
     var id = {{id}}
     var use_yn = '{{use_yn}}';
-
     $.ajax({
         url:'/comm_k_news/',
         data:{
@@ -109,10 +110,11 @@ $(document).on('click', '#fileupload', function(){
 
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
 
-                //if($.inArray(ext, ['xls','xlsx']) == -1) {
-                //    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
-                //    return false;
-                //}
+                if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
+                    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                    alert('정해진 파일 형식만 업로드 할수 있습니다.');
+                    return false;
+                }
             }else{
                 alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
                 return false;
@@ -121,13 +123,14 @@ $(document).on('click', '#fileupload', function(){
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
             alert("업로드에 성공했습니다.");
+            console.log(adata);
             file_name=adata[0];
             file_ext=adata[1];
-            file_size=adata[2]
+            file_size=adata[2];
+            console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
 
         },
         error: function() {
-
             alert("업로드에 실패했습니다.");
             alert(error);
         }

@@ -1,0 +1,57 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}FAQ 질문현황{% endblock %}
+{% block pagetitlename_header %}FAQ 질문현황{% endblock %}
+{% block script_down %}
+<script>
+	{% include "community/script/faqrequest.datatables.ajax.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+	<!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">FAQ 질문현황</h2></div>
+        </header>
+
+        <div class="panel-body " style="padding-top: 0;"> 
+            <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+{#                <a class="btn btn-default" id="add_faq" href="/new_faq">신규등록</a>#}
+            </div>
+            {% load static %}
+{#            <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_faq" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">#}
+            <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_faqrequest" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+                <thead>
+                    <tr>
+                        <th width="">ID</th>
+                        <th width="5%">NO</th>
+                        <th width="5%">머리글</th>
+                        <th width="">질문 내용</th>
+                        <th width="15%">학생 이메일</th>
+                        <th width="15%">수신 이메일</th>
+                        <th width="10%">작성일</th>
+                    </tr>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th width="10%">No</th>
+                        <th width="10%">머리글</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+
+
+{% endblock %}

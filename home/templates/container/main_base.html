@@ -235,6 +235,13 @@
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
+                                            <li id="comm_faqrequest">
+                                                <a href="/comm_faqrequest">
+                                                    FAQ 질문현황
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <ul class="nav nav-children">
                                             <li id="comm_reference_room">
                                                 <a href="/comm_reference_room">
                                                     자료실
@@ -484,6 +491,11 @@
                             if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                             $('#community').addClass('nav-active');
                             $('#comm_faq').addClass('nav-active');
+                            break;
+                        case 'FAQ 질문현황':
+                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                            $('#community').addClass('nav-active');
+                            $('#comm_faqrequest').addClass('nav-active');
                             break;
                         case '자료실':
                             if (is_expanded != 'none') $('#community').addClass('nav-expanded');

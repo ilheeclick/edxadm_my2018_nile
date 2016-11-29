@@ -121,8 +121,6 @@ Theme Version: 	1.5.2
 			//$('#result').html( 'Event result:<br>'+result );
 		} );
 
-
-
 		$table.on('click','tr',function(){
 			var $row;
 			var cell;
@@ -133,11 +131,9 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
 			//alert(data[2]);
+			console.log(data);
 			location.href='/modi_refer/'+data[0]+'/'+data[1]
 		});
-
-
-
 	};
 
 

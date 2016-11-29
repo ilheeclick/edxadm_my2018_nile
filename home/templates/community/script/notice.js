@@ -9,9 +9,9 @@ $('#notice_save').on('click', function(e){
         var head_title =  $('#head_title').find('option:selected').val();
         uploadfile = $('#uploadfile').val().substr(12);
         noticetitle = $('#noticetitle').val();
-        //noticecontent = $('#noticecontent').val();
         noticecontent = $('.summernote').summernote('code');
-        //alert(noticetitle + ' / '  + noticecontent);
+        //alert(noticetitle + ' / '  + noticecontent + ' / '  + uploadfile);
+        //alert(file_name + ' / '  + file_ext + ' / '  + file_size);
         action_mode = 'add';
 
         /* insert to database */

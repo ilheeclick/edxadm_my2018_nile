@@ -1,3 +1,4 @@
+var file_name, file_ext, file_size;
 $(document).ready(function(){
     var value_list;
     var id = {{id}}
@@ -48,14 +49,15 @@ $('#refer_mod').on('click', function(e){
     try{
         var action_mode;
         var refertitle, refercontent, refer, refer_id, odby;
-
-
+        var uploadfile = $('#uploadfile').val().substr(12);
         refertitle = $('#refertitle').val();
         refercontent = $('.summernote').summernote('code');
         odby = $('#odby').val();
         action_mode = 'modi';
         refer_id = {{ id }}
-
+        //alert('file_name =='+file_name);
+        //alert('file_ext =='+file_ext);
+        //alert('file_size =='+file_size);
 
         /* insert to database */
         $.post("/new_refer/", {
@@ -63,6 +65,10 @@ $('#refer_mod').on('click', function(e){
             refer_title: refertitle,
             refer_cont: refercontent,
             refer_id : refer_id,
+            uploadfile : uploadfile,
+            file_name : file_name,
+            file_ext : file_ext,
+            file_size : file_size,
             refer: 'R',
             odby: odby,
             method: action_mode
@@ -92,4 +98,41 @@ $('#refer_del').on('click', function(){
         console.log(data);
         location.href='/comm_reference_room'
     });
+});
+
+//파일 업로드
+$(document).on('click', '#fileupload', function(){
+    $('#uploadform').ajaxForm({
+        type: "POST",
+        url:'/new_notice/',
+        beforeSubmit: function (data,form,option) {
+            if( $("#uploadfile").val() != "" ){
+
+                var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
+
+                if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
+                    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                    alert('정해진 파일 형식만 업로드 할수 있습니다.');
+                    return false;
+                }
+            }else{
+                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                return false;
+            }
+        },
+        success: function(adata){
+            //성공후 서버에서 받은 데이터 처리
+            alert("업로드에 성공했습니다.");
+            console.log(adata);
+            file_name=adata[0];
+            file_ext=adata[1];
+            file_size=adata[2];
+            console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
+
+        },
+        error: function() {
+            alert("업로드에 실패했습니다.");
+            alert(error);
+        }
+    })
 });

@@ -97,8 +97,9 @@ Theme Version: 	1.5.2
 			cell = $(this).closest('td');
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
-			//alert(data[2]);
-			location.href='/modi_knews/'+data[0]+'/'+data[1]
+			//alert(data[1]);
+			//console.log(data[7]);
+			location.href='/modi_knews/'+data[0]+'/'+data[7]
 		});
 
 	};

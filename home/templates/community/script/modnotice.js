@@ -121,10 +121,6 @@ $(document).on('click', '#fileupload', function(){
 });
 
 
-
-
-
-
 //삭제 처리
 $('#notice_del').on('click', function(){
     var id = {{id}}

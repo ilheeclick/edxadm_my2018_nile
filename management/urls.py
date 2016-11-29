@@ -53,6 +53,7 @@ urlpatterns = [
     url(r'^modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
     url(r'^comm_faq/', views.comm_faq, name='comm_faq'),
     url(r'^new_faq/', views.new_faq, name='new_faq'),
+    url(r'^comm_faqrequest/', views.comm_faqrequest, name='comm_faqrequest'),
     url(r'^modi_faq/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_faq, name='modi_faq'),
     url(r'^comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^new_refer/', views.new_refer, name='new_refer'),

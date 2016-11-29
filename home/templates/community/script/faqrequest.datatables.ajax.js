@@ -7,6 +7,7 @@ Theme Version: 	1.5.2
 (function($) {
 
 	'use strict';
+
 	var datatableInit = function() {
 
 		var $table = $('#datatable-ajax');
@@ -20,7 +21,7 @@ Theme Version: 	1.5.2
 			"order": [[ 1, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'notice_list'});
+				 aoData.push({ "name": 'method', "value": 'faqrequest_list'});
 			},
 
 
@@ -45,45 +46,31 @@ Theme Version: 	1.5.2
 				{
 					"targets": [0],
 					"visible": false,
-					//"deferRender": true
-					//"defaultContent": "<td>" +
-					//"<input type='checkbox' />" +
-					//"</td>"
 				},
 				{
-					"targets": [4],
+					"targets": [3],
 					"visible": false,
-
 				}
 			],
-
 			"paginate": true,
 			"initComplete": function(settings, json){
 				$('input[type="search"]').attr('placeholder', '검색하세요');
 				$('input[type="search"]').attr('class', 'form-control');
 				$('input[type="search"]').css('width', '200px');
-				//$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
 				$('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
 				$('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
-
 				$("div.toolbar").html('<b>결과 내 검색</b>');
-				this.api().columns().every( function (i) {
 
-					//if (i == 0){
-					//	return;
-					//}
-
+				this.api().columns().every( function () {
 					var column = this;
 					var select = $('<select style="width: 100%;"><option value=""></option></select>')
 						.appendTo( $(column.footer()).empty()).select2({placeholder: '선택하세요.', allowClear: true}).attr('width', '100%')
 						.on( 'change', function () {
-							var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val()
-							);
+							var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
 							column
 								.search( val ? '^'+val+'$' : '', true, false )
-								.draw();
+								.draw(true);
 						} );
 
 					column.data().unique().sort().each( function ( d, j ) {
@@ -93,38 +80,20 @@ Theme Version: 	1.5.2
 			}
 		});
 
-		$table.on( 'row-reorder', function ( e, diff, edit ) {
-
-			//alert(e);
-			//var result = 'Reorder started on row: '+edit.triggerRow.data()[1]+'<br>';
-            //
-			//for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
-			//	var rowData = table.row( diff[i].node ).data();
-            //
-			//	result += rowData[1]+' updated to be in position '+
-			//		diff[i].newData+' (was '+diff[i].oldData+')<br>';
-			//}
-            //
-			//$('#result').html( 'Event result:<br>'+result );
-		} );
-
-
-
-		$table.on('click','tr',function(){
-			var $row;
-			var cell;
-			var data;
-			var t = $('#datatable-ajax').DataTable();
-			$row = $(this).closest('tr');
-			cell = $(this).closest('td');
-			data = t.row($row.get(0)).data();
-			var noti_id = data[0];
-			//alert(data[2]);
-			//console.log(data);
-			location.href='/modi_notice/'+data[0]+'/'+data[8]
-		});
+		//$table.on('click','td',function(){
+		//	var $row;
+		//	var cell;
+		//	var data;
+		//	var t = $('#datatable-ajax').DataTable();
+		//	$row = $(this).closest('tr');
+		//	cell = $(this).closest('td');
+		//	data = t.row($row.get(0)).data();
+		//	var noti_id = data[0];
+		//	//alert('data[0] == '+data[0]+' data[1] == '+data[1]);
+		//	location.href='/modi_faq/'+data[0]+'/'+data[7]
+		//});
+		
 	};
-
 
 	$(function() {
 		datatableInit();
