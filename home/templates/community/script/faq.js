@@ -52,16 +52,14 @@
 //    });
 //});
 
-//$(document).ready(function(){
-//    //var select =  $('#head_title').find('option:selected').val();
-//    $.ajax({
-//        url : '/comm_faq',
-//        data : {
-//            method : 'head_list'
-//        }
-//    })
-//
-//});
+$(document).ready(function(){
+    //var select =  $('#head_title').find('option:selected').val();
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+    });
+
+});
 
 
 
@@ -72,11 +70,14 @@ $('#faq_save').on('click', function(e){
     try{
         var action_mode;
         var faq_question,faq_answer;
-        var head_title =  $('#head_title').find('option:selected').val();
+        var head_title =  $('#head_title').find('option:selected').attr('id');
+        if(head_title == 'null'){
+            head_title='';
+        }
 
         //faq_question = $('.summernote1').summernote('code');
         faq_question = $('#noticecontent').val();
-        faq_answer = $('.summernote2').summernote('code');
+        faq_answer = $('.summernote').summernote('code');
         //alert(faq_question + ' / '  + faq_answer);
         action_mode = 'add';
 

@@ -15,6 +15,7 @@ import os
 
 import subprocess
 import sys
+from django.views.decorators.csrf import csrf_exempt
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -722,12 +723,31 @@ def comm_faq(request):
 		if request.GET['method'] == 'faq_list':
 			aaData={}
 			cur = connection.cursor()
-			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
-					"case when use_yn = 'Y' then '보임'" \
-					"	  when use_yn = 'N' then '숨김'" \
-					"	  else '' end use_yn," \
-					"head_title, use_yn " \
-					"FROM tb_board WHERE section ='F' "
+			query = """
+					SELECT board_id,
+						   content,
+						   subject,
+						   SUBSTRING(reg_date, 1, 11),
+						   CASE
+							  WHEN use_yn = 'Y' THEN '보임'
+							  WHEN use_yn = 'N' THEN '숨김'
+							  ELSE ''
+						   END
+							  use_yn,
+						   CASE
+							  WHEN head_title = 'regist' THEN '회원가입 관련'
+							  WHEN head_title = 'login' THEN '로그인 및 계정 관련'
+							  WHEN head_title = 'site' THEN 'K-MOOC 사이트 이용 관련'
+							  WHEN head_title = 'course' THEN '강좌 수강 관련'
+							  WHEN head_title = 'tech' THEN '기술적인 문제 관련'
+							  WHEN head_title = 'etc' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title,
+						   use_yn
+					  FROM tb_board
+					 WHERE section = 'F'
+			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
 				search = request.GET['search_search']
@@ -835,7 +855,21 @@ def modi_faq(request, id, use_yn):
 		data = json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, head_title from tb_board WHERE board_id = "+id
+			query = """
+					SELECT subject,
+						   content,
+						   CASE
+							  WHEN head_title = 'regist' THEN '회원가입 관련'
+							  WHEN head_title = 'login' THEN '로그인 및 계정 관련'
+							  WHEN head_title = 'site' THEN 'K-MOOC 사이트 이용 관련'
+							  WHEN head_title = 'course' THEN '강좌 수강 관련'
+							  WHEN head_title = 'tech' THEN '기술적인 문제 관련'
+							  WHEN head_title = 'etc' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE board_id = """+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -1083,3 +1117,16 @@ def modi_refer(request, id, use_yn):
 # monitoring view
 def moni_storage(request):
 	return render(request, 'monitoring/moni_storage.html')
+
+@csrf_exempt
+def summer_upload(request):
+	if 'file' in request.FILES:
+		file = request.FILES['file']
+		filename = file._name
+		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+
+		for chunk in file.chunks():
+			fp.write(chunk)
+		fp.close()
+		return HttpResponse('http://192.168.33.15:8000/home/static/excel/notice_file/'+filename)
+	return HttpResponse('fail')

@@ -2,6 +2,10 @@ $(document).ready(function(){
     var value_list;
     var id = {{id}}
     var use_yn = '{{use_yn}}';
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+    });
     $.ajax({
         url : '/modi_faq/'+id+'/'+use_yn,
             data : {
@@ -13,7 +17,7 @@ $(document).ready(function(){
         //console.log(value_list);
         //$('.summernote1').summernote('code', value_list[0].replace(/\&\^\&/g, ','));
         $('#noticecontent').html(data[0][0]);
-        $('.summernote2').summernote('code',data[0][1].replace(/\&\^\&/g));
+        $('.summernote').summernote('code',data[0][1].replace(/\&\^\&/g));
         $('#head_title').val(data[0][2])
     })
 });
@@ -23,15 +27,17 @@ $('#faq_mod').on('click', function(){
     try{
         var action_mode;
         var faq_question, faq_answer, faq_id;
-        var head_title =  $('#head_title').find('option:selected').val();
+        var head_title =  $('#head_title').find('option:selected').attr('id');
+
+        if(head_title == 'null'){
+            head_title='';
+        }
 
         faq_question = $('#noticecontent').val();
-        faq_answer = $('.summernote2').summernote('code');
-
+        faq_answer = $('.summernote').summernote('code');
         action_mode = 'modi';
         faq_id = {{ id }}
         //alert(faq_question+' / '+faq_answer+' / '+noti_id);
-
 
         /* insert to database */
         $.post("/new_faq/", {

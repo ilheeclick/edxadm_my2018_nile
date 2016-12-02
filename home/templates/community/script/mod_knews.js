@@ -22,7 +22,37 @@ $(document).ready(function(){
         $('#knews_title').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
-    })
+    });
+    //alert('d');
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+        callbacks : {
+            onImageUpload: function (files, modules, editable){
+            sendFile(files[0], modules, editable);
+           }
+        }
+    });
+    function sendFile(file, modules, editable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            csrfmiddlewaretoken:$.cookie('csrftoken'),
+            type: 'POST',
+            url: '/summer_upload/',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                //console.log(data);
+                $("#summernote").summernote("insertImage", data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus+' '+errorThrown);
+            }
+        });
+    }
 });
 
 //파일 다운로드

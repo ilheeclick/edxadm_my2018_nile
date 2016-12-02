@@ -4,6 +4,11 @@ $(document).ready(function(){
     var id = {{id}}
     var use_yn = '{{use_yn}}'
     var html = "";
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+    });
+
     $.ajax({
         url : '/modi_notice/'+id+'/'+use_yn,
             data : {

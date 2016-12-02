@@ -1,5 +1,13 @@
 
 var file_name, file_ext, file_size;
+$(document).ready(function(){
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+    });
+});
+
+
 //신규 등록
 $('#notice_save').on('click', function(e){
     try{

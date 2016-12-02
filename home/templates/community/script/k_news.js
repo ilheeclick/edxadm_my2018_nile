@@ -38,13 +38,9 @@ $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
         url:'new_knews',
-
-
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
-
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
-
                 //if($.inArray(ext, ['xls','xlsx']) == -1) {
                 //    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
                 //    return false;
@@ -60,10 +56,8 @@ $(document).on('click', '#fileupload', function(){
             file_name=adata[0];
             file_ext=adata[1];
             file_size=adata[2]
-
         },
         error: function() {
-
             alert("업로드에 실패했습니다.");
             alert(error);
         }
@@ -72,4 +66,36 @@ $(document).on('click', '#fileupload', function(){
 
 
 
+
+$(document).ready(function(){
+    $('.summernote').summernote({
+        lang : 'ko-KR',
+        height : 400,
+        callbacks : {
+            onImageUpload: function (files, modules, editable){
+            sendFile(files[0], modules, editable);
+           }
+        }
+    });
+    function sendFile(file, modules, editable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            csrfmiddlewaretoken:$.cookie('csrftoken'),
+            type: 'POST',
+            url: '/summer_upload/',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                //console.log(data);
+                $("#summernote").summernote("insertImage", data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus+' '+errorThrown);
+            }
+        });
+    }
+});
 

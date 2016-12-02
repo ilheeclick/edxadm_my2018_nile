@@ -45,19 +45,26 @@ urlpatterns = [
     url(r'^per_certificate/',views.per_certificate, name='per_certificate'),
     url(r'^uni_certificate/',views.uni_certificate, name='uni_certificate'),
     # community url
+    # notice
     url(r'^comm_notice/', views.comm_notice, name='comm_notice'),
     url(r'^new_notice/', views.new_notice, name='new_notice'),
     url(r'^modi_notice/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_notice, name='modi_notice'),
+    # k_news
     url(r'^comm_k_news/', views.comm_k_news, name='comm_k_news'),
     url(r'^new_knews/', views.new_knews, name='new_knews'),
     url(r'^modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
+    url(r'^summer_upload/', views.summer_upload, name='summer_upload'),
+    # faq
     url(r'^comm_faq/', views.comm_faq, name='comm_faq'),
     url(r'^new_faq/', views.new_faq, name='new_faq'),
     url(r'^comm_faqrequest/', views.comm_faqrequest, name='comm_faqrequest'),
     url(r'^modi_faq/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_faq, name='modi_faq'),
+    # reference_room
     url(r'^comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^new_refer/', views.new_refer, name='new_refer'),
     url(r'^modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
     # monitoring url
     url(r'^moni_storage/', views.moni_storage, name='moni_storage'),
+
+
 ]
