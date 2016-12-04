@@ -12,10 +12,9 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
 import os
-
+from django.views.decorators.csrf import csrf_exempt
 import subprocess
 import sys
-from django.views.decorators.csrf import csrf_exempt
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -333,14 +332,31 @@ def comm_notice(request):
 		aaData={}
 		if request.GET['method'] == 'notice_list':
 			cur = connection.cursor()
-			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
-					"case when use_yn = 'Y' then '보임'" \
-					"	  when use_yn = 'N' then '숨김'" \
-					"	  else '' end use_yn," \
-					"case when odby = '0' then ''" \
-					"	  else odby end odby," \
-					"head_title, use_yn  " \
-					"FROM tb_board WHERE section ='N' "
+			query = """
+					SELECT board_id,
+						   content,
+						   subject,
+						   SUBSTRING(reg_date, 1, 11),
+						   CASE
+							  WHEN use_yn = 'Y' THEN '보임'
+							  WHEN use_yn = 'N' THEN '숨김'
+							  ELSE ''
+						   END
+							  use_yn,
+						   CASE WHEN odby = '0' THEN '' ELSE odby END odby,
+						   CASE
+							  WHEN head_title = 'noti_n' THEN '공지'
+							  WHEN head_title = 'advert_n' THEN '공고'
+							  WHEN head_title = 'guide_n' THEN '안내'
+							  WHEN head_title = 'event_n' THEN '이벤트'
+							  WHEN head_title = 'etc_n' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title,
+						   use_yn
+					  FROM tb_board
+					 WHERE section = 'N'
+			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
 				search = request.GET['search_search']
@@ -488,7 +504,22 @@ def modi_notice(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
+			# query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
+			query = """
+					SELECT subject,
+						   content,
+						   odby,
+						   CASE
+							  WHEN head_title = 'noti_n' THEN '공지'
+							  WHEN head_title = 'advert_n' THEN '공고'
+							  WHEN head_title = 'guide_n' THEN '안내'
+							  WHEN head_title = 'event_n' THEN '이벤트'
+							  WHEN head_title = 'etc_n' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE section = 'N' and board_id = """+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -538,14 +569,32 @@ def comm_k_news(request):
 		aaData={}
 		if request.GET['method'] == 'knews_list':
 			cur = connection.cursor()
-			query = "SELECT board_id, content, subject, SUBSTRING(reg_date,1,11)," \
-					"case when use_yn = 'Y' then '보임'" \
-					"	  when use_yn = 'N' then '숨김'" \
-					"	  else '' end use_yn," \
-					"case when odby = '0' then ''" \
-					"	  else odby end odby," \
-					"	  use_yn " \
-					"FROM tb_board WHERE section ='K' "
+			query = """
+					SELECT board_id,
+						   content,
+						   subject,
+						   SUBSTRING(reg_date, 1, 11),
+						   CASE
+							  WHEN use_yn = 'Y' THEN '보임'
+							  WHEN use_yn = 'N' THEN '숨김'
+							  ELSE ''
+						   END
+							  use_yn,
+						   CASE WHEN odby = '0' THEN '' ELSE odby END odby,
+						   CASE
+							  WHEN head_title = 'k_news_k' THEN 'K-MOOC소식'
+							  WHEN head_title = 'report_k' THEN '보도자료'
+							  WHEN head_title = 'u_news_k' THEN '대학뉴스'
+							  WHEN head_title = 'support_k' THEN '서포터즈이야기'
+							  WHEN head_title = 'n_new_k' THEN 'NILE소식'
+							  WHEN head_title = 'etc_k' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title,
+						   use_yn
+					  FROM tb_board
+					 WHERE section = 'K';
+			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
 				search = request.GET['search_search']
@@ -557,15 +606,16 @@ def comm_k_news(request):
 			for news in row:
 				value_list = []
 				k_news = news
-				# print notice
+				# print 'news == ',news
 				value_list.append(k_news[0])
 				value_list.append(index)
+				value_list.append(k_news[6])
 				value_list.append(k_news[2])
 				value_list.append(k_news[1])
 				value_list.append(k_news[3])
 				value_list.append(k_news[4])
 				value_list.append(k_news[5])
-				value_list.append(k_news[6])
+				value_list.append(k_news[7])
 				knews_list.append(value_list)
 				index+=1
 
@@ -622,15 +672,17 @@ def new_knews(request):
 			title = request.POST.get('knews_title')
 			content = request.POST.get('knews_content')
 			section = request.POST.get('k_news')
+			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
 			file_ext = request.POST.get('file_ext')
 			file_size = request.POST.get('file_size')
 			# print file_name,'/',file_ext,'/',file_size
+			# print 'head_title == ',head_title
 
 			cur = connection.cursor()
-			query = "insert into edxapp.tb_board(subject, content, section)"
-			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
+			query = "insert into edxapp.tb_board(subject, content, section, head_title)"
+			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"', '"+head_title+"') "
 			cur.execute(query)
 
 			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
@@ -652,14 +704,14 @@ def new_knews(request):
 			content = request.POST.get('nt_cont')
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
-
+			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
 			file_ext = request.POST.get('file_ext')
 			file_size = request.POST.get('file_size')
 
 			cur = connection.cursor()
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"', mod_date = now() where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"', mod_date = now(), head_title = '"+head_title+"' where board_id = '"+noti_id+"'"
 			cur.execute(query)
 			cur.close()
 			print 'str(file_ext) == ', str(file_ext)
@@ -680,7 +732,23 @@ def modi_knews(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby from tb_board WHERE section = 'K' and board_id = "+id
+			# query = "SELECT subject, content, odby from tb_board WHERE section = 'K' and board_id = "+id
+			query = """
+					SELECT subject,
+						   content,
+						   odby,
+						   CASE
+							  WHEN head_title = 'k_news_k' THEN 'K-MOOC소식'
+							  WHEN head_title = 'report_k' THEN '보도자료'
+							  WHEN head_title = 'u_news_k' THEN '대학뉴스'
+							  WHEN head_title = 'support_k' THEN '서포터즈이야기'
+							  WHEN head_title = 'n_new_k' THEN 'NILE소식'
+							  WHEN head_title = 'etc_k' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE section = 'K' and board_id = """+id
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -693,12 +761,13 @@ def modi_knews(request, id, use_yn):
 			cur.close()
 			# print id
 			# print 'files == ',files
-
+			# print row
 			mod_knews.append(row[0][0])
 			mod_knews.append(row[0][1])
 			mod_knews.append(row[0][2])
 			if files:
 				mod_knews.append(files)
+			mod_knews.append(row[0][3])
 			data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
@@ -735,12 +804,12 @@ def comm_faq(request):
 						   END
 							  use_yn,
 						   CASE
-							  WHEN head_title = 'regist' THEN '회원가입 관련'
-							  WHEN head_title = 'login' THEN '로그인 및 계정 관련'
-							  WHEN head_title = 'site' THEN 'K-MOOC 사이트 이용 관련'
-							  WHEN head_title = 'course' THEN '강좌 수강 관련'
-							  WHEN head_title = 'tech' THEN '기술적인 문제 관련'
-							  WHEN head_title = 'etc' THEN '기타'
+							  WHEN head_title = 'regist_f' THEN '회원가입 관련'
+							  WHEN head_title = 'login_f' THEN '로그인 및 계정 관련'
+							  WHEN head_title = 'site_f' THEN 'K-MOOC 사이트 이용 관련'
+							  WHEN head_title = 'course_f' THEN '강좌 수강 관련'
+							  WHEN head_title = 'tech_f' THEN '기술적인 문제 관련'
+							  WHEN head_title = 'etc_f' THEN '기타'
 							  ELSE ''
 						   END
 							  head_title,
@@ -859,12 +928,12 @@ def modi_faq(request, id, use_yn):
 					SELECT subject,
 						   content,
 						   CASE
-							  WHEN head_title = 'regist' THEN '회원가입 관련'
-							  WHEN head_title = 'login' THEN '로그인 및 계정 관련'
-							  WHEN head_title = 'site' THEN 'K-MOOC 사이트 이용 관련'
-							  WHEN head_title = 'course' THEN '강좌 수강 관련'
-							  WHEN head_title = 'tech' THEN '기술적인 문제 관련'
-							  WHEN head_title = 'etc' THEN '기타'
+							  WHEN head_title = 'regist_f' THEN '회원가입 관련'
+							  WHEN head_title = 'login_f' THEN '로그인 및 계정 관련'
+							  WHEN head_title = 'site_f' THEN 'K-MOOC 사이트 이용 관련'
+							  WHEN head_title = 'course_f' THEN '강좌 수강 관련'
+							  WHEN head_title = 'tech_f' THEN '기술적인 문제 관련'
+							  WHEN head_title = 'etc_f' THEN '기타'
 							  ELSE ''
 						   END
 							  head_title
@@ -932,14 +1001,37 @@ def comm_reference_room(request):
 		aaData={}
 		if request.GET['method'] == 'refer_list':
 			cur = connection.cursor()
-			query = "SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11)," \
-					"case when use_yn = 'Y' then '보임'" \
-					"	  when use_yn = 'N' then '숨김'" \
-					"	  else '' end use_yn," \
-					"case when odby = '0' then ''" \
-					"	  else odby end odby," \
-					"use_yn " \
-					"FROM tb_board WHERE section ='R' "
+			# query = """SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11),
+			# 		case when use_yn = 'Y' then '보임'
+			# 			  when use_yn = 'N' then '숨김'
+			# 			  else '' end use_yn,
+			# 		case when odby = '0' then ''
+			# 			  else odby end odby,
+			# 		use_yn
+			# 		FROM tb_board WHERE section ='R' """
+			query = """
+					SELECT board_id,
+						   use_yn,
+						   CASE
+							  WHEN head_title = 'publi_r' THEN '홍보'
+							  WHEN head_title = 'course_r' THEN '강좌안내'
+							  WHEN head_title = 'event_r' THEN '행사'
+							  WHEN head_title = 'etc_r' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title,
+						   subject,
+						   SUBSTRING(reg_date, 1, 11),
+						   CASE
+							  WHEN use_yn = 'Y' THEN '보임'
+							  WHEN use_yn = 'N' THEN '숨김'
+							  ELSE ''
+						   END
+							  use_yn,
+						   CASE WHEN odby = '0' THEN '' ELSE odby END odby
+					  FROM tb_board
+					 WHERE section = 'R';
+			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
 				search = request.GET['search_search']
@@ -956,7 +1048,7 @@ def comm_reference_room(request):
 			for r in row:
 				value_list = []
 				refer = r
-				# print notice
+				# print 'row == ',row
 				value_list.append(refer[0])
 				value_list.append(refer[1])
 				value_list.append(index)
@@ -1019,6 +1111,7 @@ def new_refer(request):
 			title = request.POST.get('refer_title')
 			content = request.POST.get('refer_cont')
 			section = request.POST.get('refer')
+			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
 			file_ext = request.POST.get('file_ext')
@@ -1026,8 +1119,8 @@ def new_refer(request):
 			# print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
-			query = "insert into edxapp.tb_board(subject, content, section)"
-			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"') "
+			query = "insert into edxapp.tb_board(subject, content, section, head_title)"
+			query +=" VALUES ('"+title+"', '"+content+"', '"+section+"', '"+head_title+"') "
 			cur.execute(query)
 
 			query2 = "select board_id from tb_board where subject ='"+title+"' and content='"+content+"'"
@@ -1049,7 +1142,7 @@ def new_refer(request):
 			content = request.POST.get('refer_cont')
 			refer_id = request.POST.get('refer_id')
 			odby = request.POST.get('odby')
-
+			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
 			file_name = request.POST.get('file_name')
 			file_ext = request.POST.get('file_ext')
@@ -1057,7 +1150,7 @@ def new_refer(request):
 
 			cur = connection.cursor()
 			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', mod_date = now() where board_id = '"+refer_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', mod_date = now(), head_title = '"+head_title+"' where board_id = '"+refer_id+"'"
 			cur.execute(query)
 			cur.close()
 
@@ -1080,7 +1173,22 @@ def modi_refer(request, id, use_yn):
 		data=json.dumps({'status':"fail"})
 		if request.GET['method'] == 'modi':
 			cur = connection.cursor()
-			query = "SELECT subject, content, odby from tb_board WHERE section = 'R' and board_id = "+id
+			# query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'R' and board_id = "+id
+			query = """
+					SELECT subject,
+						   content,
+						   odby,
+						   CASE
+							  WHEN head_title = 'publi_r' THEN '홍보'
+							  WHEN head_title = 'course_r' THEN '강좌안내'
+							  WHEN head_title = 'event_r' THEN '행사'
+							  WHEN head_title = 'etc_r' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE section = 'R' AND board_id = """+id
+
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -1098,6 +1206,7 @@ def modi_refer(request, id, use_yn):
 			mod_refer.append(row[0][2])
 			if files:
 				mod_refer.append(files)
+			mod_refer.append(row[0][3])
 			# print 'mod_knews == ',mod_refer
 			data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'file_download' :

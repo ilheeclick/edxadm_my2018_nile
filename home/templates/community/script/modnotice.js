@@ -57,7 +57,7 @@ $('#notice_mod').on('click', function(e){
         var action_mode;
         var noticetitle, noticecontent, notice, noti_id, odby;
         var uploadfile = $('#uploadfile').val().substr(12);
-        var head_title =  $('#head_title').find('option:selected').val();
+        var head_title =  $('#head_title').find('option:selected').attr('id');
         //alert(uploadfile);
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
@@ -65,7 +65,9 @@ $('#notice_mod').on('click', function(e){
         action_mode = 'modi';
         noti_id = {{ id }}
 
-
+        if(head_title == 'null'){
+            head_title = ''
+        }
         /* insert to database */
         $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),

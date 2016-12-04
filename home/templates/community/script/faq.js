@@ -71,31 +71,29 @@ $('#faq_save').on('click', function(e){
         var action_mode;
         var faq_question,faq_answer;
         var head_title =  $('#head_title').find('option:selected').attr('id');
-        if(head_title == 'null'){
-            head_title='';
-        }
-
-        //faq_question = $('.summernote1').summernote('code');
         faq_question = $('#noticecontent').val();
         faq_answer = $('.summernote').summernote('code');
-        //alert(faq_question + ' / '  + faq_answer);
         action_mode = 'add';
 
-        /* insert to database */
-        $.post("/new_faq/", {
-            csrfmiddlewaretoken:$.cookie('csrftoken'),
-            faq_question: faq_question,
-            faq_answer: faq_answer,
-            head_title : head_title,
-            section : 'F',
-            method: action_mode
-        }).done(function(data){
-            //console.log(data);
-            location.href='/comm_faq';
+        if(head_title == 'null'){
+            alert('분류를 선택하세요.');
+        }else{
+            /* insert to database */
+            $.post("/new_faq/", {
+                csrfmiddlewaretoken:$.cookie('csrftoken'),
+                faq_question: faq_question,
+                faq_answer: faq_answer,
+                head_title : head_title,
+                section : 'F',
+                method: action_mode
+            }).done(function(data){
+                //console.log(data);
+                location.href='/comm_faq';
 
-        }).fail(function(error) {
-            alert('error = ' + error.responseJSON);
-        });
+            }).fail(function(error) {
+                alert('error = ' + error.responseJSON);
+            });
+        }
     }catch(e){
         alert(e);
     }

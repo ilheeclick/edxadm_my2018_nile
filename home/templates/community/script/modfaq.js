@@ -28,32 +28,29 @@ $('#faq_mod').on('click', function(){
         var action_mode;
         var faq_question, faq_answer, faq_id;
         var head_title =  $('#head_title').find('option:selected').attr('id');
-
-        if(head_title == 'null'){
-            head_title='';
-        }
-
         faq_question = $('#noticecontent').val();
         faq_answer = $('.summernote').summernote('code');
         action_mode = 'modi';
         faq_id = {{ id }}
-        //alert(faq_question+' / '+faq_answer+' / '+noti_id);
+        if(head_title == 'null'){
+            head_title='';
+        }else{
+            /* insert to database */
+            $.post("/new_faq/", {
+                csrfmiddlewaretoken:$.cookie('csrftoken'),
+                faq_question: faq_question,
+                faq_answer: faq_answer,
+                faq_id : faq_id,
+                head_title : head_title,
+                notice: 'F',
+                method: action_mode
+            }).done(function(data){
+                location.href='/comm_faq';
 
-        /* insert to database */
-        $.post("/new_faq/", {
-            csrfmiddlewaretoken:$.cookie('csrftoken'),
-            faq_question: faq_question,
-            faq_answer: faq_answer,
-            faq_id : faq_id,
-            head_title : head_title,
-            notice: 'F',
-            method: action_mode
-        }).done(function(data){
-            location.href='/comm_faq';
-
-        }).fail(function(error) {
-            alert('error = ' + error.responseJSON);
-        });
+            }).fail(function(error) {
+                alert('error = ' + error.responseJSON);
+            });
+        }
     }catch(e){
         alert(e);
     }

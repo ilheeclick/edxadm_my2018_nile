@@ -14,7 +14,7 @@ $('#notice_save').on('click', function(e){
         //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
         var noticetitle, noticecontent, notice, uploadfile;
-        var head_title =  $('#head_title').find('option:selected').val();
+        var head_title =  $('#head_title').find('option:selected').attr('id');
         uploadfile = $('#uploadfile').val().substr(12);
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
@@ -22,6 +22,9 @@ $('#notice_save').on('click', function(e){
         //alert(file_name + ' / '  + file_ext + ' / '  + file_size);
         action_mode = 'add';
 
+        if(head_title == 'null'){
+            head_title = ''
+        }
         /* insert to database */
         $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),

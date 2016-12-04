@@ -7,16 +7,21 @@ $('#knews_save').on('click', function(e){
         var knews_title, knews_content, uploadfile;
         uploadfile = $('#uploadfile').val().substr(12);
         knews_title = $('#noticetitle').val();
-        //noticecontent = $('#noticecontent').val();
         knews_content = $('.summernote').summernote('code');
-        //alert(noticetitle + ' / '  + noticecontent);
         action_mode = 'add';
+        var head_title = $('#head_title').find('option:selected').attr('id');
+        //noticecontent = $('#noticecontent').val();
+        //alert(noticetitle + ' / '  + noticecontent);
 
+        if(head_title == 'null'){
+            head_title = ''
+        }
         /* insert to database */
         $.post("/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             knews_title: knews_title,
             knews_content: knews_content,
+            head_title : head_title,
             uploadfile: uploadfile,
             file_name: file_name,
             file_ext: file_ext,

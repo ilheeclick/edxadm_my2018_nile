@@ -46,7 +46,7 @@ Theme Version: 	1.5.2
 					//"searchable": false,
 				},
 				{
-					"targets": [3],
+					"targets": [4],
 					"visible": false,
 					//"searchable": false,
 				}
@@ -98,10 +98,9 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
 			//alert(data[1]);
-			//console.log(data[7]);
-			location.href='/modi_knews/'+data[0]+'/'+data[7]
+			console.log(data);
+			location.href='/modi_knews/'+data[0]+'/'+data[8]
 		});
-
 	};
 
 	$(function() {

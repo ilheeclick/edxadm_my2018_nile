@@ -16,7 +16,7 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-
+        console.log(data);
         if(data[3] != null){
             value_list = data[3].toString().split(',');
             for(var i=0;i<value_list.length;i++){
@@ -28,6 +28,7 @@ $(document).ready(function(){
         $('#refertitle').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
+        $('#head_title').val(data[3]);
     })
 });
 
@@ -61,16 +62,21 @@ $('#refer_mod').on('click', function(e){
         odby = $('#odby').val();
         action_mode = 'modi';
         refer_id = {{ id }}
+        var head_title = $('#head_title').find('option:selected').attr('id');
         //alert('file_name =='+file_name);
         //alert('file_ext =='+file_ext);
         //alert('file_size =='+file_size);
 
+        if(head_title == 'null'){
+            head_title = ''
+        }
         /* insert to database */
         $.post("/new_refer/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             refer_title: refertitle,
             refer_cont: refercontent,
             refer_id : refer_id,
+            head_title : head_title,
             uploadfile : uploadfile,
             file_name : file_name,
             file_ext : file_ext,

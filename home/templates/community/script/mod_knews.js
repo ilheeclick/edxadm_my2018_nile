@@ -10,7 +10,7 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-
+        console.log(data);
         if(data[3] != null){
             value_list = data[3].toString().split(',');
             for(var i=0;i<value_list.length;i++){
@@ -22,6 +22,7 @@ $(document).ready(function(){
         $('#knews_title').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
+        $('#head_title').val(data[3]);
     });
     //alert('d');
     $('.summernote').summernote({
@@ -81,6 +82,7 @@ $('#knews_mod').on('click', function(e){
         var action_mode;
         var knews_title, knews_content, knews_id, odby;
         var uploadfile = $('#uploadfile').val().substr(12);
+        var head_title =  $('#head_title').find('option:selected').attr('id');
 
         knews_title = $('#knews_title').val();
         knews_content = $('.summernote').summernote('code');
@@ -89,12 +91,16 @@ $('#knews_mod').on('click', function(e){
         knews_id = {{id}}
         //alert(uploadfile+'/'+file_name+'/'+file_ext+'/'+file_size)
 
+        if(head_title == 'null'){
+            head_title = ''
+        }
         /* insert to database */
         $.post("/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: knews_title,
             nt_cont: knews_content,
             noti_id : knews_id,
+            head_title : head_title,
             uploadfile : uploadfile,
             file_name : file_name,
             file_ext : file_ext,

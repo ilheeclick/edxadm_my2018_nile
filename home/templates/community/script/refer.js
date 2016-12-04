@@ -13,18 +13,24 @@ $('#refer_save').on('click', function(e){
         //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
         var refertitle, refercontent, notice, uploadfile;
+        action_mode = 'add';
         uploadfile = $('#uploadfile').val().substr(12);
         refertitle = $('#refertitle').val();
+        var head_title = $('#head_title').find('option:selected').attr('id');
+        //alert(noticetitle + ' / '  + noticecontent);
         //noticecontent = $('#noticecontent').val();
         refercontent = $('.summernote').summernote('code');
-        //alert(noticetitle + ' / '  + noticecontent);
-        action_mode = 'add';
         if(refertitle != '' && refercontent != ''){
+            if(head_title == 'null'){
+                head_title = ''
+            }
+
             /* insert to database */
             $.post("/new_refer/", {
                 csrfmiddlewaretoken:$.cookie('csrftoken'),
                 refer_title: refertitle,
                 refer_cont: refercontent,
+                head_title : head_title,
                 uploadfile: uploadfile,
                 file_name: file_name,
                 file_ext: file_ext,
