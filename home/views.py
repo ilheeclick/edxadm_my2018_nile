@@ -14,6 +14,7 @@ import datetime
 import os
 from django.views.decorators.csrf import csrf_exempt
 import subprocess
+import commands
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -989,9 +990,6 @@ def comm_faqrequest(request) :
 			aaData = json.dumps(list(f_request_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(aaData, 'applications/json')
 	return render_to_response('community/comm_faqrequest.html')
-# case when use_yn = 'Y' then '보임'" \
-# 					"	  when use_yn = 'N' then '숨김'" \
-# 					"	  else '' end use_yn
 
 
 
@@ -1001,14 +999,6 @@ def comm_reference_room(request):
 		aaData={}
 		if request.GET['method'] == 'refer_list':
 			cur = connection.cursor()
-			# query = """SELECT board_id, use_yn yn, subject, SUBSTRING(reg_date,1,11),
-			# 		case when use_yn = 'Y' then '보임'
-			# 			  when use_yn = 'N' then '숨김'
-			# 			  else '' end use_yn,
-			# 		case when odby = '0' then ''
-			# 			  else odby end odby,
-			# 		use_yn
-			# 		FROM tb_board WHERE section ='R' """
 			query = """
 					SELECT board_id,
 						   use_yn,
@@ -1223,8 +1213,22 @@ def modi_refer(request, id, use_yn):
 
 	return render_to_response('community/comm_modirefer.html',variables)
 
+# RSA 설정 필요
 # monitoring view
 def moni_storage(request):
+	if request.is_ajax() :
+		if request.GET['method'] == 'storage_list' :
+			aaData = {}
+			data_list = []
+			a = commands.getoutput('ssh vagrant@192.168.33.13 df -h /')
+			a_list = [1, a.split()[7], a.split()[9], a.split()[10], a.split()[11]]
+			b = commands.getoutput('ssh vagrant@192.168.33.13 df -h /dev')
+			b_list = [2, b.split()[7], b.split()[9], b.split()[10], b.split()[11]]
+			data_list.append(a_list)
+			data_list.append(b_list)
+			# print 'data_list == ',data_list
+			aaData = json.dumps(list(data_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		return HttpResponse(aaData,'applications/json')
 	return render(request, 'monitoring/moni_storage.html')
 
 @csrf_exempt
