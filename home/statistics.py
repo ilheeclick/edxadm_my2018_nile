@@ -6,6 +6,7 @@ from django.template import Context
 from django.http import HttpResponse
 from django.template.loader import get_template
 from pymongo import MongoClient
+# from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Style
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 import os
 from operator import itemgetter
@@ -13,138 +14,127 @@ import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 from openpyxl.styles import Alignment
 from time import gmtime, strftime
+from bson.objectid import ObjectId
+import logging
+import logging.handlers
+
+# 로거 인스턴스를 만든다
+logger = logging.getLogger('statistics log')
+
+# 포매터를 만든다
+fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
+
+# 스트림과 파일로 로그를 출력하는 핸들러를 각각 만든다.
+fileHandler = logging.FileHandler('./statistics.log')
+streamHandler = logging.StreamHandler()
+
+# 각 핸들러에 포매터를 지정한다.
+fileHandler.setFormatter(fomatter)
+streamHandler.setFormatter(fomatter)
+
+# 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
+logger.addHandler(fileHandler)
+logger.addHandler(streamHandler)
+
+if debug:
+    logger.setLevel(logging.DEBUG)
 
 
 # 일일통계
 def statistics_excel(request, date):
 
-    if debug: print 'Step 1',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    logger.info("statistics_excel START")
+
     # Get course name
     course_ids_all = statistics_query.course_ids_all()
 
     client = MongoClient(database_id, 27017)
     db = client.edxapp
-    pb = ''
-    ov = ''
-    org = ''
-    courseOrgs = {}
-    courseNames = {}
+    course_orgs = {}
+    course_names = {}
+    course_creates = {}
+    course_starts = {}
+    course_ends = {}
+    course_enroll_starts = {}
+    course_enroll_ends = {}
 
-    if debug: print 'Step 2',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     for c in course_ids_all:
         cid = str(c[0])
-        courseId = cid
+        course_id = cid
+        cid = course_id.split('+')[1]
+        run = course_id.split('+')[2]
 
-        if debug: print 'check >>> ', courseId, cid.split('+')[0], cid.split('+')[1], cid.split('+')[2]
+        # db.modulestore.active_versions --------------------------------------
+        cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
+        pb = cursor.get('versions').get('published-branch')
+        # course_orgs
+        course_orgs[course_id] = cursor.get('org')
+        course_creates[course_id] = cursor.get('edited_on')
+        # --------------------------------------
 
-        cid = courseId.split('+')[1]
-        run = courseId.split('+')[2]
+        # db.modulestore.structures --------------------------------------
+        cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)}, {"blocks": {"$elemMatch": {"block_type": "course"}}})
 
-        cursor = db.modulestore.active_versions.find({'course':cid, 'run': run})
-        for document in cursor:
-            pb = document.get('versions').get('published-branch')
-            org = document.get('org')
-            break
-        cursor.close()
+        course_start = cursor.get('blocks')[0].get('fields').get('start')  # course_starts
+        course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_ends
+        course_enroll_start = cursor.get('blocks')[0].get('fields').get('enrollment_start')  # course_enroll_start
+        course_enroll_end = cursor.get('blocks')[0].get('fields').get('enrollment_end')  # course_enroll_end
+        course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
 
-        cursor = db.modulestore.structures.find({'_id':pb})
-        for document in cursor:
-            blocks = document.get('blocks')
-            for block in blocks:
-                blocktype = block.get('block_type')
-                if blocktype == 'course':
-                    fields = block.get('fields')
-                    for field in fields:
-                        if field == 'display_name':
-                            if debug: print 'field :', field
-                            dn = fields['display_name']
-                            if debug: print 'dn1 :', dn
-                            # 강좌명 출력
+        if course_start is not None:
+            course_starts[course_id] = course_start
+        if course_end is not None:
+            course_ends[course_id] = course_end
+        if course_enroll_start is not None:
+            course_enroll_starts[course_id] = course_enroll_start
+        if course_enroll_end is not None:
+            course_enroll_ends[course_id] = course_enroll_end
+        if course_name is not None:
+            course_names[course_id] = course_name
 
-                            if dn == '' or dn is None:
-                                if debug: print 'dn is empty'
+        logger.debug('---------------------------------------------')
+        logger.debug(course_id + " : " + cid + " : " + run)
+        logger.debug(course_start)
+        logger.debug(course_end)
+        logger.debug(course_enroll_start)
+        logger.debug(course_enroll_end)
+        logger.debug('---------------------------------------------')
 
-                                ov = document.get('original_version')
 
-                                if debug: print 'ov :', ov
-                                cursor2 = db.modulestore.structures.find({'_id':ov})
-                                for document2 in cursor2:
-                                    blocks2 = document2.get('blocks')
-                                    for block2 in blocks2:
-                                        fields2 = block2.get('fields')
-                                        dn = fields2['display_name']
-                                        if debug: print 'dn2 :', dn
-                                        break
-                                    break
-                                cursor2.close()
 
-                            courseOrgs[courseId] = org
-                            courseNames[courseId] = dn
 
-                            print 'display_name = ', courseId, pb,  dn.encode('utf8')
 
-                            break
-                        else:
-                            continue
-                    break
-                else:
-                    continue
-            break
-        cursor.close()
+        # --------------------------------------
 
-    if debug: print 'Step 3',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    thin_border = Border(left=Side(style='thin'),
-                     right=Side(style='thin'),
-                     top=Side(style='thin'),
-                     bottom=Side(style='thin'))
+    # excel style
+    thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
 
-    if debug: print 'query1',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    user_join_new = statistics_query.user_join_new(date)
-    if debug: print 'query2',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    user_join_total = statistics_query.user_join_total(date)
-    if debug: print 'query3',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    course_count_distinct = statistics_query.course_count_distinct(date)
-    if debug: print 'query4',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    course_count_new = statistics_query.course_count_new(date)
-    if debug: print 'query5',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    course_count_total = statistics_query.course_count_total(date)
-    if debug: print 'query6',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    user_join = statistics_query.user_join(date)
+    course_count = statistics_query.course_count(date)
+    course_count_active = statistics_query.course_count_active(date)
+    course_case = statistics_query.course_case(date)
     edu_new = statistics_query.edu_new(date)
-    if debug: print 'query7',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     edu_total = statistics_query.edu_total(date)
-    if debug: print 'query8',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_new = statistics_query.age_new(date)
-    if debug: print 'query9',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_total = statistics_query.age_total(date)
-    if debug: print 'query10',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     age_edu = statistics_query.age_edu(date)
-    if debug: print 'query11',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_user = statistics_query.course_user(date)
-    if debug: print 'query12',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_univ = statistics_query.course_univ(date)
-    if debug: print 'query13',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    course_user_total =statistics_query.course_user_total(date)
-    if debug: print 'query14',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    course_univ_total =statistics_query.course_univ_total(date)
-    if debug: print 'query15',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    course_user_total = statistics_query.course_user_total(date)
+    course_univ_total = statistics_query.course_univ_total(date)
     course_age = statistics_query.course_age(date)
-    if debug: print 'query16',strftime("%Y-%m-%d %H:%M:%S", gmtime())
     course_edu = statistics_query.course_edu(date)
 
-    if debug: print 'Step 4',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    save_name = 'K-Mooc'+date+'.xlsx'
+    save_path = EXCEL_PATH + save_name
 
-    saveName = 'K-Mooc'+date+'.xlsx'
-    savePath = EXCEL_PATH + saveName
+    if os.path.isfile(save_path) and not debug:
+        logger.info('------------------------------ statistics_excel pass ------------------------------')
 
-
-
-
-    if os.path.isfile(savePath) and not debug:
-        if debug: print 'pass'
         pass
-
     else:
-        if debug: print 'make'
+        logger.info('------------------------------ statistics_excel make ------------------------------')
+
         wb = load_workbook(EXCEL_PATH + 'basic.xlsx')
         ws1 = wb['user_count']
         ws2 = wb['course_count']
@@ -152,23 +142,42 @@ def statistics_excel(request, date):
         ws4 = wb['course_age']
         ws5 = wb['course_edu']
 
-        #가입현황
-        ws1['B4'] = user_join_new
-        ws1['C4'] = user_join_total
-        ws1['D4'] = course_count_new
-        ws1['E4'] = course_count_total
-        ws1['F4'] = course_count_distinct
+        # 가입현황
+        logger.info('가입현황')
 
-        #연령구분
+        ws1['B4'] = user_join[0]
+        ws1['C4'] = user_join[2]
+        ws1['D4'] = course_count[0]
+        ws1['E4'] = course_count[2]
+        ws1['F4'] = course_count_active[0]
+
+        # 수강신청구분
+        logger.info('수강신청구분')
+
         sort = [
-            (9,0),
-            (10,1),
-            (11,2),
-            (12,3),
-            (13,4),
-            (14,5)
+            (9, 0),
+            (10, 1),
+            (11, 2)
         ]
-        if debug: print 'ws1 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+        for (number, number1) in sort:
+            ws1['C' + str(number)] = '-' if number == 11 else course_case[number1][1]
+            ws1['D' + str(number)] = '-' if number == 11 else course_case[number1][2]
+            ws1['F' + str(number)] = course_case[number1][3]
+            ws1['G' + str(number)] = course_case[number1][4]
+
+        # 연령구분
+        logger.info('연령구분')
+
+        sort = [
+            (16, 0),
+            (17, 1),
+            (18, 2),
+            (19, 3),
+            (20, 4),
+            (21, 5)
+        ]
+
         for (number, number1) in sort:
             ws1['C' + str(number)] = age_new[number1][0]
             ws1['D' + str(number)] = age_new[number1][1]
@@ -177,17 +186,19 @@ def statistics_excel(request, date):
             ws1['F' + str(number)] = age_total[number1][0]
             ws1['G' + str(number)] = age_total[number1][1]
 
-        #학력구분
+        # 학력구분
+        logger.info('학력구분')
+
         sort = [
-            (20,0),
-            (21,1),
-            (22,2),
-            (23,3),
-            (24,4),
-            (25,5),
-            (26,6),
-            (27,7),
-            (28,8)
+            (27, 0),
+            (28, 1),
+            (29, 2),
+            (30, 3),
+            (31, 4),
+            (32, 5),
+            (33, 6),
+            (34, 7),
+            (35, 8)
         ]
 
         for (number, number1) in sort:
@@ -198,14 +209,14 @@ def statistics_excel(request, date):
             ws1['F' + str(number)] = edu_total[number1][0]
             ws1['G' + str(number)] = edu_total[number1][1]
 
-        #연령학력
+        # 연령별 학력
         sort = [
-            (34,0),
-            (35,1),
-            (36,2),
-            (37,3),
-            (38,4),
-            (39,5)
+            (41, 0),
+            (42, 1),
+            (43, 2),
+            (44, 3),
+            (45, 4),
+            (46, 5)
         ]
 
         for (number, number1) in sort:
@@ -218,50 +229,68 @@ def statistics_excel(request, date):
             ws1['I' + str(number)] = age_edu[number1][6]
             ws1['J' + str(number)] = age_edu[number1][7]
             ws1['K' + str(number)] = age_edu[number1][8]
-        if debug: print 'ws1 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
+        # ======================================================================================================================================================
 
-        #======================================================================================================================================================
-
-
-        if debug: print 'ws2 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        #코스별 수강자 # LJH수정
+        # 코스별 수강자 # LJH수정
         # sorted(courseInfo.items(), key=itemgetter(1))
         rn1 = 3
         rn2 = 0
 
-
-
         sortlist = list()
         for c in course_user:
-            if str(courseOrgs[c[0]]) in dic_univ:
-                c = (dic_univ[str(courseOrgs[c[0]])],courseNames[c[0]], ) + c
+            if str(course_orgs[c[0]]) in dic_univ:
+                c = (dic_univ[str(course_orgs[c[0]])], course_names[c[0]], ) + c
             else:
-                c = (str(courseOrgs[c[0]]),courseNames[c[0]], ) + c
-            print '0================================'
-            print c
-            print '================================='
+                c = (str(course_orgs[c[0]]), course_names[c[0]], ) + c
+
+            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
+            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
+            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
+
+            c = c + (edit_date, start_date, end_date,)
+
+            logger.debug(c)
             sortlist.append(c)
 
-        sortlist.sort(key=itemgetter(0,4,1))
+        sortlist.sort(key=itemgetter(0, 4, 1))
+        # sortlist.sort(key=itemgetter(0, 6, 7, 8, 1))
         for s in sortlist:
-            orgName = s[0]
-            cName = s[1]
-            cId1 = s[3]
-            cId2 = s[4]
+
+            org_name = s[0]
+            c_name = s[1]
+            c_id1 = s[3]
+            c_id2 = s[4]
             cnt = s[5]
 
-            ws2['A' + str(rn1)] = orgName
-            ws2['B' + str(rn1)] = cName
-            ws2['C' + str(rn1)] = cId1
-            ws2['D' + str(rn1)] = cId2
-            ws2['E' + str(rn1)] = cnt
+            ws2['A' + str(rn1)] = org_name
+            ws2['B' + str(rn1)] = c_name
+            ws2['C' + str(rn1)] = c_id1
+            ws2['D' + str(rn1)] = c_id2
+            ws2['E' + str(rn1)] = s[6]
+            ws2['F' + str(rn1)] = s[7]
+            ws2['G' + str(rn1)] = s[8]
+            ws2['H' + str(rn1)] = cnt
+
             # set border
             ws2['A' + str(rn1)].border = thin_border
             ws2['B' + str(rn1)].border = thin_border
             ws2['C' + str(rn1)].border = thin_border
             ws2['D' + str(rn1)].border = thin_border
             ws2['E' + str(rn1)].border = thin_border
+            ws2['F' + str(rn1)].border = thin_border
+            ws2['G' + str(rn1)].border = thin_border
+            ws2['H' + str(rn1)].border = thin_border
+
+            ws2['A' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws2['B' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws2['C' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws2['D' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws2['E' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws2['F' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws2['G' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws2['H' + str(rn1)].alignment = Alignment(horizontal="right")
+
             rn1 += 1
             rn2 += 1
 
@@ -275,15 +304,13 @@ def statistics_excel(request, date):
             else:
                 c = (c[0], ) + c
 
-            print '1================================'
-            print c
-            print '================================='
+            logger.debug(c)
             sortlist.append(c)
 
         sortlist.sort(key=itemgetter(0))
 
-        startCharNo1 = 72 # H
-        startCharNo2 = 65 # A
+        startCharNo1 = 75
+        startCharNo2 = 65
         positionChar = ''
         isExpension = False
 
@@ -304,20 +331,17 @@ def statistics_excel(request, date):
             else:
                 positionChar = chr(startCharNo2) + chr(startCharNo1)
 
-            print 'positionChar:', positionChar
-
-
+            print 'positionChar1:', positionChar
 
             ws2[positionChar + '2'] = orgName
             ws2[positionChar + '3'] = cnt
-
-            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
 
             # set border
             ws2[positionChar + '2'].border = thin_border
             ws2[positionChar + '3'].border = thin_border
 
-
+            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
+            ws2[positionChar + '3'].alignment = Alignment(horizontal="right")
 
             # print cId, cName
             # H 열부터 횡으로 증가. Z 까지 갔을경우 AA 로 다시 시작
@@ -336,11 +360,7 @@ def statistics_excel(request, date):
 
             startCharNo1 += 1
 
-        if debug: print 'ws2 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        if debug: print 'ws3 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-
+        logger.debug('코스별 수강자 누적')
         #코스별 수강자 누적
         # sorted(courseInfo.items(), key=itemgetter(1))
         rn1 = 3
@@ -348,35 +368,66 @@ def statistics_excel(request, date):
         # for cId, cId1, cId2, cnt in course_user_total:
         sortlist = list()
         for c in course_user_total:
-            if str(courseOrgs[c[0]]) in dic_univ:
-                c = (dic_univ[str(courseOrgs[c[0]])],courseNames[c[0]], ) + c
+            if str(course_orgs[c[0]]) in dic_univ:
+                c = (dic_univ[str(course_orgs[c[0]])],course_names[c[0]], ) + c
             else:
-                c = (str(courseOrgs[c[0]]),courseNames[c[0]], ) + c
-            print '2================================'
-            print c
-            print '================================='
+                c = (str(course_orgs[c[0]]),course_names[c[0]], ) + c
+
+            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
+            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
+            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
+
+            c = c + (edit_date, start_date, end_date,)
+
+            logger.debug(c)
             sortlist.append(c)
 
-        sortlist.sort(key=itemgetter(0,4,1))
+        sortlist.sort(key=itemgetter(0, 4, 1))
+        # sortlist.sort(key=itemgetter(0, 7, 8, 9, 1))
         for s in sortlist:
             orgName = s[0]
             cName = s[1]
             cId1 = s[3]
             cId2 = s[4]
             cnt = s[5]
-            # print cId, cName
+            cnt2 = s[6]
 
+            edit_date = s[7]
+            start_date = s[8]
+            end_date = s[9]
+
+            # print cId, cName
             ws3['A' + str(rn1)] = orgName
             ws3['B' + str(rn1)] = cName
             ws3['C' + str(rn1)] = cId1
             ws3['D' + str(rn1)] = cId2
-            ws3['E' + str(rn1)] = cnt
+            ws3['E' + str(rn1)] = edit_date
+            ws3['F' + str(rn1)] = start_date
+            ws3['G' + str(rn1)] = end_date
+            ws3['H' + str(rn1)] = cnt2
+            ws3['I' + str(rn1)] = cnt
+
             # set border
             ws3['A' + str(rn1)].border = thin_border
             ws3['B' + str(rn1)].border = thin_border
             ws3['C' + str(rn1)].border = thin_border
             ws3['D' + str(rn1)].border = thin_border
             ws3['E' + str(rn1)].border = thin_border
+            ws3['F' + str(rn1)].border = thin_border
+            ws3['G' + str(rn1)].border = thin_border
+            ws3['H' + str(rn1)].border = thin_border
+            ws3['I' + str(rn1)].border = thin_border
+
+            ws3['A' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws3['B' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws3['C' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws3['D' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws3['E' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws3['F' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws3['G' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws3['H' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws3['I' + str(rn1)].alignment = Alignment(horizontal="right")
+
             rn1 += 1
             rn2 += 1
 
@@ -388,21 +439,21 @@ def statistics_excel(request, date):
                 c = (dic_univ[c[0]],) + c
             else:
                 c = (c[0], ) + c
-            print '3================================'
-            print c
-            print '================================='
+
+            logger.debug(c)
             sortlist.append(c)
 
         sortlist.sort(key=itemgetter(0))
 
-        startCharNo1 = 72 # H
-        startCharNo2 = 65 # A
+        startCharNo1 = 76
+        startCharNo2 = 65
         positionChar = ''
         isExpension = False
 
         for s in sortlist:
             orgName = s[0]
             cnt = s[2]
+            cnt2 = s[3]
 
             if startCharNo1 > 90:
                 startCharNo1 = 65
@@ -417,61 +468,74 @@ def statistics_excel(request, date):
             else:
                 positionChar = chr(startCharNo2) + chr(startCharNo1)
 
-            print 'positionChar:', positionChar
+            logger.debug(positionChar)
 
             ws3[positionChar + '2'] = orgName
-            ws3[positionChar + '3'] = cnt
-
-            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
+            ws3[positionChar + '3'] = cnt2
+            ws3[positionChar + '4'] = cnt
 
             # set border
             ws3[positionChar + '2'].border = thin_border
             ws3[positionChar + '3'].border = thin_border
+            ws3[positionChar + '4'].border = thin_border
+
+            ws3[positionChar + '2'].alignment = Alignment(horizontal="center")
+            ws3[positionChar + '3'].alignment = Alignment(horizontal="right")
+            ws3[positionChar + '4'].alignment = Alignment(horizontal="right")
 
             startCharNo1 += 1
-        if debug: print 'ws3 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-
-        if debug: print 'ws4 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        #코스별 연령
+        # 코스별 연령
+        logger.debug('코스별 연령')
         rn1 = 3
-        # for org, cId, cId1, cId2, age1, age2, age3, age4, age5, age6 in course_age:
         sortlist = list()
         for c in course_age:
             if c[0] in dic_univ:
                 c = (dic_univ[c[0]],) + c
             else:
                 c = (c[0],) + c
-            print '4================================'
-            print c
-            print '================================='
 
+            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
+            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
+            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
+            course_name = course_names[c[2]] if c[2] in course_names else None
+            c = c + (edit_date, start_date, end_date, course_name,)
+
+            logger.debug(c)
             sortlist.append(c)
 
-        sortlist.sort(key=itemgetter(0,4,1))
+        sortlist.sort(key=itemgetter(0, 4, 1))
+        # sortlist.sort(key=itemgetter(0, 12, 13, 14, 15))
         for s in sortlist:
-            orgName = s[0]
-            cName = courseNames[s[2]]
-            cId1 = s[3]
-            cId2 = s[4]
+            org = s[0]
+            cname = s[15]
+            course = s[3]
+            run = s[4]
             age1 = s[5]
             age2 = s[6]
             age3 = s[7]
             age4 = s[8]
             age5 = s[9]
             age6 = s[10]
+            total = s[11]
+            edit_date = s[12]
+            start_date = s[13]
+            end_date = s[14]
 
-            ws4['A' + str(rn1)] = orgName
-            ws4['B' + str(rn1)] = cName
-            ws4['C' + str(rn1)] = cId1
-            ws4['D' + str(rn1)] = cId2
-            ws4['E' + str(rn1)] = age1
-            ws4['F' + str(rn1)] = age2
-            ws4['G' + str(rn1)] = age3
-            ws4['H' + str(rn1)] = age4
-            ws4['I' + str(rn1)] = age5
-            ws4['J' + str(rn1)] = age6
+            ws4['A' + str(rn1)] = org
+            ws4['B' + str(rn1)] = cname
+            ws4['C' + str(rn1)] = course
+            ws4['D' + str(rn1)] = run
+            ws4['E' + str(rn1)] = edit_date
+            ws4['F' + str(rn1)] = start_date
+            ws4['G' + str(rn1)] = end_date
+            ws4['H' + str(rn1)] = age1
+            ws4['I' + str(rn1)] = age2
+            ws4['J' + str(rn1)] = age3
+            ws4['K' + str(rn1)] = age4
+            ws4['L' + str(rn1)] = age5
+            ws4['M' + str(rn1)] = age6
+            ws4['N' + str(rn1)] = total
 
             # set border
             ws4['A' + str(rn1)].border = thin_border
@@ -484,31 +548,56 @@ def statistics_excel(request, date):
             ws4['H' + str(rn1)].border = thin_border
             ws4['I' + str(rn1)].border = thin_border
             ws4['J' + str(rn1)].border = thin_border
+            ws4['K' + str(rn1)].border = thin_border
+            ws4['L' + str(rn1)].border = thin_border
+            ws4['M' + str(rn1)].border = thin_border
+            ws4['N' + str(rn1)].border = thin_border
+
+            ws4['A' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws4['B' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws4['C' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws4['D' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws4['E' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws4['F' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws4['G' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws4['H' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['I' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['J' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['K' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['L' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['M' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws4['N' + str(rn1)].alignment = Alignment(horizontal="right")
+
             rn1 += 1
-        if debug: print 'ws4 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-        if debug: print 'ws5 start',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        #코스별 학력
+        # 코스별 학력
+        logger.debug('코스별 학력')
         rn1 = 3
-        # for org, cId, cId1, cId2, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in course_edu:
         sortlist = list()
         for c in course_edu:
             if c[0] in dic_univ:
                 c = (dic_univ[c[0]],) + c
             else:
                 c = (c[0],) + c
-            print '5================================'
-            print c
-            print '================================='
+
+            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
+            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
+            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
+            course_name = course_names[c[2]] if c[2] in course_names else None
+            c = c + (edit_date, start_date, end_date, course_name,)
+
+            logger.debug(c)
             sortlist.append(c)
 
-        sortlist.sort(key=itemgetter(0,4,1))
+        sortlist.sort(key=itemgetter(0, 4, 1))
+        # sortlist.sort(key=itemgetter(0, 15, 16, 17, 18))
+
         for s in sortlist:
-            orgName = s[0]
-            cName = courseNames[s[2]]
-            cId1 = s[3]
-            cId2 = s[4]
+
+            org = s[0]
+            cname = s[18]
+            course = s[3]
+            run = s[4]
             edu1 = s[5]
             edu2 = s[6]
             edu3 = s[7]
@@ -518,22 +607,29 @@ def statistics_excel(request, date):
             edu7 = s[11]
             edu8 = s[12]
             edu9 = s[13]
+            total = s[14]
+            edit_date = s[15]
+            start_date = s[16]
+            end_date = s[17]
             # print cId, cName
 
-            ws5['A' + str(rn1)] = orgName
-
-            ws5['B' + str(rn1)] = cName
-            ws5['C' + str(rn1)] = cId1
-            ws5['D' + str(rn1)] = cId2
-            ws5['E' + str(rn1)] = edu1
-            ws5['F' + str(rn1)] = edu2
-            ws5['G' + str(rn1)] = edu3
-            ws5['H' + str(rn1)] = edu4
-            ws5['I' + str(rn1)] = edu5
-            ws5['J' + str(rn1)] = edu6
-            ws5['K' + str(rn1)] = edu7
-            ws5['L' + str(rn1)] = edu8
-            ws5['M' + str(rn1)] = edu9
+            ws5['A' + str(rn1)] = org
+            ws5['B' + str(rn1)] = cname
+            ws5['C' + str(rn1)] = course
+            ws5['D' + str(rn1)] = run
+            ws5['E' + str(rn1)] = edit_date
+            ws5['F' + str(rn1)] = start_date
+            ws5['G' + str(rn1)] = end_date
+            ws5['H' + str(rn1)] = edu1
+            ws5['I' + str(rn1)] = edu2
+            ws5['J' + str(rn1)] = edu3
+            ws5['K' + str(rn1)] = edu4
+            ws5['L' + str(rn1)] = edu5
+            ws5['M' + str(rn1)] = edu6
+            ws5['N' + str(rn1)] = edu7
+            ws5['O' + str(rn1)] = edu8
+            ws5['P' + str(rn1)] = edu9
+            ws5['Q' + str(rn1)] = total
 
             # set border
             ws5['A' + str(rn1)].border = thin_border
@@ -549,20 +645,38 @@ def statistics_excel(request, date):
             ws5['K' + str(rn1)].border = thin_border
             ws5['L' + str(rn1)].border = thin_border
             ws5['M' + str(rn1)].border = thin_border
+            ws5['N' + str(rn1)].border = thin_border
+            ws5['O' + str(rn1)].border = thin_border
+            ws5['P' + str(rn1)].border = thin_border
+            ws5['Q' + str(rn1)].border = thin_border
+
+            ws5['A' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws5['B' + str(rn1)].alignment = Alignment(horizontal="left")
+            ws5['C' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws5['D' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws5['E' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws5['F' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws5['G' + str(rn1)].alignment = Alignment(horizontal="center")
+            ws5['H' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['I' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['J' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['K' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['L' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['M' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['N' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['O' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['P' + str(rn1)].alignment = Alignment(horizontal="right")
+            ws5['Q' + str(rn1)].alignment = Alignment(horizontal="right")
+
             rn1 += 1
 
-
-        if debug: print 'ws2 end',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        wb.save(savePath)
-        if debug: print 'Step 5',strftime("%Y-%m-%d %H:%M:%S", gmtime())
-    return HttpResponse('/home/static/excel/' + saveName, content_type='application/vnd.ms-excel')
+        wb.save(save_path)
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
+def certificate_excel(request, course_id):
 
-def certificate_excel(request, courseId):
-
-    print 'courseId', courseId
+    print 'course_id', course_id
 
     d = datetime.date.today()
     year = d.year
@@ -578,7 +692,7 @@ def certificate_excel(request, courseId):
     print 'month', month
     print 'day', day
 
-    certificates = statistics_query.certificateInfo(courseId)
+    certificates = statistics_query.certificateInfo(course_id)
 
     courseName = ''
     pb = ''
@@ -630,17 +744,10 @@ def certificate_excel(request, courseId):
                      top=Side(style='thin'),
                      bottom=Side(style='thin'))
 
-    # dic_status = {'KHUk':u'경희대학교', 'KoreaUnivK':u'고려대학교', 'PNUk':u'부산대학교', 'SNUk':u'서울대학교', 'SKKUk':u'성균관대학교',
-    #             'YSUk':u'연세대학교', 'EwhaK':u'이화여자대학교', 'POSTECHk':u'포항공과대학교', 'KAISTk':u'한국과학기술원', 'HYUk':u'한양대학교'}
-
-
     ws1 = wb['certificates']
 
     row = 2
     for c in certificates:
-        print '0------------------------------------------------------------------'
-        print c
-        print '-------------------------------------------------------------------'
 
         ws1['A' + str(row)] = dic_univ[c[0]]
         ws1['B' + str(row)] = courseName
@@ -657,26 +764,24 @@ def certificate_excel(request, courseId):
         ws1['F' + str(row)].border = thin_border
         row += 1
 
-    saveName = 'K-Mooc_certificate_' + str(cid)  + '_' + str(year) + str(month) + str(day) +'.xlsx'
-    savePath = '/Users/redukyo/workspace/management3/static/excel/' + saveName
+    save_name = 'K-Mooc_certificate_' + str(cid)  + '_' + str(year) + str(month) + str(day) +'.xlsx'
+    save_path = EXCEL_PATH + save_name
 
-    wb.save(savePath)
+    wb.save(save_path)
 
-    return HttpResponse('/home/static/excel/' + saveName, content_type='application/vnd.ms-excel')
-
+    return HttpResponse('/manage/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+# def statistics_excel3(request, date):
 def statistics_excel1(request, date):
 
-    saveName = 'K-MoocMonth'+date+'.xlsx'
-    savePath = EXCEL_PATH + saveName
+    save_name = 'K-MoocMonth'+date+'.xlsx'
+    save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(savePath) and not debug:
-        print '@@@ statistics_excel3 make pass'
+    if os.path.isfile(save_path) and not debug:
         pass
     else:
-        print '@@@ statistics_excel3 make working'
         member_statistics = statistics_query.member_statistics(date)
         country_statistics = statistics_query.country_statistics(date)
-
+        print 'country_statistics == ',country_statistics
         wb = load_workbook(EXCEL_PATH + 'basic_month.xlsx')
         thin_border = Border(left=Side(style='thin'),
                          right=Side(style='thin'),
@@ -945,7 +1050,7 @@ def statistics_excel1(request, date):
 
         row = 8
         for c in country_statistics:
-
+            print 'c == ', c
             ws1['A' + str(row)] = c[0]
             ws1['B' + str(row)] = c[1]
             ws1['C' + str(row)] = COUNTRIES[c[0]]
@@ -955,9 +1060,6 @@ def statistics_excel1(request, date):
             ws1['C' + str(row)].border = thin_border
             row += 1
 
-        wb.save(savePath)
+        wb.save(save_path)
 
-    return HttpResponse('/home/static/excel/' + saveName, content_type='application/vnd.ms-excel')
-
-
-
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
