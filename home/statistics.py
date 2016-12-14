@@ -177,8 +177,10 @@ def statistics_excel(request, date):
             (20, 4),
             (21, 5)
         ]
-
+        print 'age_new == ',age_new
         for (number, number1) in sort:
+            print 'number == ',number
+            print 'age_new[number1][0] == ',age_new[number1][0]
             ws1['C' + str(number)] = age_new[number1][0]
             ws1['D' + str(number)] = age_new[number1][1]
 

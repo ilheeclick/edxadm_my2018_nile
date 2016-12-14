@@ -8,8 +8,22 @@
     <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/statistics.py" afterPath="$PROJECT_DIR$/home/statistics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/statistics_query.py" afterPath="$PROJECT_DIR$/home/statistics_query.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_faq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_faqrequest.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_faqrequest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/faq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/faq.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" afterPath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/refer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/refer.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/container/main_base.html" afterPath="$PROJECT_DIR$/home/templates/container/main_base.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/monitoring/moni_storage.html" afterPath="$PROJECT_DIR$/home/templates/monitoring/moni_storage.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" afterPath="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/views.py" afterPath="$PROJECT_DIR$/home/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/management/settings.py" afterPath="$PROJECT_DIR$/management/settings.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/statistics.log" afterPath="$PROJECT_DIR$/statistics.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/statistics_query.log" afterPath="$PROJECT_DIR$/statistics_query.log" />
     </list>
     <ignored path="management.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,114 +61,143 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/management/settings.py">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/home/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.539627">
+              <caret line="975" column="32" selection-start-line="975" selection-start-column="32" selection-end-line="975" selection-end-column="32" />
+              <folding>
+                <element signature="e#24#89#0" expanded="true" />
+                <marker date="1481709177000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1481709177000" expanded="true" signature="11036:11680" placeholder="SELECT board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="12757:12819" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="14369:14435" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="14557:14639" placeholder="select board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="14803:15011" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="15707:15860" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="15969:16170" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="16678:17087" placeholder="SELECT subje..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="17358:17433" placeholder="select attat..tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="18436:19150" placeholder="SELECT board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="20171:20233" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="21791:21857" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="21979:22061" placeholder="select board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="22225:22433" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="22989:23161" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="23313:23514" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="24004:24483" placeholder="SELECT subje..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="24618:24681" placeholder="select attat..tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="25695:26369" placeholder="SELECT board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="27458:27520" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="28905:28971" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="29406:29560" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="29947:30411" placeholder="SELECT subje..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="31052:31211" placeholder="SELECT id, h..faq_request..." />
+                <marker date="1481709177000" expanded="true" signature="32044:32625" placeholder="SELECT board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="33633:33695" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="35191:35257" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="35379:35461" placeholder="select board..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="35625:35833" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="36536:36690" placeholder="update edxap..." />
+                <marker date="1481709177000" expanded="true" signature="36799:37001" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1481709177000" expanded="true" signature="37506:37870" placeholder="SELECT subje..tb_board..." />
+                <marker date="1481709177000" expanded="true" signature="38006:38069" placeholder="select attat..tb_board_attach..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mod_knews.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/mod_knews.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="107" column="28" selection-start-line="107" selection-start-column="28" selection-end-line="107" selection-end-column="28" />
+              <caret line="59" column="5" selection-start-line="31" selection-start-column="4" selection-end-line="59" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="statistics.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/home/statistics.py">
+      <file leaf-file-name="notice.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5423729">
-              <caret line="932" column="30" selection-start-line="932" selection-start-column="30" selection-end-line="932" selection-end-column="30" />
-              <folding>
-                <element signature="e#24#56#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0">
+              <caret line="29" column="7" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="statistics_query.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/statistics_query.py">
+      <file leaf-file-name="refer.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/refer.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="841" column="23" selection-start-line="841" selection-start-column="23" selection-end-line="841" selection-end-column="23" />
-              <folding>
-                <element signature="e#24#41#0" expanded="true" />
-                <marker date="1481163115000" expanded="true" signature="1023:1449" placeholder="SELECT sum(i..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="1669:2284" placeholder="SELECT sum(i..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="2528:2962" placeholder="SELECT count..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="3177:4224" placeholder="SELECT 1 gub..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="3177:6273" placeholder="SELECT 1 gub..." />
-                <marker date="1481163115000" expanded="true" signature="3253:3433" placeholder="select count..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="3465:3641" placeholder="select count..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="4251:5414" placeholder="SELECT 2 gub..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="4327:4528" placeholder="select count..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="4560:4757" placeholder="select count..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="5443:6251" placeholder="SELECT 3 gub..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="6485:8641" placeholder="SELECT ifnul..rn..." />
-                <marker date="1481163115000" expanded="true" signature="6547:6653" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="6610:6625" placeholder="SELECT @rn :..." />
-                <marker date="1481163115000" expanded="true" signature="6704:8581" placeholder="SELECT CASE ..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="8856:10599" placeholder="SELECT sum(b..rn..." />
-                <marker date="1481163115000" expanded="true" signature="8906:9012" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="8969:8984" placeholder="SELECT @rn :..." />
-                <marker date="1481163115000" expanded="true" signature="9063:10501" placeholder="SELECT CASE ..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="10812:12425" placeholder="SELECT ifnul..rn..." />
-                <marker date="1481163115000" expanded="true" signature="10874:10980" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="10937:10952" placeholder="SELECT @rn :..." />
-                <marker date="1481163115000" expanded="true" signature="11031:12368" placeholder="SELECT age, ..age..." />
-                <marker date="1481163115000" expanded="true" signature="11208:12335" placeholder="SELECT CASE ..date_format..." />
-                <marker date="1481163115000" expanded="true" signature="11802:12331" placeholder="SELECT (date..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="12640:14312" placeholder="SELECT b.mal..rn..." />
-                <marker date="1481163115000" expanded="true" signature="12680:12786" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="12743:12758" placeholder="SELECT @rn :..." />
-                <marker date="1481163115000" expanded="true" signature="12837:14255" placeholder="SELECT age, ..age..." />
-                <marker date="1481163115000" expanded="true" signature="13014:14222" placeholder="SELECT CASE ..date_format..." />
-                <marker date="1481163115000" expanded="true" signature="13608:14218" placeholder="SELECT (date..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="14521:17528" placeholder="SELECT b.aa,..rn..." />
-                <marker date="1481163115000" expanded="true" signature="14717:14823" placeholder="SELECT (@rn ..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="14780:14795" placeholder="SELECT @rn :..." />
-                <marker date="1481163115000" expanded="true" signature="14874:17471" placeholder="SELECT age, ..age..." />
-                <marker date="1481163115000" expanded="true" signature="16119:17438" placeholder="SELECT CASE ..date_format..." />
-                <marker date="1481163115000" expanded="true" signature="16748:17434" placeholder="SELECT (date..auth_userprofile..." />
-                <marker date="1481163115000" expanded="true" signature="17745:19166" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="18023:18405" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="18450:19116" placeholder="SELECT cours..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="18496:19112" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="19393:20913" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="19703:20085" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="20130:20863" placeholder="SELECT cours..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="20182:20859" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="21127:23311" placeholder="SELECT subst..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="21891:22273" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="22318:23232" placeholder="SELECT cours..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="22445:23228" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="23525:26589" placeholder="SELECT subst..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="25100:25501" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="25550:26479" placeholder="SELECT cours..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="25644:26475" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="26806:27125" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="27329:28876" placeholder="SELECT a.org..substring..." />
-                <marker date="1481163115000" expanded="true" signature="27376:28057" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="28102:28792" placeholder="SELECT subst..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="29103:30717" placeholder="SELECT a.org..substring..." />
-                <marker date="1481163115000" expanded="true" signature="29173:29854" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-                <marker date="1481163115000" expanded="true" signature="29899:30633" placeholder="SELECT subst..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="30939:31424" placeholder="SELECT a.cou..course_id..." />
-                <marker date="1481163115000" expanded="true" signature="30974:31135" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1481163115000" expanded="true" signature="31156:31280" placeholder="SELECT a.cou..student_courseenrollment..." />
-                <marker date="1481163115000" expanded="true" signature="31636:32533" placeholder="SELECT subst..certificates_generatedcertificate..." />
-                <marker date="1481163115000" expanded="true" signature="32760:33169" placeholder="SELECT sum(i..auth_user..." />
-                <marker date="1481163115000" expanded="true" signature="33390:33758" placeholder="SELECT b.cou..auth_user..." />
-              </folding>
+              <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/management/urls.py">
+      <file leaf-file-name="k_news.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/k_news.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
-              <folding>
-                <element signature="e#619#660#0" expanded="true" />
-              </folding>
+              <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="faq.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="84" column="5" selection-start-line="84" selection-start-column="5" selection-end-line="84" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main_base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-24.583334">
+              <caret line="494" column="33" selection-start-line="494" selection-start-column="33" selection-end-line="494" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="comm_faq.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faq.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.75">
+              <caret line="14" column="44" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="comm_faqrequest.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faqrequest.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-5.875">
+              <caret line="14" column="60" selection-start-line="14" selection-start-column="60" selection-end-line="14" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="comm_modinotice.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-7.5">
+              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -193,13 +236,9 @@
         <option value="$PROJECT_DIR$/home/templates/certificate/per_certificate.html" />
         <option value="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/static/assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.rowReorder.js" />
-        <option value="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_notice.html" />
         <option value="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/faq.datatables.ajax.js" />
-        <option value="$PROJECT_DIR$/home/templates/container/main_base.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/comm_faqrequest.html" />
         <option value="$PROJECT_DIR$/home/templates/community/script/faqrequest.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/static/assets/vendor/summernote/summernote.js" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
@@ -214,21 +253,25 @@
         <option value="$PROJECT_DIR$/home/templates/community/script/refer.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_modirefer.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/refer.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/faq.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
-        <option value="$PROJECT_DIR$/home/views.py" />
         <option value="$PROJECT_DIR$/home/templates/community/script/moni.datatables.ajax.js" />
-        <option value="$PROJECT_DIR$/home/templates/monitoring/moni_storage.html" />
         <option value="$PROJECT_DIR$/home/statistics_query.py" />
         <option value="$PROJECT_DIR$/management/urls.py" />
-        <option value="$PROJECT_DIR$/management/settings.py" />
         <option value="$PROJECT_DIR$/home/statistics.py" />
+        <option value="$PROJECT_DIR$/home/templates/monitoring/moni_storage.html" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
+        <option value="$PROJECT_DIR$/management/settings.py" />
+        <option value="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/refer.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/faq.js" />
+        <option value="$PROJECT_DIR$/home/templates/container/main_base.html" />
+        <option value="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
+        <option value="$PROJECT_DIR$/home/templates/community/comm_faqrequest.html" />
+        <option value="$PROJECT_DIR$/home/views.py" />
       </list>
     </option>
   </component>
@@ -267,6 +310,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -327,6 +372,138 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stastic" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="container" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="community" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="community" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="script" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="certificate" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="static" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -353,10 +530,34 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="excel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="notice_file" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -749,9 +950,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1005" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16613418" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18210863" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.492233" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5113636" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -829,16 +1030,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/management/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
-          <folding>
-            <element signature="e#619#660#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/certificate/certificate.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7001167">
@@ -846,24 +1037,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.6376307">
-          <caret line="94" column="31" selection-start-line="94" selection-start-column="31" selection-end-line="94" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/user_manage1/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.021468926">
           <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/certificate/uni_certificate.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-27.5">
-          <caret line="44" column="14" selection-start-line="44" selection-start-column="14" selection-end-line="44" selection-end-column="14" />
         </state>
       </provider>
     </entry>
@@ -924,13 +1101,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35423926">
-          <caret line="400" column="63" selection-start-line="400" selection-start-column="57" selection-end-line="400" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/static/assets/vendor/summernote/summernote.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -952,27 +1122,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certifiate.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.033898305">
-          <caret line="28" column="32" selection-start-line="28" selection-start-column="32" selection-end-line="28" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.559322">
-          <caret line="155" column="42" selection-start-line="155" selection-start-column="30" selection-end-line="155" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newknews.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5749129">
-          <caret line="33" column="54" selection-start-line="27" selection-start-column="24" selection-end-line="33" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modifaq.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.36817655">
@@ -987,13 +1136,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5226481">
-          <caret line="30" column="56" selection-start-line="30" selection-start-column="56" selection-end-line="30" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_k_news.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.625">
@@ -1005,13 +1147,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modi_knews.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43554008">
-          <caret line="25" column="57" selection-start-line="25" selection-start-column="57" selection-end-line="25" selection-end-column="57" />
         </state>
       </provider>
     </entry>
@@ -1050,48 +1185,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40677965">
-          <caret line="24" column="8" selection-start-line="24" selection-start-column="8" selection-end-line="26" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6779661">
-          <caret line="69" column="9" selection-start-line="69" selection-start-column="9" selection-end-line="69" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/mod_knews.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5084746">
-          <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/k_news.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2542373">
-          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/refer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5084746">
-          <caret line="69" column="52" selection-start-line="69" selection-start-column="52" selection-end-line="69" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modrefer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.66101694">
-          <caret line="71" column="9" selection-start-line="71" selection-start-column="9" selection-end-line="71" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newfaq.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1099,38 +1192,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="77" column="33" selection-start-line="77" selection-start-column="33" selection-end-line="78" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/state/mana_state.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.3066202">
           <caret line="75" column="14" selection-start-line="12" selection-start-column="0" selection-end-line="75" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faq.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.05110337">
-          <caret line="5" column="59" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modfaq.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13559322">
-          <caret line="29" column="78" selection-start-line="29" selection-start-column="78" selection-end-line="29" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faqrequest.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.05226481">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="7" selection-end-column="14" />
         </state>
       </provider>
     </entry>
@@ -1148,162 +1213,235 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/monitoring/moni_storage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3379791">
-          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10169491">
-          <caret line="1197" column="39" selection-start-line="1197" selection-start-column="39" selection-end-line="1197" selection-end-column="39" />
-          <folding>
-            <element signature="e#24#89#0" expanded="false" />
-            <marker date="1481160453000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1481160453000" expanded="true" signature="11036:11680" placeholder="SELECT board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="12757:12819" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="14369:14435" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="14557:14639" placeholder="select board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="14803:15011" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="15707:15860" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="15969:16170" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="16678:17087" placeholder="SELECT subje..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="17358:17433" placeholder="select attat..tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="18436:19150" placeholder="SELECT board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="20171:20233" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="21791:21857" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="21979:22061" placeholder="select board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="22225:22433" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="22989:23161" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="23313:23514" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="24004:24483" placeholder="SELECT subje..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="24618:24681" placeholder="select attat..tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="25695:26369" placeholder="SELECT board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="27458:27520" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="28905:28971" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="29406:29560" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="29947:30411" placeholder="SELECT subje..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="31046:31384" placeholder="SELECT id, c..faq_request..." />
-            <marker date="1481160453000" expanded="true" signature="32212:32793" placeholder="SELECT board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="33801:33863" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="35359:35425" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="35547:35629" placeholder="select board..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="35793:36001" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="36704:36858" placeholder="update edxap..." />
-            <marker date="1481160453000" expanded="true" signature="36967:37169" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1481160453000" expanded="true" signature="37674:38038" placeholder="SELECT subje..tb_board..." />
-            <marker date="1481160453000" expanded="true" signature="38174:38237" placeholder="select attat..tb_board_attach..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/management/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
-          <folding>
-            <element signature="e#619#660#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/management/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="107" column="28" selection-start-line="107" selection-start-column="28" selection-end-line="107" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/statistics_query.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="841" column="23" selection-start-line="841" selection-start-column="23" selection-end-line="841" selection-end-column="23" />
-          <folding>
-            <element signature="e#24#41#0" expanded="true" />
-            <marker date="1481163115000" expanded="true" signature="1023:1449" placeholder="SELECT sum(i..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="1669:2284" placeholder="SELECT sum(i..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="2528:2962" placeholder="SELECT count..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="3177:4224" placeholder="SELECT 1 gub..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="3177:6273" placeholder="SELECT 1 gub..." />
-            <marker date="1481163115000" expanded="true" signature="3253:3433" placeholder="select count..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="3465:3641" placeholder="select count..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="4251:5414" placeholder="SELECT 2 gub..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="4327:4528" placeholder="select count..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="4560:4757" placeholder="select count..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="5443:6251" placeholder="SELECT 3 gub..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="6485:8641" placeholder="SELECT ifnul..rn..." />
-            <marker date="1481163115000" expanded="true" signature="6547:6653" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="6610:6625" placeholder="SELECT @rn :..." />
-            <marker date="1481163115000" expanded="true" signature="6704:8581" placeholder="SELECT CASE ..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="8856:10599" placeholder="SELECT sum(b..rn..." />
-            <marker date="1481163115000" expanded="true" signature="8906:9012" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="8969:8984" placeholder="SELECT @rn :..." />
-            <marker date="1481163115000" expanded="true" signature="9063:10501" placeholder="SELECT CASE ..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="10812:12425" placeholder="SELECT ifnul..rn..." />
-            <marker date="1481163115000" expanded="true" signature="10874:10980" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="10937:10952" placeholder="SELECT @rn :..." />
-            <marker date="1481163115000" expanded="true" signature="11031:12368" placeholder="SELECT age, ..age..." />
-            <marker date="1481163115000" expanded="true" signature="11208:12335" placeholder="SELECT CASE ..date_format..." />
-            <marker date="1481163115000" expanded="true" signature="11802:12331" placeholder="SELECT (date..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="12640:14312" placeholder="SELECT b.mal..rn..." />
-            <marker date="1481163115000" expanded="true" signature="12680:12786" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="12743:12758" placeholder="SELECT @rn :..." />
-            <marker date="1481163115000" expanded="true" signature="12837:14255" placeholder="SELECT age, ..age..." />
-            <marker date="1481163115000" expanded="true" signature="13014:14222" placeholder="SELECT CASE ..date_format..." />
-            <marker date="1481163115000" expanded="true" signature="13608:14218" placeholder="SELECT (date..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="14521:17528" placeholder="SELECT b.aa,..rn..." />
-            <marker date="1481163115000" expanded="true" signature="14717:14823" placeholder="SELECT (@rn ..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="14780:14795" placeholder="SELECT @rn :..." />
-            <marker date="1481163115000" expanded="true" signature="14874:17471" placeholder="SELECT age, ..age..." />
-            <marker date="1481163115000" expanded="true" signature="16119:17438" placeholder="SELECT CASE ..date_format..." />
-            <marker date="1481163115000" expanded="true" signature="16748:17434" placeholder="SELECT (date..auth_userprofile..." />
-            <marker date="1481163115000" expanded="true" signature="17745:19166" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="18023:18405" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="18450:19116" placeholder="SELECT cours..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="18496:19112" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="19393:20913" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="19703:20085" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="20130:20863" placeholder="SELECT cours..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="20182:20859" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="21127:23311" placeholder="SELECT subst..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="21891:22273" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="22318:23232" placeholder="SELECT cours..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="22445:23228" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="23525:26589" placeholder="SELECT subst..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="25100:25501" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="25550:26479" placeholder="SELECT cours..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="25644:26475" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="26806:27125" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="27329:28876" placeholder="SELECT a.org..substring..." />
-            <marker date="1481163115000" expanded="true" signature="27376:28057" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="28102:28792" placeholder="SELECT subst..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="29103:30717" placeholder="SELECT a.org..substring..." />
-            <marker date="1481163115000" expanded="true" signature="29173:29854" placeholder="SELECT DISTI..course_structures_coursestructure..." />
-            <marker date="1481163115000" expanded="true" signature="29899:30633" placeholder="SELECT subst..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="30939:31424" placeholder="SELECT a.cou..course_id..." />
-            <marker date="1481163115000" expanded="true" signature="30974:31135" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1481163115000" expanded="true" signature="31156:31280" placeholder="SELECT a.cou..student_courseenrollment..." />
-            <marker date="1481163115000" expanded="true" signature="31636:32533" placeholder="SELECT subst..certificates_generatedcertificate..." />
-            <marker date="1481163115000" expanded="true" signature="32760:33169" placeholder="SELECT sum(i..auth_user..." />
-            <marker date="1481163115000" expanded="true" signature="33390:33758" placeholder="SELECT b.cou..auth_user..." />
-          </folding>
+          <caret line="301" column="34" selection-start-line="301" selection-start-column="34" selection-end-line="301" selection-end-column="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/statistics.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="188" column="58" selection-start-line="188" selection-start-column="58" selection-end-line="188" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/uni_certificate.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.25">
+          <caret line="42" column="84" selection-start-line="42" selection-start-column="74" selection-end-line="42" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/test.datatables.ajax.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.62711865">
+          <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certifiate.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="27.11111">
+          <caret line="46" column="20" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="94" column="43" selection-start-line="94" selection-start-column="34" selection-end-line="94" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/monitoring/moni_storage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13937283">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/management/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="86" column="30" selection-start-line="86" selection-start-column="30" selection-end-line="86" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.833333">
+          <caret line="115" column="99" selection-start-line="115" selection-start-column="99" selection-end-line="115" selection-end-column="99" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_newknews.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33101046">
+          <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modi_knews.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.75">
+          <caret line="30" column="59" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.5">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modrefer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59322035">
+          <caret line="35" column="5" selection-start-line="35" selection-start-column="5" selection-end-line="35" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modfaq.js">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5423729">
-          <caret line="932" column="30" selection-start-line="932" selection-start-column="30" selection-end-line="932" selection-end-column="30" />
+          <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5762712">
+          <caret line="34" column="5" selection-start-line="6" selection-start-column="4" selection-end-line="34" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/mod_knews.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="5" selection-start-line="31" selection-start-column="4" selection-end-line="59" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="7" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/refer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/k_news.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/faq.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="84" column="5" selection-start-line="84" selection-start-column="5" selection-end-line="84" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-24.583334">
+          <caret line="494" column="33" selection-start-line="494" selection-start-column="33" selection-end-line="494" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faq.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.75">
+          <caret line="14" column="44" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_faqrequest.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.875">
+          <caret line="14" column="60" selection-start-line="14" selection-start-column="60" selection-end-line="14" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.539627">
+          <caret line="975" column="32" selection-start-line="975" selection-start-column="32" selection-end-line="975" selection-end-column="32" />
           <folding>
-            <element signature="e#24#56#0" expanded="true" />
+            <element signature="e#24#89#0" expanded="true" />
+            <marker date="1481709177000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1481709177000" expanded="true" signature="11036:11680" placeholder="SELECT board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="12757:12819" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="14369:14435" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="14557:14639" placeholder="select board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="14803:15011" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="15707:15860" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="15969:16170" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="16678:17087" placeholder="SELECT subje..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="17358:17433" placeholder="select attat..tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="18436:19150" placeholder="SELECT board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="20171:20233" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="21791:21857" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="21979:22061" placeholder="select board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="22225:22433" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="22989:23161" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="23313:23514" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="24004:24483" placeholder="SELECT subje..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="24618:24681" placeholder="select attat..tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="25695:26369" placeholder="SELECT board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="27458:27520" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="28905:28971" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="29406:29560" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="29947:30411" placeholder="SELECT subje..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="31052:31211" placeholder="SELECT id, h..faq_request..." />
+            <marker date="1481709177000" expanded="true" signature="32044:32625" placeholder="SELECT board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="33633:33695" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="35191:35257" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="35379:35461" placeholder="select board..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="35625:35833" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="36536:36690" placeholder="update edxap..." />
+            <marker date="1481709177000" expanded="true" signature="36799:37001" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1481709177000" expanded="true" signature="37506:37870" placeholder="SELECT subje..tb_board..." />
+            <marker date="1481709177000" expanded="true" signature="38006:38069" placeholder="select attat..tb_board_attach..." />
           </folding>
         </state>
       </provider>

@@ -8,7 +8,32 @@ $(document).ready(function(){
     $('.summernote').summernote({
         lang : 'ko-KR',
         height : 400,
+        callbacks : {
+            onImageUpload: function (files, modules, editable){
+            sendFile(files[0], modules, editable);
+           }
+        }
     });
+    function sendFile(file, modules, editable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            csrfmiddlewaretoken:$.cookie('csrftoken'),
+            type: 'POST',
+            url: '/summer_upload/',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                //console.log(data);
+                $("#summernote").summernote("insertImage", data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus+' '+errorThrown);
+            }
+        });
+    }
 
     $.ajax({
         url : '/modi_refer/'+id+'/'+use_yn,
@@ -17,8 +42,8 @@ $(document).ready(function(){
             }
     }).done(function(data){
         console.log(data);
-        if(data[3] != null){
-            value_list = data[3].toString().split(',');
+        if(data[4] != null){
+            value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
                 html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
                 "<br>";
@@ -28,7 +53,11 @@ $(document).ready(function(){
         $('#refertitle').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
-        $('#head_title').val(data[3]);
+        if(data[3] == ''){
+            $('#head_title').val('선택하세요.');
+        }else{
+            $('#head_title').val(data[3]);
+        }
     })
 });
 
@@ -122,11 +151,11 @@ $(document).on('click', '#fileupload', function(){
 
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
 
-                if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
-                    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
-                    alert('정해진 파일 형식만 업로드 할수 있습니다.');
-                    return false;
-                }
+                //if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
+                //    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                //    alert('정해진 파일 형식만 업로드 할수 있습니다.');
+                //    return false;
+                //}
             }else{
                 alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
                 return false;

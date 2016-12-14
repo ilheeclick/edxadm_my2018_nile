@@ -399,3 +399,696 @@
 [DEBUG|statistics.py:589] 2016-12-08 11:35:00,101 > (u'w', u'w', u'course-v1:w+w+w', u'w', u'w', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'w')
 [DEBUG|statistics.py:589] 2016-12-08 11:35:00,101 > (u'x', u'x', u'course-v1:x+x+x', u'x', u'x', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'x')
 [DEBUG|statistics.py:589] 2016-12-08 11:35:00,101 > (u'zzz', u'zzz', u'course-v1:zzz+z+z', u'z', u'z', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'dsaz')
+[INFO|statistics.py:46] 2016-12-10 11:23:04,769 > statistics_excel START
+[INFO|statistics.py:136] 2016-12-10 11:23:04,848 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 11:23:04,903 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 11:23:04,903 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 11:23:04,903 > 연령구분
+[INFO|statistics.py:46] 2016-12-10 11:23:34,218 > statistics_excel START
+[INFO|statistics.py:136] 2016-12-10 11:23:34,285 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 11:23:34,317 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 11:23:34,317 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 11:23:34,317 > 연령구분
+[INFO|statistics.py:46] 2016-12-10 11:25:10,025 > statistics_excel START
+[INFO|statistics.py:136] 2016-12-10 11:25:10,060 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 11:25:10,113 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 11:25:10,113 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 11:25:10,113 > 연령구분
+[INFO|statistics.py:46] 2016-12-10 11:25:55,399 > statistics_excel START
+[INFO|statistics.py:136] 2016-12-10 11:25:55,432 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 11:25:55,483 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 11:25:55,484 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 11:25:55,484 > 연령구분
+[INFO|statistics.py:46] 2016-12-10 11:27:35,894 > statistics_excel START
+[INFO|statistics.py:136] 2016-12-10 11:27:35,933 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 11:27:35,983 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 11:27:35,984 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 11:27:35,984 > 연령구분
+[INFO|statistics.py:46] 2016-12-10 12:14:57,393 > statistics_excel START
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,449 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,450 > course-v1:11+2+2 : 2 : 2
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,450 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,450 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,450 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,450 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,450 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,470 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,470 > course-v1:123+123+123 : 123 : 123
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,470 > 2016-01-12 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,470 > 2016-12-01 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,470 > 2016-01-12 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,470 > 2016-12-01 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,470 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,471 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,471 > course-v1:123+132+21 : 132 : 21
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,472 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,472 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,472 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,472 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,472 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,473 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,473 > course-v1:1234+4+123 : 4 : 123
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,473 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,474 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,474 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,474 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,474 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,476 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,476 > course-v1:4+65+1 : 65 : 1
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,476 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,476 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,476 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,476 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,476 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,479 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,479 > course-v1:4+65+d : 65 : d
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,479 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,479 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,479 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,479 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,479 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,481 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,481 > course-v1:c+c+c : c : c
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,481 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,481 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,481 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,481 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,481 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,494 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,494 > course-v1:cum+cum1+123 : cum1 : 123
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,494 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,494 > 2016-11-30 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,494 > 2016-11-23 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,494 > 2016-11-26 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,494 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,501 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,502 > course-v1:cum+cum1+2016_cum : cum1 : 2016_cum
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,502 > 2016-11-24 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,502 > 2016-11-30 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,502 > 2016-11-23 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,502 > 2016-11-26 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,502 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,503 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,503 > course-v1:cum123123231213+cum1+123123123 : cum1 : 123123123
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,503 > 2016-11-24 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,503 > 2016-11-30 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,504 > 2016-11-23 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,504 > 2016-11-26 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,504 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,517 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,517 > course-v1:ko+ko01+ko01 : ko01 : ko01
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,517 > 2016-11-11 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,517 > 2016-12-31 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,517 > 2016-11-11 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,517 > 2016-12-31 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,517 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,519 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,519 > course-v1:lol+1234+123 : 1234 : 123
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,519 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,519 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,519 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,519 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,519 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,538 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,539 > course-v1:org+num+run : num : run
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,539 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,539 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,539 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,539 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,539 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,540 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,541 > course-v1:q+q+q : q : q
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,541 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,541 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,541 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,541 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,541 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,542 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,542 > course-v1:sdfgh+sdgf+h : sdgf : h
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,543 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,543 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,543 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,543 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,543 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,544 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,544 > course-v1:v+v+v : v : v
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,544 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,544 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,544 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,544 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,545 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,546 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,546 > course-v1:w+w+w : w : w
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,546 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,546 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,546 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,546 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,546 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,547 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,547 > course-v1:x+x+x : x : x
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,548 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,548 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,548 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,548 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,548 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 12:14:57,550 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 12:14:57,550 > course-v1:zzz+z+z : z : z
+[DEBUG|statistics.py:97] 2016-12-10 12:14:57,550 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 12:14:57,550 > None
+[DEBUG|statistics.py:99] 2016-12-10 12:14:57,550 > None
+[DEBUG|statistics.py:100] 2016-12-10 12:14:57,550 > None
+[DEBUG|statistics.py:101] 2016-12-10 12:14:57,550 > ---------------------------------------------
+[INFO|statistics.py:136] 2016-12-10 12:14:57,730 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 12:14:57,784 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 12:14:57,785 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 12:14:57,785 > 연령구분
+[INFO|statistics.py:192] 2016-12-10 12:14:57,785 > 학력구분
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,786 > ('11', u'\ubbf8\uac1c\uac15 \uac15\uc88c', u'course-v1:11+2+2', u'2', u'2', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,786 > ('123', u'123', u'course-v1:123+123+123', u'123', u'123', 0L, '2016-12-02', '2016-01-12', '2016-12-01')
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,786 > ('123', u'\uadf8\ub0e5', u'course-v1:123+132+21', u'132', u'21', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,786 > ('1234', u'\ub9cc\ub4e4\uc5b4', u'course-v1:1234+4+123', u'4', u'123', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,786 > ('4', u'\ubd05\uc2dc\ub2e4', u'course-v1:4+65+1', u'65', u'1', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('4', u'\ubd05\uc2dc\ub2e4', u'course-v1:4+65+d', u'65', u'd', 0L, '2016-12-05', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('c', u'c', u'course-v1:c+c+c', u'c', u'c', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+123', u'cum1', u'123', 0L, '2016-12-04', '2030-01-01', '2016-11-30')
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', 0L, '2016-11-24', '2016-11-24', '2016-11-30')
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('cum123123231213', u'\ucef4\uacf5', u'course-v1:cum123123231213+cum1+123123123', u'cum1', u'123123123', 0L, '2016-12-04', '2016-11-24', '2016-11-30')
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('ko', u'\uac1c\uac15 \uac15\uc88c', u'course-v1:ko+ko01+ko01', u'ko01', u'ko01', 0L, '2016-12-04', '2016-11-11', '2016-12-31')
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,787 > ('lol', u'lol', u'course-v1:lol+1234+123', u'1234', u'123', 0L, '2016-12-02', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('org', u'course', u'course-v1:org+num+run', u'num', u'run', 0L, '2016-12-05', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('q', u'q', u'course-v1:q+q+q', u'q', u'q', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('sdfgh', u'bgghg', u'course-v1:sdfgh+sdgf+h', u'sdgf', u'h', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('v', u'v', u'course-v1:v+v+v', u'v', u'v', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('w', u'w', u'course-v1:w+w+w', u'w', u'w', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('x', u'x', u'course-v1:x+x+x', u'x', u'x', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-10 12:14:57,788 > ('zzz', u'dsaz', u'course-v1:zzz+z+z', u'z', u'z', 0L, '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'11', u'11', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'123', u'123', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'1234', u'1234', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'4', u'4', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'c', u'c', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'cum', u'cum', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'cum123123231213', u'cum123123231213', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'ko', u'ko', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'lol', u'lol', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,799 > (u'org', u'org', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'q', u'q', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'sdfgh', u'sdfgh', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'v', u'v', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'w', u'w', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'x', u'x', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 12:14:57,800 > (u'zzz', u'zzz', 0L)
+[DEBUG|statistics.py:365] 2016-12-10 12:14:57,804 > 코스별 수강자 누적
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,804 > ('11', u'\ubbf8\uac1c\uac15 \uac15\uc88c', u'course-v1:11+2+2', u'2', u'2', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,804 > ('123', u'123', u'course-v1:123+123+123', u'123', u'123', 2L, Decimal('2'), '2016-12-02', '2016-01-12', '2016-12-01')
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,804 > ('123', u'\uadf8\ub0e5', u'course-v1:123+132+21', u'132', u'21', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,804 > ('1234', u'\ub9cc\ub4e4\uc5b4', u'course-v1:1234+4+123', u'4', u'123', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('4', u'\ubd05\uc2dc\ub2e4', u'course-v1:4+65+1', u'65', u'1', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('4', u'\ubd05\uc2dc\ub2e4', u'course-v1:4+65+d', u'65', u'd', 1L, Decimal('1'), '2016-12-05', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('c', u'c', u'course-v1:c+c+c', u'c', u'c', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+123', u'cum1', u'123', 1L, Decimal('1'), '2016-12-04', '2030-01-01', '2016-11-30')
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', 2L, Decimal('1'), '2016-11-24', '2016-11-24', '2016-11-30')
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,805 > ('cum123123231213', u'\ucef4\uacf5', u'course-v1:cum123123231213+cum1+123123123', u'cum1', u'123123123', 1L, Decimal('1'), '2016-12-04', '2016-11-24', '2016-11-30')
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('ko', u'\uac1c\uac15 \uac15\uc88c', u'course-v1:ko+ko01+ko01', u'ko01', u'ko01', 2L, Decimal('1'), '2016-12-04', '2016-11-11', '2016-12-31')
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('lol', u'lol', u'course-v1:lol+1234+123', u'1234', u'123', 1L, Decimal('1'), '2016-12-02', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('org', u'course', u'course-v1:org+num+run', u'num', u'run', 1L, Decimal('1'), '2016-12-05', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('q', u'q', u'course-v1:q+q+q', u'q', u'q', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('sdfgh', u'bgghg', u'course-v1:sdfgh+sdgf+h', u'sdgf', u'h', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('v', u'v', u'course-v1:v+v+v', u'v', u'v', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,806 > ('w', u'w', u'course-v1:w+w+w', u'w', u'w', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,807 > ('x', u'x', u'course-v1:x+x+x', u'x', u'x', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-10 12:14:57,807 > ('zzz', u'dsaz', u'course-v1:zzz+z+z', u'z', u'z', 1L, Decimal('1'), '2016-12-04', '2030-01-01', None)
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'11', u'11', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'123', u'123', 3L, Decimal('3'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'1234', u'1234', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'4', u'4', 2L, Decimal('2'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'c', u'c', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'cum', u'cum', 3L, Decimal('2'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,819 > (u'cum123123231213', u'cum123123231213', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'ko', u'ko', 2L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'lol', u'lol', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'org', u'org', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'q', u'q', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'sdfgh', u'sdfgh', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'v', u'v', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'w', u'w', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'x', u'x', 1L, Decimal('1'))
+[DEBUG|statistics.py:445] 2016-12-10 12:14:57,820 > (u'zzz', u'zzz', 1L, Decimal('1'))
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,820 > L
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,821 > M
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,821 > N
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,821 > O
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,822 > P
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,822 > Q
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,822 > R
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,823 > S
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,823 > T
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,824 > U
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,824 > V
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,824 > W
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,825 > X
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,826 > Y
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,826 > Z
+[DEBUG|statistics.py:473] 2016-12-10 12:14:57,827 > AA
+[DEBUG|statistics.py:491] 2016-12-10 12:14:57,827 > 코스별 연령
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'11', u'11', u'course-v1:11+2+2', u'2', u'2', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'\ubbf8\uac1c\uac15 \uac15\uc88c')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'123', u'123', u'course-v1:123+123+123', u'123', u'123', Decimal('2'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 2L, '2016-12-02', '2016-01-12', '2016-12-01', u'123')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'123', u'123', u'course-v1:123+132+21', u'132', u'21', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'\uadf8\ub0e5')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'1234', u'1234', u'course-v1:1234+4+123', u'4', u'123', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'\ub9cc\ub4e4\uc5b4')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'4', u'4', u'course-v1:4+65+1', u'65', u'1', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'\ubd05\uc2dc\ub2e4')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,828 > (u'4', u'4', u'course-v1:4+65+d', u'65', u'd', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-05', '2030-01-01', None, u'\ubd05\uc2dc\ub2e4')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,829 > (u'c', u'c', u'course-v1:c+c+c', u'c', u'c', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'c')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,829 > (u'cum', u'cum', u'course-v1:cum+cum1+123', u'cum1', u'123', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,829 > (u'cum', u'cum', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-11-24', '2016-11-24', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,829 > (u'cum123123231213', u'cum123123231213', u'course-v1:cum123123231213+cum1+123123123', u'cum1', u'123123123', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2016-11-24', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,829 > (u'ko', u'ko', u'course-v1:ko+ko01+ko01', u'ko01', u'ko01', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2016-11-11', '2016-12-31', u'\uac1c\uac15 \uac15\uc88c')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'lol', u'lol', u'course-v1:lol+1234+123', u'1234', u'123', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-02', '2030-01-01', None, u'lol')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'org', u'org', u'course-v1:org+num+run', u'num', u'run', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-05', '2030-01-01', None, u'course')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'q', u'q', u'course-v1:q+q+q', u'q', u'q', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'q')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'sdfgh', u'sdfgh', u'course-v1:sdfgh+sdgf+h', u'sdgf', u'h', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'bgghg')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'v', u'v', u'course-v1:v+v+v', u'v', u'v', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'v')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'w', u'w', u'course-v1:w+w+w', u'w', u'w', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'w')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'x', u'x', u'course-v1:x+x+x', u'x', u'x', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'x')
+[DEBUG|statistics.py:506] 2016-12-10 12:14:57,830 > (u'zzz', u'zzz', u'course-v1:zzz+z+z', u'z', u'z', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-12-04', '2030-01-01', None, u'dsaz')
+[DEBUG|statistics.py:576] 2016-12-10 12:14:57,850 > 코스별 학력
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,850 > (u'11', u'11', u'course-v1:11+2+2', u'2', u'2', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'\ubbf8\uac1c\uac15 \uac15\uc88c')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,850 > (u'123', u'123', u'course-v1:123+123+123', u'123', u'123', Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 2L, '2016-12-02', '2016-01-12', '2016-12-01', u'123')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,850 > (u'123', u'123', u'course-v1:123+132+21', u'132', u'21', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'\uadf8\ub0e5')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'1234', u'1234', u'course-v1:1234+4+123', u'4', u'123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'\ub9cc\ub4e4\uc5b4')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'4', u'4', u'course-v1:4+65+1', u'65', u'1', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'\ubd05\uc2dc\ub2e4')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'4', u'4', u'course-v1:4+65+d', u'65', u'd', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-05', '2030-01-01', None, u'\ubd05\uc2dc\ub2e4')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'c', u'c', u'course-v1:c+c+c', u'c', u'c', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'c')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'cum', u'cum', u'course-v1:cum+cum1+123', u'cum1', u'123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'cum', u'cum', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', Decimal('0'), Decimal('0'), Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 1L, '2016-11-24', '2016-11-24', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'cum123123231213', u'cum123123231213', u'course-v1:cum123123231213+cum1+123123123', u'cum1', u'123123123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2016-11-24', '2016-11-30', u'\ucef4\uacf5')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,851 > (u'ko', u'ko', u'course-v1:ko+ko01+ko01', u'ko01', u'ko01', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2016-11-11', '2016-12-31', u'\uac1c\uac15 \uac15\uc88c')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'lol', u'lol', u'course-v1:lol+1234+123', u'1234', u'123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-02', '2030-01-01', None, u'lol')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'org', u'org', u'course-v1:org+num+run', u'num', u'run', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-05', '2030-01-01', None, u'course')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'q', u'q', u'course-v1:q+q+q', u'q', u'q', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'q')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'sdfgh', u'sdfgh', u'course-v1:sdfgh+sdgf+h', u'sdgf', u'h', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'bgghg')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'v', u'v', u'course-v1:v+v+v', u'v', u'v', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'v')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'w', u'w', u'course-v1:w+w+w', u'w', u'w', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'w')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,852 > (u'x', u'x', u'course-v1:x+x+x', u'x', u'x', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'x')
+[DEBUG|statistics.py:591] 2016-12-10 12:14:57,853 > (u'zzz', u'zzz', u'course-v1:zzz+z+z', u'z', u'z', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 1L, '2016-12-04', '2030-01-01', None, u'dsaz')
+[INFO|statistics.py:46] 2016-12-10 13:38:00,875 > statistics_excel START
+[DEBUG|statistics.py:95] 2016-12-10 13:38:00,980 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:00,980 > course-v1:EwhaK+EW10164K+2015-01 : EW10164K : 2015-01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:00,981 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:00,981 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:00,982 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:00,982 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:00,983 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:00,997 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:00,997 > course-v1:EwhaK+EW10164K+2016-01 : EW10164K : 2016-01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:00,998 > 2016-03-02 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:00,998 > 2016-06-18 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:00,998 > 2016-02-19 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:00,999 > 2016-03-21 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:00,999 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,001 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,001 > course-v1:EwhaK+EW10771K+2015-03 : EW10771K : 2015-03
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,001 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,002 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,002 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,003 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,003 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,034 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,035 > course-v1:EwhaK+EW10771K+2016-04 : EW10771K : 2016-04
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,035 > 2016-03-02 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,036 > 2016-06-18 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,036 > 2016-02-19 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,037 > 2016-03-21 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,037 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,040 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,041 > course-v1:EwhaK+EW11151K+2015-02 : EW11151K : 2015-02
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,041 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,044 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,044 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,044 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,044 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,063 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,063 > course-v1:EwhaK+EW11151K+2016-02 : EW11151K : 2016-02
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,064 > 2016-03-02 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,064 > 2016-06-18 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,064 > 2016-02-19 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,064 > 2016-03-21 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,065 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,067 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,067 > course-v1:EwhaK+EW36387K+2015-04 : EW36387K : 2015-04
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,067 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,067 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,069 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,069 > 2016-02-14 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,070 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,083 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,084 > course-v1:EwhaK+EW36387K+2016-03 : EW36387K : 2016-03
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,084 > 2016-03-02 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,085 > 2016-06-18 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,085 > 2016-02-19 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,085 > 2016-03-21 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,086 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,096 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,097 > course-v1:HYUk+HYUARE4100k+2015_C1 : HYUARE4100k : 2015_C1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,097 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,097 > 2016-01-31 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,098 > 2015-10-13 15:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,098 > 2016-01-24 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,098 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,107 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,107 > course-v1:HYUk+HYUBUS3099k+2015_C1 : HYUBUS3099k : 2015_C1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,108 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,108 > 2016-01-31 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,108 > 2015-10-13 15:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,109 > 2016-01-24 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,109 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,114 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,114 > course-v1:HYUk+HYUPAD3004k+2015_C1 : HYUPAD3004k : 2015_C1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,116 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,116 > 2016-02-07 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,116 > 2015-10-13 15:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,116 > 2016-01-24 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,117 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,127 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,128 > course-v1:HYUk+HYUSOC1053k+2015_C1 : HYUSOC1053k : 2015_C1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,128 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,128 > 2016-02-01 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,129 > 2015-10-13 15:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,129 > 2016-01-24 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,129 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,131 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,131 > course-v1:KAISTk+KCS470+2015_K0201 : KCS470 : 2015_K0201
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,132 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,132 > 2016-02-15 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,132 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,133 > 2016-02-15 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,133 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,153 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,154 > course-v1:KAISTk+KMAE251+2015_K0101 : KMAE251 : 2015_K0101
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,154 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,154 > 2016-02-29 23:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,155 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,155 > 2016-02-21 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,155 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,186 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,186 > course-v1:KHUk+KH101+2015_KH01 : KH101 : 2015_KH01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,186 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,187 > 2016-02-28 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,187 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,187 > 2016-01-31 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,188 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,198 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,198 > course-v1:KHUk+KH102+2015_KH02 : KH102 : 2015_KH02
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,198 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,198 > 2016-02-28 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,199 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,199 > 2016-01-31 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,199 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,201 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,201 > course-v1:KoreaUnivK+ku_cpx_001+2015_A03 : ku_cpx_001 : 2015_A03
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,202 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,202 > 2016-01-03 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,202 > None
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,202 > None
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,202 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,242 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,243 > course-v1:KoreaUnivK+ku_hum_001+2015_A02 : ku_hum_001 : 2015_A02
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,244 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,244 > 2016-01-03 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,244 > 2015-10-13 15:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,244 > 2016-01-03 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,245 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,246 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,247 > course-v1:KoreaUnivK+ku_phy_001+2015_A04 : ku_phy_001 : 2015_A04
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,247 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,248 > 2016-02-14 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,248 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,248 > 2016-02-14 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,248 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,250 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,250 > course-v1:KoreaUnivK+ku_soc_001+2015_A01 : ku_soc_001 : 2015_A01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,250 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,251 > 2016-01-31 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,252 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,252 > 2016-01-31 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,252 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,257 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,258 > course-v1:PNUk+PL_C01+2015_KM_001 : PL_C01 : 2015_KM_001
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,258 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,258 > 2016-02-08 23:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,259 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,259 > 2015-11-30 23:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,259 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,262 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,263 > course-v1:PNUk+SE_C01+2015_KM_002 : SE_C01 : 2015_KM_002
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,263 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,264 > 2016-02-08 23:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,264 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,264 > 2016-01-01 09:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,265 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,288 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,288 > course-v1:POSTECHk+POSTECH.EECE341k+2015-01 : POSTECH.EECE341k : 2015-01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,289 > 2015-11-01 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,289 > 2016-02-29 15:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,289 > 2015-10-12 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,289 > 2015-11-22 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,290 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,308 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,308 > course-v1:POSTECHk+POSTECH.EECE341k+2016-1 : POSTECH.EECE341k : 2016-1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,308 > 2016-03-01 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,309 > 2016-06-17 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,309 > 2016-02-01 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,309 > 2016-03-20 15:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,310 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,312 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,313 > course-v1:POSTECHk+POSTECH.MECH583k+2015-01 : POSTECH.MECH583k : 2015-01
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,313 > 2015-11-01 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,313 > 2016-01-31 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,313 > 2015-10-12 16:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,314 > 2015-11-22 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,314 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,332 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,333 > course-v1:POSTECHk+POSTECH.MECH583k+2016-1 : POSTECH.MECH583k : 2016-1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,333 > 2016-02-29 15:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,333 > 2016-05-28 14:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,334 > 2016-02-01 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,334 > 2016-03-20 14:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,334 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,336 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,337 > course-v1:SKKUk+COS2034.01x+2015_SKKU1 : COS2034.01x : 2015_SKKU1
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,337 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,337 > 2016-01-24 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,337 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,337 > 2016-01-23 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,338 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,340 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,341 > course-v1:SKKUk+GEDT011.01x+2015_SKKU2 : GEDT011.01x : 2015_SKKU2
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,341 > 2015-10-26 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,341 > 2016-01-24 23:30:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,342 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,342 > 2016-01-24 23:30:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,342 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,345 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,346 > course-v1:SNUk+SNU044.008k+2015 : SNU044.008k : 2015
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,346 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,346 > 2016-01-31 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,347 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,347 > None
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,347 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,350 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,350 > course-v1:SNUk+SNU046.101k+2015 : SNU046.101k : 2015
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,350 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,350 > 2016-01-31 15:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,351 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,351 > None
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,352 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,358 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,358 > course-v1:YSUk+YSU_BIZ03k+2015_T2 : YSU_BIZ03k : 2015_T2
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,359 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,359 > 2016-01-31 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,359 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,360 > 2016-01-21 00:00:00
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,360 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,361 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,361 > course-v1:YSUk+YSU_KOR02k+2015_T2 : YSU_KOR02k : 2015_T2
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,362 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,362 > 2016-01-31 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,362 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,362 > None
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,363 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-10 13:38:01,364 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-10 13:38:01,364 > course-v1:YSUk+YSU_UCC01k+2015_T2 : YSU_UCC01k : 2015_T2
+[DEBUG|statistics.py:97] 2016-12-10 13:38:01,364 > 2015-11-02 00:00:00
+[DEBUG|statistics.py:98] 2016-12-10 13:38:01,365 > 2016-02-15 00:00:00
+[DEBUG|statistics.py:99] 2016-12-10 13:38:01,365 > 2015-10-13 00:00:00
+[DEBUG|statistics.py:100] 2016-12-10 13:38:01,365 > None
+[DEBUG|statistics.py:101] 2016-12-10 13:38:01,365 > ---------------------------------------------
+[INFO|statistics.py:136] 2016-12-10 13:38:19,537 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-10 13:38:19,563 > 가입현황
+[INFO|statistics.py:155] 2016-12-10 13:38:19,564 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-10 13:38:19,564 > 연령구분
+[INFO|statistics.py:192] 2016-12-10 13:38:19,568 > 학력구분
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,568 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601', u'course-v1:EwhaK+EW10164K+2015-01', u'EW10164K', u'2015-01', 0L, '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,569 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601', u'course-v1:EwhaK+EW10164K+2016-01', u'EW10164K', u'2016-01', 0L, '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,569 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870', u'course-v1:EwhaK+EW10771K+2015-03', u'EW10771K', u'2015-03', 0L, '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,569 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870', u'course-v1:EwhaK+EW10771K+2016-04', u'EW10771K', u'2016-04', 0L, '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,570 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574', u'course-v1:EwhaK+EW11151K+2015-02', u'EW11151K', u'2015-02', 0L, '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,570 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574', u'course-v1:EwhaK+EW11151K+2016-02', u'EW11151K', u'2016-02', 0L, '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,570 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac', u'course-v1:EwhaK+EW36387K+2015-04', u'EW36387K', u'2015-04', 0L, '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,571 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac', u'course-v1:EwhaK+EW36387K+2016-03', u'EW36387K', u'2016-03', 0L, '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,571 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uac74\ucd95\uacf5\uac04\ub860', u'course-v1:HYUk+HYUARE4100k+2015_C1', u'HYUARE4100k', u'2015_C1', 0L, '2015-09-23', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,572 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uacbd\uc601\ub370\uc774\ud130\ub9c8\uc774\ub2dd', u'course-v1:HYUk+HYUBUS3099k+2015_C1', u'HYUBUS3099k', u'2015_C1', 0L, '2015-09-23', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,573 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uc815\ucc45\ud559\uac1c\ub860', u'course-v1:HYUk+HYUPAD3004k+2015_C1', u'HYUPAD3004k', u'2015_C1', 0L, '2015-09-23', '2015-10-26', '2016-02-07')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,573 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uc815\ubcf4\uc0ac\ud68c\ud559\uc785\ubb38', u'course-v1:HYUk+HYUSOC1053k+2015_C1', u'HYUSOC1053k', u'2015_C1', 0L, '2015-09-23', '2015-10-26', '2016-02-01')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,573 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'\uc778\uacf5\uc9c0\ub2a5\uacfc \uae30\uacc4\ud559\uc2b5', u'course-v1:KAISTk+KCS470+2015_K0201', u'KCS470', u'2015_K0201', 0L, '2015-09-24', '2015-11-02', '2016-02-15')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,573 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'\ub3d9\uc5ed\ud559', u'course-v1:KAISTk+KMAE251+2015_K0101', u'KMAE251', u'2015_K0101', 0L, '2015-09-24', '2015-11-02', '2016-02-29')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,574 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'\uc138\uacc4\uc2dc\ubbfc\uad50\uc721, \uc9c0\uad6c\uacf5\ub3d9\uc0ac\ud68c\uc758 \uc2dc\ubbfc\uc73c\ub85c \uc0b4\uae30', u'course-v1:KHUk+KH101+2015_KH01', u'KH101', u'2015_KH01', 0L, '2015-09-23', '2015-11-02', '2016-02-28')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,574 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'\ud638\ubaa8 \ud3f4\ub9ac\ud2f0\ucfe0\uc2a4 : \uc6b0\ub9ac\uac00 \ub9cc\ub4e0 \uc138\uacc4', u'course-v1:KHUk+KH102+2015_KH02', u'KH102', u'2015_KH02', 0L, '2015-09-23', '2015-11-02', '2016-02-28')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,574 > (u'\uace0\ub824\ub300\ud559\uad50', u'Quantum Mechanics for IT/NT/BT', u'course-v1:KoreaUnivK+ku_cpx_001+2015_A03', u'ku_cpx_001', u'2015_A03', 0L, '2015-09-21', '2015-10-26', '2016-01-03')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,575 > (u'\uace0\ub824\ub300\ud559\uad50', u'\uace0\uc804\ubb38\ud5cc\uacfc \uc5ed\uc0ac\ubb38\ud654', u'course-v1:KoreaUnivK+ku_hum_001+2015_A02', u'ku_hum_001', u'2015_A02', 0L, '2015-09-21', '2015-10-26', '2016-01-03')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,575 > (u'\uace0\ub824\ub300\ud559\uad50', u'\uc77c\ubc18\uc778\uc744 \uc704\ud55c \uc77c\ubc18\uc0c1\ub300\uc131\uc774\ub860', u'course-v1:KoreaUnivK+ku_phy_001+2015_A04', u'ku_phy_001', u'2015_A04', 0L, '2015-09-21', '2015-11-02', '2016-02-14')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,575 > (u'\uace0\ub824\ub300\ud559\uad50', u'\ubbfc\ubc95\ud559\uc785\ubb38', u'course-v1:KoreaUnivK+ku_soc_001+2015_A01', u'ku_soc_001', u'2015_A01', 0L, '2015-09-21', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,576 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'\uc0dd\uba85\uc758 \ud504\ub9b0\ud0a4\ud53c\uc544', u'course-v1:PNUk+PL_C01+2015_KM_001', u'PL_C01', u'2015_KM_001', 0L, '2015-09-21', '2015-11-02', '2016-02-08')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,576 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'\uc0ac\ud68c\uc801\uae30\uc5c5 \uc544\ub984\ub2e4\uc6b4 \uacbd\uc601\uc774\uc57c\uae30', u'course-v1:PNUk+SE_C01+2015_KM_002', u'SE_C01', u'2015_KM_002', 0L, '2015-09-21', '2015-11-02', '2016-02-08')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,576 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc', u'course-v1:POSTECHk+POSTECH.EECE341k+2015-01', u'POSTECH.EECE341k', u'2015-01', 0L, '2015-09-21', '2015-11-01', '2016-02-29')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,577 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc', u'course-v1:POSTECHk+POSTECH.EECE341k+2016-1', u'POSTECH.EECE341k', u'2016-1', 0L, '2016-02-01', '2016-03-01', '2016-06-17')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,577 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d', u'course-v1:POSTECHk+POSTECH.MECH583k+2015-01', u'POSTECH.MECH583k', u'2015-01', 0L, '2015-09-21', '2015-11-01', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,577 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d', u'course-v1:POSTECHk+POSTECH.MECH583k+2016-1', u'POSTECH.MECH583k', u'2016-1', 0L, '2016-02-01', '2016-02-29', '2016-05-28')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,577 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'\ub17c\uc5b4', u'course-v1:SKKUk+COS2034.01x+2015_SKKU1', u'COS2034.01x', u'2015_SKKU1', 0L, '2015-09-23', '2015-10-26', '2016-01-24')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,578 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'\ucc3d\uc758\uc801 \ubc1c\uc0c1', u'course-v1:SKKUk+GEDT011.01x+2015_SKKU2', u'GEDT011.01x', u'2015_SKKU2', 0L, '2015-09-23', '2015-10-26', '2016-01-24')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,578 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'\uacbd\uc81c\ud559 \ub4e4\uc5b4\uac00\uae30', u'course-v1:SNUk+SNU044.008k+2015', u'SNU044.008k', u'2015', 0L, '2015-09-23', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,578 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'\uc6b0\uc8fc\uc640 \uc0dd\uba85', u'course-v1:SNUk+SNU046.101k+2015', u'SNU046.101k', u'2015', 0L, '2015-09-23', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,578 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\uc11c\ube44\uc2a4\ub514\uc790\uc778', u'course-v1:YSUk+YSU_BIZ03k+2015_T2', u'YSU_BIZ03k', u'2015_T2', 0L, '2015-09-24', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,579 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\ubb38\ud559\uc774\ub780 \ubb34\uc5c7\uc778\uac00', u'course-v1:YSUk+YSU_KOR02k+2015_T2', u'YSU_KOR02k', u'2015_T2', 0L, '2015-09-24', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:255] 2016-12-10 13:38:19,579 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\uc6b0\uc8fc\uc758 \uc774\ud574', u'course-v1:YSUk+YSU_UCC01k+2015_T2', u'YSU_UCC01k', u'2015_T2', 0L, '2015-09-24', '2015-11-02', '2016-02-15')
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,598 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,599 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,599 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,599 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,600 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,600 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,600 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,601 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,601 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', 0L)
+[DEBUG|statistics.py:309] 2016-12-10 13:38:19,602 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', 0L)
+[DEBUG|statistics.py:365] 2016-12-10 13:38:19,606 > 코스별 수강자 누적
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,606 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601', u'course-v1:EwhaK+EW10164K+2015-01', u'EW10164K', u'2015-01', 2934L, Decimal('2706'), '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,606 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601', u'course-v1:EwhaK+EW10164K+2016-01', u'EW10164K', u'2016-01', 186L, Decimal('181'), '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,606 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870', u'course-v1:EwhaK+EW10771K+2015-03', u'EW10771K', u'2015-03', 2657L, Decimal('2456'), '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,607 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870', u'course-v1:EwhaK+EW10771K+2016-04', u'EW10771K', u'2016-04', 166L, Decimal('155'), '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,607 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574', u'course-v1:EwhaK+EW11151K+2015-02', u'EW11151K', u'2015-02', 3670L, Decimal('3437'), '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,607 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574', u'course-v1:EwhaK+EW11151K+2016-02', u'EW11151K', u'2016-02', 157L, Decimal('149'), '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,608 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac', u'course-v1:EwhaK+EW36387K+2015-04', u'EW36387K', u'2015-04', 2619L, Decimal('2457'), '2015-09-21', '2015-10-26', '2016-02-14')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,608 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac', u'course-v1:EwhaK+EW36387K+2016-03', u'EW36387K', u'2016-03', 128L, Decimal('123'), '2016-02-19', '2016-03-02', '2016-06-18')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,608 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uac74\ucd95\uacf5\uac04\ub860', u'course-v1:HYUk+HYUARE4100k+2015_C1', u'HYUARE4100k', u'2015_C1', 1594L, Decimal('1491'), '2015-09-23', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,609 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uacbd\uc601\ub370\uc774\ud130\ub9c8\uc774\ub2dd', u'course-v1:HYUk+HYUBUS3099k+2015_C1', u'HYUBUS3099k', u'2015_C1', 2916L, Decimal('2711'), '2015-09-23', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,609 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uc815\ucc45\ud559\uac1c\ub860', u'course-v1:HYUk+HYUPAD3004k+2015_C1', u'HYUPAD3004k', u'2015_C1', 1208L, Decimal('1093'), '2015-09-23', '2015-10-26', '2016-02-07')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,609 > (u'\ud55c\uc591\ub300\ud559\uad50', u'\uc815\ubcf4\uc0ac\ud68c\ud559\uc785\ubb38', u'course-v1:HYUk+HYUSOC1053k+2015_C1', u'HYUSOC1053k', u'2015_C1', 974L, Decimal('895'), '2015-09-23', '2015-10-26', '2016-02-01')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,610 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'\uc778\uacf5\uc9c0\ub2a5\uacfc \uae30\uacc4\ud559\uc2b5', u'course-v1:KAISTk+KCS470+2015_K0201', u'KCS470', u'2015_K0201', 4789L, Decimal('4517'), '2015-09-24', '2015-11-02', '2016-02-15')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,610 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'\ub3d9\uc5ed\ud559', u'course-v1:KAISTk+KMAE251+2015_K0101', u'KMAE251', u'2015_K0101', 1850L, Decimal('1688'), '2015-09-24', '2015-11-02', '2016-02-29')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,610 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'\uc138\uacc4\uc2dc\ubbfc\uad50\uc721, \uc9c0\uad6c\uacf5\ub3d9\uc0ac\ud68c\uc758 \uc2dc\ubbfc\uc73c\ub85c \uc0b4\uae30', u'course-v1:KHUk+KH101+2015_KH01', u'KH101', u'2015_KH01', 1292L, Decimal('1205'), '2015-09-23', '2015-11-02', '2016-02-28')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,610 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'\ud638\ubaa8 \ud3f4\ub9ac\ud2f0\ucfe0\uc2a4 : \uc6b0\ub9ac\uac00 \ub9cc\ub4e0 \uc138\uacc4', u'course-v1:KHUk+KH102+2015_KH02', u'KH102', u'2015_KH02', 1545L, Decimal('1418'), '2015-09-23', '2015-11-02', '2016-02-28')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,611 > (u'\uace0\ub824\ub300\ud559\uad50', u'Quantum Mechanics for IT/NT/BT', u'course-v1:KoreaUnivK+ku_cpx_001+2015_A03', u'ku_cpx_001', u'2015_A03', 774L, Decimal('661'), '2015-09-21', '2015-10-26', '2016-01-03')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,611 > (u'\uace0\ub824\ub300\ud559\uad50', u'\uace0\uc804\ubb38\ud5cc\uacfc \uc5ed\uc0ac\ubb38\ud654', u'course-v1:KoreaUnivK+ku_hum_001+2015_A02', u'ku_hum_001', u'2015_A02', 1134L, Decimal('1021'), '2015-09-21', '2015-10-26', '2016-01-03')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,611 > (u'\uace0\ub824\ub300\ud559\uad50', u'\uc77c\ubc18\uc778\uc744 \uc704\ud55c \uc77c\ubc18\uc0c1\ub300\uc131\uc774\ub860', u'course-v1:KoreaUnivK+ku_phy_001+2015_A04', u'ku_phy_001', u'2015_A04', 3641L, Decimal('3429'), '2015-09-21', '2015-11-02', '2016-02-14')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,612 > (u'\uace0\ub824\ub300\ud559\uad50', u'\ubbfc\ubc95\ud559\uc785\ubb38', u'course-v1:KoreaUnivK+ku_soc_001+2015_A01', u'ku_soc_001', u'2015_A01', 2599L, Decimal('2431'), '2015-09-21', '2015-10-26', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,612 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'\uc0dd\uba85\uc758 \ud504\ub9b0\ud0a4\ud53c\uc544', u'course-v1:PNUk+PL_C01+2015_KM_001', u'PL_C01', u'2015_KM_001', 825L, Decimal('754'), '2015-09-21', '2015-11-02', '2016-02-08')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,612 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'\uc0ac\ud68c\uc801\uae30\uc5c5 \uc544\ub984\ub2e4\uc6b4 \uacbd\uc601\uc774\uc57c\uae30', u'course-v1:PNUk+SE_C01+2015_KM_002', u'SE_C01', u'2015_KM_002', 1268L, Decimal('1196'), '2015-09-21', '2015-11-02', '2016-02-08')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,612 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc', u'course-v1:POSTECHk+POSTECH.EECE341k+2015-01', u'POSTECH.EECE341k', u'2015-01', 518L, Decimal('460'), '2015-09-21', '2015-11-01', '2016-02-29')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,613 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc', u'course-v1:POSTECHk+POSTECH.EECE341k+2016-1', u'POSTECH.EECE341k', u'2016-1', 132L, Decimal('118'), '2016-02-01', '2016-03-01', '2016-06-17')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,613 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d', u'course-v1:POSTECHk+POSTECH.MECH583k+2015-01', u'POSTECH.MECH583k', u'2015-01', 592L, Decimal('543'), '2015-09-21', '2015-11-01', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,613 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d', u'course-v1:POSTECHk+POSTECH.MECH583k+2016-1', u'POSTECH.MECH583k', u'2016-1', 153L, Decimal('142'), '2016-02-01', '2016-02-29', '2016-05-28')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,614 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'\ub17c\uc5b4', u'course-v1:SKKUk+COS2034.01x+2015_SKKU1', u'COS2034.01x', u'2015_SKKU1', 5420L, Decimal('5133'), '2015-09-23', '2015-10-26', '2016-01-24')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,614 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'\ucc3d\uc758\uc801 \ubc1c\uc0c1', u'course-v1:SKKUk+GEDT011.01x+2015_SKKU2', u'GEDT011.01x', u'2015_SKKU2', 6235L, Decimal('5903'), '2015-09-23', '2015-10-26', '2016-01-24')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,614 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'\uacbd\uc81c\ud559 \ub4e4\uc5b4\uac00\uae30', u'course-v1:SNUk+SNU044.008k+2015', u'SNU044.008k', u'2015', 8576L, Decimal('8209'), '2015-09-23', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,614 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'\uc6b0\uc8fc\uc640 \uc0dd\uba85', u'course-v1:SNUk+SNU046.101k+2015', u'SNU046.101k', u'2015', 3860L, Decimal('3553'), '2015-09-23', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,615 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\uc11c\ube44\uc2a4\ub514\uc790\uc778', u'course-v1:YSUk+YSU_BIZ03k+2015_T2', u'YSU_BIZ03k', u'2015_T2', 2854L, Decimal('2649'), '2015-09-24', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,615 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\ubb38\ud559\uc774\ub780 \ubb34\uc5c7\uc778\uac00', u'course-v1:YSUk+YSU_KOR02k+2015_T2', u'YSU_KOR02k', u'2015_T2', 3378L, Decimal('3173'), '2015-09-24', '2015-11-02', '2016-01-31')
+[DEBUG|statistics.py:384] 2016-12-10 13:38:19,615 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'\uc6b0\uc8fc\uc758 \uc774\ud574', u'course-v1:YSUk+YSU_UCC01k+2015_T2', u'YSU_UCC01k', u'2015_T2', 2773L, Decimal('2605'), '2015-09-24', '2015-11-02', '2016-02-15')
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,636 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', 12517L, Decimal('11664'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,637 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', 6692L, Decimal('6190'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,638 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', 6639L, Decimal('6205'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,638 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', 2837L, Decimal('2623'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,638 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', 8148L, Decimal('7542'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,639 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', 2093L, Decimal('1950'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,639 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', 1395L, Decimal('1263'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,640 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', 11655L, Decimal('11036'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,640 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', 12436L, Decimal('11762'))
+[DEBUG|statistics.py:445] 2016-12-10 13:38:19,640 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', 9005L, Decimal('8427'))
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,641 > L
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,642 > M
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,643 > N
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,643 > O
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,644 > P
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,645 > Q
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,646 > R
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,646 > S
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,647 > T
+[DEBUG|statistics.py:473] 2016-12-10 13:38:19,647 > U
+[DEBUG|statistics.py:491] 2016-12-10 13:38:19,648 > 코스별 연령
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,649 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10164K+2015-01', u'EW10164K', u'2015-01', Decimal('272'), Decimal('819'), Decimal('499'), Decimal('572'), Decimal('407'), Decimal('137'), 2706L, '2015-09-21', '2015-10-26', '2016-02-14', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,649 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10164K+2016-01', u'EW10164K', u'2016-01', Decimal('16'), Decimal('86'), Decimal('26'), Decimal('27'), Decimal('21'), Decimal('5'), 181L, '2016-02-19', '2016-03-02', '2016-06-18', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,650 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10771K+2015-03', u'EW10771K', u'2015-03', Decimal('250'), Decimal('739'), Decimal('506'), Decimal('457'), Decimal('366'), Decimal('138'), 2456L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,650 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10771K+2016-04', u'EW10771K', u'2016-04', Decimal('23'), Decimal('50'), Decimal('28'), Decimal('34'), Decimal('12'), Decimal('8'), 155L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,650 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW11151K+2015-02', u'EW11151K', u'2015-02', Decimal('241'), Decimal('1248'), Decimal('685'), Decimal('690'), Decimal('434'), Decimal('139'), 3437L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,651 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW11151K+2016-02', u'EW11151K', u'2016-02', Decimal('10'), Decimal('62'), Decimal('39'), Decimal('23'), Decimal('11'), Decimal('4'), 149L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,651 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW36387K+2015-04', u'EW36387K', u'2015-04', Decimal('97'), Decimal('659'), Decimal('558'), Decimal('535'), Decimal('461'), Decimal('147'), 2457L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,651 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW36387K+2016-03', u'EW36387K', u'2016-03', Decimal('7'), Decimal('46'), Decimal('21'), Decimal('27'), Decimal('18'), Decimal('4'), 123L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,652 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUARE4100k+2015_C1', u'HYUARE4100k', u'2015_C1', Decimal('109'), Decimal('468'), Decimal('365'), Decimal('303'), Decimal('194'), Decimal('52'), 1491L, '2015-09-23', '2015-10-26', '2016-01-31', u'\uac74\ucd95\uacf5\uac04\ub860')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,652 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUBUS3099k+2015_C1', u'HYUBUS3099k', u'2015_C1', Decimal('152'), Decimal('864'), Decimal('799'), Decimal('620'), Decimal('220'), Decimal('56'), 2711L, '2015-09-23', '2015-10-26', '2016-01-31', u'\uacbd\uc601\ub370\uc774\ud130\ub9c8\uc774\ub2dd')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,653 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUPAD3004k+2015_C1', u'HYUPAD3004k', u'2015_C1', Decimal('91'), Decimal('418'), Decimal('259'), Decimal('171'), Decimal('116'), Decimal('38'), 1093L, '2015-09-23', '2015-10-26', '2016-02-07', u'\uc815\ucc45\ud559\uac1c\ub860')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,653 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUSOC1053k+2015_C1', u'HYUSOC1053k', u'2015_C1', Decimal('72'), Decimal('274'), Decimal('182'), Decimal('183'), Decimal('124'), Decimal('60'), 895L, '2015-09-23', '2015-10-26', '2016-02-01', u'\uc815\ubcf4\uc0ac\ud68c\ud559\uc785\ubb38')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,653 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', u'course-v1:KAISTk+KCS470+2015_K0201', u'KCS470', u'2015_K0201', Decimal('453'), Decimal('1535'), Decimal('1150'), Decimal('958'), Decimal('317'), Decimal('104'), 4517L, '2015-09-24', '2015-11-02', '2016-02-15', u'\uc778\uacf5\uc9c0\ub2a5\uacfc \uae30\uacc4\ud559\uc2b5')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,654 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', u'course-v1:KAISTk+KMAE251+2015_K0101', u'KMAE251', u'2015_K0101', Decimal('259'), Decimal('677'), Decimal('354'), Decimal('223'), Decimal('121'), Decimal('54'), 1688L, '2015-09-24', '2015-11-02', '2016-02-29', u'\ub3d9\uc5ed\ud559')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,654 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', u'course-v1:KHUk+KH101+2015_KH01', u'KH101', u'2015_KH01', Decimal('285'), Decimal('310'), Decimal('250'), Decimal('189'), Decimal('124'), Decimal('47'), 1205L, '2015-09-23', '2015-11-02', '2016-02-28', u'\uc138\uacc4\uc2dc\ubbfc\uad50\uc721, \uc9c0\uad6c\uacf5\ub3d9\uc0ac\ud68c\uc758 \uc2dc\ubbfc\uc73c\ub85c \uc0b4\uae30')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,654 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', u'course-v1:KHUk+KH102+2015_KH02', u'KH102', u'2015_KH02', Decimal('83'), Decimal('479'), Decimal('315'), Decimal('293'), Decimal('177'), Decimal('71'), 1418L, '2015-09-23', '2015-11-02', '2016-02-28', u'\ud638\ubaa8 \ud3f4\ub9ac\ud2f0\ucfe0\uc2a4 : \uc6b0\ub9ac\uac00 \ub9cc\ub4e0 \uc138\uacc4')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,655 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_cpx_001+2015_A03', u'ku_cpx_001', u'2015_A03', Decimal('92'), Decimal('255'), Decimal('120'), Decimal('104'), Decimal('62'), Decimal('28'), 661L, '2015-09-21', '2015-10-26', '2016-01-03', u'Quantum Mechanics for IT/NT/BT')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,655 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_hum_001+2015_A02', u'ku_hum_001', u'2015_A02', Decimal('107'), Decimal('247'), Decimal('176'), Decimal('200'), Decimal('174'), Decimal('117'), 1021L, '2015-09-21', '2015-10-26', '2016-01-03', u'\uace0\uc804\ubb38\ud5cc\uacfc \uc5ed\uc0ac\ubb38\ud654')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,655 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_phy_001+2015_A04', u'ku_phy_001', u'2015_A04', Decimal('388'), Decimal('957'), Decimal('758'), Decimal('847'), Decimal('358'), Decimal('121'), 3429L, '2015-09-21', '2015-11-02', '2016-02-14', u'\uc77c\ubc18\uc778\uc744 \uc704\ud55c \uc77c\ubc18\uc0c1\ub300\uc131\uc774\ub860')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,656 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_soc_001+2015_A01', u'ku_soc_001', u'2015_A01', Decimal('159'), Decimal('792'), Decimal('565'), Decimal('491'), Decimal('293'), Decimal('131'), 2431L, '2015-09-21', '2015-10-26', '2016-01-31', u'\ubbfc\ubc95\ud559\uc785\ubb38')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,656 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', u'course-v1:PNUk+PL_C01+2015_KM_001', u'PL_C01', u'2015_KM_001', Decimal('207'), Decimal('171'), Decimal('124'), Decimal('109'), Decimal('104'), Decimal('39'), 754L, '2015-09-21', '2015-11-02', '2016-02-08', u'\uc0dd\uba85\uc758 \ud504\ub9b0\ud0a4\ud53c\uc544')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,657 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', u'course-v1:PNUk+SE_C01+2015_KM_002', u'SE_C01', u'2015_KM_002', Decimal('87'), Decimal('380'), Decimal('243'), Decimal('251'), Decimal('173'), Decimal('62'), 1196L, '2015-09-21', '2015-11-02', '2016-02-08', u'\uc0ac\ud68c\uc801\uae30\uc5c5 \uc544\ub984\ub2e4\uc6b4 \uacbd\uc601\uc774\uc57c\uae30')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,657 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.EECE341k+2015-01', u'POSTECH.EECE341k', u'2015-01', Decimal('42'), Decimal('157'), Decimal('114'), Decimal('90'), Decimal('45'), Decimal('12'), 460L, '2015-09-21', '2015-11-01', '2016-02-29', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,657 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.EECE341k+2016-1', u'POSTECH.EECE341k', u'2016-1', Decimal('14'), Decimal('35'), Decimal('26'), Decimal('20'), Decimal('18'), Decimal('5'), 118L, '2016-02-01', '2016-03-01', '2016-06-17', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,658 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.MECH583k+2015-01', u'POSTECH.MECH583k', u'2015-01', Decimal('41'), Decimal('203'), Decimal('181'), Decimal('74'), Decimal('33'), Decimal('11'), 543L, '2015-09-21', '2015-11-01', '2016-01-31', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,658 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.MECH583k+2016-1', u'POSTECH.MECH583k', u'2016-1', Decimal('24'), Decimal('44'), Decimal('39'), Decimal('22'), Decimal('10'), Decimal('3'), 142L, '2016-02-01', '2016-02-29', '2016-05-28', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,658 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', u'course-v1:SKKUk+COS2034.01x+2015_SKKU1', u'COS2034.01x', u'2015_SKKU1', Decimal('181'), Decimal('1171'), Decimal('851'), Decimal('1302'), Decimal('1088'), Decimal('540'), 5133L, '2015-09-23', '2015-10-26', '2016-01-24', u'\ub17c\uc5b4')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,659 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', u'course-v1:SKKUk+GEDT011.01x+2015_SKKU2', u'GEDT011.01x', u'2015_SKKU2', Decimal('453'), Decimal('2557'), Decimal('956'), Decimal('998'), Decimal('701'), Decimal('238'), 5903L, '2015-09-23', '2015-10-26', '2016-01-24', u'\ucc3d\uc758\uc801 \ubc1c\uc0c1')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,659 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', u'course-v1:SNUk+SNU044.008k+2015', u'SNU044.008k', u'2015', Decimal('522'), Decimal('2798'), Decimal('2070'), Decimal('1535'), Decimal('913'), Decimal('371'), 8209L, '2015-09-23', '2015-11-02', '2016-01-31', u'\uacbd\uc81c\ud559 \ub4e4\uc5b4\uac00\uae30')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,659 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', u'course-v1:SNUk+SNU046.101k+2015', u'SNU046.101k', u'2015', Decimal('533'), Decimal('839'), Decimal('598'), Decimal('685'), Decimal('577'), Decimal('321'), 3553L, '2015-09-23', '2015-11-02', '2016-01-31', u'\uc6b0\uc8fc\uc640 \uc0dd\uba85')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,659 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_BIZ03k+2015_T2', u'YSU_BIZ03k', u'2015_T2', Decimal('140'), Decimal('862'), Decimal('741'), Decimal('569'), Decimal('257'), Decimal('80'), 2649L, '2015-09-24', '2015-11-02', '2016-01-31', u'\uc11c\ube44\uc2a4\ub514\uc790\uc778')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,660 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_KOR02k+2015_T2', u'YSU_KOR02k', u'2015_T2', Decimal('290'), Decimal('908'), Decimal('566'), Decimal('557'), Decimal('519'), Decimal('333'), 3173L, '2015-09-24', '2015-11-02', '2016-01-31', u'\ubb38\ud559\uc774\ub780 \ubb34\uc5c7\uc778\uac00')
+[DEBUG|statistics.py:506] 2016-12-10 13:38:19,660 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_UCC01k+2015_T2', u'YSU_UCC01k', u'2015_T2', Decimal('304'), Decimal('802'), Decimal('472'), Decimal('458'), Decimal('368'), Decimal('201'), 2605L, '2015-09-24', '2015-11-02', '2016-02-15', u'\uc6b0\uc8fc\uc758 \uc774\ud574')
+[DEBUG|statistics.py:576] 2016-12-10 13:38:19,694 > 코스별 학력
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,695 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10164K+2015-01', u'EW10164K', u'2015-01', Decimal('177'), Decimal('395'), Decimal('1073'), Decimal('93'), Decimal('503'), Decimal('110'), Decimal('23'), Decimal('54'), Decimal('278'), 2706L, '2015-09-21', '2015-10-26', '2016-02-14', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,695 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10164K+2016-01', u'EW10164K', u'2016-01', Decimal('10'), Decimal('22'), Decimal('51'), Decimal('6'), Decimal('64'), Decimal('8'), Decimal('1'), Decimal('2'), Decimal('17'), 181L, '2016-02-19', '2016-03-02', '2016-06-18', u'\ud604\ub300\ubb3c\ub9ac\ud559\uacfc \uc778\uac04\uc0ac\uace0\uc758 \ubcc0\ud601')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,696 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10771K+2015-03', u'EW10771K', u'2015-03', Decimal('147'), Decimal('426'), Decimal('936'), Decimal('111'), Decimal('458'), Decimal('116'), Decimal('10'), Decimal('40'), Decimal('212'), 2456L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,696 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW10771K+2016-04', u'EW10771K', u'2016-04', Decimal('9'), Decimal('19'), Decimal('57'), Decimal('9'), Decimal('36'), Decimal('9'), Decimal('1'), Decimal('3'), Decimal('12'), 155L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uc778\uac04\ud589\uc704\uc640 \uc0ac\ud68c\uad6c\uc870')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,696 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW11151K+2015-02', u'EW11151K', u'2015-02', Decimal('172'), Decimal('561'), Decimal('1416'), Decimal('160'), Decimal('614'), Decimal('110'), Decimal('8'), Decimal('75'), Decimal('321'), 3437L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,697 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW11151K+2016-02', u'EW11151K', u'2016-02', Decimal('5'), Decimal('21'), Decimal('64'), Decimal('7'), Decimal('37'), Decimal('4'), Decimal('0'), Decimal('2'), Decimal('9'), 149L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uc601\ud654 \uc2a4\ud1a0\ub9ac\ud154\ub9c1\uc758 \uc774\ud574')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,697 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW36387K+2015-04', u'EW36387K', u'2015-04', Decimal('152'), Decimal('499'), Decimal('1068'), Decimal('113'), Decimal('322'), Decimal('37'), Decimal('9'), Decimal('38'), Decimal('219'), 2457L, '2015-09-21', '2015-10-26', '2016-02-14', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,698 > (u'\uc774\ud654\uc5ec\uc790\ub300\ud559\uad50', u'EwhaK', u'course-v1:EwhaK+EW36387K+2016-03', u'EW36387K', u'2016-03', Decimal('5'), Decimal('21'), Decimal('44'), Decimal('8'), Decimal('31'), Decimal('3'), Decimal('0'), Decimal('1'), Decimal('10'), 123L, '2016-02-19', '2016-03-02', '2016-06-18', u'\uac74\ucd95\uc73c\ub85c \uc77d\ub294 \uc0ac\ud68c\ubb38\ud654\uc0ac')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,698 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUARE4100k+2015_C1', u'HYUARE4100k', u'2015_C1', Decimal('80'), Decimal('263'), Decimal('598'), Decimal('62'), Decimal('276'), Decimal('53'), Decimal('6'), Decimal('25'), Decimal('128'), 1491L, '2015-09-23', '2015-10-26', '2016-01-31', u'\uac74\ucd95\uacf5\uac04\ub860')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,698 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUBUS3099k+2015_C1', u'HYUBUS3099k', u'2015_C1', Decimal('189'), Decimal('512'), Decimal('1244'), Decimal('70'), Decimal('344'), Decimal('76'), Decimal('7'), Decimal('34'), Decimal('235'), 2711L, '2015-09-23', '2015-10-26', '2016-01-31', u'\uacbd\uc601\ub370\uc774\ud130\ub9c8\uc774\ub2dd')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,698 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUPAD3004k+2015_C1', u'HYUPAD3004k', u'2015_C1', Decimal('82'), Decimal('202'), Decimal('389'), Decimal('29'), Decimal('221'), Decimal('41'), Decimal('2'), Decimal('22'), Decimal('105'), 1093L, '2015-09-23', '2015-10-26', '2016-02-07', u'\uc815\ucc45\ud559\uac1c\ub860')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,699 > (u'\ud55c\uc591\ub300\ud559\uad50', u'HYUk', u'course-v1:HYUk+HYUSOC1053k+2015_C1', u'HYUSOC1053k', u'2015_C1', Decimal('60'), Decimal('157'), Decimal('337'), Decimal('38'), Decimal('175'), Decimal('27'), Decimal('3'), Decimal('18'), Decimal('80'), 895L, '2015-09-23', '2015-10-26', '2016-02-01', u'\uc815\ubcf4\uc0ac\ud68c\ud559\uc785\ubb38')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,699 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', u'course-v1:KAISTk+KCS470+2015_K0201', u'KCS470', u'2015_K0201', Decimal('345'), Decimal('878'), Decimal('1745'), Decimal('122'), Decimal('713'), Decimal('196'), Decimal('29'), Decimal('59'), Decimal('430'), 4517L, '2015-09-24', '2015-11-02', '2016-02-15', u'\uc778\uacf5\uc9c0\ub2a5\uacfc \uae30\uacc4\ud559\uc2b5')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,700 > (u'\ud55c\uad6d\uacfc\ud559\uae30\uc220\uc6d0', u'KAISTk', u'course-v1:KAISTk+KMAE251+2015_K0101', u'KMAE251', u'2015_K0101', Decimal('88'), Decimal('237'), Decimal('598'), Decimal('52'), Decimal('386'), Decimal('115'), Decimal('7'), Decimal('37'), Decimal('168'), 1688L, '2015-09-24', '2015-11-02', '2016-02-29', u'\ub3d9\uc5ed\ud559')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,700 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', u'course-v1:KHUk+KH101+2015_KH01', u'KH101', u'2015_KH01', Decimal('80'), Decimal('189'), Decimal('385'), Decimal('32'), Decimal('268'), Decimal('109'), Decimal('6'), Decimal('18'), Decimal('118'), 1205L, '2015-09-23', '2015-11-02', '2016-02-28', u'\uc138\uacc4\uc2dc\ubbfc\uad50\uc721, \uc9c0\uad6c\uacf5\ub3d9\uc0ac\ud68c\uc758 \uc2dc\ubbfc\uc73c\ub85c \uc0b4\uae30')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,701 > (u'\uacbd\ud76c\ub300\ud559\uad50', u'KHUk', u'course-v1:KHUk+KH102+2015_KH02', u'KH102', u'2015_KH02', Decimal('85'), Decimal('236'), Decimal('585'), Decimal('53'), Decimal('278'), Decimal('35'), Decimal('4'), Decimal('20'), Decimal('122'), 1418L, '2015-09-23', '2015-11-02', '2016-02-28', u'\ud638\ubaa8 \ud3f4\ub9ac\ud2f0\ucfe0\uc2a4 : \uc6b0\ub9ac\uac00 \ub9cc\ub4e0 \uc138\uacc4')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,701 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_cpx_001+2015_A03', u'ku_cpx_001', u'2015_A03', Decimal('70'), Decimal('91'), Decimal('239'), Decimal('17'), Decimal('133'), Decimal('29'), Decimal('1'), Decimal('13'), Decimal('68'), 661L, '2015-09-21', '2015-10-26', '2016-01-03', u'Quantum Mechanics for IT/NT/BT')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,702 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_hum_001+2015_A02', u'ku_hum_001', u'2015_A02', Decimal('55'), Decimal('163'), Decimal('397'), Decimal('50'), Decimal('187'), Decimal('41'), Decimal('6'), Decimal('25'), Decimal('97'), 1021L, '2015-09-21', '2015-10-26', '2016-01-03', u'\uace0\uc804\ubb38\ud5cc\uacfc \uc5ed\uc0ac\ubb38\ud654')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,702 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_phy_001+2015_A04', u'ku_phy_001', u'2015_A04', Decimal('179'), Decimal('572'), Decimal('1383'), Decimal('103'), Decimal('626'), Decimal('162'), Decimal('21'), Decimal('66'), Decimal('317'), 3429L, '2015-09-21', '2015-11-02', '2016-02-14', u'\uc77c\ubc18\uc778\uc744 \uc704\ud55c \uc77c\ubc18\uc0c1\ub300\uc131\uc774\ub860')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,703 > (u'\uace0\ub824\ub300\ud559\uad50', u'KoreaUnivK', u'course-v1:KoreaUnivK+ku_soc_001+2015_A01', u'ku_soc_001', u'2015_A01', Decimal('76'), Decimal('337'), Decimal('1108'), Decimal('94'), Decimal('467'), Decimal('71'), Decimal('8'), Decimal('46'), Decimal('224'), 2431L, '2015-09-21', '2015-10-26', '2016-01-31', u'\ubbfc\ubc95\ud559\uc785\ubb38')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,703 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', u'course-v1:PNUk+PL_C01+2015_KM_001', u'PL_C01', u'2015_KM_001', Decimal('55'), Decimal('103'), Decimal('208'), Decimal('17'), Decimal('179'), Decimal('93'), Decimal('6'), Decimal('15'), Decimal('78'), 754L, '2015-09-21', '2015-11-02', '2016-02-08', u'\uc0dd\uba85\uc758 \ud504\ub9b0\ud0a4\ud53c\uc544')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,704 > (u'\ubd80\uc0b0\ub300\ud559\uad50', u'PNUk', u'course-v1:PNUk+SE_C01+2015_KM_002', u'SE_C01', u'2015_KM_002', Decimal('72'), Decimal('224'), Decimal('502'), Decimal('59'), Decimal('199'), Decimal('36'), Decimal('2'), Decimal('21'), Decimal('81'), 1196L, '2015-09-21', '2015-11-02', '2016-02-08', u'\uc0ac\ud68c\uc801\uae30\uc5c5 \uc544\ub984\ub2e4\uc6b4 \uacbd\uc601\uc774\uc57c\uae30')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,704 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.EECE341k+2015-01', u'POSTECH.EECE341k', u'2015-01', Decimal('56'), Decimal('79'), Decimal('168'), Decimal('24'), Decimal('75'), Decimal('13'), Decimal('1'), Decimal('7'), Decimal('37'), 460L, '2015-09-21', '2015-11-01', '2016-02-29', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,705 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.EECE341k+2016-1', u'POSTECH.EECE341k', u'2016-1', Decimal('11'), Decimal('17'), Decimal('47'), Decimal('6'), Decimal('15'), Decimal('5'), Decimal('0'), Decimal('3'), Decimal('14'), 118L, '2016-02-01', '2016-03-01', '2016-06-17', u'\ub514\uc9c0\ud138\ud1b5\uc2e0\uc2dc\uc2a4\ud15c: \ubcc0\ubcf5\uc870\uc640 \uc804\ub825\uc2a4\ud399\ud2b8\ub7fc')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,705 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.MECH583k+2015-01', u'POSTECH.MECH583k', u'2015-01', Decimal('51'), Decimal('125'), Decimal('204'), Decimal('21'), Decimal('65'), Decimal('12'), Decimal('1'), Decimal('8'), Decimal('56'), 543L, '2015-09-21', '2015-11-01', '2016-01-31', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,706 > (u'\ud3ec\ud56d\uacf5\uacfc\ub300\ud559\uad50', u'POSTECHk', u'course-v1:POSTECHk+POSTECH.MECH583k+2016-1', u'POSTECH.MECH583k', u'2016-1', Decimal('13'), Decimal('34'), Decimal('43'), Decimal('5'), Decimal('21'), Decimal('12'), Decimal('0'), Decimal('2'), Decimal('12'), 142L, '2016-02-01', '2016-02-29', '2016-05-28', u'\uc5f0\uc18d\uccb4 \uc5ed\ud559\uacfc \uc720\ud55c\uc694\uc18c\ud574\uc11d')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,706 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', u'course-v1:SKKUk+COS2034.01x+2015_SKKU1', u'COS2034.01x', u'2015_SKKU1', Decimal('326'), Decimal('1006'), Decimal('2231'), Decimal('282'), Decimal('776'), Decimal('70'), Decimal('17'), Decimal('64'), Decimal('361'), 5133L, '2015-09-23', '2015-10-26', '2016-01-24', u'\ub17c\uc5b4')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,707 > (u'\uc131\uade0\uad00\ub300\ud559\uad50', u'SKKUk', u'course-v1:SKKUk+GEDT011.01x+2015_SKKU2', u'GEDT011.01x', u'2015_SKKU2', Decimal('336'), Decimal('802'), Decimal('2129'), Decimal('361'), Decimal('1461'), Decimal('209'), Decimal('25'), Decimal('117'), Decimal('463'), 5903L, '2015-09-23', '2015-10-26', '2016-01-24', u'\ucc3d\uc758\uc801 \ubc1c\uc0c1')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,707 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', u'course-v1:SNUk+SNU044.008k+2015', u'SNU044.008k', u'2015', Decimal('315'), Decimal('1229'), Decimal('3841'), Decimal('300'), Decimal('1484'), Decimal('244'), Decimal('29'), Decimal('123'), Decimal('644'), 8209L, '2015-09-23', '2015-11-02', '2016-01-31', u'\uacbd\uc81c\ud559 \ub4e4\uc5b4\uac00\uae30')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,708 > (u'\uc11c\uc6b8\ub300\ud559\uad50', u'SNUk', u'course-v1:SNUk+SNU046.101k+2015', u'SNU046.101k', u'2015', Decimal('229'), Decimal('580'), Decimal('1303'), Decimal('150'), Decimal('651'), Decimal('257'), Decimal('34'), Decimal('62'), Decimal('287'), 3553L, '2015-09-23', '2015-11-02', '2016-01-31', u'\uc6b0\uc8fc\uc640 \uc0dd\uba85')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,708 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_BIZ03k+2015_T2', u'YSU_BIZ03k', u'2015_T2', Decimal('162'), Decimal('460'), Decimal('1232'), Decimal('103'), Decimal('385'), Decimal('67'), Decimal('5'), Decimal('33'), Decimal('202'), 2649L, '2015-09-24', '2015-11-02', '2016-01-31', u'\uc11c\ube44\uc2a4\ub514\uc790\uc778')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,708 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_KOR02k+2015_T2', u'YSU_KOR02k', u'2015_T2', Decimal('151'), Decimal('515'), Decimal('1289'), Decimal('144'), Decimal('625'), Decimal('126'), Decimal('12'), Decimal('71'), Decimal('240'), 3173L, '2015-09-24', '2015-11-02', '2016-01-31', u'\ubb38\ud559\uc774\ub780 \ubb34\uc5c7\uc778\uac00')
+[DEBUG|statistics.py:591] 2016-12-10 13:38:19,709 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_UCC01k+2015_T2', u'YSU_UCC01k', u'2015_T2', Decimal('126'), Decimal('360'), Decimal('1047'), Decimal('101'), Decimal('523'), Decimal('133'), Decimal('26'), Decimal('62'), Decimal('227'), 2605L, '2015-09-24', '2015-11-02', '2016-02-15', u'\uc6b0\uc8fc\uc758 \uc774\ud574')

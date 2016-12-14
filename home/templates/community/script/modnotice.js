@@ -7,7 +7,32 @@ $(document).ready(function(){
     $('.summernote').summernote({
         lang : 'ko-KR',
         height : 400,
+        callbacks : {
+            onImageUpload: function (files, modules, editable){
+            sendFile(files[0], modules, editable);
+           }
+        }
     });
+    function sendFile(file, modules, editable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            csrfmiddlewaretoken:$.cookie('csrftoken'),
+            type: 'POST',
+            url: '/summer_upload/',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                //console.log(data);
+                $("#summernote").summernote("insertImage", data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus+' '+errorThrown);
+            }
+        });
+    }
 
     $.ajax({
         url : '/modi_notice/'+id+'/'+use_yn,
@@ -28,7 +53,12 @@ $(document).ready(function(){
         $('#noticetitle').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
-        $('#head_title').val(data[3]);
+        if(data[3] == ''){
+            $('#head_title').val('선택하세요.');
+        }else{
+            $('#head_title').val(data[3]);
+        }
+
     })
 });
 

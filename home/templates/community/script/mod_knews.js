@@ -10,9 +10,9 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        console.log(data);
-        if(data[3] != null){
-            value_list = data[3].toString().split(',');
+        //console.log(data);
+        if(data[4] != null){
+            value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
                 html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
                 "<br>";
@@ -22,7 +22,11 @@ $(document).ready(function(){
         $('#knews_title').val(data[0]);
         $('.summernote').summernote('code', data[1].replace(/\&\^\&/g));
         $('#odby').val(data[2]);
-        $('#head_title').val(data[3]);
+        if(data[3] == ''){
+            $('#head_title').val('선택하세요.');
+        }else{
+            $('#head_title').val(data[3]);
+        }
     });
     //alert('d');
     $('.summernote').summernote({

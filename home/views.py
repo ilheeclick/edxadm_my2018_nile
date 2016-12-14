@@ -766,9 +766,9 @@ def modi_knews(request, id, use_yn):
 			mod_knews.append(row[0][0])
 			mod_knews.append(row[0][1])
 			mod_knews.append(row[0][2])
+			mod_knews.append(row[0][3])
 			if files:
 				mod_knews.append(files)
-			mod_knews.append(row[0][3])
 			data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
@@ -963,14 +963,15 @@ def comm_faqrequest(request) :
 		f_request_list = []
 		if request.GET['method'] == 'faqrequest_list' :
 			cur = connection.cursor()
-			query = """SELECT id,
-					   case when head_title = 'school' then '학교 관련'
-					   		when head_title = 'course' then '강의 관련'
-					   		when head_title = 'site' then '사이트 관련'
-					   		when head_title = 'etc' then '기타 문의'
-							else '' end head_title,
-							question, student_email, response_email, SUBSTRING(reg_date,1,11)
-					   FROM faq_request"""
+			query = """
+					SELECT id,
+						   head_title,
+						   question,
+						   student_email,
+						   response_email,
+						   SUBSTRING(reg_date, 1, 11)
+					  FROM faq_request;
+			"""
 			cur.execute(query)
 			row = cur.fetchall()
 			cur.close()
@@ -1194,9 +1195,9 @@ def modi_refer(request, id, use_yn):
 			mod_refer.append(row[0][0])
 			mod_refer.append(row[0][1])
 			mod_refer.append(row[0][2])
+			mod_refer.append(row[0][3])
 			if files:
 				mod_refer.append(files)
-			mod_refer.append(row[0][3])
 			# print 'mod_knews == ',mod_refer
 			data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
 		elif request.GET['method'] == 'file_download' :

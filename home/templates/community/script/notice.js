@@ -1,11 +1,34 @@
 
 var file_name, file_ext, file_size;
-$(document).ready(function(){
-    $('.summernote').summernote({
-        lang : 'ko-KR',
-        height : 400,
-    });
+$('.summernote').summernote({
+    lang : 'ko-KR',
+    height : 400,
+    callbacks : {
+        onImageUpload: function (files, modules, editable){
+        sendFile(files[0], modules, editable);
+       }
+    }
 });
+function sendFile(file, modules, editable) {
+    data = new FormData();
+    data.append("file", file);
+    $.ajax({
+        csrfmiddlewaretoken:$.cookie('csrftoken'),
+        type: 'POST',
+        url: '/summer_upload/',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data){
+            //console.log(data);
+            $("#summernote").summernote("insertImage", data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus+' '+errorThrown);
+        }
+    });
+}
 
 
 //신규 등록
