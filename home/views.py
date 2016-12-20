@@ -440,6 +440,7 @@ def new_notice(request):
 		if request.POST['method'] == 'add':
 
 			title = request.POST.get('nt_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('nt_cont')
 			content = content.replace("'", "''")
 			section = request.POST.get('notice')
@@ -471,6 +472,7 @@ def new_notice(request):
 
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('nt_cont')
 			content = content.replace("'", "''")
 			noti_id = request.POST.get('noti_id')
@@ -673,6 +675,7 @@ def new_knews(request):
 		if request.POST['method'] == 'add':
 
 			title = request.POST.get('knews_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('knews_content')
 			content = content.replace("'", "''")
 			section = request.POST.get('k_news')
@@ -706,6 +709,7 @@ def new_knews(request):
 
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('nt_cont')
 			content = content.replace("'", "''")
 			noti_id = request.POST.get('noti_id')
@@ -1109,6 +1113,7 @@ def new_refer(request):
 		if request.POST['method'] == 'add':
 
 			title = request.POST.get('refer_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('refer_cont')
 			content = content.replace("'", "''")
 			section = request.POST.get('refer')
@@ -1140,6 +1145,7 @@ def new_refer(request):
 
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('refer_title')
+			title = title.replace("'", "''")
 			content = request.POST.get('refer_cont')
 			content = content.replace("'", "''")
 			refer_id = request.POST.get('refer_id')
