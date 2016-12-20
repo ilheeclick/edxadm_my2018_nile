@@ -1,6 +1,6 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}FAQ{% endblock %}
-{% block pagetitlename_header %}FAQ{% endblock %}
+{% block pagetitlename %}Q&A{% endblock %}
+{% block pagetitlename_header %}Q&A{% endblock %}
 {% block script_down %}
 <script>
 	{% include "community/script/faq.js" %}
@@ -13,7 +13,7 @@
 <div class="row">
     <section class="panel panel-featured ">
         <header class="panel-heading">
-            <div><h2 class="panel-title">FAQ 신규 등록</h2></div>
+            <div><h2 class="panel-title">Q&A 신규 등록</h2></div>
         </header>
         <div class="panel-body">
             {% csrf_token %}

@@ -70,6 +70,9 @@
         }else{
 {#            alert($('#datepicker').val());#}
 {#            alert("dateObj == "+dateObj+" year == "+year+" month == "+month+" day == "+day+" / today == "+today);#}
+
+            alert('파일을 생성중입니다. 잠시만 기다려주세요.');
+            $("#download").find("img").show();
             $.ajax({
                 url: "/excel_download/" + $("#datepicker").val()
             }).done(function( data ) {
@@ -86,7 +89,7 @@
             alert('날짜를 선택하세요.');
             return;
         }
-
+        alert('파일을 생성중입니다. 잠시만 기다려주세요.');
         $("#download").find("img").show();
         $.ajax({
             url: "/excel_download1/" + $("#datepicker2").val()

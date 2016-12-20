@@ -441,6 +441,7 @@ def new_notice(request):
 
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
+			content = content.replace("'", "''")
 			section = request.POST.get('notice')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
@@ -471,6 +472,7 @@ def new_notice(request):
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
+			content = content.replace("'", "''")
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')
@@ -672,6 +674,7 @@ def new_knews(request):
 
 			title = request.POST.get('knews_title')
 			content = request.POST.get('knews_content')
+			content = content.replace("'", "''")
 			section = request.POST.get('k_news')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
@@ -680,6 +683,7 @@ def new_knews(request):
 			file_size = request.POST.get('file_size')
 			# print file_name,'/',file_ext,'/',file_size
 			# print 'head_title == ',head_title
+			print 'content == ', content
 
 			cur = connection.cursor()
 			query = "insert into edxapp.tb_board(subject, content, section, head_title)"
@@ -703,6 +707,7 @@ def new_knews(request):
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('nt_title')
 			content = request.POST.get('nt_cont')
+			content = content.replace("'", "''")
 			noti_id = request.POST.get('noti_id')
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')
@@ -894,7 +899,9 @@ def new_faq(request):
 		if request.POST.get('method') == 'add':
 			head_title = request.POST.get('head_title')
 			faq_question = request.POST.get('faq_question')
+			faq_question = faq_question.replace("'", "''")
 			faq_answer = request.POST.get('faq_answer')
+			faq_answer = faq_answer.replace("'", "''")
 			section = request.POST.get('section')
 
 			print 'head_title == ',head_title,' faq_question == ', faq_question, ' faq_answer == ', faq_answer, ' section == ', section
@@ -907,7 +914,9 @@ def new_faq(request):
 
 		if request.POST['method'] == 'modi':
 			question = request.POST.get('faq_question')
+			question = question.replace("'", "''")
 			answer = request.POST.get('faq_answer')
+			answer = answer.replace("'", "''")
 			head_title = request.POST.get('head_title')
 			faq_id = request.POST.get('faq_id')
 			cur = connection.cursor()
@@ -1101,6 +1110,7 @@ def new_refer(request):
 
 			title = request.POST.get('refer_title')
 			content = request.POST.get('refer_cont')
+			content = content.replace("'", "''")
 			section = request.POST.get('refer')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
@@ -1131,6 +1141,7 @@ def new_refer(request):
 		elif request.POST['method'] == 'modi':
 			title = request.POST.get('refer_title')
 			content = request.POST.get('refer_cont')
+			content = content.replace("'", "''")
 			refer_id = request.POST.get('refer_id')
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')

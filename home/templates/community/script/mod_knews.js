@@ -116,7 +116,7 @@ $('#knews_mod').on('click', function(e){
             location.href='/comm_k_news';
 
         }).fail(function(error) {
-            //alert('error = ' + error.responseJSON);
+            alert('error = ' + error.responseJSON);
             alert('파일명이 잘못되었습니다.');
         });
     }catch(e){
@@ -150,11 +150,11 @@ $(document).on('click', '#fileupload', function(){
 
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
 
-                if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
-                    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
-                    alert('정해진 파일 형식만 업로드 할수 있습니다.');
-                    return false;
-                }
+                //if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
+                //    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
+                //    alert('정해진 파일 형식만 업로드 할수 있습니다.');
+                //    return false;
+                //}
             }else{
                 alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
                 return false;
