@@ -5,15 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/home/views.py" line="449" mnemonic="1" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newfaq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newfaq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" afterPath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/container/main_base.html" afterPath="$PROJECT_DIR$/home/templates/container/main_base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" afterPath="$PROJECT_DIR$/home/templates/stastic/stastic_index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/views.py" afterPath="$PROJECT_DIR$/home/views.py" />
-    </list>
+    <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="" />
     <ignored path="management.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -123,8 +115,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/home/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7202797">
-              <caret line="1235" column="82" selection-start-line="1235" selection-start-column="82" selection-end-line="1235" selection-end-column="82" />
+            <state vertical-scroll-proportion="13.692307">
+              <caret line="1208" column="39" selection-start-line="1208" selection-start-column="39" selection-end-line="1208" selection-end-column="39" />
               <folding>
                 <element signature="e#24#89#0" expanded="true" />
                 <marker date="1482199119000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
@@ -1303,8 +1295,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/home/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7202797">
-          <caret line="1235" column="82" selection-start-line="1235" selection-start-column="82" selection-end-line="1235" selection-end-column="82" />
+        <state vertical-scroll-proportion="13.692307">
+          <caret line="1208" column="39" selection-start-line="1208" selection-start-column="39" selection-end-line="1208" selection-end-column="39" />
           <folding>
             <element signature="e#24#89#0" expanded="true" />
             <marker date="1482199119000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
