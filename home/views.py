@@ -814,12 +814,13 @@ def comm_faq(request):
 						   END
 							  use_yn,
 						   CASE
-							  WHEN head_title = 'regist_f' THEN '회원가입 관련'
-							  WHEN head_title = 'login_f' THEN '로그인 및 계정 관련'
-							  WHEN head_title = 'site_f' THEN 'K-MOOC 사이트 이용 관련'
-							  WHEN head_title = 'course_f' THEN '강좌 수강 관련'
-							  WHEN head_title = 'tech_f' THEN '기술적인 문제 관련'
-							  WHEN head_title = 'etc_f' THEN '기타'
+							  WHEN head_title = 'kmooc_f' THEN 'K-MOOC'
+							  WHEN head_title = 'regist_f ' THEN '회원가입'
+							  WHEN head_title = 'login_f ' THEN '로그인/계정'
+							  WHEN head_title = 'enroll_f ' THEN '수강신청/취소'
+							  WHEN head_title = 'course_f ' THEN '강좌수강'
+							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
+							  WHEN head_title = 'tech_f ' THEN '기술적문제'
 							  ELSE ''
 						   END
 							  head_title,
@@ -942,12 +943,13 @@ def modi_faq(request, id, use_yn):
 					SELECT subject,
 						   content,
 						   CASE
-							  WHEN head_title = 'regist_f' THEN '회원가입 관련'
-							  WHEN head_title = 'login_f' THEN '로그인 및 계정 관련'
-							  WHEN head_title = 'site_f' THEN 'K-MOOC 사이트 이용 관련'
-							  WHEN head_title = 'course_f' THEN '강좌 수강 관련'
-							  WHEN head_title = 'tech_f' THEN '기술적인 문제 관련'
-							  WHEN head_title = 'etc_f' THEN '기타'
+							  WHEN head_title = 'kmooc_f' THEN 'K-MOOC'
+							  WHEN head_title = 'regist_f ' THEN '회원가입'
+							  WHEN head_title = 'login_f ' THEN '로그인/계정'
+							  WHEN head_title = 'enroll_f ' THEN '수강신청/취소'
+							  WHEN head_title = 'course_f ' THEN '강좌수강'
+							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
+							  WHEN head_title = 'tech_f ' THEN '기술적문제'
 							  ELSE ''
 						   END
 							  head_title
@@ -1017,9 +1019,9 @@ def comm_reference_room(request):
 					SELECT board_id,
 						   use_yn,
 						   CASE
-							  WHEN head_title = 'publi_r' THEN '홍보'
-							  WHEN head_title = 'course_r' THEN '강좌안내'
-							  WHEN head_title = 'event_r' THEN '행사'
+							  WHEN head_title = 'publi_r' THEN '홍보자료'
+							  WHEN head_title = 'data_r' THEN '자료집'
+							  WHEN head_title = 'repo_r' THEN '보고서'
 							  WHEN head_title = 'etc_r' THEN '기타'
 							  ELSE ''
 						   END
@@ -1187,9 +1189,9 @@ def modi_refer(request, id, use_yn):
 						   content,
 						   odby,
 						   CASE
-							  WHEN head_title = 'publi_r' THEN '홍보'
-							  WHEN head_title = 'course_r' THEN '강좌안내'
-							  WHEN head_title = 'event_r' THEN '행사'
+							  WHEN head_title = 'publi_r' THEN '홍보자료'
+							  WHEN head_title = 'data_r' THEN '자료집'
+							  WHEN head_title = 'repo_r' THEN '보고서'
 							  WHEN head_title = 'etc_r' THEN '기타'
 							  ELSE ''
 						   END
