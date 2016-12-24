@@ -5,7 +5,7 @@ $(document).ready(function(){
     var use_yn = '{{use_yn}}';
     var html = "";
     $.ajax({
-        url : '/modi_knews/'+id+'/'+use_yn,
+        url : '/manage/modi_knews/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -44,7 +44,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -67,7 +67,7 @@ $(document).on('click', '#saved_file > a', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url : '/modi_knews/'+board_id+'/'+use_yn,
+        url : '/manage/modi_knews/'+board_id+'/'+use_yn,
             data : {
                 method : 'file_download',
                 file_name : file_name
@@ -99,7 +99,7 @@ $('#knews_mod').on('click', function(e){
             head_title = ''
         }
         /* insert to database */
-        $.post("/new_knews/", {
+        $.post("/manage/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: knews_title,
             nt_cont: knews_content,
@@ -113,7 +113,7 @@ $('#knews_mod').on('click', function(e){
             odby: odby,
             method: action_mode
         }).done(function(data){
-            location.href='/comm_k_news';
+            location.href='/manage/comm_k_news';
 
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
@@ -128,7 +128,7 @@ $('#knews_del').on('click', function(){
     var id = {{id}}
     var use_yn = '{{use_yn}}';
     $.ajax({
-        url:'/comm_k_news/',
+        url:'/manage/comm_k_news/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -136,7 +136,7 @@ $('#knews_del').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/comm_k_news'
+        location.href='/manage/comm_k_news'
     });
 });
 
@@ -144,7 +144,7 @@ $('#knews_del').on('click', function(){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/new_notice/',
+        url:'/manage/new_knews/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
 

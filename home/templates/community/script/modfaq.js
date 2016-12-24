@@ -17,7 +17,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -32,7 +32,7 @@ $(document).ready(function(){
         });
     }
     $.ajax({
-        url : '/modi_faq/'+id+'/'+use_yn,
+        url : '/manage/modi_faq/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -61,7 +61,7 @@ $('#faq_mod').on('click', function(){
             head_title='';
         }else{
             /* insert to database */
-            $.post("/new_faq/", {
+            $.post("/manage/new_faq/", {
                 csrfmiddlewaretoken:$.cookie('csrftoken'),
                 faq_question: faq_question,
                 faq_answer: faq_answer,
@@ -70,7 +70,7 @@ $('#faq_mod').on('click', function(){
                 notice: 'F',
                 method: action_mode
             }).done(function(data){
-                location.href='/comm_faq';
+                location.href='/manage/comm_faq';
 
             }).fail(function(error) {
                 alert('error = ' + error.responseJSON);
@@ -87,7 +87,7 @@ $('#del_faq').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/comm_faq/',
+        url:'/manage/comm_faq/',
         data:{
             faq_id:id,
             use_yn:use_yn,
@@ -95,6 +95,6 @@ $('#del_faq').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/comm_faq'
+        location.href='/manage/comm_faq'
     });
 });

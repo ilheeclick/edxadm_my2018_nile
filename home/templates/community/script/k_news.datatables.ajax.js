@@ -99,7 +99,7 @@ Theme Version: 	1.5.2
 			var noti_id = data[0];
 			//alert(data[1]);
 			console.log(data);
-			location.href='/modi_knews/'+data[0]+'/'+data[8]
+			location.href='/manage/modi_knews/'+data[0]+'/'+data[8]
 		});
 	};
 

@@ -132,7 +132,7 @@ Theme Version: 	1.5.2
 			var noti_id = data[0];
 			//alert(data[2]);
 			console.log(data);
-			location.href='/modi_refer/'+data[0]+'/'+data[1]
+			location.href='/manage/modi_refer/'+data[0]+'/'+data[1]
 		});
 	};
 

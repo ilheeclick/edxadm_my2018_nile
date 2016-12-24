@@ -69,7 +69,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -104,7 +104,7 @@ $('#faq_save').on('click', function(e){
             alert('분류를 선택하세요.');
         }else{
             /* insert to database */
-            $.post("/new_faq/", {
+            $.post("/manage/new_faq/", {
                 csrfmiddlewaretoken:$.cookie('csrftoken'),
                 faq_question: faq_question,
                 faq_answer: faq_answer,
@@ -113,7 +113,7 @@ $('#faq_save').on('click', function(e){
                 method: action_mode
             }).done(function(data){
                 //console.log(data);
-                location.href='/comm_faq';
+                location.href='/manage/comm_faq';
 
             }).fail(function(error) {
                 alert('error = ' + error.responseJSON);

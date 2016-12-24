@@ -19,7 +19,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -35,7 +35,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-        url : '/modi_notice/'+id+'/'+use_yn,
+        url : '/manage/modi_notice/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -69,7 +69,7 @@ $(document).on('click', '#saved_file > a', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url : '/modi_notice/'+board_id+'/'+use_yn,
+        url : '/manage/modi_notice/'+board_id+'/'+use_yn,
             data : {
                 method : 'file_download',
                 file_name : file_name
@@ -99,7 +99,7 @@ $('#notice_mod').on('click', function(e){
             head_title = ''
         }
         /* insert to database */
-        $.post("/new_notice/", {
+        $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: noticetitle,
             nt_cont: noticecontent,
@@ -113,7 +113,7 @@ $('#notice_mod').on('click', function(e){
             odby: odby,
             method: action_mode
         }).done(function(data){
-            location.href='/comm_notice';
+            location.href='/manage/comm_notice';
 
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
@@ -126,7 +126,7 @@ $('#notice_mod').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/new_knews/',
+        url:'/manage/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
 
@@ -164,7 +164,7 @@ $('#notice_del').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/comm_notice/',
+        url:'/manage/comm_notice/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -172,6 +172,6 @@ $('#notice_del').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/comm_notice'
+        location.href='/manage/comm_notice'
     });
 });
