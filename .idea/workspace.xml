@@ -6,44 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/8.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/KMS-DE-03_화면정의서(관리자)_v0.2.pptx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/Untitled.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/dd.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/edX 분석 2.7.docx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/notice table.rtf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/home/static/excel/notice_file/notice table.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/certificate.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/certificate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/per_certi.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/per_certifiate.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/per_certifiate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/certificate/script/uni_certifiate.js" afterPath="$PROJECT_DIR$/home/templates/certificate/script/uni_certifiate.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_faq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_faq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_k_news.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_k_news.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modi_knews.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modi_knews.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modifaq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modirefer.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modirefer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newfaq.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newfaq.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newknews.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newknews.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_notice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_notice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_reference_room.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_reference_room.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/faq.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/community/script/faq.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/faq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/faq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/k_news.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/community/script/k_news.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/k_news.js" afterPath="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" afterPath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modfaq.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/refer.datatables.ajax.js" afterPath="$PROJECT_DIR$/home/templates/community/script/refer.datatables.ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/refer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/refer.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/container/main_base.html" afterPath="$PROJECT_DIR$/home/templates/container/main_base.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/management/urls.py" afterPath="$PROJECT_DIR$/management/urls.py" />
     </list>
@@ -82,7 +45,40 @@
     <favorites_list name="management" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/management/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.49943247">
+              <caret line="37" column="19" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
+              <folding>
+                <element signature="e#619#660#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="stastic_index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-13.166667">
+              <caret line="125" column="36" selection-start-line="125" selection-start-column="36" selection-end-line="125" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main_base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-59.5">
+              <caret line="185" column="43" selection-start-line="185" selection-start-column="43" selection-end-line="185" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -121,8 +117,6 @@
         <option value="$PROJECT_DIR$/home/views.py" />
         <option value="$PROJECT_DIR$/home/urls.py" />
         <option value="$PROJECT_DIR$/management/settings.py" />
-        <option value="$PROJECT_DIR$/management/urls.py" />
-        <option value="$PROJECT_DIR$/home/templates/container/main_base.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_notice.html" />
         <option value="$PROJECT_DIR$/home/templates/community/script/notice.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
@@ -152,6 +146,8 @@
         <option value="$PROJECT_DIR$/home/templates/certificate/script/per_certifiate.js" />
         <option value="$PROJECT_DIR$/home/templates/certificate/script/uni_certi.datatables.ajax.js" />
         <option value="$PROJECT_DIR$/home/templates/certificate/script/uni_certifiate.js" />
+        <option value="$PROJECT_DIR$/home/templates/container/main_base.html" />
+        <option value="$PROJECT_DIR$/management/urls.py" />
       </list>
     </option>
   </component>
@@ -191,6 +187,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -254,10 +252,6 @@
               <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="state" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -278,94 +272,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="stastic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="home" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="monitoring" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="home" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="home" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="certificate" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="management" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="home" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="certificate" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="script" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -409,10 +315,30 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="management" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -423,7 +349,7 @@
     <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="SearchEverywhereHistoryKey" value="views.&#9;FILE&#9;file:///Users/dev/workspace/project/home/views.py&#10;main&#9;FILE&#9;file:///Users/dev/workspace/project/home/templates/container/main_base.html&#10;vie&#9;FILE&#9;file:///Users/dev/workspace/project/home/views.py&#10;url&#9;FILE&#9;file:///Users/dev/workspace/project/management/urls.py&#10;setting&#9;FILE&#9;file:///Users/dev/workspace/management/management/management/settings.py&#10;datatables.js&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js&#10;summernote&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/summernote/summernote.js&#10;summernote.js&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/summernote/summernote.js&#10;faq.&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/templates/community/script/faq.datatables.ajax.js&#10;view&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/views.py&#10;default&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/stylesheets/skins/default.css" />
+    <property name="SearchEverywhereHistoryKey" value="main&#9;FILE&#9;file:///Users/dev/workspace/project/home/templates/container/main_base.html&#10;views.&#9;FILE&#9;file:///Users/dev/workspace/project/home/views.py&#10;vie&#9;FILE&#9;file:///Users/dev/workspace/project/home/views.py&#10;url&#9;FILE&#9;file:///Users/dev/workspace/project/management/urls.py&#10;setting&#9;FILE&#9;file:///Users/dev/workspace/management/management/management/settings.py&#10;datatables.js&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js&#10;summernote&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/summernote/summernote.js&#10;summernote.js&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/vendor/summernote/summernote.js&#10;faq.&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/templates/community/script/faq.datatables.ajax.js&#10;view&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/views.py&#10;default&#9;FILE&#9;file:///Users/dev/workspace/management/management/home/static/assets/stylesheets/skins/default.css" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -805,12 +731,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="23" width="1845" height="1001" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17359956" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17692734" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.492233" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5113636" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21796276" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21894737" sideWeight="0.4912" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32968238" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24951456" sideWeight="0.4945055" order="1" side_tool="false" content_ui="tabs" />
@@ -824,7 +751,6 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2354874" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21796276" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="manage.py@management" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18921669" sideWeight="0.48863637" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26396495" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -940,19 +866,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.26021004">
-          <caret line="452" column="65" selection-start-line="452" selection-start-column="65" selection-end-line="452" selection-end-column="65" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_notice.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.43757293">
           <caret line="25" column="82" selection-start-line="25" selection-start-column="82" selection-end-line="25" selection-end-column="82" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -960,7 +877,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.42565265">
           <caret line="25" column="10" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -968,19 +884,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.59137344">
           <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/management/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63564134">
-          <caret line="51" column="12" selection-start-line="51" selection-start-column="12" selection-end-line="51" selection-end-column="12" />
-          <folding>
-            <element signature="e#619#660#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -988,7 +891,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.57993">
           <caret line="74" column="60" selection-start-line="74" selection-start-column="60" selection-end-line="74" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -996,7 +898,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.1918274">
           <caret line="101" column="34" selection-start-line="101" selection-start-column="34" selection-end-line="101" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1004,7 +905,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.62542564">
           <caret line="90" column="25" selection-start-line="90" selection-start-column="25" selection-end-line="90" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1012,7 +912,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.77012837">
           <caret line="75" column="60" selection-start-line="75" selection-start-column="60" selection-end-line="75" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1020,7 +919,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-24.375">
           <caret line="39" column="16" selection-start-line="39" selection-start-column="16" selection-end-line="39" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1028,7 +926,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4924154">
           <caret line="66" column="18" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1036,7 +933,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4924154">
           <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="62" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1044,7 +940,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7351225">
           <caret line="59" column="60" selection-start-line="59" selection-start-column="60" selection-end-line="59" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1052,7 +947,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.0326722">
           <caret line="59" column="60" selection-start-line="59" selection-start-column="60" selection-end-line="59" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1060,7 +954,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7661748">
           <caret line="92" column="34" selection-start-line="92" selection-start-column="34" selection-end-line="92" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1068,7 +961,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3570595">
           <caret line="23" column="113" selection-start-line="23" selection-start-column="113" selection-end-line="23" selection-end-column="113" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1076,9 +968,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.6685585">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1086,7 +975,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37003404">
           <caret line="114" column="63" selection-start-line="114" selection-start-column="63" selection-end-line="114" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1094,7 +982,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.31895572">
           <caret line="81" column="31" selection-start-line="81" selection-start-column="31" selection-end-line="81" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1102,7 +989,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.07234539">
           <caret line="35" column="36" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1111,7 +997,7 @@
         <state vertical-scroll-proportion="0.35300794">
           <caret line="646" column="13" selection-start-line="646" selection-start-column="4" selection-end-line="646" selection-end-column="13" />
           <folding>
-            <element signature="e#24#89#0" expanded="true" />
+            <element signature="e#24#89#0" expanded="false" />
             <marker date="1482342652000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
             <marker date="1482342652000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
             <marker date="1482342652000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
@@ -1159,7 +1045,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9451575">
           <caret line="71" column="60" selection-start-line="71" selection-start-column="60" selection-end-line="71" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1167,7 +1052,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3150525">
           <caret line="18" column="68" selection-start-line="18" selection-start-column="68" selection-end-line="18" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1175,7 +1059,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.646992">
           <caret line="115" column="38" selection-start-line="115" selection-start-column="38" selection-end-line="115" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1183,7 +1066,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.40408626">
           <caret line="147" column="31" selection-start-line="147" selection-start-column="31" selection-end-line="147" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1191,7 +1073,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.86379117">
           <caret line="97" column="30" selection-start-line="97" selection-start-column="30" selection-end-line="97" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1199,7 +1080,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.6560726">
           <caret line="26" column="36" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1207,7 +1087,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37003404">
           <caret line="146" column="30" selection-start-line="146" selection-start-column="30" selection-end-line="146" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1215,7 +1094,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4937571">
           <caret line="33" column="37" selection-start-line="33" selection-start-column="36" selection-end-line="33" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1231,9 +1109,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2678774">
           <caret line="141" column="34" selection-start-line="141" selection-start-column="34" selection-end-line="141" selection-end-column="34" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1241,7 +1116,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.45516458">
           <caret line="76" column="26" selection-start-line="76" selection-start-column="26" selection-end-line="76" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1249,7 +1123,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.50624293">
           <caret line="153" column="30" selection-start-line="153" selection-start-column="30" selection-end-line="153" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1257,7 +1130,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2508513">
           <caret line="122" column="26" selection-start-line="122" selection-start-column="26" selection-end-line="122" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1265,7 +1137,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15752625">
           <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1273,7 +1144,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.31738624">
           <caret line="42" column="86" selection-start-line="42" selection-start-column="86" selection-end-line="42" selection-end-column="86" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1281,15 +1151,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.80746794">
           <caret line="73" column="10" selection-start-line="73" selection-start-column="10" selection-end-line="73" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8004667">
-          <caret line="151" column="24" selection-start-line="151" selection-start-column="24" selection-end-line="151" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1297,7 +1158,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.067678">
           <caret line="61" column="20" selection-start-line="61" selection-start-column="20" selection-end-line="61" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1305,7 +1165,32 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14352392">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/stastic/stastic_index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.166667">
+          <caret line="125" column="36" selection-start-line="125" selection-start-column="36" selection-end-line="125" selection-end-column="36" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/container/main_base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-59.5">
+          <caret line="185" column="43" selection-start-line="185" selection-start-column="43" selection-end-line="185" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/management/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49943247">
+          <caret line="37" column="19" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
+          <folding>
+            <element signature="e#619#660#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

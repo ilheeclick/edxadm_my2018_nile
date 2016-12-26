@@ -35,7 +35,7 @@ urlpatterns = [
     # url(r'^manage/notice/del$', notice_del),
 
     # stastic url
-    url(r'^manage/index', views.stastic_index, name='stastic_index'),
+    url(r'^manage/$', views.stastic_index, name='stastic_index'),
     url(r'^manage/month_stastic/', views.month_stastic, name='month_stastic'),
     # state url
     url(r'^manage/mana_state/', views.mana_state, name='mana_state'),
