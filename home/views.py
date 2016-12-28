@@ -410,7 +410,9 @@ def comm_notice(request):
 	return render(request, 'community/comm_notice.html')
 
 def new_notice(request):
+	print 'check1'
 	if 'file' in request.FILES:
+		print 'check2'
 		value_list = []
 		file = request.FILES['file']
 		filename=''
@@ -420,19 +422,20 @@ def new_notice(request):
 		filename = file._name
 		file_ext = filename.split('.')[1]
 
-		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+		fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
 		for chunk in file.chunks():
 			fp.write(chunk)
 		fp.close()
 		data ='성공'
 
-		n = os.path.getsize('home/static/excel/notice_file/'+filename)
+		n = os.path.getsize(UPLOAD_DIR + filename)
 		file_size = str(n / 1024)+"KB"                       # 킬로바이트 단위로
 
 		value_list.append(filename)
 		value_list.append(file_ext)
 		value_list.append(file_size)
 		data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+		print 'check3'
 		return HttpResponse(data, 'applications/json')
 
 	elif request.method == 'POST':
@@ -1240,12 +1243,12 @@ def moni_storage(request):
 		if request.GET['method'] == 'storage_list' :
 			aaData = {}
 			data_list = []
-			a = commands.getoutput('ssh vagrant@192.168.33.13 df -h /')
+			a = commands.getoutput('df -h /video')
 			a_list = [1, a.split()[7], a.split()[9], a.split()[10], a.split()[11]]
-			b = commands.getoutput('ssh vagrant@192.168.33.13 df -h /dev')
-			b_list = [2, b.split()[7], b.split()[9], b.split()[10], b.split()[11]]
+			#b = commands.getoutput('ssh vagrant@192.168.33.13 df -h /dev')
+			#b_list = [2, b.split()[7], b.split()[9], b.split()[10], b.split()[11]]
 			data_list.append(a_list)
-			data_list.append(b_list)
+			#data_list.append(b_list)
 			# print 'data_list == ',data_list
 			aaData = json.dumps(list(data_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(aaData,'applications/json')
