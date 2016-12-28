@@ -23,7 +23,7 @@ from home import views
 
 urlpatterns = [
     url(r'^manage/admin/', admin.site.urls),
-    url(r'^manage/$', user_manage),
+    url(r'^manage/index/', user_manage),
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^manage/excel_select/$', excel_manage),
     url(r'^excel_download/(?P<date>.*?)$', statistics_excel),
@@ -35,7 +35,7 @@ urlpatterns = [
     # url(r'^manage/notice/del$', notice_del),
 
     # stastic url
-    url(r'^manage/index/', views.stastic_index, name='stastic_index'),
+    url(r'^manage/$', views.stastic_index, name='stastic_index'),
     url(r'^manage/month_stastic/', views.month_stastic, name='month_stastic'),
     # state url
     url(r'^manage/mana_state/', views.mana_state, name='mana_state'),
