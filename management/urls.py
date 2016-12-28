@@ -15,15 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from user_manage1.views import user_manage, excel_manage
-from user_manage1.statistics import statistics_excel, certificate_excel, statistics_excel3
+from user_manage.views import user_manage, excel_manage
+from user_manage.statistics import statistics_excel, certificate_excel, statistics_excel3
 from home.statistics import statistics_excel, statistics_excel1
-from user_manage1.notice import notice_reg, notice_list, notice_mod, notice_del
+from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
 
 urlpatterns = [
     url(r'^manage/admin/', admin.site.urls),
-    # url(r'^manage/$', user_manage),
+    url(r'^manage/$', user_manage),
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^manage/excel_select/$', excel_manage),
     url(r'^excel_download/(?P<date>.*?)$', statistics_excel),
@@ -35,7 +35,7 @@ urlpatterns = [
     # url(r'^manage/notice/del$', notice_del),
 
     # stastic url
-    url(r'^manage/$', views.stastic_index, name='stastic_index'),
+    url(r'^manage/index/', views.stastic_index, name='stastic_index'),
     url(r'^manage/month_stastic/', views.month_stastic, name='month_stastic'),
     # state url
     url(r'^manage/mana_state/', views.mana_state, name='mana_state'),
