@@ -1092,3 +1092,68 @@
 [DEBUG|statistics.py:591] 2016-12-10 13:38:19,708 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_BIZ03k+2015_T2', u'YSU_BIZ03k', u'2015_T2', Decimal('162'), Decimal('460'), Decimal('1232'), Decimal('103'), Decimal('385'), Decimal('67'), Decimal('5'), Decimal('33'), Decimal('202'), 2649L, '2015-09-24', '2015-11-02', '2016-01-31', u'\uc11c\ube44\uc2a4\ub514\uc790\uc778')
 [DEBUG|statistics.py:591] 2016-12-10 13:38:19,708 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_KOR02k+2015_T2', u'YSU_KOR02k', u'2015_T2', Decimal('151'), Decimal('515'), Decimal('1289'), Decimal('144'), Decimal('625'), Decimal('126'), Decimal('12'), Decimal('71'), Decimal('240'), 3173L, '2015-09-24', '2015-11-02', '2016-01-31', u'\ubb38\ud559\uc774\ub780 \ubb34\uc5c7\uc778\uac00')
 [DEBUG|statistics.py:591] 2016-12-10 13:38:19,709 > (u'\uc5f0\uc138\ub300\ud559\uad50', u'YSUk', u'course-v1:YSUk+YSU_UCC01k+2015_T2', u'YSU_UCC01k', u'2015_T2', Decimal('126'), Decimal('360'), Decimal('1047'), Decimal('101'), Decimal('523'), Decimal('133'), Decimal('26'), Decimal('62'), Decimal('227'), 2605L, '2015-09-24', '2015-11-02', '2016-02-15', u'\uc6b0\uc8fc\uc758 \uc774\ud574')
+[INFO|statistics.py:46] 2016-12-28 10:29:14,670 > statistics_excel START
+[DEBUG|statistics.py:95] 2016-12-28 10:29:14,764 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-28 10:29:14,764 > course-v1:123123123+123123123+123123123 : 123123123 : 123123123
+[DEBUG|statistics.py:97] 2016-12-28 10:29:14,764 > 2016-12-30 00:00:00
+[DEBUG|statistics.py:98] 2016-12-28 10:29:14,764 > 2017-01-07 00:00:00
+[DEBUG|statistics.py:99] 2016-12-28 10:29:14,764 > 2016-12-30 00:00:00
+[DEBUG|statistics.py:100] 2016-12-28 10:29:14,765 > 2017-01-07 00:00:00
+[DEBUG|statistics.py:101] 2016-12-28 10:29:14,765 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-28 10:29:14,783 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-28 10:29:14,783 > course-v1:BUFSk+KOCW.BUFS01+2016_HR1 : KOCW.BUFS01 : 2016_HR1
+[DEBUG|statistics.py:97] 2016-12-28 10:29:14,783 > 2030-01-01 00:00:00
+[DEBUG|statistics.py:98] 2016-12-28 10:29:14,783 > None
+[DEBUG|statistics.py:99] 2016-12-28 10:29:14,783 > None
+[DEBUG|statistics.py:100] 2016-12-28 10:29:14,783 > None
+[DEBUG|statistics.py:101] 2016-12-28 10:29:14,783 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-28 10:29:14,784 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-28 10:29:14,785 > course-v1:cum+cum1+2016_cum : cum1 : 2016_cum
+[DEBUG|statistics.py:97] 2016-12-28 10:29:14,785 > 2017-01-24 00:00:00
+[DEBUG|statistics.py:98] 2016-12-28 10:29:14,785 > 2017-02-24 00:00:00
+[DEBUG|statistics.py:99] 2016-12-28 10:29:14,785 > 2017-01-24 00:00:00
+[DEBUG|statistics.py:100] 2016-12-28 10:29:14,785 > 2017-02-24 00:00:00
+[DEBUG|statistics.py:101] 2016-12-28 10:29:14,785 > ---------------------------------------------
+[DEBUG|statistics.py:95] 2016-12-28 10:29:14,786 > ---------------------------------------------
+[DEBUG|statistics.py:96] 2016-12-28 10:29:14,787 > course-v1:ro+ro1+roro1 : ro1 : roro1
+[DEBUG|statistics.py:97] 2016-12-28 10:29:14,787 > 2016-12-25 00:00:00
+[DEBUG|statistics.py:98] 2016-12-28 10:29:14,787 > 2017-12-31 00:30:00
+[DEBUG|statistics.py:99] 2016-12-28 10:29:14,787 > 2016-12-25 00:00:00
+[DEBUG|statistics.py:100] 2016-12-28 10:29:14,788 > 2017-12-31 00:30:00
+[DEBUG|statistics.py:101] 2016-12-28 10:29:14,788 > ---------------------------------------------
+[INFO|statistics.py:136] 2016-12-28 10:29:14,877 > ------------------------------ statistics_excel make ------------------------------
+[INFO|statistics.py:146] 2016-12-28 10:29:14,912 > 가입현황
+[INFO|statistics.py:155] 2016-12-28 10:29:14,913 > 수강신청구분
+[INFO|statistics.py:170] 2016-12-28 10:29:14,913 > 연령구분
+[INFO|statistics.py:192] 2016-12-28 10:29:14,913 > 학력구분
+[DEBUG|statistics.py:255] 2016-12-28 10:29:14,914 > ('123123123', u'1231231', u'course-v1:123123123+123123123+123123123', u'123123123', u'123123123', 0L, '2016-12-27', '2016-12-30', '2017-01-07')
+[DEBUG|statistics.py:255] 2016-12-28 10:29:14,914 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'kocw\uac15\uc88c', u'course-v1:BUFSk+KOCW.BUFS01+2016_HR1', u'KOCW.BUFS01', u'2016_HR1', 0L, '2016-12-23', '2030-01-01', None)
+[DEBUG|statistics.py:255] 2016-12-28 10:29:14,914 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', 0L, '2016-11-24', '2017-01-24', '2017-02-24')
+[DEBUG|statistics.py:255] 2016-12-28 10:29:14,914 > ('ro', u'\uac1c\uac15 \uac15\uc88c', u'course-v1:ro+ro1+roro1', u'ro1', u'roro1', 0L, '2016-12-24', '2016-12-25', '2017-12-31')
+[DEBUG|statistics.py:309] 2016-12-28 10:29:14,917 > (u'123123123', u'123123123', 0L)
+[DEBUG|statistics.py:309] 2016-12-28 10:29:14,917 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'BUFSk', 0L)
+[DEBUG|statistics.py:309] 2016-12-28 10:29:14,917 > (u'cum', u'cum', 0L)
+[DEBUG|statistics.py:309] 2016-12-28 10:29:14,917 > (u'ro', u'ro', 0L)
+[DEBUG|statistics.py:365] 2016-12-28 10:29:14,918 > 코스별 수강자 누적
+[DEBUG|statistics.py:384] 2016-12-28 10:29:14,918 > ('123123123', u'1231231', u'course-v1:123123123+123123123+123123123', u'123123123', u'123123123', 0L, Decimal('0'), '2016-12-27', '2016-12-30', '2017-01-07')
+[DEBUG|statistics.py:384] 2016-12-28 10:29:14,918 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'kocw\uac15\uc88c', u'course-v1:BUFSk+KOCW.BUFS01+2016_HR1', u'KOCW.BUFS01', u'2016_HR1', 0L, Decimal('0'), '2016-12-23', '2030-01-01', None)
+[DEBUG|statistics.py:384] 2016-12-28 10:29:14,918 > ('cum', u'\ucef4\uacf5', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', 2L, Decimal('2'), '2016-11-24', '2017-01-24', '2017-02-24')
+[DEBUG|statistics.py:384] 2016-12-28 10:29:14,918 > ('ro', u'\uac1c\uac15 \uac15\uc88c', u'course-v1:ro+ro1+roro1', u'ro1', u'roro1', 0L, Decimal('0'), '2016-12-24', '2016-12-25', '2017-12-31')
+[DEBUG|statistics.py:445] 2016-12-28 10:29:14,921 > (u'123123123', u'123123123', 0L, None)
+[DEBUG|statistics.py:445] 2016-12-28 10:29:14,922 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'BUFSk', 0L, None)
+[DEBUG|statistics.py:445] 2016-12-28 10:29:14,922 > (u'cum', u'cum', 2L, Decimal('2'))
+[DEBUG|statistics.py:445] 2016-12-28 10:29:14,922 > (u'ro', u'ro', 0L, None)
+[DEBUG|statistics.py:473] 2016-12-28 10:29:14,922 > L
+[DEBUG|statistics.py:473] 2016-12-28 10:29:14,922 > M
+[DEBUG|statistics.py:473] 2016-12-28 10:29:14,923 > N
+[DEBUG|statistics.py:473] 2016-12-28 10:29:14,923 > O
+[DEBUG|statistics.py:491] 2016-12-28 10:29:14,924 > 코스별 연령
+[DEBUG|statistics.py:506] 2016-12-28 10:29:14,924 > (u'123123123', u'123123123', u'course-v1:123123123+123123123+123123123', u'123123123', u'123123123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-27', '2016-12-30', '2017-01-07', u'1231231')
+[DEBUG|statistics.py:506] 2016-12-28 10:29:14,924 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'BUFSk', u'course-v1:BUFSk+KOCW.BUFS01+2016_HR1', u'KOCW.BUFS01', u'2016_HR1', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-23', '2030-01-01', None, u'kocw\uac15\uc88c')
+[DEBUG|statistics.py:506] 2016-12-28 10:29:14,924 > (u'cum', u'cum', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', Decimal('2'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 2L, '2016-11-24', '2017-01-24', '2017-02-24', u'\ucef4\uacf5')
+[DEBUG|statistics.py:506] 2016-12-28 10:29:14,924 > (u'ro', u'ro', u'course-v1:ro+ro1+roro1', u'ro1', u'roro1', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-24', '2016-12-25', '2017-12-31', u'\uac1c\uac15 \uac15\uc88c')
+[DEBUG|statistics.py:576] 2016-12-28 10:29:14,928 > 코스별 학력
+[DEBUG|statistics.py:591] 2016-12-28 10:29:14,928 > (u'123123123', u'123123123', u'course-v1:123123123+123123123+123123123', u'123123123', u'123123123', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-27', '2016-12-30', '2017-01-07', u'1231231')
+[DEBUG|statistics.py:591] 2016-12-28 10:29:14,929 > (u'\ubd80\uc0b0\uc678\uad6d\uc5b4\ub300\ud559\uad50', u'BUFSk', u'course-v1:BUFSk+KOCW.BUFS01+2016_HR1', u'KOCW.BUFS01', u'2016_HR1', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-23', '2030-01-01', None, u'kocw\uac15\uc88c')
+[DEBUG|statistics.py:591] 2016-12-28 10:29:14,929 > (u'cum', u'cum', u'course-v1:cum+cum1+2016_cum', u'cum1', u'2016_cum', Decimal('0'), Decimal('0'), Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('1'), 2L, '2016-11-24', '2017-01-24', '2017-02-24', u'\ucef4\uacf5')
+[DEBUG|statistics.py:591] 2016-12-28 10:29:14,929 > (u'ro', u'ro', u'course-v1:ro+ro1+roro1', u'ro1', u'roro1', Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), Decimal('0'), 0L, '2016-12-24', '2016-12-25', '2017-12-31', u'\uac1c\uac15 \uac15\uc88c')
