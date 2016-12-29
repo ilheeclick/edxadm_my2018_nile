@@ -74,7 +74,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice',
+        url:'/manage/new_notice/',
 
 
         beforeSubmit: function (data,form,option) {
@@ -100,9 +100,7 @@ $(document).on('click', '#fileupload', function(){
 
         },
         error: function() {
-
             alert("업로드에 실패했습니다.");
-            alert(error);
         }
     })
 });

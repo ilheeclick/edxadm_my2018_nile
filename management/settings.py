@@ -109,10 +109,10 @@ USE_TZ = True
 STATIC_URL = '/home/static/'
 
 STATICFILES_DIRS = (
-     ("css", os.path.join(BASE_DIR, 'static/css')),
-     ("image", os.path.join(BASE_DIR, 'static/image')),
-     ("js", os.path.join(BASE_DIR, 'static/js')),
-     ("font", os.path.join(BASE_DIR, 'static/font')),
+     ("css", os.path.join(BASE_DIR, 'static1/css')),
+     ("image", os.path.join(BASE_DIR, 'static1/image')),
+     ("js", os.path.join(BASE_DIR, 'static1/js')),
+     ("font", os.path.join(BASE_DIR, 'static1/font')),
      ("excel", os.path.join(BASE_DIR, 'home/static/excel')),
       # Put strings here, like "/home/html/static" or "C:/www/django/static".
       # Always use forward slashes, even on Windows.
