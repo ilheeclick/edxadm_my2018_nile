@@ -172,7 +172,6 @@ $(document).on('click', '#fileupload', function(){
         },
         error: function() {
             alert("업로드에 실패했습니다.");
-            alert(error);
         }
     })
 });
