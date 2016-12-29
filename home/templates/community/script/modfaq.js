@@ -81,9 +81,9 @@ $('#faq_mod').on('click', function(){
     }
 });
 
-//삭제 처리
+//숨김 처리
 $('#del_faq').on('click', function(){
-    var id = {{id}}
+    var id = {{id}};
     var use_yn = '{{use_yn}}';
 
     $.ajax({
@@ -92,6 +92,24 @@ $('#del_faq').on('click', function(){
             faq_id:id,
             use_yn:use_yn,
             method:'faq_del'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_faq'
+    });
+});
+
+//삭제 처리
+$('#faq_delete').on('click', function(){
+    var id = {{id}};
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url:'/manage/comm_faq/',
+        data:{
+            faq_id:id,
+            use_yn:use_yn,
+            method:'faq_delete'
         }
     }).done(function(data){
         console.log(data);
