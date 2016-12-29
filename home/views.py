@@ -356,7 +356,7 @@ def comm_notice(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'N'
+					 WHERE section = 'N' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -403,16 +403,23 @@ def comm_notice(request):
 			cur.execute(query)
 			cur.close()
 			aaData = json.dumps('success')
-		elif request.GET['method'] == 'file_upload' :
-			print 'file_upload'
+		elif request.GET['method'] == 'notice_delete' :
+			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
+			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
 		return HttpResponse(aaData,'applications/json')
 
 	return render(request, 'community/comm_notice.html')
 
 def new_notice(request):
-	print 'check1'
 	if 'file' in request.FILES:
-		print 'check2'
 		value_list = []
 		file = request.FILES['file']
 		filename=''
@@ -422,20 +429,19 @@ def new_notice(request):
 		filename = file._name
 		file_ext = filename.split('.')[1]
 
-		fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
+		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
 		for chunk in file.chunks():
 			fp.write(chunk)
 		fp.close()
 		data ='성공'
 
-		n = os.path.getsize(UPLOAD_DIR + filename)
+		n = os.path.getsize('home/static/excel/notice_file/'+filename)
 		file_size = str(n / 1024)+"KB"                       # 킬로바이트 단위로
 
 		value_list.append(filename)
 		value_list.append(file_ext)
 		value_list.append(file_size)
 		data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-		print 'check3'
 		return HttpResponse(data, 'applications/json')
 
 	elif request.method == 'POST':
@@ -602,7 +608,7 @@ def comm_k_news(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'K';
+					 WHERE section = 'K' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -638,6 +644,17 @@ def comm_k_news(request):
 			else:
 				yn='Y'
 			print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
+			print 'query == ', query
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+		elif request.GET['method'] == 'knews_delete' :
+			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
 			print 'query == ', query
@@ -830,7 +847,7 @@ def comm_faq(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'F'
+					 WHERE section = 'F' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -872,6 +889,17 @@ def comm_faq(request):
 			else:
 				yn='Y'
 			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+faq_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+			return HttpResponse(aaData,'applications/json')
+		elif request.GET['method'] == 'faq_delete' :
+			faq_id = request.GET['faq_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+faq_id
 			cur.execute(query)
@@ -1040,7 +1068,7 @@ def comm_reference_room(request):
 							  use_yn,
 						   CASE WHEN odby = '0' THEN '' ELSE odby END odby
 					  FROM tb_board
-					 WHERE section = 'R';
+					 WHERE section = 'R' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -1079,6 +1107,16 @@ def comm_reference_room(request):
 			else:
 				yn='Y'
 			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+refer_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+		elif request.GET['method'] == 'refer_delete' :
+			refer_id = request.GET['refer_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+refer_id
 			cur.execute(query)
@@ -1244,12 +1282,12 @@ def moni_storage(request):
 		if request.GET['method'] == 'storage_list' :
 			aaData = {}
 			data_list = []
-			a = commands.getoutput('df -h /video')
+			a = commands.getoutput('ssh vagrant@192.168.33.13 df -h /')
 			a_list = [1, a.split()[7], a.split()[9], a.split()[10], a.split()[11]]
-			#b = commands.getoutput('ssh vagrant@192.168.33.13 df -h /dev')
-			#b_list = [2, b.split()[7], b.split()[9], b.split()[10], b.split()[11]]
+			b = commands.getoutput('ssh vagrant@192.168.33.13 df -h /dev')
+			b_list = [2, b.split()[7], b.split()[9], b.split()[10], b.split()[11]]
 			data_list.append(a_list)
-			#data_list.append(b_list)
+			data_list.append(b_list)
 			# print 'data_list == ',data_list
 			aaData = json.dumps(list(data_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(aaData,'applications/json')
@@ -1261,11 +1299,12 @@ def summer_upload(request):
 		file = request.FILES['file']
 		filename = file._name
 		# fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+		# fp = open('%s/%s' % ('/home/static/excel/notice_file', filename) , 'wb')
 		fp = open('%s/%s' % ('/static/uploads/', filename) , 'wb')
 
 		for chunk in file.chunks():
 			fp.write(chunk)
 		fp.close()
-		# return HttpResponse('http://192.168.33.15:8000/static/uploads/'+filename)
+		# return HttpResponse('http://192.168.33.15:8000/home/static/excel/notice_file/'+filename)
 		return HttpResponse('/static/uploads/'+filename)
 	return HttpResponse('fail')

@@ -128,16 +128,14 @@ def statistics_excel(request, date):
     save_name = 'K-Mooc'+date+'.xlsx'
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path):
+    if os.path.isfile(save_path) and not debug:
         logger.info('------------------------------ statistics_excel pass ------------------------------')
 
         pass
     else:
         logger.info('------------------------------ statistics_excel make ------------------------------')
-	print 'step 111'
-	print EXCEL_PATH + 'basic.xlsx'
+
         wb = load_workbook(EXCEL_PATH + 'basic.xlsx')
-	print 'step 222'
         ws1 = wb['user_count']
         ws2 = wb['course_count']
         ws3 = wb['course_count_total']
@@ -673,8 +671,9 @@ def statistics_excel(request, date):
             ws5['Q' + str(rn1)].alignment = Alignment(horizontal="right")
 
             rn1 += 1
+
         wb.save(save_path)
-    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
 def certificate_excel(request, course_id):
@@ -779,7 +778,7 @@ def statistics_excel1(request, date):
     save_name = 'K-MoocMonth'+date+'.xlsx'
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path):
+    if os.path.isfile(save_path) and not debug:
         pass
     else:
         member_statistics = statistics_query.member_statistics(date)
@@ -1065,4 +1064,4 @@ def statistics_excel1(request, date):
 
         wb.save(save_path)
 
-    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
