@@ -1052,6 +1052,8 @@ def statistics_excel1(request, date):
 
         row = 8
         for c in country_statistics:
+            if not c[0] or c[0] not in COUNTRIES:
+                break
             print 'c == ', c
             ws1['A' + str(row)] = c[0]
             ws1['B' + str(row)] = c[1]

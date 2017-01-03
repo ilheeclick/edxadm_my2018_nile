@@ -58,7 +58,7 @@
             showMonthAfterYear: true,
             yearSuffix: '년',
             beforeShowDay: function(date){
-                return [date.getDate() == 13, ''];
+                return [date.getDate() == 1 || date.getDate() == 13, ''];
             }
             });
     });
@@ -96,11 +96,12 @@
         })
         .done(function( data ) {
             alert('파일 생성 완료!');
-            $("#download").prop("href", data);
-            $("#downloadBtn").click();
-            $("#download").find("img").hide();
+            $("#download2").prop("href", data);
+            $("#downloadBtn2").click();
+            $("#download2").find("img").hide();
         });
     });
+
 
 
 </script>
@@ -128,7 +129,7 @@
                 <input type="text" class="form-control" id="datepicker2" placeholder="통계 날짜를 선택하세요">
             </div>
             <a class="btn btn-default" id="month_down">다운로드</a>
-            <a href="#" id="download" ><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
+            <a href="#" id="download2" ><span id="downloadBtn2" style="display: none;">download</span><img id="img" src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
 
         </form>
     </div>
