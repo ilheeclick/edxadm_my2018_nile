@@ -673,7 +673,7 @@ def statistics_excel(request, date):
             rn1 += 1
 
         wb.save(save_path)
-    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
 def certificate_excel(request, course_id):
@@ -1063,4 +1063,4 @@ def statistics_excel1(request, date):
 
         wb.save(save_path)
 
-    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')

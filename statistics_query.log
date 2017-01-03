@@ -5590,3 +5590,75 @@
         GROUP BY b.country
         ORDER BY count(*) DESC;
     
+[DEBUG|statistics_query.py:823] 2017-01-03 11:11:06,783 > 
+        SELECT sum(if(a.is_active = '1', 1, 0)) active,
+               sum(if(a.is_active = '1', 0, 1)) unactive,
+               count(*)
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213';
+    
+[DEBUG|statistics_query.py:842] 2017-01-03 11:11:07,199 > 
+        SELECT b.country, count(*) cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213'
+        GROUP BY b.country
+        ORDER BY count(*) DESC;
+    
+[DEBUG|statistics_query.py:823] 2017-01-03 11:12:43,083 > 
+        SELECT sum(if(a.is_active = '1', 1, 0)) active,
+               sum(if(a.is_active = '1', 0, 1)) unactive,
+               count(*)
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213';
+    
+[DEBUG|statistics_query.py:842] 2017-01-03 11:12:43,355 > 
+        SELECT b.country, count(*) cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213'
+        GROUP BY b.country
+        ORDER BY count(*) DESC;
+    
+[DEBUG|statistics_query.py:823] 2017-01-03 11:16:14,648 > 
+        SELECT sum(if(a.is_active = '1', 1, 0)) active,
+               sum(if(a.is_active = '1', 0, 1)) unactive,
+               count(*)
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213';
+    
+[DEBUG|statistics_query.py:842] 2017-01-03 11:16:14,903 > 
+        SELECT b.country, count(*) cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213'
+        GROUP BY b.country
+        ORDER BY count(*) DESC;
+    
+[DEBUG|statistics_query.py:823] 2017-01-03 11:18:58,893 > 
+        SELECT sum(if(a.is_active = '1', 1, 0)) active,
+               sum(if(a.is_active = '1', 0, 1)) unactive,
+               count(*)
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213';
+    
+[DEBUG|statistics_query.py:842] 2017-01-03 11:18:59,124 > 
+        SELECT b.country, count(*) cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '20161213'
+        GROUP BY b.country
+        ORDER BY count(*) DESC;
+    

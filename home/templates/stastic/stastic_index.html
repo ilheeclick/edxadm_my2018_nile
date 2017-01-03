@@ -83,7 +83,7 @@
         }else{
             $("#download").find("img").show();
             $.ajax({
-                url: "/excel_download/" + $("#datepicker").val()
+                url: "/manage/excel_download/" + $("#datepicker").val()
             }).done(function( data ) {
                 alert('파일 생성 완료!');
                 $("#download").prop("href", data);
@@ -100,7 +100,7 @@
         }
         $("#download2").find("img").show();
         $.ajax({
-            url: "/excel_download1/" + $("#datepicker2").val()
+            url: "/manage/excel_download1/" + $("#datepicker2").val()
         })
         .done(function( data ) {
             alert('파일 생성 완료!');

@@ -25,7 +25,7 @@ $(document).ready(function(){
             contentType: false,
             processData: false,
             success: function(data){
-                //console.log(data);
+                console.log(data);
                 $("#summernote").summernote("insertImage", data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
