@@ -27,6 +27,11 @@
                   }
     var today = year+""+month+""+day;
 
+    function getLastDayOfYearAndMonth(year, month)
+    {
+        return(new Date((new Date(year, month + 1, 1)) - 1)).getDate();
+    }
+
     $(function() {
 
         // calendar setting
@@ -58,20 +63,24 @@
             showMonthAfterYear: true,
             yearSuffix: '년',
             beforeShowDay: function(date){
-                return [date.getDate() == 13, ''];
+                return [date.getDate() == 13 || date.getDate() == LastDayOfMonth(date.getFullYear(),date.getMonth()), ''];
             }
             });
     });
+
+    var idx = 0;
+    var lastDate = 0;
+
+    function LastDayOfMonth(Year, Month)
+    {
+        return(new Date((new Date(Year, Month+1,1))-1)).getDate();
+    }
 
     $(document).on('click', '#day_down',function(){
         if($("#datepicker").val() == ""){
             alert('날짜를 선택하세요.');
             return;
         }else{
-{#            alert($('#datepicker').val());#}
-{#            alert("dateObj == "+dateObj+" year == "+year+" month == "+month+" day == "+day+" / today == "+today);#}
-
-            alert('파일을 생성중입니다. 잠시만 기다려주세요.');
             $("#download").find("img").show();
             $.ajax({
                 url: "/excel_download/" + $("#datepicker").val()
@@ -89,16 +98,15 @@
             alert('날짜를 선택하세요.');
             return;
         }
-        alert('파일을 생성중입니다. 잠시만 기다려주세요.');
-        $("#download").find("img").show();
+        $("#download2").find("img").show();
         $.ajax({
             url: "/excel_download1/" + $("#datepicker2").val()
         })
         .done(function( data ) {
             alert('파일 생성 완료!');
-            $("#download").prop("href", data);
-            $("#downloadBtn").click();
-            $("#download").find("img").hide();
+            $("#download2").prop("href", data);
+            $("#downloadBtn2").click();
+            $("#download2").find("img").hide();
         });
     });
 

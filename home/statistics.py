@@ -1052,10 +1052,9 @@ def statistics_excel1(request, date):
 
         row = 8
         for c in country_statistics:
-            print 'c == ', c
             ws1['A' + str(row)] = c[0]
             ws1['B' + str(row)] = c[1]
-            ws1['C' + str(row)] = COUNTRIES[c[0]]
+            ws1['C' + str(row)] = COUNTRIES[c[0]] if c[0] in COUNTRIES else c[0]
 
             ws1['A' + str(row)].border = thin_border
             ws1['B' + str(row)].border = thin_border
