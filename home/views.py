@@ -356,7 +356,7 @@ def comm_notice(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'N'
+					 WHERE section = 'N' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -403,8 +403,17 @@ def comm_notice(request):
 			cur.execute(query)
 			cur.close()
 			aaData = json.dumps('success')
-		elif request.GET['method'] == 'file_upload' :
-			print 'file_upload'
+		elif request.GET['method'] == 'notice_delete' :
+			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
+			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
 		return HttpResponse(aaData,'applications/json')
 
 	return render(request, 'community/comm_notice.html')
@@ -598,7 +607,7 @@ def comm_k_news(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'K';
+					 WHERE section = 'K' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -634,6 +643,17 @@ def comm_k_news(request):
 			else:
 				yn='Y'
 			print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
+			print 'query == ', query
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+		elif request.GET['method'] == 'knews_delete' :
+			noti_id = request.GET['noti_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+noti_id
 			print 'query == ', query
@@ -826,7 +846,7 @@ def comm_faq(request):
 							  head_title,
 						   use_yn
 					  FROM tb_board
-					 WHERE section = 'F'
+					 WHERE section = 'F' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -868,6 +888,17 @@ def comm_faq(request):
 			else:
 				yn='Y'
 			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+faq_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+			return HttpResponse(aaData,'applications/json')
+		elif request.GET['method'] == 'faq_delete' :
+			faq_id = request.GET['faq_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+faq_id
 			cur.execute(query)
@@ -1036,7 +1067,7 @@ def comm_reference_room(request):
 							  use_yn,
 						   CASE WHEN odby = '0' THEN '' ELSE odby END odby
 					  FROM tb_board
-					 WHERE section = 'R';
+					 WHERE section = 'R' AND NOT use_yn = 'D'
 			"""
 			if 'search_con' in request.GET :
 				title = request.GET['search_con']
@@ -1075,6 +1106,16 @@ def comm_reference_room(request):
 			else:
 				yn='Y'
 			# print 'use_yn == ',use_yn,' yn == ',yn
+			cur = connection.cursor()
+			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+refer_id
+			cur.execute(query)
+			cur.close()
+			aaData = json.dumps('success')
+		elif request.GET['method'] == 'refer_delete' :
+			refer_id = request.GET['refer_id']
+			use_yn = request.GET['use_yn']
+			yn = 'D'
+
 			cur = connection.cursor()
 			query = "update edxapp.tb_board SET use_yn = '"+yn+"' where board_id = "+refer_id
 			cur.execute(query)

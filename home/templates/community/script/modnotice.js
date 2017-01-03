@@ -156,7 +156,7 @@ $(document).on('click', '#fileupload', function(){
 });
 
 
-//삭제 처리
+//숨김 처리
 $('#notice_del').on('click', function(){
     var id = {{id}}
     var use_yn = '{{use_yn}}';
@@ -167,6 +167,24 @@ $('#notice_del').on('click', function(){
             noti_id:id,
             use_yn:use_yn,
             method:'notice_del'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_notice'
+    });
+});
+
+//삭제 처리
+$('#notice_delete').on('click', function(){
+    var id = {{id}}
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url:'/manage/comm_notice/',
+        data:{
+            noti_id:id,
+            use_yn:use_yn,
+            method:'notice_delete'
         }
     }).done(function(data){
         console.log(data);

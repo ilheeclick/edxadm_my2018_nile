@@ -123,22 +123,6 @@ $('#knews_mod').on('click', function(e){
         alert(e);
     }
 });
-//삭제 처리
-$('#knews_del').on('click', function(){
-    var id = {{id}}
-    var use_yn = '{{use_yn}}';
-    $.ajax({
-        url:'/manage/comm_k_news/',
-        data:{
-            noti_id:id,
-            use_yn:use_yn,
-            method:'knews_del'
-        }
-    }).done(function(data){
-        console.log(data);
-        location.href='/manage/comm_k_news'
-    });
-});
 
 //파일 업로드
 $(document).on('click', '#fileupload', function(){
@@ -174,4 +158,38 @@ $(document).on('click', '#fileupload', function(){
             alert("업로드에 실패했습니다.");
         }
     })
+});
+
+//숨김 처리
+$('#knews_del').on('click', function(){
+    var id = {{id}};
+    var use_yn = '{{use_yn}}';
+    $.ajax({
+        url:'/manage/comm_k_news/',
+        data:{
+            noti_id:id,
+            use_yn:use_yn,
+            method:'knews_del'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_k_news'
+    });
+});
+
+//삭제 처리
+$('#knews_delete').on('click', function(){
+    var id = {{id}};
+    var use_yn = '{{use_yn}}';
+    $.ajax({
+        url:'/manage/comm_k_news/',
+        data:{
+            noti_id:id,
+            use_yn:use_yn,
+            method:'knews_delete'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_k_news'
+    });
 });

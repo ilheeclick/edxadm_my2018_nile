@@ -123,23 +123,7 @@ $('#refer_mod').on('click', function(e){
         alert(e);
     }
 });
-//삭제 처리
-$('#refer_del').on('click', function(){
-    var id = {{id}}
-    var use_yn = '{{use_yn}}';
 
-    $.ajax({
-        url:'/manage/comm_reference_room/',
-        data:{
-            refer_id:id,
-            use_yn:use_yn,
-            method:'refer_del'
-        }
-    }).done(function(data){
-        console.log(data);
-        location.href='/manage/comm_reference_room'
-    });
-});
 
 //파일 업로드
 $(document).on('click', '#fileupload', function(){
@@ -175,4 +159,40 @@ $(document).on('click', '#fileupload', function(){
             alert("업로드에 실패했습니다.");
         }
     })
+});
+
+//숨김 처리
+$('#refer_del').on('click', function(){
+    var id = {{id}};
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url:'/manage/comm_reference_room/',
+        data:{
+            refer_id:id,
+            use_yn:use_yn,
+            method:'refer_del'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_reference_room'
+    });
+});
+
+//삭제 처리
+$('#refer_delete').on('click', function(){
+    var id = {{id}};
+    var use_yn = '{{use_yn}}';
+
+    $.ajax({
+        url:'/manage/comm_reference_room/',
+        data:{
+            refer_id:id,
+            use_yn:use_yn,
+            method:'refer_delete'
+        }
+    }).done(function(data){
+        console.log(data);
+        location.href='/manage/comm_reference_room'
+    });
 });
