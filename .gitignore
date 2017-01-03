@@ -9,3 +9,4 @@ workspace.xml
 .gitignore
 .workspace.xml
 .idea/workspace.xml
+.idea/codeStyleSettings.xml

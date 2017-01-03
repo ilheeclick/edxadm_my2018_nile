@@ -84,7 +84,7 @@ DATABASES = {
         'USER': 'edxapp001',
         'PASSWORD' : 'password',
         # 'HOST': '192.168.33.13',
-        'HOST': '192.168.1.113',
+        'HOST': '192.168.33.13',
         'PORT': '3306',
     }
 }
@@ -106,13 +106,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/manage/home/static/'
+STATIC_URL = '/home/static/'
 
 STATICFILES_DIRS = (
-     ("css", os.path.join(BASE_DIR, 'static/css')),
-     ("image", os.path.join(BASE_DIR, 'static/image')),
-     ("js", os.path.join(BASE_DIR, 'static/js')),
-     ("font", os.path.join(BASE_DIR, 'static/font')),
+     ("css", os.path.join(BASE_DIR, 'static1/css')),
+     ("image", os.path.join(BASE_DIR, 'static1/image')),
+     ("js", os.path.join(BASE_DIR, 'static1/js')),
+     ("font", os.path.join(BASE_DIR, 'static1/font')),
      ("excel", os.path.join(BASE_DIR, 'home/static/excel')),
       # Put strings here, like "/home/html/static" or "C:/www/django/static".
       # Always use forward slashes, even on Windows.
@@ -122,14 +122,12 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 # global variables ===========================================================================================
 # ============================================================================================================
-database_id = '192.168.1.113'
+database_id = '192.168.33.13'
 
 # EXCEL_PATH = '/home/project/management/static/excel/'
-# EXCEL_PATH = '/home/vagrant/management/management/home/static/excel/'
-EXCEL_PATH = '/home/project/management/home/static/excel/'
+EXCEL_PATH = '/home/vagrant/management/management/home/static/excel/'
 # EXCEL_PATH = '/home/vagrant/management/management/static/excel/'
-#UPLOAD_DIR = '/grade/grades/upload/'
-UPLOAD_DIR = '/home/project/management/home/static/upload/'
+UPLOAD_DIR = '/home/vagrant/management/management/'
 
 
 debug = True

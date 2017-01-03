@@ -74,7 +74,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice',
+        url:'/manage/new_notice/',
 
 
         beforeSubmit: function (data,form,option) {
