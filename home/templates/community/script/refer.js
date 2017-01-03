@@ -17,7 +17,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -51,7 +51,7 @@ $('#refer_save').on('click', function(e){
             }
 
             /* insert to database */
-            $.post("/new_refer/", {
+            $.post("/manage/new_refer/", {
                 csrfmiddlewaretoken:$.cookie('csrftoken'),
                 refer_title: refertitle,
                 refer_cont: refercontent,
@@ -63,7 +63,7 @@ $('#refer_save').on('click', function(e){
                 refer: 'R',
                 method: action_mode
             }).done(function(data){
-                location.href='/comm_reference_room';
+                location.href='/manage/comm_reference_room';
             }).fail(function(error) {
                 alert('error = ' + error.responseJSON);
             });
@@ -79,7 +79,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'new_refer',
+        url:'/manage/new_refer/',
 
 
         beforeSubmit: function (data,form,option) {
@@ -105,9 +105,7 @@ $(document).on('click', '#fileupload', function(){
 
         },
         error: function() {
-
             alert("업로드에 실패했습니다.");
-            alert(error);
         }
     })
 });

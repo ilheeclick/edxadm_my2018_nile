@@ -20,7 +20,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -36,7 +36,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-        url : '/modi_refer/'+id+'/'+use_yn,
+        url : '/manage/modi_refer/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -68,7 +68,7 @@ $(document).on('click', '#saved_file > a', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url : '/modi_refer/'+board_id+'/'+use_yn,
+        url : '/manage/modi_refer/'+board_id+'/'+use_yn,
             data : {
                 method : 'file_download',
                 file_name : file_name
@@ -100,7 +100,7 @@ $('#refer_mod').on('click', function(e){
             head_title = ''
         }
         /* insert to database */
-        $.post("/new_refer/", {
+        $.post("/manage/new_refer/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             refer_title: refertitle,
             refer_cont: refercontent,
@@ -114,7 +114,7 @@ $('#refer_mod').on('click', function(e){
             odby: odby,
             method: action_mode
         }).done(function(data){
-            location.href='/comm_reference_room';
+            location.href='/manage/comm_reference_room';
 
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
@@ -129,7 +129,7 @@ $('#refer_del').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/comm_reference_room/',
+        url:'/manage/comm_reference_room/',
         data:{
             refer_id:id,
             use_yn:use_yn,
@@ -137,7 +137,7 @@ $('#refer_del').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/comm_reference_room'
+        location.href='/manage/comm_reference_room'
     });
 });
 
@@ -145,7 +145,7 @@ $('#refer_del').on('click', function(){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/new_notice/',
+        url:'/manage/new_refer/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
 
@@ -173,7 +173,6 @@ $(document).on('click', '#fileupload', function(){
         },
         error: function() {
             alert("업로드에 실패했습니다.");
-            alert(error);
         }
     })
 });

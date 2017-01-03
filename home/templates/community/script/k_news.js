@@ -17,7 +17,7 @@ $('#knews_save').on('click', function(e){
             head_title = ''
         }
         /* insert to database */
-        $.post("/new_knews/", {
+        $.post("/manage/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             knews_title: knews_title,
             knews_content: knews_content,
@@ -29,7 +29,7 @@ $('#knews_save').on('click', function(e){
             k_news: 'K',
             method: action_mode
         }).done(function(data){
-            location.href='/comm_k_news';
+            location.href='/manage/comm_k_news';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -42,7 +42,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'new_knews',
+        url:'/manage/new_knews',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
@@ -64,7 +64,6 @@ $(document).on('click', '#fileupload', function(){
         },
         error: function() {
             alert("업로드에 실패했습니다.");
-            alert(error);
         }
     })
 });
@@ -88,7 +87,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/summer_upload/',
+            url: '/manage/summer_upload/',
             data: data,
             cache: false,
             contentType: false,

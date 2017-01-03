@@ -9,7 +9,7 @@ $(document).ready(function(){
     var value_list2=[];
     $('#loading').hide();
     $.ajax({
-        url : '/certificate/',
+        url : '/manage/certificate/',
         data :{
             method : 'org'
         }
@@ -36,7 +36,7 @@ $(document).on('change', '#org', function(){
     }else{
         html="";
         $.ajax({
-            url : '/certificate/',
+            url : '/manage/certificate/',
             data : {
                 method : 'course',
                 org : org
@@ -63,7 +63,7 @@ $('#create_certi').on('click', function(){
     if(ready_certi == ''){
         $('#loading').show();
         $.ajax({
-            url : '/certificate',
+            url : '/manage/certificate',
             data : {
                 method : 'create_certi',
                 org_id : org_id,
@@ -100,7 +100,7 @@ $('#search').on('click', function(){
     }else{
         var html="";
         $.ajax({
-            url : '/certificate/',
+            url : '/manage/certificate/',
             data : {
                 method : 'certificate',
                 course_id : course_id,

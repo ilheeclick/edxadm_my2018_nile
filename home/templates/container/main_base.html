@@ -73,9 +73,9 @@
 
 				<div class="logo-container">
 
-					<a href="../" class="logo"></a>
+					<a href="../manage" class="logo"></a>
 
-					<a href="../../../../../" class="logo">
+					<a href="../../../../../manage" class="logo">
 						<img src='{%  static "assets/images/logo.png"%}' height="35" alt="Porto Admin" />
 					</a>
 					<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -89,7 +89,8 @@
 					<span class="separator"></span>
 			
 					<div id="userbox" class="userbox">
-						<a href="#" data-toggle="dropdown">
+{#						<a href="#" data-toggle="dropdown">#}
+                        <a href="#" >
 							<figure class="profile-picture">
 								<img src='{% static "assets/images/!logged-user.jpg"%}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg"%}' />
 							</figure>
@@ -103,20 +104,20 @@
 {#                                </span>#}
 							</div>
 			
-							<i class="fa custom-caret"></i>
+{#							<i class="fa custom-caret"></i>#}
 						</a>
 			
-						<div class="dropdown-menu">
-							<ul class="list-unstyled">
-								<li class="divider"></li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i>정보수정</a>
-								</li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="/"><i class="fa fa-power-off"></i> 로그아웃</a>
-								</li>
-							</ul>
-						</div>
+{#						<div class="dropdown-menu">#}
+{#							<ul class="list-unstyled">#}
+{#								<li class="divider"></li>#}
+{#								<li>#}
+{#									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i>정보수정</a>#}
+{#								</li>#}
+{#								<li>#}
+{#									<a role="menuitem" tabindex="-1" href="/manage"><i class="fa fa-power-off"></i> 로그아웃</a>#}
+{#								</li>#}
+{#							</ul>#}
+{#						</div>#}
 					</div>
 				</div>
 				<!-- end: search & user box -->
@@ -148,7 +149,7 @@
 										</a>
                                         <ul class="nav nav-children">
                                             <li id="day_stastic">
-                                                <a href="/">
+                                                <a href="/manage">
                                                     일일/월별 통계
                                                 </a>
                                             </li>
@@ -168,7 +169,7 @@
                                         </a>
                                         <ul class="nav nav-children">
                                             <li id="mana_state">
-                                                <a href="/mana_state">
+                                                <a href="/manage/mana_state">
                                                     운영 현황
                                                 </a>
                                             </li>
@@ -195,14 +196,14 @@
 {#                                        </ul>#}
                                         <ul class="nav nav-children">
                                             <li id="uni_certificate">
-                                                <a href="/uni_certificate">
+                                                <a href="/manage/uni_certificate">
                                                     대학별 이수증 발급 현황
                                                 </a>
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
                                             <li id="per_certificate">
-                                                <a href="/per_certificate">
+                                                <a href="/manage/per_certificate">
                                                     사용자별 이수증 발급 현황
                                                 </a>
                                             </li>
@@ -215,35 +216,35 @@
 										</a>
                                         <ul class="nav nav-children">
                                             <li id="comm_notice">
-                                                <a href="/comm_notice">
+                                                <a href="/manage/comm_notice">
                                                     공지사항
                                                 </a>
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
                                             <li id="comm_k_news">
-                                                <a href="/comm_k_news">
+                                                <a href="/manage/comm_k_news">
                                                     K-MOOC 소식
                                                 </a>
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
                                             <li id="comm_faq">
-                                                <a href="/comm_faq">
+                                                <a href="/manage/comm_faq">
                                                     Q&A
                                                 </a>
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
                                             <li id="comm_faqrequest">
-                                                <a href="/comm_faqrequest">
+                                                <a href="/manage/comm_faqrequest">
                                                     Q&A 질문현황
                                                 </a>
                                             </li>
                                         </ul>
                                         <ul class="nav nav-children">
                                             <li id="comm_reference_room">
-                                                <a href="/comm_reference_room">
+                                                <a href="/manage/comm_reference_room">
                                                     자료실
                                                 </a>
                                             </li>
@@ -256,7 +257,7 @@
 										</a>
                                         <ul class="nav nav-children">
                                             <li id="moni_storage">
-                                                <a href="/moni_storage">
+                                                <a href="/manage/moni_storage">
                                                     스토리지
                                                 </a>
                                             </li>
