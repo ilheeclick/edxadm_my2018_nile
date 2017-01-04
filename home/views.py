@@ -506,7 +506,13 @@ def new_notice(request):
 				cur.execute(query)
 				cur.close()
 			data = json.dumps({'status' : "success"})
-
+		elif request.POST['method'] == 'delete_file' :
+			board_id = request.POST.get('board_id')
+			del_file = request.POST.get('del_file')
+			cur = connection.cursor()
+			query = "delete from tb_board_attach where board_id = "+board_id+" and attatch_file_name like '%"+del_file+"%'"
+			cur.execute(query)
+			row = cur.fetchall()
 		return HttpResponse(data, 'applications/json')
 
 	return render(request, 'community/comm_newnotice.html')
@@ -752,7 +758,15 @@ def new_knews(request):
 				cur.execute(query)
 				cur.close()
 			data = json.dumps({'status' : "success"})
-
+		elif request.POST['method'] == 'delete_file' :
+			# print 'delete_file'
+			board_id = request.POST.get('board_id')
+			del_file = request.POST.get('del_file')
+			# print 'board_id ==',board_id, ' del_file ==',del_file
+			cur = connection.cursor()
+			query = "delete from tb_board_attach where board_id = "+board_id+" and attatch_file_name like '%"+del_file+"%'"
+			cur.execute(query)
+			row = cur.fetchall()
 		return HttpResponse(data, 'applications/json')
 	return render(request,'community/comm_newknews.html')
 
@@ -1212,6 +1226,16 @@ def new_refer(request):
 				cur.execute(query)
 				cur.close()
 			data = json.dumps({'status' : "success"})
+		elif request.POST['method'] == 'delete_file' :
+			# print 'delete_file'
+			board_id = request.POST.get('board_id')
+			del_file = request.POST.get('del_file')
+			print 'board_id ==',board_id, ' del_file ==',del_file
+			cur = connection.cursor()
+			query = "delete from tb_board_attach where board_id = "+board_id+" and attatch_file_name like '%"+del_file+"%'"
+			cur.execute(query)
+			row = cur.fetchall()
+		return HttpResponse(data, 'applications/json')
 
 		return HttpResponse(data, 'applications/json')
 
