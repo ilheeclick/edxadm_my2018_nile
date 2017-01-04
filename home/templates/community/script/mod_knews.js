@@ -14,8 +14,7 @@ $(document).ready(function(){
         if(data[4] != null){
             value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
-                html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
-                "<br>";
+                html += "<li><a href='#' id='download' >"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -158,6 +157,18 @@ $(document).on('click', '#fileupload', function(){
             alert("업로드에 실패했습니다.");
         }
     })
+});
+
+//파일 삭제 처리
+$(document).on('click', '#delete', function(){
+    var del_file = $(this).parent().text().slice(0, -2);
+    var board_id = {{id}};
+    $.post("/manage/new_knews/", {
+        csrfmiddlewaretoken:$.cookie('csrftoken'),
+        method : 'delete_file',
+        board_id : board_id,
+        del_file : del_file
+    });
 });
 
 //숨김 처리
