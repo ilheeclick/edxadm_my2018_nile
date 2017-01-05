@@ -45,7 +45,7 @@ $(document).ready(function(){
         if(data[4] != null){
             value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
-                html += "<li><a href='#' id='download' >"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
+                html += "<li><a href='#' id='download' target='_blank'>"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
