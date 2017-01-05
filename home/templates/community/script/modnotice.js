@@ -154,7 +154,7 @@ $(document).on('click', '#fileupload', function(){
         },
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
-            alert("업로드에 성공했습니다.");
+            //alert("업로드에 성공했습니다.");
             file_name=adata[0];
             file_ext=adata[1];
             file_size=adata[2]
