@@ -64,6 +64,7 @@ $(document).ready(function(){
 //파일 삭제 처리
 $(document).on('click', '#delete', function(){
     var del_file = $(this).parent().text().slice(0, -2);
+    var board_id = {{id}};
     $.post("/manage/new_notice/", {
         csrfmiddlewaretoken:$.cookie('csrftoken'),
         method : 'delete_file',
@@ -73,7 +74,7 @@ $(document).on('click', '#delete', function(){
 });
 
 //파일 다운로드
-$(document).on('click', '#saved_file > a', function(){
+$(document).on('click', '#saved_file > li > a', function(){
     var file_name = $(this).text();
     var board_id = {{id}};
     var use_yn = '{{use_yn}}';
