@@ -45,8 +45,7 @@ $(document).ready(function(){
         if(data[4] != null){
             value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
-                html += "<a href='#' id='download' >"+value_list[i]+"</a>" +
-                "<br>";
+                html += "<li><a href='#' id='download' target='_blank'>"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -61,8 +60,20 @@ $(document).ready(function(){
     })
 });
 
+//파일 삭제 처리
+$(document).on('click', '#delete', function(){
+    var del_file = $(this).parent().text().slice(0, -2);
+    var board_id = {{id}};
+    $.post("/manage/new_refer/", {
+        csrfmiddlewaretoken:$.cookie('csrftoken'),
+        method : 'delete_file',
+        board_id : board_id,
+        del_file : del_file
+    });
+});
+
 //파일 다운로드
-$(document).on('click', '#saved_file > a', function(){
+$(document).on('click', '#saved_file > li > a', function(){
     var file_name = $(this).text();
     var board_id = {{id}};
     var use_yn = '{{use_yn}}';
@@ -147,7 +158,7 @@ $(document).on('click', '#fileupload', function(){
         },
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
-            alert("업로드에 성공했습니다.");
+            //alert("업로드에 성공했습니다.");
             console.log(adata);
             file_name=adata[0];
             file_ext=adata[1];
