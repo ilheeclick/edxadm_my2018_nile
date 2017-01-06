@@ -18,6 +18,7 @@ from bson.objectid import ObjectId
 import logging
 import logging.handlers
 
+
 # # 로거 인스턴스를 만든다
 # logger = logging.getLogger('statistics log')
 #

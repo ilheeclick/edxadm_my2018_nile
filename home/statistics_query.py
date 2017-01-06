@@ -5,6 +5,7 @@ import logging
 import logging.handlers
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 
+
 # # 로거 인스턴스를 만든다
 # logger = logging.getLogger('statistics_query log')
 #
