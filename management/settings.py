@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD' : 'password',
-        'HOST': '192.168.44.10',
+        'HOST': '192.168.1.113',
         'PORT': '3306',
     }
 }
@@ -121,10 +121,10 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 # global variables ===========================================================================================
 # ============================================================================================================
-database_id = '192.168.44.10'
+database_id = '192.168.1.113'
 
-EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+EXCEL_PATH = '/home/project/management/home/static/excel/'
+UPLOAD_DIR = '/home/project/management/home/static/upload/'
 
 debug = True
 
