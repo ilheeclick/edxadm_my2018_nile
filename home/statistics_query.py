@@ -21,11 +21,11 @@ from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 # streamHandler.setFormatter(fomatter)
 #
 # # 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
-# logger.addHandler(fileHandler)
-# logger.addHandler(streamHandler)
+# #logger.addHandler(fileHandler)
+# #logger.addHandler(streamHandler)
 #
 # if debug:
-#     logger.setLevel(logging.DEBUG)
+#     #logger.setLevel(logging.DEBUG)
 
 
 # 엑셀 시간
@@ -33,7 +33,7 @@ def excel_now_day():
     query = """
       select date_format(now(),'%Y%m%d');
     """
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -52,7 +52,7 @@ def user_join(date):
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{0}';
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -75,7 +75,7 @@ def course_count(date):
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -97,7 +97,7 @@ def course_count_active(date):
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -152,7 +152,7 @@ def course_case(date):
                                                                                     AND '{0}'
         ORDER BY gubn
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -164,7 +164,7 @@ def course_case(date):
 # 학력구분(신규)
 def edu_new(date):
     query = """
-        SELECT ifnull(b.male, 0), ifnull(b.female, 0)
+        SELECT ifnull(b.male, 0), ifnull(b.female, 0), ifnull(b.etc, 0)
           FROM (SELECT (@rn := @rn + 1) r
                   FROM auth_user a, (SELECT @rn := 0) b
                  LIMIT 9) a
@@ -199,7 +199,8 @@ def edu_new(date):
                        END
                           result,
                        sum(if(a.gender = 'm', 1, 0)) AS "male",
-                       sum(if(a.gender = 'f', 1, 0)) AS "female"
+                       sum(if(a.gender = 'f', 1, 0)) AS "female",
+                       sum(if(a.gender = 'o', 1, 0)) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') = '{0}'
@@ -216,7 +217,7 @@ def edu_new(date):
                   ON a.r = b.result
         ORDER BY a.r;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -228,7 +229,7 @@ def edu_new(date):
 # 학력구분(누적)
 def edu_total(date):
     query = """
-        SELECT sum(b.male), sum(b.female)
+        SELECT sum(b.male), sum(b.female), sum(b.etc)
           FROM (SELECT (@rn := @rn + 1) r
                   FROM auth_user a, (SELECT @rn := 0) b
                  LIMIT 9) a
@@ -263,7 +264,8 @@ def edu_total(date):
                        END
                           result,
                        if(a.gender = 'm', 1, 0) AS "male",
-                       if(a.gender = 'f', 1, 0) AS "female"
+                       if(a.gender = 'f', 1, 0) AS "female",
+                       if(a.gender = 'o', 1, 0) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') BETWEEN '20151014' AND '{0}'
@@ -272,7 +274,7 @@ def edu_total(date):
         group by a.r
         ORDER BY a.r;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -284,14 +286,15 @@ def edu_total(date):
 # 연령구분(신규)
 def age_new(date):
     query = """
-        SELECT ifnull(b.male, 0), ifnull(b.female, 0)
+        SELECT ifnull(b.male, 0), ifnull(b.female, 0), ifnull(b.etc, 0)
           FROM (SELECT (@rn := @rn + 1) r
                   FROM auth_user a, (SELECT @rn := 0) b
                  LIMIT 7) a
                LEFT OUTER JOIN
                (SELECT age,
                        count(CASE WHEN gender = 'm' THEN 1 END) male,
-                       count(CASE WHEN gender = 'f' THEN 1 END) female
+                       count(CASE WHEN gender = 'f' THEN 1 END) female,
+                       count(CASE WHEN gender = 'o' THEN 1 END) etc
                   FROM (SELECT CASE
                                   WHEN age < 20 THEN '1'
                                   WHEN age BETWEEN 20 AND 29 THEN '2'
@@ -316,7 +319,7 @@ def age_new(date):
                   ON a.r = b.age
         ORDER BY a.r;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -328,14 +331,15 @@ def age_new(date):
 # 연령구분(누적)
 def age_total(date):
     query = """
-        SELECT b.male, b.female
+        SELECT b.male, b.female, b.etc
           FROM (SELECT (@rn := @rn + 1) r
                   FROM auth_user a, (SELECT @rn := 0) b
                  LIMIT 7) a
                LEFT OUTER JOIN
                (SELECT age,
                        count(CASE WHEN gender = 'm' THEN 1 END) male,
-                       count(CASE WHEN gender = 'f' THEN 1 END) female
+                       count(CASE WHEN gender = 'f' THEN 1 END) female,
+                       count(CASE WHEN gender = 'o' THEN 1 END) etc
                   FROM (SELECT CASE
                                   WHEN age < 20 THEN '1'
                                   WHEN age BETWEEN 20 AND 29 THEN '2'
@@ -361,7 +365,7 @@ def age_total(date):
                   ON a.r = b.age
         ORDER BY a.r;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -437,7 +441,7 @@ def age_edu(date):
                   ON a.r = b.age
         ORDER BY a.r;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -476,7 +480,7 @@ def course_user(date):
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -516,7 +520,7 @@ def course_user_total(date):
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -570,7 +574,7 @@ def course_age(date):
                   ON a.course_id = b.course_id
         GROUP BY a.course_id;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -636,7 +640,7 @@ def course_edu(date):
         GROUP BY a.course_id
         ORDER BY a.course_id;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -655,7 +659,7 @@ def course_ids_all():
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
     """
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -699,7 +703,7 @@ def course_univ(date):
         GROUP BY a.org
         ORDER BY a.org;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -743,7 +747,7 @@ def course_univ_total(date):
         GROUP BY a.org
         ORDER BY a.org;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -766,7 +770,7 @@ def course_ids_cert():
         GROUP BY a.course_id
         HAVING max(a.cnt) >= count(b.course_id)
     """
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -801,7 +805,7 @@ def certificateInfo(courseId):
         GROUP BY a.course_id, a.status
         ORDER BY a.course_id, a.status;
     """.format(courseId)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -821,7 +825,7 @@ def member_statistics(date):
                AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
                                                                                       AND '{0}';
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
@@ -840,7 +844,7 @@ def country_statistics(date):
         GROUP BY b.country
         ORDER BY count(*) DESC;
     """.format(date)
-    logger.debug(query)
+    #logger.debug(query)
 
     cur = connection.cursor()
     cur.execute(query)
