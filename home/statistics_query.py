@@ -5,26 +5,26 @@ import logging
 import logging.handlers
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
 
-# 로거 인스턴스를 만든다
-logger = logging.getLogger('statistics_query log')
-
-# 포매터를 만든다
-fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
-
-# 스트림과 파일로 로그를 출력하는 핸들러를 각각 만든다.
-fileHandler = logging.FileHandler('./statistics_query.log')
-streamHandler = logging.StreamHandler()
-
-# 각 핸들러에 포매터를 지정한다.
-fileHandler.setFormatter(fomatter)
-streamHandler.setFormatter(fomatter)
-
-# 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
-logger.addHandler(fileHandler)
-logger.addHandler(streamHandler)
-
-if debug:
-    logger.setLevel(logging.DEBUG)
+# # 로거 인스턴스를 만든다
+# logger = logging.getLogger('statistics_query log')
+#
+# # 포매터를 만든다
+# fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
+#
+# # 스트림과 파일로 로그를 출력하는 핸들러를 각각 만든다.
+# fileHandler = logging.FileHandler('./statistics_query.log')
+# streamHandler = logging.StreamHandler()
+#
+# # 각 핸들러에 포매터를 지정한다.
+# fileHandler.setFormatter(fomatter)
+# streamHandler.setFormatter(fomatter)
+#
+# # 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
+# logger.addHandler(fileHandler)
+# logger.addHandler(streamHandler)
+#
+# if debug:
+#     logger.setLevel(logging.DEBUG)
 
 
 # 엑셀 시간
