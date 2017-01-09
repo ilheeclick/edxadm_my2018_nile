@@ -71,6 +71,7 @@ def course_count(date):
           FROM student_courseenrollment a, auth_user b
          WHERE     a.user_id = b.id
                AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{0}'
+               and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                AND lower(a.course_id) NOT LIKE '%test%'
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
@@ -93,6 +94,7 @@ def course_count_active(date):
          WHERE     a.user_id = b.id
                AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{0}'
                AND a.is_active = 1
+               and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                AND lower(a.course_id) NOT LIKE '%test%'
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
@@ -117,6 +119,7 @@ def course_case(date):
           FROM auth_user a, auth_userprofile b, student_courseenrollment c
          WHERE     a.id = b.user_id
                AND a.id = c.user_id
+               and exists (select 1 from student_courseaccessrole d where c.course_id = d.course_id)
                AND lower(c.course_id) NOT LIKE '%test%'
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
@@ -131,6 +134,7 @@ def course_case(date):
           FROM auth_user a, auth_userprofile b, student_courseenrollment c
          WHERE     a.id = b.user_id
                AND a.id = c.user_id
+               and exists (select 1 from student_courseaccessrole d where c.course_id = d.course_id)
                AND lower(c.course_id) NOT LIKE '%test%'
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
@@ -145,6 +149,7 @@ def course_case(date):
             FROM auth_user a, auth_userprofile b, student_courseenrollment c
            WHERE     a.id = b.user_id
                  AND a.id = c.user_id
+                 and exists (select 1 from student_courseaccessrole d where c.course_id = d.course_id)
                  AND lower(c.course_id) NOT LIKE '%test%'
                  AND lower(c.course_id) NOT LIKE '%demo%'
                  AND lower(c.course_id) NOT LIKE '%nile%'
