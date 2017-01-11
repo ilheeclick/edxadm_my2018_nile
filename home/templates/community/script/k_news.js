@@ -42,7 +42,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_knews',
+        url:'/manage/new_knews/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
