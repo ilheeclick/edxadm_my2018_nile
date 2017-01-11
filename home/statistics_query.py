@@ -478,6 +478,7 @@ def course_user(date):
                          WHERE     a.user_id = b.id
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                '%Y%m%d') = '{0}'
+                               and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                                AND a.is_active = 1
                                AND lower(a.course_id) NOT LIKE '%test%'
                                AND lower(a.course_id) NOT LIKE '%demo%'
@@ -519,6 +520,7 @@ def course_user_total(date):
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                '%Y%m%d') BETWEEN '1'
                                                              AND '{0}'
+                               and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                                AND lower(a.course_id) NOT LIKE '%test%'
                                AND lower(a.course_id) NOT LIKE '%demo%'
                                AND lower(a.course_id) NOT LIKE '%nile%'
@@ -569,6 +571,7 @@ def course_age(date):
                                auth_userprofile c
                          WHERE     a.user_id = b.id
                                AND b.id = c.user_id
+                               and exists (select 1 from student_courseaccessrole d where a.course_id = d.course_id)
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                '%Y%m%d') BETWEEN '1'
                                                              AND '{0}'
@@ -634,6 +637,7 @@ def course_edu(date):
                                  auth_userprofile       c
                            WHERE     a.user_id = b.id
                                  AND b.id = c.user_id
+                                 and exists (select 1 from student_courseaccessrole d where a.course_id = d.course_id)
                                  AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                  '%Y%m%d') BETWEEN '1'
                                                                AND '{0}'
@@ -700,6 +704,7 @@ def course_univ(date):
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') =
                               '{0}'
+                       and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                        AND a.is_active = 1
                        AND lower(a.course_id) NOT LIKE '%test%'
                        AND lower(a.course_id) NOT LIKE '%demo%'
@@ -743,6 +748,7 @@ def course_univ_total(date):
                           org, a.is_active
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
+                       and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                        AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                           AND '{0}'
                        AND lower(a.course_id) NOT LIKE '%test%'
