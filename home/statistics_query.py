@@ -679,7 +679,7 @@ def course_ids_all():
 # 강좌별 수강신청자
 def course_univ(date):
     query = """
-        SELECT a.org, count(b.org) cnt
+        SELECT if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org), count(b.org) cnt
           FROM (SELECT DISTINCT
                        substring(
                           a.course_id,
@@ -710,8 +710,8 @@ def course_univ(date):
                        AND lower(a.course_id) NOT LIKE '%demo%'
                        AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
-        GROUP BY a.org
-        ORDER BY a.org;
+        GROUP BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org)
+        ORDER BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org);
     """.format(date)
     #logger.debug(query)
 
@@ -725,7 +725,7 @@ def course_univ(date):
 # 강좌별 수강신청자 누적
 def course_univ_total(date):
     query = """
-        SELECT a.org, count(b.org) cnt, sum(b.is_active) cnt2
+        SELECT if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org), count(b.org) cnt, sum(b.is_active) cnt2
           FROM (SELECT DISTINCT
                        substring(
                           a.course_id,
@@ -755,8 +755,8 @@ def course_univ_total(date):
                        AND lower(a.course_id) NOT LIKE '%demo%'
                        AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
-        GROUP BY a.org
-        ORDER BY a.org;
+        GROUP BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org)
+        ORDER BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org);
     """.format(date)
     #logger.debug(query)
 
