@@ -696,7 +696,7 @@ SELECT DISTINCT a.course_id
 def course_univ(date):
     cur = connection.cursor()
     cur.execute('''
-        SELECT a.org, count(b.org) cnt
+        SELECT if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org), count(b.org) cnt
           FROM (SELECT DISTINCT
                        substring(
                           a.course_id,
@@ -725,8 +725,8 @@ def course_univ(date):
                           AND lower(a.course_id) NOT LIKE '%demo%'
                           AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
-        GROUP BY a.org
-        ORDER BY a.org;
+        GROUP BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org)
+        ORDER BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org);
     ''')
     row = cur.fetchall()
     cur.close()
@@ -735,7 +735,7 @@ def course_univ(date):
 def course_univ_total(date):
     cur = connection.cursor()
     cur.execute('''
-        SELECT a.org, count(b.org) cnt
+        SELECT if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org), count(b.org) cnt
           FROM (SELECT DISTINCT
                        substring(
                           a.course_id,
@@ -765,8 +765,8 @@ def course_univ_total(date):
                           AND lower(a.course_id) NOT LIKE '%demo%'
                           AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
-        GROUP BY a.org
-        ORDER BY a.org;
+        GROUP BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org)
+        ORDER BY if(instr(a.org, 'SKP.') > 0, 'SKP.SNUk', a.org);
     ''')
     row = cur.fetchall()
     cur.close()
