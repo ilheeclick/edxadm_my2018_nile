@@ -30,12 +30,15 @@ Theme Version: 	1.5.2
 				aButtons: [
 					{
 						sExtends: 'xls',
-						sButtonText: 'Excel'
+						sButtonText: 'Excel',
+						bFooter: false
+
 					},
 					{
 						sExtends: 'print',
 						sButtonText: 'Print',
-						sInfo: 'Please press CTR+P to print or ESC to quit'
+						sInfo: 'Please press CTR+P to print or ESC to quit',
+						bFooter: false
 					}
 				]
 			},
