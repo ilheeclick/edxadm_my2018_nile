@@ -1,4 +1,7 @@
-var file_name, file_ext, file_size;
+var file_name= [];
+var file_ext= [];
+var file_size= [];
+jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
     var value_list;
     var id = {{id}};
@@ -100,9 +103,9 @@ $('#knews_mod').on('click', function(e){
         /* insert to database */
         $.post("/manage/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: knews_title,
-            nt_cont: knews_content,
-            noti_id : knews_id,
+            k_news_title: knews_title,
+            k_news_cont: knews_content,
+            k_news_id : knews_id,
             head_title : head_title,
             uploadfile : uploadfile,
             file_name : file_name,
@@ -145,11 +148,11 @@ $(document).on('click', '#fileupload', function(){
         },
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
-            alert("업로드에 성공했습니다.");
-            console.log(adata);
-            file_name=adata[0];
-            file_ext=adata[1];
-            file_size=adata[2];
+            //alert("업로드에 성공했습니다.");
+
+            file_name.push(adata[0]);
+            file_ext.push(adata[1]);
+            file_size.push(adata[2]);
             console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
 
         },

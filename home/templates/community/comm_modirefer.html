@@ -58,7 +58,9 @@
                         <ol id="saved_file">
                         </ol>
                         {% csrf_token %}
-                        <input type="file" name="file" id = "uploadfile" />
+                        <span id="file_array">
+                            <input type="file" name="file" id = "uploadfile" />
+                        </span>
                         <button type="submit" id="fileupload">upload</button>
                     </form>
                 </div>

@@ -455,9 +455,9 @@ def new_notice(request):
 			section = request.POST.get('notice')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 			print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
@@ -470,13 +470,15 @@ def new_notice(request):
 			board_id = cur.fetchall()
 			cur.close()
 			# print board_id[0][0]
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
-
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(board_id[0][0])+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 			data = json.dumps({'status' : "success"})
 
 		elif request.POST['method'] == 'modi':
@@ -489,9 +491,9 @@ def new_notice(request):
 			head_title = request.POST.get('head_title')
 
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 
 			cur = connection.cursor()
 			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
@@ -499,12 +501,15 @@ def new_notice(request):
 			cur.execute(query)
 			cur.close()
 
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(noti_id)+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(noti_id)+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 			data = json.dumps({'status' : "success"})
 		elif request.POST['method'] == 'delete_file' :
 			board_id = request.POST.get('board_id')
@@ -708,9 +713,9 @@ def new_knews(request):
 			section = request.POST.get('k_news')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 			# print file_name,'/',file_ext,'/',file_size
 			# print 'head_title == ',head_title
 			print 'content == ', content
@@ -725,21 +730,24 @@ def new_knews(request):
 			board_id = cur.fetchall()
 			cur.close()
 			# print board_id[0][0]
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(board_id[0][0])+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 
 			data = json.dumps({'status' : "success"})
 
 		elif request.POST['method'] == 'modi':
-			title = request.POST.get('nt_title')
+			title = request.POST.get('k_news_title')
 			title = title.replace("'", "''")
-			content = request.POST.get('nt_cont')
+			content = request.POST.get('k_news_cont')
 			content = content.replace("'", "''")
-			noti_id = request.POST.get('noti_id')
+			k_news_id = request.POST.get('k_news_id')
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
@@ -752,12 +760,15 @@ def new_knews(request):
 			cur.execute(query)
 			cur.close()
 			print 'str(file_ext) == ', str(file_ext)
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(noti_id)+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(k_news_id)+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 			data = json.dumps({'status' : "success"})
 		elif request.POST['method'] == 'delete_file' :
 			# print 'delete_file'
@@ -1193,12 +1204,15 @@ def new_refer(request):
 			board_id = cur.fetchall()
 			cur.close()
 			# print board_id[0][0]
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(board_id[0][0])+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(board_id[0][0])+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 
 			data = json.dumps({'status' : "success"})
 
@@ -1221,12 +1235,15 @@ def new_refer(request):
 			cur.execute(query)
 			cur.close()
 
-			if upload_file != '' :
-				cur = connection.cursor()
-				query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-						"VALUES ('"+str(refer_id)+"','"+str(file_name)+"','"+str(file_ext)+"','"+str(file_size)+"')"
-				cur.execute(query)
-				cur.close()
+			if file_name != '' :
+				index = 0
+				for f in file_name:
+					cur = connection.cursor()
+					query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+							"VALUES ('"+str(refer_id)+"','"+str(f)+"','"+str(file_ext[index])+"','"+str(file_size[index])+"')"
+					cur.execute(query)
+					cur.close()
+					index = index+1
 			data = json.dumps({'status' : "success"})
 		elif request.POST['method'] == 'delete_file' :
 			# print 'delete_file'

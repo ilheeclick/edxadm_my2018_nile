@@ -1,5 +1,7 @@
-
-var file_name, file_ext, file_size;
+var file_name= [];
+var file_ext= [];
+var file_size= [];
+jQuery.ajaxSettings.traditional = true;
 $('.summernote').summernote({
     lang : 'ko-KR',
     height : 400,
@@ -93,10 +95,10 @@ $(document).on('click', '#fileupload', function(){
         },
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
-            alert("업로드에 성공했습니다.");
-            file_name=adata[0];
-            file_ext=adata[1];
-            file_size=adata[2]
+            //alert("업로드에 성공했습니다.");
+            file_name.push(adata[0]);
+            file_ext.push(adata[1]);
+            file_size.push(adata[2]);
 
         },
         error: function() {
