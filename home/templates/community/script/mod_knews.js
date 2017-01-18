@@ -1,4 +1,7 @@
-var file_name, file_ext, file_size;
+var file_name= [];
+var file_ext= [];
+var file_size= [];
+jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
     var value_list;
     var id = {{id}};
@@ -14,7 +17,7 @@ $(document).ready(function(){
         if(data[4] != null){
             value_list = data[4].toString().split(',');
             for(var i=0;i<value_list.length;i++){
-                html += "<li><a href='#' id='download' target='_blank'>"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
+                html += "<li><a href='#' id='download'>"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -72,9 +75,7 @@ $(document).on('click', '#saved_file > li >  a', function(){
                 file_name : file_name
             }
     }).done(function(data){
-        console.log(data);
-        $("#download").prop("href", data);
-        location.href=$("#download").attr('href');
+        window.open(data,'_blank');
     });
 });
 
@@ -100,9 +101,9 @@ $('#knews_mod').on('click', function(e){
         /* insert to database */
         $.post("/manage/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: knews_title,
-            nt_cont: knews_content,
-            noti_id : knews_id,
+            k_news_title: knews_title,
+            k_news_cont: knews_content,
+            k_news_id : knews_id,
             head_title : head_title,
             uploadfile : uploadfile,
             file_name : file_name,
@@ -146,12 +147,11 @@ $(document).on('click', '#fileupload', function(){
         success: function(adata){
             //성공후 서버에서 받은 데이터 처리
             //alert("업로드에 성공했습니다.");
-            console.log(adata);
-            file_name=adata[0];
-            file_ext=adata[1];
-            file_size=adata[2];
-            console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
-
+            file_name.push(adata[0]);
+            file_ext.push(adata[1]);
+            file_size.push(adata[2]);
+            $('#file_array').append('<input type="file" name="file" id = "uploadfile" />');
+            //console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
         },
         error: function() {
             alert("업로드에 실패했습니다.");

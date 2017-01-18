@@ -57,7 +57,9 @@
                     <div class="col-md-3">
                         <form id="uploadform" enctype="multipart/form-data" method="post">
                             {% csrf_token %}
-                            <input type="file" name="file" id = "uploadfile"/>
+                            <span id="file_array">
+                                <input type="file" name="file" id = "uploadfile" />
+                            </span>
                             <button type="submit" id="fileupload">upload</button>
                         </form>
                     </div>

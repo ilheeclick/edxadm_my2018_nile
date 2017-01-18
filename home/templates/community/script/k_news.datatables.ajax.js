@@ -32,7 +32,6 @@ Theme Version: 	1.5.2
 						sExtends: 'xls',
 						sButtonText: 'Excel',
 						bFooter: false
-
 					},
 					{
 						sExtends: 'print',

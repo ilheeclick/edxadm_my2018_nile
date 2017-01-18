@@ -44,8 +44,6 @@ Theme Version: 	1.5.2
 					"targets": [0],
 					"visible": false,
 					"searchable": false,
-
-
 					"data":null,
 					//"deferRender": true
 					//"defaultContent": "<td>" +
