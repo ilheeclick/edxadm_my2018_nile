@@ -64,6 +64,7 @@ $(document).on('click', '#fileupload', function(){
             file_name.push(adata[0]);
             file_ext.push(adata[1]);
             file_size.push(adata[2]);
+            $('#file_array').append('<input type="file" name="file" id = "uploadfile" />');
         },
         error: function() {
             alert("업로드에 실패했습니다.");

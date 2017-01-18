@@ -751,12 +751,12 @@ def new_knews(request):
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 
 			cur = connection.cursor()
-			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"', mod_date = now(), head_title = '"+head_title+"' where board_id = '"+noti_id+"'"
+			query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"', mod_date = now(), head_title = '"+head_title+"' where board_id = '"+k_news_id+"'"
 			cur.execute(query)
 			cur.close()
 			print 'str(file_ext) == ', str(file_ext)
@@ -1189,9 +1189,9 @@ def new_refer(request):
 			section = request.POST.get('refer')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 			# print file_name,'/',file_ext,'/',file_size
 
 			cur = connection.cursor()
@@ -1225,9 +1225,9 @@ def new_refer(request):
 			odby = request.POST.get('odby')
 			head_title = request.POST.get('head_title')
 			upload_file = request.POST.get('uploadfile')
-			file_name = request.POST.get('file_name')
-			file_ext = request.POST.get('file_ext')
-			file_size = request.POST.get('file_size')
+			file_name = request.POST.getlist('file_name')
+			file_ext = request.POST.getlist('file_ext')
+			file_size = request.POST.getlist('file_size')
 
 			cur = connection.cursor()
 			# query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"

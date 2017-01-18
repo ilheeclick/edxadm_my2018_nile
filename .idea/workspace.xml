@@ -6,23 +6,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/home/static/assets/vendor/file_upload/jquery.fileupload.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/home/static/assets/vendor/file_upload/jquery.iframe-transport.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/home/static/assets/vendor/file_upload/jquery.ui.widget.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modi_knews.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modi_knews.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modinotice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_modirefer.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_modirefer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newknews.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newknews.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" afterPath="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/k_news.js" afterPath="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" afterPath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/refer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/refer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/container/main_base.html" afterPath="$PROJECT_DIR$/home/templates/container/main_base.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/views.py" afterPath="$PROJECT_DIR$/home/views.py" />
     </list>
     <ignored path="management.iws" />
@@ -61,79 +51,69 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/home/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45516458">
-              <caret line="762" column="32" selection-start-line="762" selection-start-column="32" selection-end-line="762" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="1226" column="56" selection-start-line="1226" selection-start-column="56" selection-end-line="1226" selection-end-column="56" />
               <folding>
-                <marker date="1484643091000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484643091000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
-                <marker date="1484643091000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="24584:24756" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="24946:25156" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="25525:25626" placeholder="delete from ..." />
-                <marker date="1484643091000" expanded="true" signature="26077:26556" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="26691:26754" placeholder="select attat..tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="27863:28598" placeholder="SELECT board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="29687:29749" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="30049:30111" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="31592:31658" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="32173:32327" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="32714:33218" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="33859:34018" placeholder="SELECT id, h..faq_request..." />
-                <marker date="1484643091000" expanded="true" signature="34851:35452" placeholder="SELECT board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="36459:36521" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="36778:36840" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="38369:38435" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="38557:38639" placeholder="select board..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="38841:38963" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="38841:39056" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="39858:40012" placeholder="update edxap..." />
-                <marker date="1484643091000" expanded="true" signature="40159:40368" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484643091000" expanded="true" signature="40735:40836" placeholder="delete from ..." />
-                <marker date="1484643091000" expanded="true" signature="41352:41715" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484643091000" expanded="true" signature="41851:41914" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484698998000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
+                <marker date="1484698998000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="24596:24770" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="24960:25170" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="25539:25640" placeholder="delete from ..." />
+                <marker date="1484698998000" expanded="true" signature="26091:26570" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="26705:26768" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="27877:28612" placeholder="SELECT board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="29701:29763" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="30063:30125" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="31606:31672" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="32187:32341" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="32728:33232" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="33873:34032" placeholder="SELECT id, h..faq_request..." />
+                <marker date="1484698998000" expanded="true" signature="34865:35466" placeholder="SELECT board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="36473:36535" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="36792:36854" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="38395:38461" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="38583:38665" placeholder="select board..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="38867:38989" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="38867:39082" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="39896:40050" placeholder="update edxap..." />
+                <marker date="1484698998000" expanded="true" signature="40197:40406" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484698998000" expanded="true" signature="40773:40874" placeholder="delete from ..." />
+                <marker date="1484698998000" expanded="true" signature="41390:41753" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484698998000" expanded="true" signature="41889:41952" placeholder="select attat..tb_board_attach..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modnotice.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="modnotice.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="k_news.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/script/k_news.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.6112335">
+              <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -143,7 +123,7 @@
         <entry file="file://$PROJECT_DIR$/home/templates/community/script/mod_knews.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="107" column="18" selection-start-line="107" selection-start-column="18" selection-end-line="107" selection-end-column="18" />
+              <caret line="19" column="54" selection-start-line="19" selection-start-column="54" selection-end-line="19" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -153,27 +133,7 @@
         <entry file="file://$PROJECT_DIR$/home/templates/community/script/modrefer.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="notice.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="refer.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/home/templates/community/script/refer.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="36" selection-start-line="25" selection-start-column="36" selection-end-line="25" selection-end-column="36" />
+              <caret line="50" column="54" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -242,13 +202,13 @@
         <option value="$PROJECT_DIR$/home/templates/community/comm_newnotice.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_newrefer.html" />
         <option value="$PROJECT_DIR$/home/templates/community/comm_modi_knews.html" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/refer.js" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
         <option value="$PROJECT_DIR$/home/views.py" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
       </list>
     </option>
   </component>
@@ -287,8 +247,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -493,6 +451,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -884,7 +844,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1005" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="1005" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17604166" sideWeight="0.48849946" order="0" side_tool="false" content_ui="combo" />
@@ -1210,16 +1170,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6447964">
-          <caret line="63" column="31" selection-start-line="61" selection-start-column="24" selection-end-line="63" selection-end-column="31" />
-          <folding>
-            <element signature="e#858#878#0#HTML" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modi_knews.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.21266969">
@@ -1268,42 +1218,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modrefer.js">
+    <entry file="file://$PROJECT_DIR$/home/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
-          <folding />
+          <caret line="1226" column="56" selection-start-line="1226" selection-start-column="56" selection-end-line="1226" selection-end-column="56" />
+          <folding>
+            <marker date="1484698998000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484698998000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
+            <marker date="1484698998000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="24596:24770" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="24960:25170" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="25539:25640" placeholder="delete from ..." />
+            <marker date="1484698998000" expanded="true" signature="26091:26570" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="26705:26768" placeholder="select attat..tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="27877:28612" placeholder="SELECT board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="29701:29763" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="30063:30125" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="31606:31672" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="32187:32341" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="32728:33232" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="33873:34032" placeholder="SELECT id, h..faq_request..." />
+            <marker date="1484698998000" expanded="true" signature="34865:35466" placeholder="SELECT board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="36473:36535" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="36792:36854" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="38395:38461" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="38583:38665" placeholder="select board..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="38867:38989" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="38867:39082" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="39896:40050" placeholder="update edxap..." />
+            <marker date="1484698998000" expanded="true" signature="40197:40406" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484698998000" expanded="true" signature="40773:40874" placeholder="delete from ..." />
+            <marker date="1484698998000" expanded="true" signature="41390:41753" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484698998000" expanded="true" signature="41889:41952" placeholder="select attat..tb_board_attach..." />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
+    <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+        <state vertical-scroll-proportion="-21.291666">
+          <caret line="58" column="44" selection-start-line="58" selection-start-column="44" selection-end-line="58" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/refer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="36" selection-start-line="25" selection-start-column="36" selection-end-line="25" selection-end-column="36" />
+        <state vertical-scroll-proportion="1.685022">
+          <caret line="102" column="37" selection-start-line="102" selection-start-column="37" selection-end-line="102" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/notice.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
+        <state vertical-scroll-proportion="1.6685022">
+          <caret line="101" column="91" selection-start-line="101" selection-start-column="91" selection-end-line="101" selection-end-column="91" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/k_news.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.8678414">
+          <caret line="66" column="91" selection-start-line="66" selection-start-column="91" selection-end-line="66" selection-end-column="91" />
           <folding />
         </state>
       </provider>
@@ -1311,64 +1309,24 @@
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/mod_knews.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="107" column="18" selection-start-line="107" selection-start-column="18" selection-end-line="107" selection-end-column="18" />
+          <caret line="19" column="54" selection-start-line="19" selection-start-column="54" selection-end-line="19" selection-end-column="54" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/views.py">
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modrefer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45516458">
-          <caret line="762" column="32" selection-start-line="762" selection-start-column="32" selection-end-line="762" selection-end-column="32" />
-          <folding>
-            <marker date="1484643091000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484643091000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
-            <marker date="1484643091000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="24584:24756" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="24946:25156" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="25525:25626" placeholder="delete from ..." />
-            <marker date="1484643091000" expanded="true" signature="26077:26556" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="26691:26754" placeholder="select attat..tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="27863:28598" placeholder="SELECT board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="29687:29749" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="30049:30111" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="31592:31658" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="32173:32327" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="32714:33218" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="33859:34018" placeholder="SELECT id, h..faq_request..." />
-            <marker date="1484643091000" expanded="true" signature="34851:35452" placeholder="SELECT board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="36459:36521" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="36778:36840" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="38369:38435" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="38557:38639" placeholder="select board..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="38841:38963" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="38841:39056" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="39858:40012" placeholder="update edxap..." />
-            <marker date="1484643091000" expanded="true" signature="40159:40368" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484643091000" expanded="true" signature="40735:40836" placeholder="delete from ..." />
-            <marker date="1484643091000" expanded="true" signature="41352:41715" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484643091000" expanded="true" signature="41851:41914" placeholder="select attat..tb_board_attach..." />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="54" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6112335">
+          <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>
