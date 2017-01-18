@@ -7,12 +7,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c8d3af0b-615b-471b-97b3-1b99c3507cd0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/k_news.js" afterPath="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" afterPath="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/notice.js" afterPath="$PROJECT_DIR$/home/templates/community/script/notice.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/templates/community/script/refer.js" afterPath="$PROJECT_DIR$/home/templates/community/script/refer.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/home/views.py" afterPath="$PROJECT_DIR$/home/views.py" />
     </list>
     <ignored path="management.iws" />
@@ -51,69 +45,68 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/home/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1226" column="56" selection-start-line="1226" selection-start-column="56" selection-end-line="1226" selection-end-column="56" />
+            <state vertical-scroll-proportion="0.90088105">
+              <caret line="1345" column="0" selection-start-line="1345" selection-start-column="0" selection-end-line="1345" selection-end-column="0" />
               <folding>
-                <marker date="1484698998000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
-                <marker date="1484698998000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
-                <marker date="1484698998000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="24596:24770" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="24960:25170" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="25539:25640" placeholder="delete from ..." />
-                <marker date="1484698998000" expanded="true" signature="26091:26570" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="26705:26768" placeholder="select attat..tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="27877:28612" placeholder="SELECT board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="29701:29763" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="30063:30125" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="31606:31672" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="32187:32341" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="32728:33232" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="33873:34032" placeholder="SELECT id, h..faq_request..." />
-                <marker date="1484698998000" expanded="true" signature="34865:35466" placeholder="SELECT board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="36473:36535" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="36792:36854" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="38395:38461" placeholder="insert into edxapp.tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="38583:38665" placeholder="select board..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="38867:38989" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="38867:39082" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="39896:40050" placeholder="update edxap..." />
-                <marker date="1484698998000" expanded="true" signature="40197:40406" placeholder="insert into edxapp.tb_board_attach..." />
-                <marker date="1484698998000" expanded="true" signature="40773:40874" placeholder="delete from ..." />
-                <marker date="1484698998000" expanded="true" signature="41390:41753" placeholder="SELECT subje..tb_board..." />
-                <marker date="1484698998000" expanded="true" signature="41889:41952" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+                <marker date="1484700744000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
+                <marker date="1484700744000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="19316:20051" placeholder="SELECT board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="21071:21133" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="21415:21477" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="23112:23178" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="23300:23382" placeholder="select board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="23584:23799" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="24478:24652" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="24842:25052" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="25421:25522" placeholder="delete from ..." />
+                <marker date="1484700744000" expanded="true" signature="25973:26452" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="26587:26650" placeholder="select attat..tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="27641:28376" placeholder="SELECT board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="29465:29527" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="29827:29889" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="31370:31436" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="31951:32105" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="32492:32996" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="33637:33796" placeholder="SELECT id, h..faq_request..." />
+                <marker date="1484700744000" expanded="true" signature="34629:35230" placeholder="SELECT board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="36237:36299" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="36556:36618" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="38159:38225" placeholder="insert into edxapp.tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="38347:38429" placeholder="select board..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="38631:38846" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="39660:39814" placeholder="update edxap..." />
+                <marker date="1484700744000" expanded="true" signature="39961:40170" placeholder="insert into edxapp.tb_board_attach..." />
+                <marker date="1484700744000" expanded="true" signature="40537:40638" placeholder="delete from ..." />
+                <marker date="1484700744000" expanded="true" signature="41154:41517" placeholder="SELECT subje..tb_board..." />
+                <marker date="1484700744000" expanded="true" signature="41653:41716" placeholder="select attat..tb_board_attach..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modnotice.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="modnotice.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6112335">
-              <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="76" column="3" selection-start-line="76" selection-start-column="3" selection-end-line="76" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -205,10 +198,10 @@
         <option value="$PROJECT_DIR$/home/templates/community/script/k_news.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/notice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/refer.js" />
-        <option value="$PROJECT_DIR$/home/views.py" />
-        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/mod_knews.js" />
         <option value="$PROJECT_DIR$/home/templates/community/script/modrefer.js" />
+        <option value="$PROJECT_DIR$/home/templates/community/script/modnotice.js" />
+        <option value="$PROJECT_DIR$/home/views.py" />
       </list>
     </option>
   </component>
@@ -1218,62 +1211,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/home/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1226" column="56" selection-start-line="1226" selection-start-column="56" selection-end-line="1226" selection-end-column="56" />
-          <folding>
-            <marker date="1484698998000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
-            <marker date="1484698998000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
-            <marker date="1484698998000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="19434:20169" placeholder="SELECT board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="21189:21251" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="21533:21595" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="23230:23296" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="23418:23500" placeholder="select board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="23702:23917" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="24596:24770" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="24960:25170" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="25539:25640" placeholder="delete from ..." />
-            <marker date="1484698998000" expanded="true" signature="26091:26570" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="26705:26768" placeholder="select attat..tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="27877:28612" placeholder="SELECT board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="29701:29763" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="30063:30125" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="31606:31672" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="32187:32341" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="32728:33232" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="33873:34032" placeholder="SELECT id, h..faq_request..." />
-            <marker date="1484698998000" expanded="true" signature="34865:35466" placeholder="SELECT board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="36473:36535" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="36792:36854" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="38395:38461" placeholder="insert into edxapp.tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="38583:38665" placeholder="select board..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="38867:38989" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="38867:39082" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="39896:40050" placeholder="update edxap..." />
-            <marker date="1484698998000" expanded="true" signature="40197:40406" placeholder="insert into edxapp.tb_board_attach..." />
-            <marker date="1484698998000" expanded="true" signature="40773:40874" placeholder="delete from ..." />
-            <marker date="1484698998000" expanded="true" signature="41390:41753" placeholder="SELECT subje..tb_board..." />
-            <marker date="1484698998000" expanded="true" signature="41889:41952" placeholder="select attat..tb_board_attach..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/comm_modinotice.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-21.291666">
@@ -1324,9 +1261,64 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/home/templates/community/script/modnotice.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6112335">
-          <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="76" column="3" selection-start-line="76" selection-start-column="3" selection-end-line="76" selection-end-column="3" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/home/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.90088105">
+          <caret line="1345" column="0" selection-start-line="1345" selection-start-column="0" selection-end-line="1345" selection-end-column="0" />
+          <folding>
+            <marker date="1484700744000" expanded="true" signature="1476:1583" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="3137:3268" placeholder="SELECT DISTI..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="3725:3866" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="4968:5217" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="7680:7741" placeholder="SELECT cours..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="9058:9217" placeholder="select cours..certificates_generatedcertificate..." />
+            <marker date="1484700744000" expanded="true" signature="11036:11701" placeholder="SELECT board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="12778:12840" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="13139:13201" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="14725:14791" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="14913:14995" placeholder="select board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="15197:15412" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="16218:16371" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="16518:16726" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="17011:17112" placeholder="delete from ..." />
+            <marker date="1484700744000" expanded="true" signature="17581:17990" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="18261:18336" placeholder="select attat..tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="19316:20051" placeholder="SELECT board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="21071:21133" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="21415:21477" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="23112:23178" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="23300:23382" placeholder="select board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="23584:23799" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="24478:24652" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="24842:25052" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="25421:25522" placeholder="delete from ..." />
+            <marker date="1484700744000" expanded="true" signature="25973:26452" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="26587:26650" placeholder="select attat..tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="27641:28376" placeholder="SELECT board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="29465:29527" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="29827:29889" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="31370:31436" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="31951:32105" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="32492:32996" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="33637:33796" placeholder="SELECT id, h..faq_request..." />
+            <marker date="1484700744000" expanded="true" signature="34629:35230" placeholder="SELECT board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="36237:36299" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="36556:36618" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="38159:38225" placeholder="insert into edxapp.tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="38347:38429" placeholder="select board..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="38631:38846" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="39660:39814" placeholder="update edxap..." />
+            <marker date="1484700744000" expanded="true" signature="39961:40170" placeholder="insert into edxapp.tb_board_attach..." />
+            <marker date="1484700744000" expanded="true" signature="40537:40638" placeholder="delete from ..." />
+            <marker date="1484700744000" expanded="true" signature="41154:41517" placeholder="SELECT subje..tb_board..." />
+            <marker date="1484700744000" expanded="true" signature="41653:41716" placeholder="select attat..tb_board_attach..." />
+          </folding>
         </state>
       </provider>
     </entry>

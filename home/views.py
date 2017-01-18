@@ -575,8 +575,7 @@ def modi_notice(request, id, use_yn):
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
 			# print 'file_name == ',file_name
-			# data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
-			data = json.dumps('/manage/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+			data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
 
 		return HttpResponse(data, 'applications/json')
@@ -828,8 +827,7 @@ def modi_knews(request, id, use_yn):
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
 			# print 'file_name == ',file_name
-			# data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
-			data = json.dumps('/manage/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+			data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
 		return HttpResponse(data, 'applications/json')
 
@@ -1306,8 +1304,7 @@ def modi_refer(request, id, use_yn):
 		elif request.GET['method'] == 'file_download' :
 			file_name = request.GET['file_name']
 			# print 'file_name == ',file_name
-			# data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
-			data = json.dumps('/manage/home/static/excel/notice_file/'+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+			data = json.dumps(UPLOAD_DIR+file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 		return HttpResponse(data, 'applications/json')
 
 
@@ -1338,12 +1335,11 @@ def summer_upload(request):
 	if 'file' in request.FILES:
 		file = request.FILES['file']
 		filename = file._name
-		# fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
-		fp = open('%s/%s' % ('home/static/excel/notice_file', filename) , 'wb')
+		fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
 
 		for chunk in file.chunks():
 			fp.write(chunk)
 		fp.close()
-		return HttpResponse('/manage/home/static/excel/notice_file/'+filename)
-		# return HttpResponse(UPLOAD_DIR+filename)
+		# return HttpResponse('http://192.168.33.15:8000/home/static/excel/notice_file/'+filename)
+		return HttpResponse(UPLOAD_DIR+filename)
 	return HttpResponse('fail')
