@@ -1334,7 +1334,9 @@ def moni_storage(request):
 def summer_upload(request):
 	if 'file' in request.FILES:
 		file = request.FILES['file']
-		filename = file._name
+		# filename = file._name
+		now = datetime.datetime.now()
+		filename = now.strftime("%Y%m%d%H%M")+"."+file._name.split('.')[1]
 		fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
 
 		for chunk in file.chunks():
