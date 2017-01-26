@@ -45,13 +45,13 @@ def excel_now_day():
 # 회원 가입자수
 def user_join(date):
     query = """
-      SELECT sum(if(date_format(adddate(b.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{0}' ,1,0)) newcnt,
+      SELECT sum(if(date_format(adddate(b.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' ,1,0)) newcnt,
                        sum(if(b.email LIKE 'delete_%', 0, 1)) cnt,
                        count(b.id) allcnt
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{0}';
-    """.format(date)
+                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}';
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -64,18 +64,18 @@ def user_join(date):
 # 수강신청자수(통합)
 def course_count(date):
     query = """
-        SELECT sum(if(date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') = '{0}' and a.is_active = 1, 1, 0)) newcnt,
+        SELECT sum(if(date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.is_active = 1, 1, 0)) newcnt,
                count(a.user_id) allcnt,
                sum(if(a.is_active = 1, 1, 0)) cnt,
                count(DISTINCT a.user_id) distcnt
           FROM student_courseenrollment a, auth_user b
          WHERE     a.user_id = b.id
-               AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{0}'
+               AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
                and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                AND lower(a.course_id) NOT LIKE '%test%'
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -92,13 +92,13 @@ def course_count_active(date):
         SELECT count(DISTINCT a.user_id) distcnt
           FROM student_courseenrollment a, auth_user b
          WHERE     a.user_id = b.id
-               AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{0}'
+               AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
                AND a.is_active = 1
                and exists (select 1 from student_courseaccessrole c where a.course_id = c.course_id)
                AND lower(a.course_id) NOT LIKE '%test%'
                AND lower(a.course_id) NOT LIKE '%demo%'
                AND lower(a.course_id) NOT LIKE '%nile%';
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -112,8 +112,8 @@ def course_count_active(date):
 def course_case(date):
     query = """
         SELECT 1                                              gubn,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{0}') is_secession,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{0}') no_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}') is_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}') no_secession,
                count(if(c.is_active = 1, a.id, NULL))         is_active,
                count(if(c.is_active = 1, NULL, a.id))         no_active
           FROM auth_user a, auth_userprofile b, student_courseenrollment c
@@ -124,11 +124,11 @@ def course_case(date):
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') =
-                      '{0}'
+                      '{date}'
         UNION ALL
         SELECT 2                                              gubn,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{0}') is_secession,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{0}') no_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}') is_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}') no_secession,
                count(if(c.is_active = 1, a.id, NULL))         is_active,
                count(if(c.is_active = 1, NULL, a.id))         no_active
           FROM auth_user a, auth_userprofile b, student_courseenrollment c
@@ -139,7 +139,7 @@ def course_case(date):
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                  AND '{0}'
+                                                                                  AND '{date}'
         UNION ALL
           SELECT 3                                                     gubn,
                  0 is_secession,
@@ -154,9 +154,9 @@ def course_case(date):
                  AND lower(c.course_id) NOT LIKE '%demo%'
                  AND lower(c.course_id) NOT LIKE '%nile%'
                  AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                    AND '{0}'
+                                                                                    AND '{date}'
         ORDER BY gubn
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -208,7 +208,7 @@ def edu_new(date):
                        sum(if(a.gender = 'o', 1, 0)) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') = '{0}'
+                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') = '{date}'
                 GROUP BY CASE
                             WHEN    a.level_of_education IS NULL
                                  OR a.level_of_education = ''
@@ -221,7 +221,7 @@ def edu_new(date):
                 ORDER BY level_of_education) b
                   ON a.r = b.result
         ORDER BY a.r;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -273,12 +273,12 @@ def edu_total(date):
                        if(a.gender = 'o', 1, 0) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') BETWEEN '20151014' AND '{0}'
+                       AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') BETWEEN '20151014' AND '{date}'
                 ) b
                   ON a.r = b.result
         group by a.r
         ORDER BY a.r;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -311,7 +311,7 @@ def age_new(date):
                                END
                                   age,
                                gender
-                          FROM (SELECT   (date_format(now(), '%Y') - a.year_of_birth)
+                          FROM (SELECT   ('{year}' - a.year_of_birth)
                                        + 1
                                           age,
                                        a.gender
@@ -319,11 +319,20 @@ def age_new(date):
                                  WHERE     a.user_id = b.id
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
-                                              '%Y%m%d') = '{0}') aa) bb
+                                              '%Y%m%d') = '{date}') aa) bb
                 GROUP BY age) b
                   ON a.r = b.age
         ORDER BY a.r;
-    """.format(date)
+    """.format(
+        year=date[:4],
+        date=date
+    )
+
+
+    print query
+
+
+
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -356,7 +365,7 @@ def age_total(date):
                                END
                                   age,
                                gender
-                          FROM (SELECT   (date_format(now(), '%Y') - a.year_of_birth)
+                          FROM (SELECT   ('{year}' - a.year_of_birth)
                                        + 1
                                           age,
                                        a.gender
@@ -365,11 +374,14 @@ def age_total(date):
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
-                                                            AND '{0}') aa) bb
+                                                            AND '{date}') aa) bb
                 GROUP BY age) b
                   ON a.r = b.age
         ORDER BY a.r;
-    """.format(date)
+    """.format(
+        year=date[:4],
+        date=date
+    )
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -431,7 +443,7 @@ def age_edu(date):
                                   age,
                                lv,
                                gender
-                          FROM (SELECT   (date_format(now(), '%Y') - a.year_of_birth)
+                          FROM (SELECT   ('{year}' - a.year_of_birth)
                                        + 1
                                           age,
                                        ifnull(a.level_of_education, '') lv,
@@ -441,11 +453,14 @@ def age_edu(date):
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
-                                                            AND '{0}') aa) bb
+                                                            AND '{date}') aa) bb
                 GROUP BY age) b
                   ON a.r = b.age
         ORDER BY a.r;
-    """.format(date)
+    """.format(
+        year=date[:4],
+        date=date
+    )
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -477,14 +492,14 @@ def course_user(date):
                           FROM student_courseenrollment a, auth_user b
                          WHERE     a.user_id = b.id
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
-                                               '%Y%m%d') = '{0}'
+                                               '%Y%m%d') = '{date}'
                                AND a.is_active = 1
                                AND lower(a.course_id) NOT LIKE '%test%'
                                AND lower(a.course_id) NOT LIKE '%demo%'
                                AND lower(a.course_id) NOT LIKE '%nile%'
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -518,13 +533,13 @@ def course_user_total(date):
                          WHERE     a.user_id = b.id
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                '%Y%m%d') BETWEEN '1'
-                                                             AND '{0}'
+                                                             AND '{date}'
                                AND lower(a.course_id) NOT LIKE '%test%'
                                AND lower(a.course_id) NOT LIKE '%demo%'
                                AND lower(a.course_id) NOT LIKE '%nile%'
                         GROUP BY a.course_id) aa) b
                   ON a.course_id = b.course_id;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -562,7 +577,7 @@ def course_age(date):
                        AND lower(a.course_id) NOT LIKE '%nile%') a
                LEFT JOIN
                (SELECT course_id,
-                       ifnull((date_format(NOW(), '%Y') - year_of_birth), 0) + 1 age
+                       ifnull(('{year}' - year_of_birth), 0) + 1 age
                   FROM (SELECT a.course_id, c.year_of_birth
                           FROM student_courseenrollment a,
                                auth_user b,
@@ -571,14 +586,17 @@ def course_age(date):
                                AND b.id = c.user_id
                                AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                '%Y%m%d') BETWEEN '1'
-                                                             AND '{0}'
+                                                             AND '{date}'
                                AND a.is_active = 1
                                AND lower(a.course_id) NOT LIKE '%test%'
                                AND lower(a.course_id) NOT LIKE '%demo%'
                                AND lower(a.course_id) NOT LIKE '%nile%') aa) b
                   ON a.course_id = b.course_id
         GROUP BY a.course_id;
-    """.format(date)
+    """.format(
+        year=date[:4],
+        date=date
+    )
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -636,7 +654,7 @@ def course_edu(date):
                                  AND b.id = c.user_id
                                  AND date_format(adddate(a.created, INTERVAL 9 HOUR),
                                                  '%Y%m%d') BETWEEN '1'
-                                                               AND '{0}'
+                                                               AND '{date}'
                                  AND a.is_active = 1
                                  AND lower(a.course_id) NOT LIKE '%test%'
                                  AND lower(a.course_id) NOT LIKE '%demo%'
@@ -644,7 +662,7 @@ def course_edu(date):
                     ON a.course_id = b.course_id
         GROUP BY a.course_id
         ORDER BY a.course_id;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -657,12 +675,19 @@ def course_edu(date):
 # 강좌 아이디 조회
 def course_ids_all():
     query = """
-        SELECT DISTINCT a.course_id
-          FROM course_structures_coursestructure a, student_courseaccessrole b
-         WHERE     a.course_id = b.course_id
-               AND lower(a.course_id) NOT LIKE '%test%'
-               AND lower(a.course_id) NOT LIKE '%demo%'
-               AND lower(a.course_id) NOT LIKE '%nile%';
+        SELECT id,
+               display_name,
+               display_number_with_default course,
+               display_org_with_default    org,
+               start,
+               end,
+               a.enrollment_start,
+               a.enrollment_end
+          FROM course_overviews_courseoverview a
+         WHERE     1 = 1
+               AND lower(a.id) NOT LIKE '%test%'
+               AND lower(a.id) NOT LIKE '%demo%'
+               AND lower(a.id) NOT LIKE '%nile%';
     """
     #logger.debug(query)
 
@@ -699,7 +724,7 @@ def course_univ(date):
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') =
-                              '{0}'
+                              '{date}'
                        AND a.is_active = 1
                        AND lower(a.course_id) NOT LIKE '%test%'
                        AND lower(a.course_id) NOT LIKE '%demo%'
@@ -707,7 +732,7 @@ def course_univ(date):
                   ON a.org = b.org
         GROUP BY a.org
         ORDER BY a.org;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -744,14 +769,14 @@ def course_univ_total(date):
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(a.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                          AND '{0}'
+                                                                                          AND '{date}'
                        AND lower(a.course_id) NOT LIKE '%test%'
                        AND lower(a.course_id) NOT LIKE '%demo%'
                        AND lower(a.course_id) NOT LIKE '%nile%') b
                   ON a.org = b.org
         GROUP BY a.org
         ORDER BY a.org;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -806,7 +831,7 @@ def certificateInfo(courseId):
                AND c.user_id = b.id
                AND a.course_id = c.course_id
                AND c.is_active = 1
-               AND a.course_id = '{0}'
+               AND a.course_id = '{date}'
         GROUP BY a.course_id, a.status
         ORDER BY a.course_id, a.status;
     """.format(courseId)
@@ -828,8 +853,8 @@ def member_statistics(date):
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
-                                                                                      AND '{0}';
-    """.format(date)
+                                                                                      AND '{date}';
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()
@@ -845,10 +870,10 @@ def country_statistics(date):
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
-                                                                                      AND '{0}'
+                                                                                      AND '{date}'
         GROUP BY b.country
         ORDER BY count(*) DESC;
-    """.format(date)
+    """.format(date=date)
     #logger.debug(query)
 
     cur = connection.cursor()

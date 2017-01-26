@@ -63,43 +63,21 @@ def statistics_excel(request, date):
         course_enroll_starts = {}
         course_enroll_ends = {}
 
-        print 'step1 : mongo search'
+        print 'step1 : course_info search'
 
-        for c in course_ids_all:
-            cid = str(c[0])
-            course_id = cid
-            cid = course_id.split('+')[1]
-            run = course_id.split('+')[2]
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end in course_ids_all:
+            course_orgs[course_id] = org
 
-            # db.modulestore.active_versions --------------------------------------
-            cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
-            pb = cursor.get('versions').get('published-branch')
-            # course_orgs
-            course_orgs[course_id] = cursor.get('org')
-            course_creates[course_id] = cursor.get('edited_on')
-            # --------------------------------------
-
-            # db.modulestore.structures --------------------------------------
-            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)}, {"blocks": {"$elemMatch": {"block_type": "course"}}})
-
-            course_start = cursor.get('blocks')[0].get('fields').get('start')  # course_starts
-            course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_ends
-            course_enroll_start = cursor.get('blocks')[0].get('fields').get('enrollment_start')  # course_enroll_start
-            course_enroll_end = cursor.get('blocks')[0].get('fields').get('enrollment_end')  # course_enroll_end
-            course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
-
-            if course_start is not None:
-                course_starts[course_id] = course_start
-            if course_end is not None:
-                course_ends[course_id] = course_end
-            if course_enroll_start is not None:
-                course_enroll_starts[course_id] = course_enroll_start
-            if course_enroll_end is not None:
-                course_enroll_ends[course_id] = course_enroll_end
-            if course_name is not None:
-                course_names[course_id] = course_name
-
-            # --------------------------------------
+            if start is not None:
+                course_starts[course_id] = start
+            if end is not None:
+                course_ends[course_id] = end
+            if enrollment_start is not None:
+                course_enroll_starts[course_id] = enrollment_start
+            if enrollment_end is not None:
+                course_enroll_ends[course_id] = enrollment_end
+            if display_name is not None:
+                course_names[course_id] = display_name
 
         print 'step2 : mysql search'
 
