@@ -1300,5 +1300,5 @@ def summer_upload(request):
 			fp.write(chunk)
 		fp.close()
 		# return HttpResponse('http://192.168.33.15:8000/home/static/excel/notice_file/'+filename)
-		return HttpResponse(UPLOAD_DIR+filename)
+		return HttpResponse('/manage/home/static/upload/'+filename)
 	return HttpResponse('fail')
