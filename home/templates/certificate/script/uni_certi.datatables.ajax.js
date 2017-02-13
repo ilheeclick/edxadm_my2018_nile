@@ -34,7 +34,7 @@ Theme Version: 	1.5.2
 			"columnDefs":[
 				{
 					"targets": -1,
-					//"visible": true,
+					"visible": false,
 					//"searchable": false,
 					//"ordering": false,
 					"data":null,

@@ -41,9 +41,9 @@ urlpatterns = [
     url(r'^manage/mana_state/', views.mana_state, name='mana_state'),
     url(r'^manage/dev_state/', views.dev_state, name='dev_state'),
     # certificate url
-    url(r'^manage/certificate/',views.certificate, name='certificate'),
-    url(r'^manage/per_certificate/',views.per_certificate, name='per_certificate'),
-    url(r'^manage/uni_certificate/',views.uni_certificate, name='uni_certificate'),
+    url(r'^manage/certificate/', views.certificate, name='certificate'),
+    url(r'^manage/per_certificate/', views.per_certificate, name='per_certificate'),
+    url(r'^manage/uni_certificate/', views.uni_certificate, name='uni_certificate'),
     # community url
     # notice
     url(r'^manage/comm_notice/', views.comm_notice, name='comm_notice'),
@@ -65,6 +65,5 @@ urlpatterns = [
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
     # monitoring url
     url(r'^manage/moni_storage/', views.moni_storage, name='moni_storage'),
-
 
 ]
