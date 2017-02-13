@@ -75,7 +75,7 @@ def statistics_excel(request, date):
 
             # db.modulestore.active_versions --------------------------------------
             cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
-            if cursor:
+            if not cursor:
                 print 'not exists: ', cid, run
                 continue
 
@@ -263,10 +263,14 @@ def statistics_excel(request, date):
         for c in course_user:
             if c[0] in course_orgs and str(course_orgs[c[0]]) in dic_univ:
                 c = (dic_univ[str(course_orgs[c[0]])], course_names[c[0]],) + c
-            elif str(course_orgs[c[0]]) in dic_univ:
+            elif c[0] in course_orgs and c[0] in course_names:
                 c = (str(course_orgs[c[0]]), course_names[c[0]],) + c
-            else:
+            elif c[0] in course_orgs:
+                c = (str(course_orgs[c[0]]), str(c[0]),) + c
+            elif c[0] in course_names:
                 c = (str(c[0]), course_names[c[0]],) + c
+            else:
+                c = (str(c[0]), str(c[0]),) + c
 
             edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
             start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
@@ -396,10 +400,14 @@ def statistics_excel(request, date):
         for c in course_user_total:
             if c[0] in course_orgs and str(course_orgs[c[0]]) in dic_univ:
                 c = (dic_univ[str(course_orgs[c[0]])], course_names[c[0]],) + c
-            elif str(course_orgs[c[0]]) in dic_univ:
+            elif c[0] in course_orgs and c[0] in course_names:
                 c = (str(course_orgs[c[0]]), course_names[c[0]],) + c
-            else:
+            elif c[0] in course_orgs:
+                c = (str(course_orgs[c[0]]), str(c[0]),) + c
+            elif c[0] in course_names:
                 c = (str(c[0]), course_names[c[0]],) + c
+            else:
+                c = (str(c[0]), str(c[0]),) + c
 
             edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
             start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
