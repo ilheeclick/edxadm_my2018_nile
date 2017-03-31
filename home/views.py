@@ -775,6 +775,7 @@ def new_knews(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newknews.html')
 
+
 def modi_knews(request, id, use_yn):
     mod_knews = []
     if request.is_ajax():
@@ -1237,6 +1238,7 @@ def new_refer(request):
 
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newrefer.html')
+
 
 def modi_refer(request, id, use_yn):
     mod_refer = []
