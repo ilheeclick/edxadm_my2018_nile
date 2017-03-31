@@ -157,7 +157,7 @@ def statistics_excel(request, date):
 
 
         ws1['B4'] = user_join[0]
-        ws1['C4'] = user_join[2]
+        ws1['C4'] = user_join[1]
         ws1['D4'] = course_count[0]
         ws1['E4'] = course_count[2]
         ws1['F4'] = course_count_active[0]

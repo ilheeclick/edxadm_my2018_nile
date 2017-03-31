@@ -112,7 +112,7 @@ def course_count_active(date):
 def course_case(date):
     query = """
         SELECT 1                                              gubn,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}') is_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}') is_secession,
                (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}') no_secession,
                count(if(c.is_active = 1, a.id, NULL))         is_active,
                count(if(c.is_active = 1, NULL, a.id))         no_active
@@ -127,9 +127,9 @@ def course_case(date):
                       '{date}'
         UNION ALL
         SELECT 2                                              gubn,
-               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email not like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}') is_secession,
+               (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}') is_secession,
                (select count(*) from auth_user a, auth_userprofile b where a.id = b.user_id and email like 'delete_%' and date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}') no_secession,
-               count(if(c.is_active = 1, a.id, NULL))         is_active,
+               count(1)         is_active,
                count(if(c.is_active = 1, NULL, a.id))         no_active
           FROM auth_user a, auth_userprofile b, student_courseenrollment c
          WHERE     a.id = b.user_id
@@ -144,7 +144,7 @@ def course_case(date):
           SELECT 3                                                     gubn,
                  0 is_secession,
                  0 no_secession,
-                 count(DISTINCT if(c.is_active = 1, a.id, NULL))       is_active,
+                 count(DISTINCT a.id)       is_active,
                  count(DISTINCT if(c.is_active = 1, NULL, a.id))       no_active
             FROM auth_user a, auth_userprofile b, student_courseenrollment c
            WHERE     a.id = b.user_id
@@ -209,6 +209,7 @@ def edu_new(date):
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') = '{date}'
+                       and b.email not like 'delete_%'
                 GROUP BY CASE
                             WHEN    a.level_of_education IS NULL
                                  OR a.level_of_education = ''
@@ -273,6 +274,7 @@ def edu_total(date):
                        if(a.gender = 'o', 1, 0) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
+                        and b.email not like 'delete_%'
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') BETWEEN '20151014' AND '{date}'
                 ) b
                   ON a.r = b.result
@@ -317,6 +319,7 @@ def age_new(date):
                                        a.gender
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
+                                      and b.email not like 'delete_%'
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') = '{date}') aa) bb
@@ -371,6 +374,7 @@ def age_total(date):
                                        a.gender
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
+                                      and b.email not like 'delete_%'
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
@@ -450,6 +454,7 @@ def age_edu(date):
                                        a.gender
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
+                                      and b.email not like 'delete_%'
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
