@@ -430,7 +430,7 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
-
+@csrf_exempt
 def new_notice(request):
     if 'file' in request.FILES:
         value_list = []

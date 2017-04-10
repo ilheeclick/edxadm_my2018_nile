@@ -1,0 +1,13 @@
+﻿"id","username","email","is_staff","is_superuser","cnt"
+28,"admin","admin@example.com",true,true,8
+109188,"admin2","admin2@example.com",true,true,1
+272,"kmoocstaff1","kmoocstaff1@gmail.com",true,false,69
+273,"kmoocstaff2","kmoocstaff2@gmail.com",true,false,236
+274,"kmoocstaff3","kmoocstaff3@gmail.com",true,false,109
+275,"kmoocstaff4","kmoocstaff4@gmail.com",true,false,53
+276,"kmoocstaff5","kmoocstaff5@gmail.com",true,true,81
+109077,"kmoocstaff7","kmoocstaff7@gmail.com",true,false,51
+116392,"kmoocstaff8","kmoocstaff8@gmail.com",true,false,18
+117098,"kmoocstaff9","kmoocstaff9@gmail.com",true,false,1
+37569,"ktgoos","river@kotech.co.kr",true,false,5
+4,"staff","staff@example.com",true,false,30
