@@ -18,7 +18,6 @@ from bson.objectid import ObjectId
 import logging
 import logging.handlers
 
-
 # # 로거 인스턴스를 만든다
 # #logger = logging.get#logger('statistics log')
 #
@@ -39,6 +38,81 @@ import logging.handlers
 #
 # if debug:
 #     #logger.setLevel(logging.DEBUG)
+
+
+classfy = [{'category':
+                {'code': 'hum', 'gettext': '인문계열'}
+            },
+           {'category':
+                {'code': 'social', 'gettext': '사회계열'}
+            },
+           {'category':
+                {'code': 'edu', 'gettext': '교육계열'}
+            },
+           {'category':
+                {'code': 'eng', 'gettext': '공학계열'}
+            },
+           {'category':
+                {'code': 'nat', 'gettext': '자연계열'}
+            },
+           {'category':
+                {'code': 'med', 'gettext': '의약계열'}
+            },
+           {'category':
+                {'code': 'art', 'gettext': '예체능계'}
+            }, ]
+
+middle_classfy = {
+    'hum': [
+        {'gettext': '언어ㆍ문학', 'code': 'lang'},
+        {'gettext': '인문과학', 'code': 'husc'}
+    ],
+    'social': [
+        {'gettext': '경영ㆍ경제', 'code': 'busn'},
+        {'gettext': '법률', 'code': 'law'},
+        {'gettext': '사회과학', 'code': 'scsc'}
+    ],
+    'edu': [
+        {'gettext': '교육일반', 'code': 'enor'},
+        {'gettext': '유아교육', 'code': 'ekid'},
+        {'gettext': '특수교육', 'code': 'espc'},
+        {'gettext': '초등교육', 'code': 'elmt'},
+        {'gettext': '중등교육', 'code': 'emdd'}
+    ],
+    'eng': [
+        {'gettext': '건축', 'code': 'cons'},
+        {'gettext': '토목ㆍ도시', 'code': 'civi'},
+        {'gettext': '교통ㆍ운송', 'code': 'traf'},
+        {'gettext': '기계ㆍ금속', 'code': 'mach'},
+        {'gettext': '전기ㆍ전자', 'code': 'elec'},
+        {'gettext': '정밀ㆍ에너지', 'code': 'deta'},
+        {'gettext': '소재ㆍ재료', 'code': 'matr'},
+        {'gettext': '컴퓨터ㆍ통신', 'code': 'comp'},
+        {'gettext': '산업', 'code': 'indu'},
+        {'gettext': '화공', 'code': 'cami'},
+        {'gettext': '기타', 'code': 'other'}
+    ],
+    'nat': [
+        {'gettext': '농림ㆍ수산', 'code': 'agri'},
+        {'gettext': '생물ㆍ화학ㆍ환경', 'code': 'bio'},
+        {'gettext': '생활과학', 'code': 'life'},
+        {'gettext': '수학ㆍ물리ㆍ천문ㆍ지리', 'code': 'math'}
+    ],
+    'med': [
+        {'gettext': '의료', 'code': 'metr'},
+        {'gettext': '간호', 'code': 'nurs'},
+        {'gettext': '약학', 'code': 'phar'},
+        {'gettext': '치료ㆍ보건', 'code': 'heal'}
+    ],
+    'art': [
+        {'gettext': '디자인', 'code': 'dsgn'},
+        {'gettext': '응용예술', 'code': 'appl'},
+        {'gettext': '무용ㆍ체육', 'code': 'danc'},
+        {'gettext': '미술ㆍ조형', 'code': 'form'},
+        {'gettext': '연극ㆍ영화', 'code': 'play'},
+        {'gettext': '음악', 'code': 'musc'},
+    ]
+}
 
 
 # 일일통계
@@ -125,7 +199,6 @@ def statistics_excel(request, date):
         # excel style
         thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'),
                              bottom=Side(style='thin'))
-
 
         print 'q1.', datetime.datetime.now()
         user_join = statistics_query.user_join(date)
