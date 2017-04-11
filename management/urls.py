@@ -66,4 +66,9 @@ urlpatterns = [
     # monitoring url
     url(r'^manage/moni_storage/', views.moni_storage, name='moni_storage'),
 
+    #history
+    # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
+    # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
+    # url(r'^manage/history_cert/', views.history_cert, name='history_cert'),
+
 ]
