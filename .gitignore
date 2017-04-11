@@ -1,0 +1,4 @@
+*.pyc
+*.xlsx
+.DS_Store
+.idea/project.iml
