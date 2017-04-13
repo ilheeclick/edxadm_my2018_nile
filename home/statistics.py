@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from django.db import connection
 from openpyxl import load_workbook
 import statistics_query
@@ -11,12 +12,69 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 import os
 from operator import itemgetter
 import datetime
-from management.settings import EXCEL_PATH, dic_univ, database_id, debug
+from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy
 from openpyxl.styles import Alignment
 from time import gmtime, strftime
 from bson.objectid import ObjectId
 import logging
 import logging.handlers
+
+
+def style_base(cell):
+    """
+    Apply styles to a range of cells as if they were a single cell.
+
+    :param ws:  Excel worksheet instance
+    :param range: An excel range to style (e.g. A1:F20)
+    :param border: An openpyxl Border
+    :param fill: An openpyxl PatternFill or GradientFill
+    :param font: An openpyxl Font object
+    """
+
+    thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+    cell.border = thin_border
+    cell.alignment = Alignment(horizontal="center", vertical="center")
+
+
+def style_range(ws, cell_range, border=Border(), fill=None, font=None, alignment=None):
+    """
+    Apply styles to a range of cells as if they were a single cell.
+
+    :param ws:  Excel worksheet instance
+    :param range: An excel range to style (e.g. A1:F20)
+    :param border: An openpyxl Border
+    :param fill: An openpyxl PatternFill or GradientFill
+    :param font: An openpyxl Font object
+    """
+
+    top = Border(top=border.top)
+    left = Border(left=border.left)
+    right = Border(right=border.right)
+    bottom = Border(bottom=border.bottom)
+
+    first_cell = ws[cell_range.split(":")[0]]
+    if alignment:
+        ws.merge_cells(cell_range)
+        first_cell.alignment = alignment
+
+    rows = ws[cell_range]
+    if font:
+        first_cell.font = font
+
+    for cell in rows[0]:
+        cell.border = cell.border + top
+    for cell in rows[-1]:
+        cell.border = cell.border + bottom
+
+    for row in rows:
+        l = row[0]
+        r = row[-1]
+        l.border = l.border + left
+        r.border = r.border + right
+        if fill:
+            for c in row:
+                c.fill = fill
+
 
 # # 로거 인스턴스를 만든다
 # #logger = logging.get#logger('statistics log')
@@ -39,92 +97,18 @@ import logging.handlers
 # if debug:
 #     #logger.setLevel(logging.DEBUG)
 
-
-classfy = [{'category':
-                {'code': 'hum', 'gettext': '인문계열'}
-            },
-           {'category':
-                {'code': 'social', 'gettext': '사회계열'}
-            },
-           {'category':
-                {'code': 'edu', 'gettext': '교육계열'}
-            },
-           {'category':
-                {'code': 'eng', 'gettext': '공학계열'}
-            },
-           {'category':
-                {'code': 'nat', 'gettext': '자연계열'}
-            },
-           {'category':
-                {'code': 'med', 'gettext': '의약계열'}
-            },
-           {'category':
-                {'code': 'art', 'gettext': '예체능계'}
-            }, ]
-
-middle_classfy = {
-    'hum': [
-        {'gettext': '언어ㆍ문학', 'code': 'lang'},
-        {'gettext': '인문과학', 'code': 'husc'}
-    ],
-    'social': [
-        {'gettext': '경영ㆍ경제', 'code': 'busn'},
-        {'gettext': '법률', 'code': 'law'},
-        {'gettext': '사회과학', 'code': 'scsc'}
-    ],
-    'edu': [
-        {'gettext': '교육일반', 'code': 'enor'},
-        {'gettext': '유아교육', 'code': 'ekid'},
-        {'gettext': '특수교육', 'code': 'espc'},
-        {'gettext': '초등교육', 'code': 'elmt'},
-        {'gettext': '중등교육', 'code': 'emdd'}
-    ],
-    'eng': [
-        {'gettext': '건축', 'code': 'cons'},
-        {'gettext': '토목ㆍ도시', 'code': 'civi'},
-        {'gettext': '교통ㆍ운송', 'code': 'traf'},
-        {'gettext': '기계ㆍ금속', 'code': 'mach'},
-        {'gettext': '전기ㆍ전자', 'code': 'elec'},
-        {'gettext': '정밀ㆍ에너지', 'code': 'deta'},
-        {'gettext': '소재ㆍ재료', 'code': 'matr'},
-        {'gettext': '컴퓨터ㆍ통신', 'code': 'comp'},
-        {'gettext': '산업', 'code': 'indu'},
-        {'gettext': '화공', 'code': 'cami'},
-        {'gettext': '기타', 'code': 'other'}
-    ],
-    'nat': [
-        {'gettext': '농림ㆍ수산', 'code': 'agri'},
-        {'gettext': '생물ㆍ화학ㆍ환경', 'code': 'bio'},
-        {'gettext': '생활과학', 'code': 'life'},
-        {'gettext': '수학ㆍ물리ㆍ천문ㆍ지리', 'code': 'math'}
-    ],
-    'med': [
-        {'gettext': '의료', 'code': 'metr'},
-        {'gettext': '간호', 'code': 'nurs'},
-        {'gettext': '약학', 'code': 'phar'},
-        {'gettext': '치료ㆍ보건', 'code': 'heal'}
-    ],
-    'art': [
-        {'gettext': '디자인', 'code': 'dsgn'},
-        {'gettext': '응용예술', 'code': 'appl'},
-        {'gettext': '무용ㆍ체육', 'code': 'danc'},
-        {'gettext': '미술ㆍ조형', 'code': 'form'},
-        {'gettext': '연극ㆍ영화', 'code': 'play'},
-        {'gettext': '음악', 'code': 'musc'},
-    ]
-}
-
-
 # 일일통계
 def statistics_excel(request, date):
-    save_name = 'K-Mooc' + date + '.xlsx'
+    save_name = 'K-Mooc{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path):
+    if os.path.isfile(save_path) and False:
         print 'file exists. so just download.'
     else:
         # Get course name
-        course_ids_all = statistics_query.course_ids_all()
+        course_ids_all = statistics_query.course_ids_all(date)
+
+        print 'len(course_ids_all) = ', len(course_ids_all)
 
         client = MongoClient(database_id, 27017)
         db = client.edxapp
@@ -135,19 +119,16 @@ def statistics_excel(request, date):
         course_ends = {}
         course_enroll_starts = {}
         course_enroll_ends = {}
+        course_classfys = {}
+        course_middle_classfys = {}
 
         print 'step1 : course_info search'
 
-        for c in course_ids_all:
-            print c
-            print c[0]
-
-            cid = str(c[0])
-            course_id = cid
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end in course_ids_all:
+            print course_id, org, display_name, start, end, enrollment_start, enrollment_end
             cid = course_id.split('+')[1]
             run = course_id.split('+')[2]
 
-            # db.modulestore.active_versions --------------------------------------
             cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
             if not cursor:
                 print 'not exists: ', cid, run
@@ -157,644 +138,366 @@ def statistics_excel(request, date):
             # course_orgs
             course_orgs[course_id] = cursor.get('org')
             course_creates[course_id] = cursor.get('edited_on')
-            # --------------------------------------
 
-            # db.modulestore.structures --------------------------------------
             cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},
                                                         {"blocks": {"$elemMatch": {"block_type": "course"}}})
 
-            course_start = cursor.get('blocks')[0].get('fields').get('start')  # course_starts
-            course_end = cursor.get('blocks')[0].get('fields').get('end')  # course_ends
-            course_enroll_start = cursor.get('blocks')[0].get('fields').get('enrollment_start')  # course_enroll_start
-            course_enroll_end = cursor.get('blocks')[0].get('fields').get('enrollment_end')  # course_enroll_end
-            course_name = cursor.get('blocks')[0].get('fields').get('display_name')  # course_names
+            _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
+            _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
 
-            if course_start is not None:
-                course_starts[course_id] = course_start
-            if course_end is not None:
-                course_ends[course_id] = course_end
-            if course_enroll_start is not None:
-                course_enroll_starts[course_id] = course_enroll_start
-            if course_enroll_end is not None:
-                course_enroll_ends[course_id] = course_enroll_end
-            if course_name is not None:
-                course_names[course_id] = course_name
+            if start is not None:
+                course_starts[course_id] = start
 
-        # for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end in course_ids_all:
-        #     course_orgs[course_id] = org
-        #
-        #     if start is not None:
-        #         course_starts[course_id] = start
-        #     if end is not None:
-        #         course_ends[course_id] = end
-        #     if enrollment_start is not None:
-        #         course_enroll_starts[course_id] = enrollment_start
-        #     if enrollment_end is not None:
-        #         course_enroll_ends[course_id] = enrollment_end
-        #     if display_name is not None:
-        #         course_names[course_id] = display_name
+            if end is not None:
+                course_ends[course_id] = end
+
+            if enrollment_start is not None:
+                course_enroll_starts[course_id] = enrollment_start
+
+            if enrollment_end is not None:
+                course_enroll_ends[course_id] = enrollment_end
+
+            if display_name is not None:
+                course_names[course_id] = display_name
+
+            if _classfy is not None and _classfy != 'all':
+                course_classfys[course_id] = classfy[_classfy] if _classfy in classfy else _classfy
+
+            if _mclassfy is not None and _mclassfy != 'all':
+                course_middle_classfys[course_id] = middle_classfy[_mclassfy] if _mclassfy in middle_classfy else _mclassfy
 
         print 'step2 : mysql search'
 
-        # excel style
-        thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'),
-                             bottom=Side(style='thin'))
+        # 요약
+        auth_user_info = statistics_query.auth_user_info(date)
+        student_courseenrollment_info = statistics_query.student_courseenrollment_info(date)
 
-        print 'q1.', datetime.datetime.now()
-        user_join = statistics_query.user_join(date)
-        print 'q2.', datetime.datetime.now()
-        course_count = statistics_query.course_count(date)
-        print 'q3.', datetime.datetime.now()
-        course_count_active = statistics_query.course_count_active(date)
-        print 'q4.', datetime.datetime.now()
-        course_case = statistics_query.course_case(date)
-        print 'q5.', datetime.datetime.now()
-        edu_new = statistics_query.edu_new(date)
-        print 'q6.', datetime.datetime.now()
-        edu_total = statistics_query.edu_total(date)
-        print 'q7.', datetime.datetime.now()
+        # 회원가입/수강신청 세부사항
+        overall_auth = statistics_query.overall_auth(date)
+        overall_enroll = statistics_query.overall_enroll(date)
+
+        # 연령구분
         age_new = statistics_query.age_new(date)
-        print 'q8.', datetime.datetime.now()
         age_total = statistics_query.age_total(date)
-        print 'q9.', datetime.datetime.now()
-        age_edu = statistics_query.age_edu(date)
-        print 'q10.', datetime.datetime.now()
-        course_user = statistics_query.course_user(date)
-        print 'q11.', datetime.datetime.now()
-        course_univ = statistics_query.course_univ(date)
-        print 'q12.', datetime.datetime.now()
-        course_user_total = statistics_query.course_user_total(date)
-        print 'q13.', datetime.datetime.now()
-        course_univ_total = statistics_query.course_univ_total(date)
-        print 'q14.', datetime.datetime.now()
-        course_age = statistics_query.course_age(date)
-        print 'q15.', datetime.datetime.now()
-        course_edu = statistics_query.course_edu(date)
-        print 'q16.', datetime.datetime.now()
 
-        # logger.info('------------------------------ statistics_excel make ------------------------------')
+        # 학력구분
+        edu_new = statistics_query.edu_new(date)
+        edu_total = statistics_query.edu_total(date)
+
+        # 연령별 학력
+        age_edu = statistics_query.age_edu(date)
 
         print 'step3: info '
-        wb = load_workbook(EXCEL_PATH + 'basic.xlsx')
-        ws1 = wb['user_count']
-        ws2 = wb['course_count']
-        ws3 = wb['course_count_total']
-        ws4 = wb['course_age']
-        ws5 = wb['course_edu']
+        wb = load_workbook(EXCEL_PATH + 'base.xlsx')
+
+        ws1 = wb['overall']
+        ws2 = wb['by_course_enroll']
+        ws3 = wb['by_course_demographic']
+
+        # excel style
+        thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+        # fill = PatternFill("solid", fgColor="eeeeee")
+        fill = None
+
+        font = Font(b=True, color="000000")
+        # font = None
+        al = Alignment(horizontal="center", vertical="center")
+
+        # sheet1
+        style_range(ws1, 'B2:C2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'D2:E2', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws1, 'B7:C8', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'D7:F7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G7:I7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B9:B10', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B11:B12', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws1, 'C16:F16', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G16:J16', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B16:B17', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws1, 'B27:B28', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C27:F27', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G27:J27', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws1, 'B41:B42', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C41:L41', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # sheet2
+        style_range(ws2, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'L1:P1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'L2:M2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'N2:O2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'P2:P3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # sheet3
+        style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'L1:AD1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'L2:N2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'O2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'U2:AC2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AD2:AD3', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 가입현황
         # logger.info('가입현황')
+        ws1['B4'] = auth_user_info[0][0]
+        ws1['C4'] = auth_user_info[0][1]
+        ws1['D4'] = student_courseenrollment_info[0][0]
+        ws1['E4'] = student_courseenrollment_info[0][1]
 
-
-        ws1['B4'] = user_join[0]
-        ws1['C4'] = user_join[1]
-        ws1['D4'] = course_count[0]
-        ws1['E4'] = course_count[2]
-        ws1['F4'] = course_count_active[0]
-
-        # 수강신청구분
+        # 회원가입 / 수강신청 세부사항
         # logger.info('수강신청구분')
+        ws1['D10'] = overall_auth[0][0]
+        ws1['E10'] = overall_auth[0][1]
+        ws1['D12'] = overall_auth[0][2]
+        ws1['E12'] = overall_auth[0][3]
 
-        sort = [
-            (9, 0),
-            (10, 1),
-            (11, 2)
-        ]
+        #: 수강신청 건
+        ws1['G9'] = overall_enroll[0][0]
+        ws1['H9'] = overall_enroll[0][1]
+        ws1['G11'] = overall_enroll[0][2]
+        ws1['H11'] = overall_enroll[0][3]
 
-        for (number, number1) in sort:
-            ws1['C' + str(number)] = '-' if number == 11 else course_case[number1][1]
-            ws1['D' + str(number)] = '-' if number == 11 else course_case[number1][2]
-            ws1['F' + str(number)] = course_case[number1][3]
-            ws1['G' + str(number)] = course_case[number1][4]
+        #: 수강신청 인원
+        ws1['G10'] = overall_enroll[0][4]
+        ws1['H10'] = overall_enroll[0][5]
+        ws1['G12'] = overall_enroll[0][6]
+        ws1['H12'] = overall_enroll[0][7]
 
         # 연령구분
         # logger.info('연령구분')
+        start_row = 18
+        print 'len(age_new):', len(age_new)
+        for male, female, etc in age_new:
+            ws1['C' + str(start_row)] = male
+            ws1['D' + str(start_row)] = female
+            ws1['E' + str(start_row)] = etc
+            start_row += 1
 
-        print 'step4: age gubn '
-
-        sort = [
-            (16, 0),
-            (17, 1),
-            (18, 2),
-            (19, 3),
-            (20, 4),
-            (21, 5)
-        ]
-        print 'age_new == ', age_new
-        for (number, number1) in sort:
-            # print 'number == ',number
-            # print 'age_new[number1][0] == ',age_new[number1][0]
-            ws1['C' + str(number)] = age_new[number1][0]
-            ws1['D' + str(number)] = age_new[number1][1]
-            ws1['E' + str(number)] = age_new[number1][2]
-
-        for (number, number1) in sort:
-            ws1['G' + str(number)] = age_total[number1][0]
-            ws1['H' + str(number)] = age_total[number1][1]
-            ws1['I' + str(number)] = age_total[number1][2]
+        start_row = 18
+        print 'len(age_total):', len(age_total)
+        for male, female, etc in age_total:
+            ws1['G' + str(start_row)] = male
+            ws1['H' + str(start_row)] = female
+            ws1['I' + str(start_row)] = etc
+            start_row += 1
 
         # 학력구분
         # logger.info('학력구분')
         print 'step5: edu gubn '
+        start_row = 29
+        print 'len(edu_new):', len(edu_new)
+        for male, female, etc in edu_new:
+            ws1['C' + str(start_row)] = male
+            ws1['D' + str(start_row)] = female
+            ws1['E' + str(start_row)] = etc
+            start_row += 1
 
-        sort = [
-            (27, 0),
-            (28, 1),
-            (29, 2),
-            (30, 3),
-            (31, 4),
-            (32, 5),
-            (33, 6),
-            (34, 7),
-            (35, 8)
-        ]
-
-        for (number, number1) in sort:
-            ws1['C' + str(number)] = edu_new[number1][0]
-            ws1['D' + str(number)] = edu_new[number1][1]
-            ws1['E' + str(number)] = edu_new[number1][2]
-
-        for (number, number1) in sort:
-            ws1['G' + str(number)] = edu_total[number1][0]
-            ws1['H' + str(number)] = edu_total[number1][1]
-            ws1['I' + str(number)] = edu_total[number1][2]
+        start_row = 29
+        print 'len(edu_total):', len(edu_total)
+        for male, female, etc in edu_total:
+            ws1['G' + str(start_row)] = male
+            ws1['H' + str(start_row)] = female
+            ws1['I' + str(start_row)] = etc
+            start_row += 1
 
         # 연령별 학력
         print 'step6: age + edu gubn '
-        sort = [
-            (41, 0),
-            (42, 1),
-            (43, 2),
-            (44, 3),
-            (45, 4),
-            (46, 5)
-        ]
+        start_row = 43
+        print 'len(age_edu):', len(age_edu)
+        for a, b, c, d, e, f, g, h, i in age_edu:
+            ws1['C' + str(start_row)] = a
+            ws1['D' + str(start_row)] = b
+            ws1['E' + str(start_row)] = c
+            ws1['F' + str(start_row)] = d
+            ws1['G' + str(start_row)] = e
+            ws1['H' + str(start_row)] = f
+            ws1['I' + str(start_row)] = g
+            ws1['J' + str(start_row)] = h
+            ws1['K' + str(start_row)] = i
+            start_row += 1
 
-        for (number, number1) in sort:
-            ws1['C' + str(number)] = age_edu[number1][0]
-            ws1['D' + str(number)] = age_edu[number1][1]
-            ws1['E' + str(number)] = age_edu[number1][2]
-            ws1['F' + str(number)] = age_edu[number1][3]
-            ws1['G' + str(number)] = age_edu[number1][4]
-            ws1['H' + str(number)] = age_edu[number1][5]
-            ws1['I' + str(number)] = age_edu[number1][6]
-            ws1['J' + str(number)] = age_edu[number1][7]
-            ws1['K' + str(number)] = age_edu[number1][8]
-
-        # ======================================================================================================================================================
-
-        # 코스별 수강자 # LJH수정
-        # sorted(courseInfo.items(), key=itemgetter(1))
-        rn1 = 3
-        rn2 = 0
-
-        print 'step7: sheet 2'
-        sortlist = list()
-        for c in course_user:
-            if c[0] in course_orgs and str(course_orgs[c[0]]) in dic_univ:
-                c = (dic_univ[str(course_orgs[c[0]])], course_names[c[0]],) + c
-            elif c[0] in course_orgs and c[0] in course_names:
-                c = (str(course_orgs[c[0]]), course_names[c[0]],) + c
-            elif c[0] in course_orgs:
-                c = (str(course_orgs[c[0]]), str(c[0]),) + c
-            elif c[0] in course_names:
-                c = (str(c[0]), course_names[c[0]],) + c
-            else:
-                c = (str(c[0]), str(c[0]),) + c
-
-            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
-            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
-            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
-
-            c = c + (edit_date, start_date, end_date,)
-
-            # logger.debug(c)
-            sortlist.append(c)
-
-        sortlist.sort(key=itemgetter(0, 4, 1))
-        # sortlist.sort(key=itemgetter(0, 6, 7, 8, 1))
-        for s in sortlist:
-            org_name = s[0]
-            c_name = s[1]
-            c_id1 = s[3]
-            c_id2 = s[4]
-            cnt = s[5]
-
-            ws2['A' + str(rn1)] = org_name
-            ws2['B' + str(rn1)] = c_name
-            ws2['C' + str(rn1)] = c_id1
-            ws2['D' + str(rn1)] = c_id2
-            ws2['E' + str(rn1)] = s[6]
-            ws2['F' + str(rn1)] = s[7]
-            ws2['G' + str(rn1)] = s[8]
-            ws2['H' + str(rn1)] = cnt
-
-            # set border
-            ws2['A' + str(rn1)].border = thin_border
-            ws2['B' + str(rn1)].border = thin_border
-            ws2['C' + str(rn1)].border = thin_border
-            ws2['D' + str(rn1)].border = thin_border
-            ws2['E' + str(rn1)].border = thin_border
-            ws2['F' + str(rn1)].border = thin_border
-            ws2['G' + str(rn1)].border = thin_border
-            ws2['H' + str(rn1)].border = thin_border
-
-            ws2['A' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws2['B' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws2['C' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws2['D' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws2['E' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws2['F' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws2['G' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws2['H' + str(rn1)].alignment = Alignment(horizontal="right")
-
-            rn1 += 1
-            rn2 += 1
-
-        rn1 = 3
-
-        # for univ, cnt in course_univ:
-
+        # by_course_enroll
+        print 's -----------------------------------------------------'
 
         sortlist = list()
-        for c in course_univ:
-            if c[0] in dic_univ:
-                c = (dic_univ[c[0]],) + c
-            else:
-                c = (c[0],) + c
-
-            # logger.debug(c)
-            sortlist.append(c)
-
-        sortlist.sort(key=itemgetter(0))
-
-        startCharNo1 = 75
-        startCharNo2 = 65
-        positionChar = ''
-        isExpension = False
-
-        for s in sortlist:
-            orgName = s[0]
-            cnt = s[2]
-
-            if startCharNo1 > 90:
-                startCharNo1 = 65
-
-                if isExpension:
-                    startCharNo2 += 1
+        for c in course_ids_all:
+            by_course_enroll = statistics_query.by_course_enroll(c[0], date)
+            for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll:
+                row = tuple()
+                row = row + (dic_univ[org] if org in dic_univ else org,)
+                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
+                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row = row + (course_names[course_id],)
+                row = row + (course_id.split('+')[1],)
+                row = row + (course_id.split('+')[2],)
+                row = row + (course_creates[course_id],)
+                row = row + (course_enroll_starts[course_id],)
+                row = row + (course_enroll_ends[course_id],)
+                row = row + (course_starts[course_id],)
+                row = row + (course_ends[course_id],)
+                row = row + (new_enroll_cnt,)
+                row = row + (new_unenroll_cnt,)
+                row = row + (all_enroll_cnt,)
+                row = row + (all_unenroll_cnt,)
+                if all_enroll_cnt is None or all_unenroll_cnt is None:
+                    row = row + ('-',)
                 else:
-                    isExpension = True
+                    row = row + (all_enroll_cnt - all_unenroll_cnt,)
+                sortlist.append(row)
 
-            if not isExpension:
-                positionChar = chr(startCharNo1)
-            else:
-                positionChar = chr(startCharNo2) + chr(startCharNo1)
+        sortlist.sort(key=itemgetter(0, 4, 5))
 
-            # print 'positionChar1:', positionChar
+        start_row = 4
+        for course_info in sortlist:
+            print course_info
+            ws2['A' + str(start_row)] = course_info[0]
+            ws2['B' + str(start_row)] = course_info[1]
+            ws2['C' + str(start_row)] = course_info[2]
+            ws2['D' + str(start_row)] = course_info[3]
+            ws2['E' + str(start_row)] = course_info[4]
+            ws2['F' + str(start_row)] = course_info[5]
+            ws2['G' + str(start_row)] = course_info[6]
+            ws2['H' + str(start_row)] = course_info[7]
+            ws2['I' + str(start_row)] = course_info[8]
+            ws2['J' + str(start_row)] = course_info[9]
+            ws2['K' + str(start_row)] = course_info[10]
+            ws2['L' + str(start_row)] = course_info[11]
+            ws2['M' + str(start_row)] = course_info[12]
+            ws2['N' + str(start_row)] = course_info[13]
+            ws2['O' + str(start_row)] = course_info[14]
+            ws2['P' + str(start_row)] = course_info[15]
 
-            ws2[positionChar + '2'] = orgName
-            ws2[positionChar + '3'] = cnt
+            style_base(ws2['A' + str(start_row)])
+            style_base(ws2['B' + str(start_row)])
+            style_base(ws2['C' + str(start_row)])
+            style_base(ws2['D' + str(start_row)])
+            style_base(ws2['E' + str(start_row)])
+            style_base(ws2['F' + str(start_row)])
+            style_base(ws2['G' + str(start_row)])
+            style_base(ws2['H' + str(start_row)])
+            style_base(ws2['I' + str(start_row)])
+            style_base(ws2['J' + str(start_row)])
+            style_base(ws2['K' + str(start_row)])
+            style_base(ws2['L' + str(start_row)])
+            style_base(ws2['M' + str(start_row)])
+            style_base(ws2['N' + str(start_row)])
+            style_base(ws2['O' + str(start_row)])
+            style_base(ws2['P' + str(start_row)])
 
-            # set border
-            ws2[positionChar + '2'].border = thin_border
-            ws2[positionChar + '3'].border = thin_border
+            start_row += 1
 
-            ws2[positionChar + '2'].alignment = Alignment(horizontal="center")
-            ws2[positionChar + '3'].alignment = Alignment(horizontal="right")
+        print 'e -----------------------------------------------------'
 
-            # print cId, cName
-            # H 열부터 횡으로 증가. Z 까지 갔을경우 AA 로 다시 시작
+        # by_course_demographic
 
-            # 기존에 열으로 추가되는 로직
-            # ----------------------------------------------
-
-            # ws2['G' + str(rn1)] = orgName
-            # ws2['H' + str(rn1)] = cnt
-            # # set border
-            # ws2['G' + str(rn1)].border = thin_border
-            # ws2['H' + str(rn1)].border = thin_border
-            # rn1 += 1
-
-            # ----------------------------------------------
-
-            startCharNo1 += 1
-
-        print 'step8: sheet 3'
-        # logger.debug('코스별 수강자 누적')
-        # 코스별 수강자 누적
-        # sorted(courseInfo.items(), key=itemgetter(1))
-        rn1 = 3
-        rn2 = 0
-        # for cId, cId1, cId2, cnt in course_user_total:
         sortlist = list()
-        for c in course_user_total:
-            if c[0] in course_orgs and str(course_orgs[c[0]]) in dic_univ:
-                c = (dic_univ[str(course_orgs[c[0]])], course_names[c[0]],) + c
-            elif c[0] in course_orgs and c[0] in course_names:
-                c = (str(course_orgs[c[0]]), course_names[c[0]],) + c
-            elif c[0] in course_orgs:
-                c = (str(course_orgs[c[0]]), str(c[0]),) + c
-            elif c[0] in course_names:
-                c = (str(c[0]), course_names[c[0]],) + c
-            else:
-                c = (str(c[0]), str(c[0]),) + c
+        for c in course_ids_all:
+            by_course_demographic = statistics_query.by_course_demographic(c[0], date)
+            for course_id, org, male, female, etc, age1, age2, age3, age4, age5, age6, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9, allcnt in by_course_demographic:
+                row = tuple()
+                row = row + (dic_univ[org] if org in dic_univ else org,)
+                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
+                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row = row + (course_names[course_id],)
+                row = row + (course_id.split('+')[1],)
+                row = row + (course_id.split('+')[2],)
+                row = row + (course_creates[course_id],)
+                row = row + (course_enroll_starts[course_id],)
+                row = row + (course_enroll_ends[course_id],)
+                row = row + (course_starts[course_id],)
+                row = row + (course_ends[course_id],)
+                row = row + (male,)
+                row = row + (female,)
+                row = row + (etc,)
+                row = row + (age1,)
+                row = row + (age2,)
+                row = row + (age3,)
+                row = row + (age4,)
+                row = row + (age5,)
+                row = row + (age6,)
+                row = row + (edu1,)
+                row = row + (edu2,)
+                row = row + (edu3,)
+                row = row + (edu4,)
+                row = row + (edu5,)
+                row = row + (edu6,)
+                row = row + (edu7,)
+                row = row + (edu8,)
+                row = row + (edu9,)
+                row = row + (allcnt,)
+                sortlist.append(row)
 
-            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
-            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
-            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
+        sortlist.sort(key=itemgetter(0, 4, 5))
 
-            c = c + (edit_date, start_date, end_date,)
+        start_row = 4
+        for course_info in sortlist:
+            print course_info
+            ws3['A' + str(start_row)] = course_info[0]
+            ws3['B' + str(start_row)] = course_info[1]
+            ws3['C' + str(start_row)] = course_info[2]
+            ws3['D' + str(start_row)] = course_info[3]
+            ws3['E' + str(start_row)] = course_info[4]
+            ws3['F' + str(start_row)] = course_info[5]
+            ws3['G' + str(start_row)] = course_info[6]
+            ws3['H' + str(start_row)] = course_info[7]
+            ws3['I' + str(start_row)] = course_info[8]
+            ws3['J' + str(start_row)] = course_info[9]
+            ws3['K' + str(start_row)] = course_info[10]
+            ws3['L' + str(start_row)] = course_info[11]
+            ws3['M' + str(start_row)] = course_info[12]
+            ws3['N' + str(start_row)] = course_info[13]
+            ws3['O' + str(start_row)] = course_info[14]
+            ws3['P' + str(start_row)] = course_info[15]
+            ws3['Q' + str(start_row)] = course_info[16]
+            ws3['R' + str(start_row)] = course_info[17]
+            ws3['S' + str(start_row)] = course_info[18]
+            ws3['T' + str(start_row)] = course_info[19]
+            ws3['U' + str(start_row)] = course_info[20]
+            ws3['V' + str(start_row)] = course_info[21]
+            ws3['W' + str(start_row)] = course_info[22]
+            ws3['X' + str(start_row)] = course_info[23]
+            ws3['Y' + str(start_row)] = course_info[24]
+            ws3['Z' + str(start_row)] = course_info[25]
+            ws3['AA' + str(start_row)] = course_info[26]
+            ws3['AB' + str(start_row)] = course_info[27]
+            ws3['AC' + str(start_row)] = course_info[28]
+            ws3['AD' + str(start_row)] = course_info[29]
 
-            # logger.debug(c)
-            sortlist.append(c)
+            style_base(ws3['A' + str(start_row)])
+            style_base(ws3['B' + str(start_row)])
+            style_base(ws3['C' + str(start_row)])
+            style_base(ws3['D' + str(start_row)])
+            style_base(ws3['E' + str(start_row)])
+            style_base(ws3['F' + str(start_row)])
+            style_base(ws3['G' + str(start_row)])
+            style_base(ws3['H' + str(start_row)])
+            style_base(ws3['I' + str(start_row)])
+            style_base(ws3['J' + str(start_row)])
+            style_base(ws3['K' + str(start_row)])
+            style_base(ws3['L' + str(start_row)])
+            style_base(ws3['M' + str(start_row)])
+            style_base(ws3['N' + str(start_row)])
+            style_base(ws3['O' + str(start_row)])
+            style_base(ws3['P' + str(start_row)])
+            style_base(ws3['Q' + str(start_row)])
+            style_base(ws3['R' + str(start_row)])
+            style_base(ws3['S' + str(start_row)])
+            style_base(ws3['T' + str(start_row)])
+            style_base(ws3['U' + str(start_row)])
+            style_base(ws3['V' + str(start_row)])
+            style_base(ws3['W' + str(start_row)])
+            style_base(ws3['X' + str(start_row)])
+            style_base(ws3['Y' + str(start_row)])
+            style_base(ws3['Z' + str(start_row)])
+            style_base(ws3['AA' + str(start_row)])
+            style_base(ws3['AB' + str(start_row)])
+            style_base(ws3['AC' + str(start_row)])
+            style_base(ws3['AD' + str(start_row)])
 
-        sortlist.sort(key=itemgetter(0, 4, 1))
-        # sortlist.sort(key=itemgetter(0, 7, 8, 9, 1))
-        for s in sortlist:
-            orgName = s[0]
-            cName = s[1]
-            cId1 = s[3]
-            cId2 = s[4]
-            cnt = s[5]
-            cnt2 = s[6]
+            start_row += 1
 
-            edit_date = s[7]
-            start_date = s[8]
-            end_date = s[9]
-
-            # print cId, cName
-            ws3['A' + str(rn1)] = orgName
-            ws3['B' + str(rn1)] = cName
-            ws3['C' + str(rn1)] = cId1
-            ws3['D' + str(rn1)] = cId2
-            ws3['E' + str(rn1)] = edit_date
-            ws3['F' + str(rn1)] = start_date
-            ws3['G' + str(rn1)] = end_date
-            ws3['H' + str(rn1)] = cnt2
-            ws3['I' + str(rn1)] = cnt
-
-            # set border
-            ws3['A' + str(rn1)].border = thin_border
-            ws3['B' + str(rn1)].border = thin_border
-            ws3['C' + str(rn1)].border = thin_border
-            ws3['D' + str(rn1)].border = thin_border
-            ws3['E' + str(rn1)].border = thin_border
-            ws3['F' + str(rn1)].border = thin_border
-            ws3['G' + str(rn1)].border = thin_border
-            ws3['H' + str(rn1)].border = thin_border
-            ws3['I' + str(rn1)].border = thin_border
-
-            ws3['A' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws3['B' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws3['C' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws3['D' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws3['E' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws3['F' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws3['G' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws3['H' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws3['I' + str(rn1)].alignment = Alignment(horizontal="right")
-
-            rn1 += 1
-            rn2 += 1
-
-        rn1 = 3
-        # for univ, cnt in course_univ_total:
-        sortlist = list()
-        for c in course_univ_total:
-            if c[0] in dic_univ:
-                c = (dic_univ[c[0]],) + c
-            else:
-                c = (c[0],) + c
-
-            # logger.debug(c)
-            sortlist.append(c)
-
-        sortlist.sort(key=itemgetter(0))
-
-        startCharNo1 = 76
-        startCharNo2 = 65
-        positionChar = ''
-        isExpension = False
-
-        for s in sortlist:
-            orgName = s[0]
-            cnt = s[2]
-            cnt2 = s[3]
-
-            if startCharNo1 > 90:
-                startCharNo1 = 65
-
-                if isExpension:
-                    startCharNo2 += 1
-                else:
-                    isExpension = True
-
-            if not isExpension:
-                positionChar = chr(startCharNo1)
-            else:
-                positionChar = chr(startCharNo2) + chr(startCharNo1)
-
-            # logger.debug(positionChar)
-
-            ws3[positionChar + '2'] = orgName
-            ws3[positionChar + '3'] = cnt2
-            ws3[positionChar + '4'] = cnt
-
-            # set border
-            ws3[positionChar + '2'].border = thin_border
-            ws3[positionChar + '3'].border = thin_border
-            ws3[positionChar + '4'].border = thin_border
-
-            ws3[positionChar + '2'].alignment = Alignment(horizontal="center")
-            ws3[positionChar + '3'].alignment = Alignment(horizontal="right")
-            ws3[positionChar + '4'].alignment = Alignment(horizontal="right")
-
-            startCharNo1 += 1
-
-        print 'step9: sheet 4'
-        # 코스별 연령
-        # logger.debug('코스별 연령')
-        rn1 = 3
-        sortlist = list()
-        for c in course_age:
-            if c[0] in dic_univ:
-                c = (dic_univ[c[0]],) + c
-            else:
-                c = (c[0],) + c
-
-            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
-            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
-            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
-            course_name = course_names[c[2]] if c[2] in course_names else None
-            c = c + (edit_date, start_date, end_date, course_name,)
-
-            # logger.debug(c)
-            sortlist.append(c)
-
-        sortlist.sort(key=itemgetter(0, 4, 1))
-        # sortlist.sort(key=itemgetter(0, 12, 13, 14, 15))
-        for s in sortlist:
-            org = s[0]
-            cname = s[15]
-            course = s[3]
-            run = s[4]
-            age1 = s[5]
-            age2 = s[6]
-            age3 = s[7]
-            age4 = s[8]
-            age5 = s[9]
-            age6 = s[10]
-            total = s[11]
-            edit_date = s[12]
-            start_date = s[13]
-            end_date = s[14]
-
-            ws4['A' + str(rn1)] = org
-            ws4['B' + str(rn1)] = cname
-            ws4['C' + str(rn1)] = course
-            ws4['D' + str(rn1)] = run
-            ws4['E' + str(rn1)] = edit_date
-            ws4['F' + str(rn1)] = start_date
-            ws4['G' + str(rn1)] = end_date
-            ws4['H' + str(rn1)] = age1
-            ws4['I' + str(rn1)] = age2
-            ws4['J' + str(rn1)] = age3
-            ws4['K' + str(rn1)] = age4
-            ws4['L' + str(rn1)] = age5
-            ws4['M' + str(rn1)] = age6
-            ws4['N' + str(rn1)] = total
-
-            # set border
-            ws4['A' + str(rn1)].border = thin_border
-            ws4['B' + str(rn1)].border = thin_border
-            ws4['C' + str(rn1)].border = thin_border
-            ws4['D' + str(rn1)].border = thin_border
-            ws4['E' + str(rn1)].border = thin_border
-            ws4['F' + str(rn1)].border = thin_border
-            ws4['G' + str(rn1)].border = thin_border
-            ws4['H' + str(rn1)].border = thin_border
-            ws4['I' + str(rn1)].border = thin_border
-            ws4['J' + str(rn1)].border = thin_border
-            ws4['K' + str(rn1)].border = thin_border
-            ws4['L' + str(rn1)].border = thin_border
-            ws4['M' + str(rn1)].border = thin_border
-            ws4['N' + str(rn1)].border = thin_border
-
-            ws4['A' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws4['B' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws4['C' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws4['D' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws4['E' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws4['F' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws4['G' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws4['H' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['I' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['J' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['K' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['L' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['M' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws4['N' + str(rn1)].alignment = Alignment(horizontal="right")
-
-            rn1 += 1
-
-        print 'step10: sheet 5'
-        # 코스별 학력
-        # logger.debug('코스별 학력')
-        rn1 = 3
-        sortlist = list()
-        for c in course_edu:
-            if c[0] in dic_univ:
-                c = (dic_univ[c[0]],) + c
-            else:
-                c = (c[0],) + c
-
-            edit_date = course_creates[c[2]].strftime("%Y-%m-%d") if c[2] in course_creates else None
-            start_date = course_starts[c[2]].strftime("%Y-%m-%d") if c[2] in course_starts else None
-            end_date = course_ends[c[2]].strftime("%Y-%m-%d") if c[2] in course_ends else None
-            course_name = course_names[c[2]] if c[2] in course_names else None
-            c = c + (edit_date, start_date, end_date, course_name,)
-
-            # logger.debug(c)
-            sortlist.append(c)
-
-        sortlist.sort(key=itemgetter(0, 4, 1))
-        # sortlist.sort(key=itemgetter(0, 15, 16, 17, 18))
-
-        for s in sortlist:
-            org = s[0]
-            cname = s[18]
-            course = s[3]
-            run = s[4]
-            edu1 = s[5]
-            edu2 = s[6]
-            edu3 = s[7]
-            edu4 = s[8]
-            edu5 = s[9]
-            edu6 = s[10]
-            edu7 = s[11]
-            edu8 = s[12]
-            edu9 = s[13]
-            total = s[14]
-            edit_date = s[15]
-            start_date = s[16]
-            end_date = s[17]
-            # print cId, cName
-
-            ws5['A' + str(rn1)] = org
-            ws5['B' + str(rn1)] = cname
-            ws5['C' + str(rn1)] = course
-            ws5['D' + str(rn1)] = run
-            ws5['E' + str(rn1)] = edit_date
-            ws5['F' + str(rn1)] = start_date
-            ws5['G' + str(rn1)] = end_date
-            ws5['H' + str(rn1)] = edu1
-            ws5['I' + str(rn1)] = edu2
-            ws5['J' + str(rn1)] = edu3
-            ws5['K' + str(rn1)] = edu4
-            ws5['L' + str(rn1)] = edu5
-            ws5['M' + str(rn1)] = edu6
-            ws5['N' + str(rn1)] = edu7
-            ws5['O' + str(rn1)] = edu8
-            ws5['P' + str(rn1)] = edu9
-            ws5['Q' + str(rn1)] = total
-
-            # set border
-            ws5['A' + str(rn1)].border = thin_border
-            ws5['B' + str(rn1)].border = thin_border
-            ws5['C' + str(rn1)].border = thin_border
-            ws5['D' + str(rn1)].border = thin_border
-            ws5['E' + str(rn1)].border = thin_border
-            ws5['F' + str(rn1)].border = thin_border
-            ws5['G' + str(rn1)].border = thin_border
-            ws5['H' + str(rn1)].border = thin_border
-            ws5['I' + str(rn1)].border = thin_border
-            ws5['J' + str(rn1)].border = thin_border
-            ws5['K' + str(rn1)].border = thin_border
-            ws5['L' + str(rn1)].border = thin_border
-            ws5['M' + str(rn1)].border = thin_border
-            ws5['N' + str(rn1)].border = thin_border
-            ws5['O' + str(rn1)].border = thin_border
-            ws5['P' + str(rn1)].border = thin_border
-            ws5['Q' + str(rn1)].border = thin_border
-
-            ws5['A' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws5['B' + str(rn1)].alignment = Alignment(horizontal="left")
-            ws5['C' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws5['D' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws5['E' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws5['F' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws5['G' + str(rn1)].alignment = Alignment(horizontal="center")
-            ws5['H' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['I' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['J' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['K' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['L' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['M' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['N' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['O' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['P' + str(rn1)].alignment = Alignment(horizontal="right")
-            ws5['Q' + str(rn1)].alignment = Alignment(horizontal="right")
-            rn1 += 1
         wb.save(save_path)
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 

@@ -3,46 +3,94 @@
 import statistics
 from django.db import connection
 
-# 엑셀 시간
+
+def execute_query_one(query):
+    cur = connection.cursor()
+    cur.execute(query)
+    row = cur.fetchone()[0]
+    return row
+
+
+def execute_query(query):
+    cur = connection.cursor()
+    cur.execute(query)
+    row = cur.fetchall()
+    return row
+
+
+def by_course_enroll(course_id):
+    query = '''
+        SELECT a.org,
+               'classfy',
+               'middle_classfy',
+               sum(if(date_format(b.created, '%Y%m%d') = '20170301', 1, 0)) `new_enroll_cnt`,
+               sum(if(date_format(b.created, '%Y%m%d') = '20170301' and b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+               sum(if(date_format(b.created, '%Y%m%d') between '1' and '20170301', 1, 0)) `all_enroll_cnt`,
+               sum(if(date_format(b.created, '%Y%m%d') between '1' and '20170301' and b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+          FROM course_overviews_courseoverview a,
+               student_courseenrollment        b,
+               auth_user                       c
+         WHERE     a.id = b.course_id
+               AND b.user_id = c.id
+               AND a.id = '{course_id}';
+    '''.format(course_id=course_id)
+    return execute_query(query)
+
+
+def course_ids_all():
+    query = '''
+        SELECT id                                          AS `course_id`,
+               org,
+               display_name,
+               date_format(`start`, '%Y-%m-%d')            `start`,
+               date_format(`end`, '%Y-%m-%d')              `end`,
+               date_format(`enrollment_start`, '%Y-%m-%d') `enrollment_start`,
+               date_format(`enrollment_end`, '%Y-%m-%d')   `enrollment_end`
+          FROM course_overviews_courseoverview
+         WHERE     1 = 1
+               AND lower(id) NOT LIKE '%test%'
+               AND lower(id) NOT LIKE '%demo%'
+               AND lower(id) NOT LIKE '%nile%';
+    '''
+    return execute_query(query)
+
 
 def excel_now_day():
+    query = '''
+        SELECT date_format(now(), '%Y%m%d');
+    '''
+    return execute_query_one(query)
 
-    cur = connection.cursor()
-    cur.execute('''select date_format(now( ), '%Y%m%d' );''')
-    row = cur.fetchone()[0]
-    cur.close()
-
-    return row
 
 # excel_now_day = ('''select date_format(now( ), '%Y%m%d' );''')
 
 # 회원 가입자수(신규)
 
 def user_join_new(date):
-
     cur = connection.cursor()
     cur.execute('''Select count(*)
                 FROM auth_userprofile a, auth_user b
-                WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') ="'''+ date +'''";''')
+                WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') ="''' + date + '''";''')
     row = cur.fetchone()[0]
     cur.close()
 
     return row
 
+
 # 회원 가입자수(누적)
 
 def user_join_total(date):
-
     cur = connection.cursor()
     cur.execute('''Select count(*)
                 FROM auth_userprofile a, auth_user b
                 WHERE a.user_id = b.id
                 AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+ date +'''"''')
+                and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "''' + date + '''"''')
     row = cur.fetchone()[0]
     cur.close()
 
     return row
+
 
 # user_join_total =('''Select count(*)
 #                 FROM auth_userprofile a, auth_user b
@@ -53,18 +101,18 @@ def user_join_total(date):
 # 수강신청자수(중복제거)
 
 def course_count_distinct(date):
-
     cur = connection.cursor()
     cur.execute('''select count(distinct a.user_id) cnt
                             from student_courseenrollment a, auth_user b
                             where a.user_id = b.id
-                              and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and"'''+date+'''"
+                              and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and"''' + date + '''"
                               and a.is_active = 1
                               and not (b.email) like '%delete_%';''')
     row = cur.fetchone()[0]
     cur.close()
 
     return row
+
 
 # course_count_distinct =('''select count(distinct a.user_id) cnt
 #                             from student_courseenrollment a, auth_user b
@@ -76,12 +124,11 @@ def course_count_distinct(date):
 # 수강신청자수(신규)
 
 def course_count_new(date):
-
     cur = connection.cursor()
     cur.execute('''select count(a.user_id) cnt
                         from student_courseenrollment a, auth_user b
                         where a.user_id = b.id
-                          and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') ="'''+date+'''"
+                          and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') ="''' + date + '''"
                           and a.is_active = 1
                           and not (b.email) like '%delete_%'
                           and lower(a.course_id) not like '%test%'
@@ -91,6 +138,7 @@ def course_count_new(date):
     cur.close()
 
     return row
+
 
 # course_count_new = ('''select count(a.user_id) cnt
 #                         from student_courseenrollment a, auth_user b
@@ -104,12 +152,11 @@ def course_count_new(date):
 # 수강신청자수(누적)
 
 def course_count_total(date):
-
     cur = connection.cursor()
     cur.execute('''select count(a.user_id) cnt
                          from student_courseenrollment a, auth_user b
                          where a.user_id = b.id
-                           and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''"
+                           and date_format( adddate(a.created, interval 9 hour),'%Y%m%d') between '20151014' and "''' + date + '''"
                            and a.is_active = 1
                            and not (b.email) like '%delete_%'
                            and lower(a.course_id) not like '%test%'
@@ -133,7 +180,6 @@ def course_count_total(date):
 # 학력구분(신규)
 
 def edu_new(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT
                  ifnull(b.male, 0),
@@ -155,7 +201,7 @@ def edu_new(date):
                        sum(if(a.gender = 'm', 1, 0)) AS "male",
                        sum(if(a.gender = 'f', 1, 0)) AS "female"
                   FROM auth_userprofile a, auth_user b
-                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "'''+date+'''"
+                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "''' + date + '''"
                  group by case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 'none' else level_of_education end
                  order by level_of_education) b
                  ON a.r = b.result
@@ -164,6 +210,7 @@ def edu_new(date):
     cur.close()
 
     return row
+
 
 # edu_new = ('''SELECT
 #                  ifnull(b.male, 0),
@@ -194,7 +241,6 @@ def edu_new(date):
 # 학력구분(누적)
 
 def edu_total(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT
                  b.male,
@@ -216,7 +262,7 @@ def edu_total(date):
                        sum(if(a.gender = 'm', 1, 0)) AS "male",
                        sum(if(a.gender = 'f', 1, 0)) AS "female"
                   FROM auth_userprofile a, auth_user b
-                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''"
+                 WHERE a.user_id = b.id AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "''' + date + '''"
                  group by case when a.level_of_education is null or a.level_of_education = '' or a.level_of_education = 'null' then 'none' else level_of_education end
                  order by level_of_education) b
                  ON a.r = b.result
@@ -225,6 +271,8 @@ def edu_total(date):
     cur.close()
 
     return row
+
+
 #
 # edu_total = ('''SELECT
 #                  b.male,
@@ -255,7 +303,6 @@ def edu_total(date):
 # 연령구분(신규)
 
 def age_new(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT
              ifnull(b.male,0),
@@ -282,7 +329,7 @@ def age_new(date):
                                    a.gender
                               FROM auth_userprofile a, auth_user b
                              WHERE     a.user_id = b.id
-                                   AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "'''+date+'''") aa) bb
+                                   AND NOT (b.is_staff = 1 OR b.is_superuser = 1) and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') = "''' + date + '''") aa) bb
             GROUP BY age) b
              ON a.r = b.age
             ORDER BY a.r;''')
@@ -290,6 +337,7 @@ def age_new(date):
     cur.close()
 
     return row
+
 
 # age_new = ('''SELECT
 #              ifnull(b.male,0),
@@ -324,7 +372,6 @@ def age_new(date):
 # 연령구분(누적)
 
 def age_total(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT
                  b.male,
@@ -352,7 +399,7 @@ def age_total(date):
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
                                        AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                                       and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "'''+date+'''") aa) bb
+                                       and date_format( adddate(b.date_joined, interval 9 hour),'%Y%m%d') between '20151014' and "''' + date + '''") aa) bb
                 GROUP BY age) b
                  ON a.r = b.age
                 ORDER BY a.r;''')
@@ -360,6 +407,7 @@ def age_total(date):
     cur.close()
 
     return row
+
 
 # age_total = ('''SELECT
 #                  b.male,
@@ -395,7 +443,6 @@ def age_total(date):
 # 연령학력
 
 def age_edu(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT b.aa,
                   b.bb,
@@ -439,7 +486,7 @@ def age_edu(date):
                               FROM auth_userprofile a, auth_user b
                              WHERE     a.user_id = b.id
                                    AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-                                   AND date_format( adddate(b.date_joined, interval 9 hour), '%Y%m%d') between '20151014' and "'''+date+'''" )
+                                   AND date_format( adddate(b.date_joined, interval 9 hour), '%Y%m%d') between '20151014' and "''' + date + '''" )
                            aa) bb
             GROUP BY age) b
             ON a.r = b.age
@@ -448,6 +495,7 @@ def age_edu(date):
     cur.close()
 
     return row
+
 
 # age_edu =('''SELECT b.aa,
 #                   b.bb,
@@ -498,7 +546,7 @@ def age_edu(date):
 #             ORDER BY a.r;''')
 
 
-#코스별 수강자수
+# 코스별 수강자수
 
 def course_user(date):
     query = '''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
@@ -516,7 +564,7 @@ def course_user(date):
                   FROM (SELECT a.course_id, count(*) cnt
                           FROM student_courseenrollment a, auth_user b
                          WHERE     a.user_id = b.id
-                               AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = '''+date+'''
+                               AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = ''' + date + '''
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
@@ -532,10 +580,10 @@ def course_user(date):
 
     return row
 
-#코스별 수강자수(누적)
+
+# 코스별 수강자수(누적)
 
 def course_user_total(date):
-
     cur = connection.cursor()
     cur.execute('''SELECT a.course_id, substring(substring_index(a.course_id, '+', 2), instr(a.course_id,'+')+1) course_id1,
                           substring_index(a.course_id, '+',-1) course_id2, ifnull(cnt, 0)
@@ -552,7 +600,7 @@ def course_user_total(date):
                               FROM (SELECT a.course_id, count(*) cnt
                                       FROM student_courseenrollment a, auth_user b
                                      WHERE     a.user_id = b.id
-                                           AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and  "'''+date+'''"
+                                           AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and  "''' + date + '''"
                                            AND a.is_active = 1
                                            AND NOT (b.email) LIKE '%delete_%'
                                            and lower(a.course_id) not like '%test%'
@@ -566,10 +614,10 @@ def course_user_total(date):
 
     return row
 
-#코스별 연령
+
+# 코스별 연령
 
 def course_age(date):
-
     cur = connection.cursor()
     cur.execute('''
         SELECT substring(a.course_id,
@@ -602,7 +650,7 @@ def course_age(date):
                          WHERE     a.user_id = b.id
                                AND b.id = c.user_id
                                AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') BETWEEN '20151014' and
-                                                                        "'''+date+'''"
+                                                                        "''' + date + '''"
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
@@ -618,10 +666,10 @@ def course_age(date):
 
     return row
 
-#코스별 학력
+
+# 코스별 학력
 
 def course_edu(date):
-
     cur = connection.cursor()
     cur.execute('''
         SELECT substring(a.course_id,
@@ -662,7 +710,7 @@ def course_edu(date):
                          WHERE     a.user_id = b.id
                                AND b.id = c.user_id
                                AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') BETWEEN '20151014'
-                                                                        AND "'''+date+'''"
+                                                                        AND "''' + date + '''"
                                AND a.is_active = 1
                                AND NOT (b.email) LIKE '%delete_%'
                                and lower(a.course_id) not like '%test%'
@@ -678,20 +726,6 @@ def course_edu(date):
 
     return row
 
-def course_ids_all():
-    cur = connection.cursor()
-    cur.execute('''
-SELECT DISTINCT a.course_id
-          FROM course_structures_coursestructure a,
-               student_courseaccessrole b
-         WHERE     a.course_id = b.course_id
-            and lower(a.course_id) not like '%test%'
-            AND lower(a.course_id) NOT LIKE '%demo%'
-            AND lower(a.course_id) NOT LIKE '%nile%';
-            ''')
-    row = cur.fetchall()
-    cur.close()
-    return row
 
 def course_univ(date):
     cur = connection.cursor()
@@ -718,7 +752,7 @@ def course_univ(date):
                           org
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = "'''+date+'''"
+                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') = "''' + date + '''"
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
                        and lower(a.course_id) not like '%test%'
@@ -731,6 +765,7 @@ def course_univ(date):
     row = cur.fetchall()
     cur.close()
     return row
+
 
 def course_univ_total(date):
     cur = connection.cursor()
@@ -758,7 +793,7 @@ def course_univ_total(date):
                           org
                   FROM student_courseenrollment a, auth_user b
                  WHERE     a.user_id = b.id
-                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and "'''+date+'''"
+                       AND date_format( adddate(a.created, interval 9 hour), '%Y%m%d') between '20151014' and "''' + date + '''"
                        AND a.is_active = 1
                        AND NOT (b.email) LIKE '%delete_%'
                        and lower(a.course_id) not like '%test%'
@@ -771,6 +806,7 @@ def course_univ_total(date):
     row = cur.fetchall()
     cur.close()
     return row
+
 
 def course_ids_cert():
     cur = connection.cursor()
@@ -790,6 +826,7 @@ def course_ids_cert():
     row = cur.fetchall()
     cur.close()
     return row
+
 
 def certificateInfo(courseId):
     cur = connection.cursor()
@@ -814,7 +851,7 @@ def certificateInfo(courseId):
                AND a.course_id = c.course_id
                AND c.is_active = 1
                AND NOT (b.is_staff = 1 OR b.is_superuser = 1)
-               AND a.course_id = "'''+courseId+'''"
+               AND a.course_id = "''' + courseId + '''"
         GROUP BY a.course_id, a.status
         ORDER BY a.course_id, a.status;
     ''')
@@ -833,11 +870,12 @@ def member_statistics(date):
           FROM auth_user a, auth_userprofile b
          WHERE a.id = b.user_id
            AND NOT (a.is_staff = 1 OR a.is_superuser = 1)
-           and date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND '''+date+''';
+           and date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014' AND ''' + date + ''';
     ''')
     row = cur.fetchall()
     cur.close()
     return row
+
 
 def country_statistics(date):
     cur = connection.cursor()
@@ -847,13 +885,10 @@ def country_statistics(date):
          WHERE     a.id = b.user_id
                AND NOT (a.is_staff = 1 OR a.is_superuser = 1)
                AND date_format( adddate(a.date_joined, interval 9 hour), '%Y%m%d') BETWEEN '20151014'
-                                                            AND '''+date+'''
+                                                            AND ''' + date + '''
         GROUP BY b.country
         ORDER BY count(*) DESC;
     ''')
     row = cur.fetchall()
     cur.close()
     return row
-
-
-
