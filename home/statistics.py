@@ -1,23 +1,68 @@
 # -*- coding: utf-8 -*-
 
-from django.db import connection
 from openpyxl import load_workbook
 import statistics_query
-from django.template import Context
 from django.http import HttpResponse
-from django.template.loader import get_template
 from pymongo import MongoClient
-# from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Style
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 import os
 from operator import itemgetter
 import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy
 from openpyxl.styles import Alignment
-from time import gmtime, strftime
 from bson.objectid import ObjectId
 import logging
 import logging.handlers
+
+
+# add setting.py bottom
+# classfy = {
+#     'hum': u'인문계열',
+#     'social': u'사회계열',
+#     'edu': u'교육계열',
+#     'eng': u'공학계열',
+#     'nat': u'자연계열',
+#     'med': u'의약계열',
+#     'art': u'예체능계'
+# }
+#
+# middle_classfy = {
+#     'metr': u'의료',
+#     'nurs': u'간호',
+#     'phar': u'약학',
+#     'heal': u'치료ㆍ보건',
+#     'dsgn': u'디자인',
+#     'appl': u'응용예술',
+#     'danc': u'무용ㆍ체육',
+#     'form': u'미술ㆍ조형',
+#     'play': u'연극ㆍ영화',
+#     'musc': u'음악',
+#     'cons': u'건축',
+#     'civi': u'토목ㆍ도시',
+#     'traf': u'교통ㆍ운송',
+#     'mach': u'기계ㆍ금속',
+#     'elec': u'전기ㆍ전자',
+#     'deta': u'정밀ㆍ에너지',
+#     'matr': u'소재ㆍ재료',
+#     'comp': u'컴퓨터ㆍ통신',
+#     'indu': u'산업',
+#     'cami': u'화공',
+#     'other': u'기타',
+#     'lang': u'언어ㆍ문학',
+#     'husc': u'인문과학',
+#     'busn': u'경영ㆍ경제',
+#     'law': u'법률',
+#     'scsc': u'사회과학',
+#     'agri': u'농림ㆍ수산',
+#     'bio': u'생물ㆍ화학ㆍ환경',
+#     'life': u'생활과학',
+#     'math': u'수학ㆍ물리ㆍ천문ㆍ지리',
+#     'enor': u'교육일반',
+#     'ekid': u'유아교육',
+#     'espc': u'특수교육',
+#     'elmt': u'초등교육',
+#     'emdd': u'중등교육',
+# }
 
 
 def style_base(cell):
