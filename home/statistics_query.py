@@ -84,7 +84,6 @@ def overall_enroll(date):
                AND lower(c.course_id) NOT LIKE '%nile%'
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
-               AND date_format(adddate(d.created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}'
                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}';
     '''.format(date=date)
@@ -175,7 +174,7 @@ def by_course_demographic(course_id, date):
 
 
 # `강좌 아이디 조회`
-def course_ids_all(date):
+def course_ids_all():
     query = """
         SELECT id,
                display_name,
@@ -189,9 +188,8 @@ def course_ids_all(date):
          WHERE     1 = 1
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
-               AND lower(a.id) NOT LIKE '%nile%'
-               AND date_format(adddate(created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}';
-    """.format(date=date)
+               AND lower(a.id) NOT LIKE '%nile%';
+    """
     return execute_query(query)
 
 

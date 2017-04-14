@@ -151,7 +151,7 @@ def statistics_excel(request, date):
         print 'file exists. so just download.'
     else:
         # Get course name
-        course_ids_all = statistics_query.course_ids_all(date)
+        course_ids_all = statistics_query.course_ids_all()
 
         print 'len(course_ids_all) = ', len(course_ids_all)
 
