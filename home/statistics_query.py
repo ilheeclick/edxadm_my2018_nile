@@ -75,15 +75,17 @@ def overall_enroll(date):
                count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,a.id,null)) new_sec_cnt2,
                count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',a.id,null)) all_cnt2,
                count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_cnt2
-          FROM auth_user a, auth_userprofile b, student_courseenrollment c
+          FROM auth_user a, auth_userprofile b, student_courseenrollment c, course_overviews_courseoverview d
          WHERE     a.id = b.user_id
                and a.id = c.user_id
+               and c.course_id = d.id
                AND lower(c.course_id) NOT LIKE '%test%'
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
-                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+               AND date_format(adddate(d.created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}'
+               AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}';
     '''.format(date=date)
     return execute_query(query)
@@ -188,8 +190,7 @@ def course_ids_all(date):
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
                AND lower(a.id) NOT LIKE '%nile%'
-               and `start` < `end`
-               AND date_format(adddate(enrollment_start, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}';
+               AND date_format(adddate(created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}';
     """.format(date=date)
     return execute_query(query)
 
@@ -217,12 +218,14 @@ def student_courseenrollment_info(date):
     query = '''
         SELECT sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) newcnt,
                sum(b.is_active)                                           allcnt
-          FROM auth_user a, student_courseenrollment b
+          FROM auth_user a, student_courseenrollment b, course_overviews_courseoverview c
          WHERE     1 = 1
                AND a.id = b.user_id
+               and b.course_id = c.id
                AND lower(b.course_id) NOT LIKE '%test%'
                AND lower(b.course_id) NOT LIKE '%demo%'
                AND lower(b.course_id) NOT LIKE '%nile%'
+               AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}'
                AND date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}';
     '''.format(date=date)
     return execute_query(query)
