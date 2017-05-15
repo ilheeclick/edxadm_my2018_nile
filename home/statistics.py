@@ -646,7 +646,7 @@ def statistics_excel_week(request, date):
                 course_status[course_id] = '개강예정'
             elif start <= datetime.datetime.utcnow() <= end:
                 course_status[course_id] = '운영중'
-            elif end < datetime.datetime.utcnow() and cert_date < datetime.datetime.utcnow():
+            elif cert_date and end < datetime.datetime.utcnow() and cert_date < datetime.datetime.utcnow():
                 course_status[course_id] = '이수증발급'
             elif end < datetime.datetime.utcnow():
                 course_status[course_id] = '종료'

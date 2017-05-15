@@ -243,7 +243,7 @@ def by_course_demographic(course_id, date):
             FROM (SELECT a.id                       course_id,
                          a.org,
                          d.gender,
-                         '2017' + 1 - ifnull(d.year_of_birth, 0) age,
+                         substring('{date}', 1, 4) + 1 - ifnull(d.year_of_birth, 0) age,
                          d.level_of_education       edu
                     FROM course_overviews_courseoverview a,
                          student_courseenrollment      b,
