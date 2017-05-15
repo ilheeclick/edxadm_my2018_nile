@@ -1,90 +1,105 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}일일 / 월별 통계{% endblock %}
-{% block pagetitlename_header %}일일 / 월별 통계{% endblock %}
-{#{% block script_down %}#}
-{#<script>#}
-{#	{% include "tch/script/modify_auth.js" %}#}
-{#	{% include "tch/script/input_answer.js" %}#}
-{#</script>#}
-{#{% endblock %}#}
+{% block pagetitlename %}일일 / 주간 / 월별 통계{% endblock %}
+{% block pagetitlename_header %}일일 / 주간 / 월별 통계{% endblock %}
 {% block script_down %}
-    <script src="//code.jquery.com/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script>
 
     var dateObj = new Date();
     var year = dateObj.getFullYear();
-    var month = dateObj.getMonth()+1;
+    var month = dateObj.getMonth() + 1;
     var day = dateObj.getDate();
 
     if (month < 10) {
-        month = '0'+ month
-                  }
+        month = '0' + month
+    }
     if (day < 10) {
-        day = '0'+ day
-                  }
-    var today = year+""+month+""+day;
+        day = '0' + day
+    }
+    var today = year + "" + month + "" + day;
 
-    function getLastDayOfYearAndMonth(year, month)
-    {
-        return(new Date((new Date(year, month + 1, 1)) - 1)).getDate();
+    function getLastDayOfYearAndMonth(year, month) {
+        return (new Date((new Date(year, month + 1, 1)) - 1)).getDate();
     }
 
-    $(function() {
+    $(function () {
 
         // calendar setting
-        $( "#datepicker" ).datepicker({
+        $("#datepicker").datepicker({
             minDate: new Date(2015, 10 - 1, 14),
             maxDate: "+0m +0w -1d",
             dateFormat: 'yymmdd',
             prevText: '이전 달',
             nextText: '다음 달',
-            monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            dayNames: ['일','월','화','수','목','금','토'],
-            dayNamesShort: ['일','월','화','수','목','금','토'],
-            dayNamesMin: ['일','월','화','수','목','금','토'],
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
             showMonthAfterYear: true,
             yearSuffix: '년'
         });
-        $( "#datepicker2" ).datepicker({
+
+        $("#datepicker_week").datepicker({
             minDate: new Date(2015, 10 - 1, 14),
             maxDate: "+0m +0w -1d",
             dateFormat: 'yymmdd',
             prevText: '이전 달',
             nextText: '다음 달',
-            monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            dayNames: ['일','월','화','수','목','금','토'],
-            dayNamesShort: ['일','월','화','수','목','금','토'],
-            dayNamesMin: ['일','월','화','수','목','금','토'],
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
             showMonthAfterYear: true,
             yearSuffix: '년',
-            beforeShowDay: function(date){
-                return [date.getDate() == 13 || date.getDate() == LastDayOfMonth(date.getFullYear(),date.getMonth()), ''];
+            beforeShowDay: function (date) {
+                return [date.getDay() == 0, ''];
             }
-            });
+        });
+
+        $("#datepicker_month").datepicker({
+            minDate: new Date(2015, 10 - 1, 14),
+            maxDate: "+0m +0w -1d",
+            dateFormat: 'yymmdd',
+            prevText: '이전 달',
+            nextText: '다음 달',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            showMonthAfterYear: true,
+            yearSuffix: '년',
+            beforeShowDay: function (date) {
+                return [date.getDate() == LastDayOfMonth(date.getFullYear(), date.getMonth()), ''];
+            }
+        });
     });
 
     var idx = 0;
     var lastDate = 0;
 
-    function LastDayOfMonth(Year, Month)
-    {
-        return(new Date((new Date(Year, Month+1,1))-1)).getDate();
+    function LastDayOfMonth(Year, Month) {
+        return (new Date((new Date(Year, Month + 1, 1)) - 1)).getDate();
     }
 
-    $(document).on('click', '#day_down',function(){
-        if($("#datepicker").val() == ""){
+    function FirstDayOfMonth(Year, Month) {
+        return ((new Date(Year, Month, 1))).getDate();
+    }
+
+    $(document).on('click', '#day_down', function () {
+        if ($("#datepicker").val() == "") {
             alert('날짜를 선택하세요.');
             return;
-        }else{
+        } else {
             $("#download").find("img").show();
             $.ajax({
                 url: "/manage/excel_download/" + $("#datepicker").val()
-            }).done(function( data ) {
+            }).done(function (data) {
                 alert('파일 생성 완료!');
                 $("#download").prop("href", data);
                 $("#downloadBtn").click();
@@ -93,74 +108,91 @@
         }
     });
 
-    $(document).on('click', '#month_down',function(){
-        if($("#datepicker2").val() == ""){
+    $(document).on('click', '#week_down', function () {
+        if ($("#datepicker_week").val() == "") {
             alert('날짜를 선택하세요.');
             return;
         }
-        $("#download2").find("img").show();
+        $("#download_week").find("img").show();
         $.ajax({
-            url: "/manage/excel_download1/" + $("#datepicker2").val()
-        })
-        .done(function( data ) {
-            alert('파일 생성 완료!');
-            $("#download2").prop("href", data);
-            $("#downloadBtn2").click();
-            $("#download2").find("img").hide();
-        });
+                    url: "/manage/excel_download_week/" + $("#datepicker_week").val()
+                })
+                .done(function (data) {
+                    alert('파일 생성 완료!');
+                    $("#download_week").prop("href", data);
+                    $("#downloadBtn_week").click();
+                    $("#download_week").find("img").hide();
+                });
     });
 
+    $(document).on('click', '#month_down', function () {
+        if ($("#datepicker_month").val() == "") {
+            alert('날짜를 선택하세요.');
+            return;
+        }
+        $("#download_month").find("img").show();
+        $.ajax({
+                    url: "/manage/excel_download_month/" + $("#datepicker_month").val()
+                })
+                .done(function (data) {
+                    alert('파일 생성 완료!');
+                    $("#download_month").prop("href", data);
+                    $("#downloadBtn_month").click();
+                    $("#download_month").find("img").hide();
+                });
+    });
 
 
 </script>
 {% endblock %}
-    {% block containor %}
+{% block containor %}
 <!-- start: page -->
 {% load staticfiles %}
+
+<!-- custom css -->
+<style>
+    .form-control {
+        min-width: 185px;
+    }
+</style>
+
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">일일 / 월별 통계</h2></div>
+        <div><h2 class="panel-title">일일 / 주간 / 월별 통계</h2></div>
     </header>
     <div class="panel-body">
         <form class="form-inline">
             <div class="form-group">
-                <label >일일 통계</label>
-                <input type="text" class="form-control" id="datepicker" placeholder="통계 날짜를 선택하세요">
+                <label>일일 통계</label>
+                <input type="text" class="form-control" id="datepicker" placeholder="일별 통계 날짜를 선택하세요">
             </div>
             <a class="btn btn-default" id="day_down">다운로드</a>
-            <a href="#" id="download" ><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
+            <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
+                vertical-align: middle;"/></a>
 
 
             <br><br>
+
+            <div class="form-group">
+                <label>주간 통계</label>
+                <input type="text" class="form-control" id="datepicker_week" placeholder="주간 통계 날짜를 선택하세요">
+            </div>
+            <a class="btn btn-default" id="week_down">다운로드</a>
+            <a href="#" id="download_week"><span id="downloadBtn_week" style="display: none;">download</span><img id="img_week" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
+                vertical-align: middle;"/></a>
+
+            <br><br>
+
             <div class="form-group">
                 <label>월별 통계</label>
-                <input type="text" class="form-control" id="datepicker2" placeholder="통계 날짜를 선택하세요">
+                <input type="text" class="form-control" id="datepicker_month" placeholder="월별 통계 날짜를 선택하세요">
             </div>
             <a class="btn btn-default" id="month_down">다운로드</a>
-            <a href="#" id="download2" ><span id="downloadBtn2" style="display: none;">download</span><img id="img" src="{% static "image/progress.gif" %}" style="display: none; width:20px; vertical-align: middle;"/></a>
+            <a href="#" id="download_month"><span id="downloadBtn_month" style="display: none;">download</span><img id="img_month" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
+                vertical-align: middle;"/></a>
 
         </form>
     </div>
-{#    <div class="panel-body" >#}
-{#        <table class="table table-hover table-striped table-primary table-bordered" >#}
-{#            <thead>#}
-{#                <tr>#}
-{#                    <td>대학명</td>#}
-{#                    <td>강좌명</td>#}
-{#                    <td>기관별 강좌번호</td>#}
-{#                    <td>종강일자</td>#}
-{#                </tr>#}
-{#            </thead>#}
-{#            <tbody>#}
-{#                <tr>#}
-{#                    <td>고려대학교</td>#}
-{#                    <td>일반인을 위한 상대성이론</td>#}
-{#                    <td>2015_A04</td>#}
-{#                    <td>미생성</td>#}
-{#                </tr>#}
-{#            </tbody>#}
-{#        </table>#}
-{#    </div>#}
 
 </section>
 

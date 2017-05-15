@@ -8,61 +8,35 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 import os
 from operator import itemgetter
 import datetime
-from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy
+from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy, countries
 from openpyxl.styles import Alignment
 from bson.objectid import ObjectId
 import logging
 import logging.handlers
+import time
 
+'''
+# 로거 인스턴스를 만든다
+#logger = logging.get#logger('statistics log')
 
-# add setting.py bottom
-# classfy = {
-#     'hum': u'인문계열',
-#     'social': u'사회계열',
-#     'edu': u'교육계열',
-#     'eng': u'공학계열',
-#     'nat': u'자연계열',
-#     'med': u'의약계열',
-#     'art': u'예체능계'
-# }
-#
-# middle_classfy = {
-#     'metr': u'의료',
-#     'nurs': u'간호',
-#     'phar': u'약학',
-#     'heal': u'치료ㆍ보건',
-#     'dsgn': u'디자인',
-#     'appl': u'응용예술',
-#     'danc': u'무용ㆍ체육',
-#     'form': u'미술ㆍ조형',
-#     'play': u'연극ㆍ영화',
-#     'musc': u'음악',
-#     'cons': u'건축',
-#     'civi': u'토목ㆍ도시',
-#     'traf': u'교통ㆍ운송',
-#     'mach': u'기계ㆍ금속',
-#     'elec': u'전기ㆍ전자',
-#     'deta': u'정밀ㆍ에너지',
-#     'matr': u'소재ㆍ재료',
-#     'comp': u'컴퓨터ㆍ통신',
-#     'indu': u'산업',
-#     'cami': u'화공',
-#     'other': u'기타',
-#     'lang': u'언어ㆍ문학',
-#     'husc': u'인문과학',
-#     'busn': u'경영ㆍ경제',
-#     'law': u'법률',
-#     'scsc': u'사회과학',
-#     'agri': u'농림ㆍ수산',
-#     'bio': u'생물ㆍ화학ㆍ환경',
-#     'life': u'생활과학',
-#     'math': u'수학ㆍ물리ㆍ천문ㆍ지리',
-#     'enor': u'교육일반',
-#     'ekid': u'유아교육',
-#     'espc': u'특수교육',
-#     'elmt': u'초등교육',
-#     'emdd': u'중등교육',
-# }
+# 포매터를 만든다
+fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
+
+# 스트림과 파일로 로그를 출력하는 핸들러를 각각 만든다.
+fileHandler = logging.FileHandler('./statistics.log')
+streamHandler = logging.StreamHandler()
+
+# 각 핸들러에 포매터를 지정한다.
+fileHandler.setFormatter(fomatter)
+streamHandler.setFormatter(fomatter)
+
+# 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
+#logger.addHandler(fileHandler)
+#logger.addHandler(streamHandler)
+
+if debug:
+    #logger.setLevel(logging.DEBUG)
+'''
 
 
 def style_base(cell):
@@ -121,33 +95,110 @@ def style_range(ws, cell_range, border=Border(), fill=None, font=None, alignment
                 c.fill = fill
 
 
-# # 로거 인스턴스를 만든다
-# #logger = logging.get#logger('statistics log')
-#
-# # 포매터를 만든다
-# fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
-#
-# # 스트림과 파일로 로그를 출력하는 핸들러를 각각 만든다.
-# fileHandler = logging.FileHandler('./statistics.log')
-# streamHandler = logging.StreamHandler()
-#
-# # 각 핸들러에 포매터를 지정한다.
-# fileHandler.setFormatter(fomatter)
-# streamHandler.setFormatter(fomatter)
-#
-# # 로거 인스턴스에 스트림 핸들러와 파일핸들러를 붙인다.
-# #logger.addHandler(fileHandler)
-# #logger.addHandler(streamHandler)
-#
-# if debug:
-#     #logger.setLevel(logging.DEBUG)
+def certificate_excel(request, course_id):
+    print 'course_id', course_id
+
+    d = datetime.date.today()
+    year = d.year
+    month = d.month
+    day = d.day
+
+    if month < 10:
+        month = '0' + str(month)
+    if day < 10:
+        day = '0' + str(day)
+
+    print 'month', month
+    print 'day', day
+
+    certificates = statistics_query.certificateInfo(course_id)
+
+    courseName = ''
+    pb = ''
+    ov = ''
+
+    client = MongoClient(database_id, 27017)
+    db = client.edxapp
+
+    wb = load_workbook(EXCEL_PATH + '/basic_cert.xlsx')
+
+    for c in certificates:
+        cid = str(c[2])
+
+        print 'cid', cid
+
+        cursor = db.modulestore.active_versions.find({'course': cid})
+        for document in cursor:
+            print '>> 1'
+            pb = document.get('versions').get('published-branch')
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id': pb})
+        for document in cursor:
+            print '>> 2'
+            ov = document.get('original_version')
+            break
+        cursor.close()
+
+        cursor = db.modulestore.structures.find({'_id': ov})
+        for document in cursor:
+            print '>> 3'
+            blocks = document.get('blocks')
+            for block in blocks:
+                print '>> 4'
+                fields = block.get('fields')
+                for field in fields:
+                    print '>> 5'
+                    dn = fields['display_name']
+                    courseName = dn
+                    break
+                break
+            break
+        break
+        cursor.close()
+
+    thin_border = Border(left=Side(style='thin'),
+                         right=Side(style='thin'),
+                         top=Side(style='thin'),
+                         bottom=Side(style='thin'))
+
+    ws1 = wb['certificates']
+
+    row = 2
+    for c in certificates:
+        ws1['A' + str(row)] = dic_univ[c[0]]
+        ws1['B' + str(row)] = courseName
+        ws1['C' + str(row)] = c[2]
+        ws1['D' + str(row)] = c[3]
+        ws1['E' + str(row)] = c[4]
+        ws1['F' + str(row)] = c[5]
+
+        ws1['A' + str(row)].border = thin_border
+        ws1['B' + str(row)].border = thin_border
+        ws1['C' + str(row)].border = thin_border
+        ws1['D' + str(row)].border = thin_border
+        ws1['E' + str(row)].border = thin_border
+        ws1['F' + str(row)].border = thin_border
+        row += 1
+
+    save_name = 'K-Mooc_certificate_' + str(cid) + '_' + str(year) + str(month) + str(day) + '.xlsx'
+    save_path = EXCEL_PATH + save_name
+
+    wb.save(save_path)
+
+    return HttpResponse('/manage/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+
 
 # 일일통계
 def statistics_excel(request, date):
+    print 'run statistics_excel'
+    time.sleep(1)
+
     save_name = 'K-Mooc{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path) and False:
+    if os.path.isfile(save_path):
         print 'file exists. so just download.'
     else:
         # Get course name
@@ -169,7 +220,7 @@ def statistics_excel(request, date):
 
         print 'step1 : course_info search'
 
-        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end in course_ids_all:
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
             print course_id, org, display_name, start, end, enrollment_start, enrollment_end
             cid = course_id.split('+')[1]
             run = course_id.split('+')[2]
@@ -547,102 +598,727 @@ def statistics_excel(request, date):
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
-def certificate_excel(request, course_id):
-    print 'course_id', course_id
+# 주간통계 : week
+def statistics_excel_week(request, date):
+    print 'run statistics_excel_week'
+    time.sleep(1)
 
-    d = datetime.date.today()
-    year = d.year
-    month = d.month
-    day = d.day
-
-    if month < 10:
-        month = '0' + str(month)
-    if day < 10:
-        day = '0' + str(day)
-
-    print 'month', month
-    print 'day', day
-
-    certificates = statistics_query.certificateInfo(course_id)
-
-    courseName = ''
-    pb = ''
-    ov = ''
-
-    client = MongoClient(database_id, 27017)
-    db = client.edxapp
-
-    wb = load_workbook(EXCEL_PATH + '/basic_cert.xlsx')
-
-    for c in certificates:
-        cid = str(c[2])
-
-        print 'cid', cid
-
-        cursor = db.modulestore.active_versions.find({'course': cid})
-        for document in cursor:
-            print '>> 1'
-            pb = document.get('versions').get('published-branch')
-            break
-        cursor.close()
-
-        cursor = db.modulestore.structures.find({'_id': pb})
-        for document in cursor:
-            print '>> 2'
-            ov = document.get('original_version')
-            break
-        cursor.close()
-
-        cursor = db.modulestore.structures.find({'_id': ov})
-        for document in cursor:
-            print '>> 3'
-            blocks = document.get('blocks')
-            for block in blocks:
-                print '>> 4'
-                fields = block.get('fields')
-                for field in fields:
-                    print '>> 5'
-                    dn = fields['display_name']
-                    courseName = dn
-                    break
-                break
-            break
-        break
-        cursor.close()
-
-    thin_border = Border(left=Side(style='thin'),
-                         right=Side(style='thin'),
-                         top=Side(style='thin'),
-                         bottom=Side(style='thin'))
-
-    ws1 = wb['certificates']
-
-    row = 2
-    for c in certificates:
-        ws1['A' + str(row)] = dic_univ[c[0]]
-        ws1['B' + str(row)] = courseName
-        ws1['C' + str(row)] = c[2]
-        ws1['D' + str(row)] = c[3]
-        ws1['E' + str(row)] = c[4]
-        ws1['F' + str(row)] = c[5]
-
-        ws1['A' + str(row)].border = thin_border
-        ws1['B' + str(row)].border = thin_border
-        ws1['C' + str(row)].border = thin_border
-        ws1['D' + str(row)].border = thin_border
-        ws1['E' + str(row)].border = thin_border
-        ws1['F' + str(row)].border = thin_border
-        row += 1
-
-    save_name = 'K-Mooc_certificate_' + str(cid) + '_' + str(year) + str(month) + str(day) + '.xlsx'
+    save_name = 'K-MoocWeek{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
 
-    wb.save(save_path)
+    if os.path.isfile(save_path):
+        print 'file exists. so just download.'
+    else:
+        # Get course name
+        course_ids_all = statistics_query.course_ids_all()
 
-    return HttpResponse('/manage/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+        print 'len(course_ids_all) = ', len(course_ids_all)
+        for cc in course_ids_all:
+            print 'cc ================================================>', cc[0]
+
+        time.sleep(3)
+
+        client = MongoClient(database_id, 27017)
+        db = client.edxapp
+        course_orgs = {}
+        course_names = {}
+        course_creates = {}
+        course_starts = {}
+        course_ends = {}
+        course_enroll_starts = {}
+        course_enroll_ends = {}
+        course_classfys = {}
+        course_middle_classfys = {}
+        course_effort = {}
+        course_week = {}
+        course_video = {}
+        course_cert = {}
+        course_last_update = {}
+        course_status = {}
+
+        print 'step1 : course_info search'
+
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
+
+            if start is None or start == '' or end is None or end == '':
+                course_status[course_id] = ''
+            elif datetime.datetime.utcnow() < start:
+                course_status[course_id] = '개강예정'
+            elif start <= datetime.datetime.utcnow() <= end:
+                course_status[course_id] = '운영중'
+            elif end < datetime.datetime.utcnow() and cert_date < datetime.datetime.utcnow():
+                course_status[course_id] = '이수증발급'
+            elif end < datetime.datetime.utcnow():
+                course_status[course_id] = '종료'
+            else:
+                course_status[course_id] = ''
+
+            print course_id, org, display_name, start, end, enrollment_start, enrollment_end
+            cid = course_id.split('+')[1]
+            run = course_id.split('+')[2]
+
+            course_effort[course_id] = effort.split('@')[0] if effort and '@' in effort else '-'
+            course_week[course_id] = effort.split('@')[1].split('#')[0] if effort and '@' in effort and '#' in effort else '-'
+            course_video[course_id] = effort.split('#')[1] if effort and '#' in effort else '-'
+            course_cert[course_id] = cert_date if effort and cert_date else ''
+
+            cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
+            if not cursor:
+                print 'not exists: ', cid, run
+                continue
+
+            pb = cursor.get('versions').get('published-branch')
+            # course_orgs
+            course_orgs[course_id] = cursor.get('org')
+            course_creates[course_id] = cursor.get('edited_on')
+            course_last_update[course_id] = cursor.get('last_update')
+
+            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},
+                                                        {"blocks": {"$elemMatch": {"block_type": "course"}}})
+
+            _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
+            _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+
+            if start is not None:
+                course_starts[course_id] = start
+
+            if end is not None:
+                course_ends[course_id] = end
+
+            if enrollment_start is not None:
+                course_enroll_starts[course_id] = enrollment_start
+
+            if enrollment_end is not None:
+                course_enroll_ends[course_id] = enrollment_end
+
+            if display_name is not None:
+                course_names[course_id] = display_name
+
+            if _classfy is not None and _classfy != 'all':
+                course_classfys[course_id] = classfy[_classfy] if _classfy in classfy else _classfy
+
+            if _mclassfy is not None and _mclassfy != 'all':
+                course_middle_classfys[course_id] = middle_classfy[_mclassfy] if _mclassfy in middle_classfy else _mclassfy
+
+        print 'step2 : mysql search'
+        # 요약
+        auth_user_info_week = statistics_query.auth_user_info_week(date)
+        student_courseenrollment_info_week = statistics_query.student_courseenrollment_info_week(date)
+        student_activity_week = statistics_query.student_activity_week(date)
+        student_cert_week = statistics_query.student_cert_week(date)
+
+        print 'step3: info '
+        wb = load_workbook(EXCEL_PATH + 'base_week.xlsx')
+        ws1 = wb['summary']
+        ws2 = wb['by_course_KPI']
+        ws3 = wb['user']
+
+        # excel style
+        thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+        fill = None
+
+        font = Font(b=True, color="000000")
+        # font = None
+        al = Alignment(horizontal="center", vertical="center")
+
+        # # sheet1
+        style_range(ws1, 'B2:C3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'D2:E2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'F2:G2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B4:B7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B8:B10', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B11:B14', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B15:B16', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # style_range(ws1, 'C16:F16', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws1, 'G16:J16', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws1, 'B16:B17', border=thin_border, fill=fill, font=font, alignment=al)
+        #
+        # style_range(ws1, 'B27:B28', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws1, 'C27:F27', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws1, 'G27:J27', border=thin_border, fill=fill, font=font, alignment=al)
+        #
+        # style_range(ws1, 'B41:B42', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws1, 'C41:L41', border=thin_border, fill=fill, font=font, alignment=al)
+        #
+        # # sheet2
+        style_range(ws2, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'K1:Q2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R1:V1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R2:S2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'T2:U2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'W1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'AA1:AB2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'AC1:AC3', border=thin_border, fill=fill, font=font, alignment=al)
+        #
+        # # sheet3
+        # style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws3, 'L1:AD1', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws3, 'L2:N2', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws3, 'O2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws3, 'U2:AC2', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws3, 'AD2:AD3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # summary
+
+        # 회원가입
+        ws1['E4'] = auth_user_info_week[0][0]
+        ws1['E5'] = auth_user_info_week[0][1]
+        ws1['E7'] = auth_user_info_week[0][2]
+        ws1['G4'] = auth_user_info_week[0][3]
+        ws1['G5'] = auth_user_info_week[0][4]
+        ws1['G7'] = auth_user_info_week[0][5]
+
+        # 수강신청
+        ws1['D8'] = student_courseenrollment_info_week[0][0]
+        ws1['D9'] = student_courseenrollment_info_week[0][1]
+        ws1['E8'] = student_courseenrollment_info_week[0][2]
+        ws1['E9'] = student_courseenrollment_info_week[0][3]
+        ws1['F8'] = student_courseenrollment_info_week[0][4]
+        ws1['F9'] = student_courseenrollment_info_week[0][5]
+        ws1['G8'] = student_courseenrollment_info_week[0][6]
+        ws1['G9'] = student_courseenrollment_info_week[0][7]
+
+        # 학습활동
+        ws1['D11'] = student_activity_week[0][0]
+        ws1['D12'] = student_activity_week[0][1]
+        ws1['D14'] = student_activity_week[0][2]
+        ws1['E11'] = student_activity_week[0][0]
+        ws1['E12'] = student_activity_week[0][1]
+        ws1['E14'] = student_activity_week[0][2]
+        ws1['F11'] = student_activity_week[0][0]
+        ws1['F12'] = student_activity_week[0][1]
+        ws1['F14'] = student_activity_week[0][2]
+        ws1['G11'] = student_activity_week[0][0]
+        ws1['G12'] = student_activity_week[0][1]
+        ws1['G14'] = student_activity_week[0][2]
+
+        # 이수자수
+        ws1['D15'] = student_cert_week[0][0]
+        ws1['D16'] = student_cert_week[0][1]
+        ws1['E15'] = student_cert_week[0][2]
+        ws1['E16'] = student_cert_week[0][3]
+        ws1['F15'] = student_cert_week[0][4]
+        ws1['F16'] = student_cert_week[0][5]
+        ws1['G15'] = student_cert_week[0][6]
+        ws1['G16'] = student_cert_week[0][7]
+
+        # by_course_KPI
+        sortlist = list()
+        for c in course_ids_all:
+            print 'course_id =======================================>', c
+
+            by_course_enroll_week = statistics_query.by_course_enroll_week(c[0], date)
+            by_course_enroll_week_activity = statistics_query.by_course_enroll_week_activity(c[0], date)
+            by_course_cert_month = statistics_query.by_course_cert_month(c[0])
+
+            row = tuple()
+            for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll_week:
+                row = row + (dic_univ[org] if org in dic_univ else org,)
+                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
+                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row = row + (course_names[course_id],)
+
+                # 주간 학습 권장시간
+                row = row + (course_effort[course_id],)
+                # 총 동영상 재생시간
+                row = row + (course_video[course_id],)
+                # 총 주차
+                row = row + (course_week[course_id],)
+
+                row = row + (org,)
+                row = row + (course_id.split('+')[1],)
+                row = row + (course_id.split('+')[2],)
+                row = row + (course_status[course_id],)
+                row = row + (course_creates[course_id],)
+                row = row + (course_enroll_starts[course_id],)
+                row = row + (course_enroll_ends[course_id],)
+                row = row + (course_starts[course_id],)
+                row = row + (course_ends[course_id],)
+                row = row + (course_cert[course_id],)
+                row = row + (new_enroll_cnt,)
+                row = row + (new_unenroll_cnt,)
+                row = row + (all_enroll_cnt,)
+                row = row + (all_unenroll_cnt,)
+
+                if all_enroll_cnt is None or all_unenroll_cnt is None:
+                    row = row + ('-',)
+                else:
+                    row = row + (all_enroll_cnt - all_unenroll_cnt,)
+
+            for video1, problem1, both1, video2, problem2, both2 in by_course_enroll_week_activity:
+                # row = row + (video1, problem1, both1,)
+                row = row + (video2, problem2, both2,)
+
+            for course_id, is_exists, half_cnt, cert_cnt in by_course_cert_month:
+                if is_exists:
+                    row = row + (half_cnt, cert_cnt,)
+                else:
+                    row = row + ('-', '-',)
+
+            row = row + (course_last_update[course_id],)
+
+            sortlist.append(row)
+
+        sortlist.sort(key=itemgetter(0, 4, 5))
+
+        start_row = 4
+        for course_info in sortlist:
+            print 'course_info s --------------------------------------------------------'
+            print len(course_info), course_info
+            print 'course_info e --------------------------------------------------------'
+            ws2['A' + str(start_row)] = course_info[0]
+            ws2['B' + str(start_row)] = course_info[1]
+            ws2['C' + str(start_row)] = course_info[2]
+            ws2['D' + str(start_row)] = course_info[3]
+            ws2['E' + str(start_row)] = course_info[4]
+            ws2['F' + str(start_row)] = course_info[5]
+            ws2['G' + str(start_row)] = course_info[6]
+            ws2['H' + str(start_row)] = course_info[7]
+            ws2['I' + str(start_row)] = course_info[8]
+            ws2['J' + str(start_row)] = course_info[9]
+            ws2['K' + str(start_row)] = course_info[10]
+            ws2['L' + str(start_row)] = course_info[11]
+            ws2['M' + str(start_row)] = course_info[12]
+            ws2['N' + str(start_row)] = course_info[13]
+            ws2['O' + str(start_row)] = course_info[14]
+            ws2['P' + str(start_row)] = course_info[15]
+            ws2['Q' + str(start_row)] = course_info[16]
+            ws2['R' + str(start_row)] = course_info[17]
+            ws2['S' + str(start_row)] = course_info[18]
+            ws2['T' + str(start_row)] = course_info[19]
+            ws2['U' + str(start_row)] = course_info[20]
+            ws2['V' + str(start_row)] = course_info[21]
+
+            # 학습활동자수
+            ws2['W' + str(start_row)] = course_info[22] if len(course_info) > 22 else ''
+            ws2['X' + str(start_row)] = course_info[23] if len(course_info) > 23 else ''
+            # ws2['Y' + str(start_row)] = '-'
+            ws2['Z' + str(start_row)] = course_info[24] if len(course_info) > 24 else ''
+
+            # 이수
+            ws2['AA' + str(start_row)] = course_info[25] if len(course_info) > 25 else ''
+            ws2['AB' + str(start_row)] = course_info[26] if len(course_info) > 26 else ''
+
+            # 업데이트
+            ws2['AC' + str(start_row)] = course_info[27] if len(course_info) > 27 else ''
+
+            style_base(ws2['A' + str(start_row)])
+            style_base(ws2['B' + str(start_row)])
+            style_base(ws2['C' + str(start_row)])
+            style_base(ws2['D' + str(start_row)])
+            style_base(ws2['E' + str(start_row)])
+            style_base(ws2['F' + str(start_row)])
+            style_base(ws2['G' + str(start_row)])
+            style_base(ws2['H' + str(start_row)])
+            style_base(ws2['I' + str(start_row)])
+            style_base(ws2['J' + str(start_row)])
+            style_base(ws2['K' + str(start_row)])
+            style_base(ws2['L' + str(start_row)])
+            style_base(ws2['M' + str(start_row)])
+            style_base(ws2['N' + str(start_row)])
+            style_base(ws2['O' + str(start_row)])
+            style_base(ws2['P' + str(start_row)])
+            style_base(ws2['Q' + str(start_row)])
+            style_base(ws2['R' + str(start_row)])
+            style_base(ws2['S' + str(start_row)])
+            style_base(ws2['T' + str(start_row)])
+            style_base(ws2['U' + str(start_row)])
+            style_base(ws2['V' + str(start_row)])
+            style_base(ws2['W' + str(start_row)])
+            style_base(ws2['X' + str(start_row)])
+            # style_base(ws2['Y' + str(start_row)])
+            style_base(ws2['Z' + str(start_row)])
+            style_base(ws2['AA' + str(start_row)])
+            style_base(ws2['AB' + str(start_row)])
+            style_base(ws2['AC' + str(start_row)])
+
+            start_row += 1
+
+        # user
+        member_statistics = statistics_query.member_statistics(date)
+        country_statistics = statistics_query.country_statistics(date)
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
+
+        row = 2
+        for c in member_statistics:
+            ws3['B' + str(row + 1)] = c[0]
+            ws3['B' + str(row + 2)] = c[1]
+            ws3['B' + str(row + 3)] = c[2]
+
+        row = 8
+        for c in country_statistics:
+            ws3['A' + str(row)] = c[0]
+            ws3['B' + str(row)] = c[1]
+            ws3['C' + str(row)] = countries[c[0]] if c[0] in countries else c[0]
+
+            ws3['A' + str(row)].border = thin_border
+            ws3['B' + str(row)].border = thin_border
+            ws3['C' + str(row)].border = thin_border
+            row += 1
+
+        wb.save(save_path)
+    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
-# def statistics_excel3(request, date):
+# 월별통계 : month
+def statistics_excel_month(request, date):
+    print 'run statistics_excel_month'
+    time.sleep(1)
+
+    date = date[:6]
+
+    print 'date = ', date
+
+    time.sleep(2)
+
+    save_name = 'K-MoocMonth{0}.xlsx'.format(date)
+    save_path = EXCEL_PATH + save_name
+
+    if os.path.isfile(save_path):
+        print 'file exists. so just download.'
+    else:
+        # Get course name
+        course_ids_all = statistics_query.course_ids_all()
+
+        print 'len(course_ids_all) = ', len(course_ids_all)
+        for cc in course_ids_all:
+            print 'cc ================================================>', cc[0]
+
+        time.sleep(3)
+
+        client = MongoClient(database_id, 27017)
+        db = client.edxapp
+        course_orgs = {}
+        course_names = {}
+        course_creates = {}
+        course_starts = {}
+        course_ends = {}
+        course_enroll_starts = {}
+        course_enroll_ends = {}
+        course_classfys = {}
+        course_middle_classfys = {}
+        course_effort = {}
+        course_week = {}
+        course_video = {}
+        course_cert = {}
+        course_last_update = {}
+        course_status = {}
+
+        print 'step1 : course_info search'
+
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
+
+            if start is None or start == '' or end is None or end == '':
+                course_status[course_id] = ''
+            elif datetime.datetime.utcnow() < start:
+                course_status[course_id] = '개강예정'
+            elif start <= datetime.datetime.utcnow() <= end:
+                course_status[course_id] = '운영중'
+            elif cert_date and end < datetime.datetime.utcnow() and cert_date < datetime.datetime.utcnow():
+                course_status[course_id] = '이수증발급'
+            elif end < datetime.datetime.utcnow():
+                course_status[course_id] = '종료'
+            else:
+                course_status[course_id] = ''
+
+            print course_id, org, display_name, start, end, enrollment_start, enrollment_end
+            cid = course_id.split('+')[1]
+            run = course_id.split('+')[2]
+
+            course_effort[course_id] = effort.split('@')[0] if effort and '@' in effort else '-'
+            course_week[course_id] = effort.split('@')[1].split('#')[0] if effort and '@' in effort and '#' in effort else '-'
+            course_video[course_id] = effort.split('#')[1] if effort and '#' in effort else '-'
+            course_cert[course_id] = cert_date if effort and cert_date else ''
+
+            cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
+            if not cursor:
+                print 'not exists: ', cid, run
+                continue
+
+            pb = cursor.get('versions').get('published-branch')
+            # course_orgs
+            course_orgs[course_id] = cursor.get('org')
+            course_creates[course_id] = cursor.get('edited_on')
+            course_last_update[course_id] = cursor.get('last_update')
+
+            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},
+                                                        {"blocks": {"$elemMatch": {"block_type": "course"}}})
+
+            _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
+            _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+
+            if start is not None:
+                course_starts[course_id] = start
+
+            if end is not None:
+                course_ends[course_id] = end
+
+            if enrollment_start is not None:
+                course_enroll_starts[course_id] = enrollment_start
+
+            if enrollment_end is not None:
+                course_enroll_ends[course_id] = enrollment_end
+
+            if display_name is not None:
+                course_names[course_id] = display_name
+
+            if _classfy is not None and _classfy != 'all':
+                course_classfys[course_id] = classfy[_classfy] if _classfy in classfy else _classfy
+
+            if _mclassfy is not None and _mclassfy != 'all':
+                course_middle_classfys[course_id] = middle_classfy[_mclassfy] if _mclassfy in middle_classfy else _mclassfy
+
+        print 'step2 : mysql search'
+        # 요약
+        auth_user_info_month = statistics_query.auth_user_info_month(date)
+        student_courseenrollment_info_month = statistics_query.student_courseenrollment_info_month(date)
+        student_activity_month = statistics_query.student_activity_month(date)
+        student_cert_month = statistics_query.student_cert_month(date)
+
+        print 'step3: info '
+        wb = load_workbook(EXCEL_PATH + 'base_month.xlsx')
+        ws1 = wb['summary']
+        ws2 = wb['by_course_KPI']
+        ws3 = wb['user']
+
+        # excel style
+        thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+        fill = None
+
+        font = Font(b=True, color="000000")
+        # font = None
+        al = Alignment(horizontal="center", vertical="center")
+
+        # # sheet1
+        style_range(ws1, 'B2:C3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'D2:E2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'F2:G2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B4:B7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B8:B10', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B11:B14', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B15:B16', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # # sheet2
+        style_range(ws2, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'K1:Q2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R1:V1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R2:S2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'T2:U2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'W1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'AA1:AB2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'AC1:AC3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # summary
+
+        # 회원가입
+        ws1['E4'] = auth_user_info_month[0][0]
+        ws1['E5'] = auth_user_info_month[0][1]
+        ws1['E7'] = auth_user_info_month[0][2]
+        ws1['G4'] = auth_user_info_month[0][3]
+        ws1['G5'] = auth_user_info_month[0][4]
+        ws1['G7'] = auth_user_info_month[0][5]
+
+        # 수강신청
+        ws1['D8'] = student_courseenrollment_info_month[0][0]
+        ws1['D9'] = student_courseenrollment_info_month[0][1]
+        ws1['E8'] = student_courseenrollment_info_month[0][2]
+        ws1['E9'] = student_courseenrollment_info_month[0][3]
+        ws1['F8'] = student_courseenrollment_info_month[0][4]
+        ws1['F9'] = student_courseenrollment_info_month[0][5]
+        ws1['G8'] = student_courseenrollment_info_month[0][6]
+        ws1['G9'] = student_courseenrollment_info_month[0][7]
+
+        # 학습활동
+        ws1['D11'] = student_activity_month[0][0]
+        ws1['D12'] = student_activity_month[0][1]
+        ws1['D14'] = student_activity_month[0][2]
+        ws1['E11'] = student_activity_month[0][0]
+        ws1['E12'] = student_activity_month[0][1]
+        ws1['E14'] = student_activity_month[0][2]
+        ws1['F11'] = student_activity_month[0][0]
+        ws1['F12'] = student_activity_month[0][1]
+        ws1['F14'] = student_activity_month[0][2]
+        ws1['G11'] = student_activity_month[0][0]
+        ws1['G12'] = student_activity_month[0][1]
+        ws1['G14'] = student_activity_month[0][2]
+
+        # 이수자수
+        ws1['D15'] = student_cert_month[0][0]
+        ws1['D16'] = student_cert_month[0][1]
+        ws1['E15'] = student_cert_month[0][2]
+        ws1['E16'] = student_cert_month[0][3]
+        ws1['F15'] = student_cert_month[0][4]
+        ws1['F16'] = student_cert_month[0][5]
+        ws1['G15'] = student_cert_month[0][6]
+        ws1['G16'] = student_cert_month[0][7]
+
+        # by_course_KPI
+        sortlist = list()
+        for c in course_ids_all:
+            print 'course_id =======================================>', c
+
+            by_course_enroll_month = statistics_query.by_course_enroll_month(c[0], date)
+            by_course_enroll_month_activity = statistics_query.by_course_enroll_month_activity(c[0], date)
+            by_course_cert_month = statistics_query.by_course_cert_month(c[0])
+
+            row = tuple()
+            for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll_month:
+                row = row + (dic_univ[org] if org in dic_univ else org,)
+                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
+                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row = row + (course_names[course_id],)
+
+                # 주간 학습 권장시간
+                row = row + (course_effort[course_id],)
+                # 총 동영상 재생시간
+                row = row + (course_video[course_id],)
+                # 총 주차
+                row = row + (course_week[course_id],)
+
+                row = row + (org,)
+                row = row + (course_id.split('+')[1],)
+                row = row + (course_id.split('+')[2],)
+                row = row + (course_status[course_id],)
+                row = row + (course_creates[course_id],)
+                row = row + (course_enroll_starts[course_id],)
+                row = row + (course_enroll_ends[course_id],)
+                row = row + (course_starts[course_id],)
+                row = row + (course_ends[course_id],)
+                row = row + (course_cert[course_id],)
+                row = row + (new_enroll_cnt,)
+                row = row + (new_unenroll_cnt,)
+                row = row + (all_enroll_cnt,)
+                row = row + (all_unenroll_cnt,)
+
+                if all_enroll_cnt is None or all_unenroll_cnt is None:
+                    row = row + ('-',)
+                else:
+                    row = row + (all_enroll_cnt - all_unenroll_cnt,)
+
+            for video1, problem1, both1, video2, problem2, both2 in by_course_enroll_month_activity:
+                # row = row + (video1, problem1, both1,)
+                row = row + (video2, problem2, both2,)
+
+            for course_id, is_exists, half_cnt, cert_cnt in by_course_cert_month:
+                if is_exists:
+                    row = row + (half_cnt, cert_cnt,)
+                else:
+                    row = row + ('-', '-',)
+
+            row = row + (course_last_update[course_id],)
+
+            sortlist.append(row)
+
+        sortlist.sort(key=itemgetter(0, 4, 5))
+
+        start_row = 4
+        for course_info in sortlist:
+            print 'course_info s --------------------------------------------------------'
+            print len(course_info), course_info
+            print 'course_info e --------------------------------------------------------'
+            ws2['A' + str(start_row)] = course_info[0]
+            ws2['B' + str(start_row)] = course_info[1]
+            ws2['C' + str(start_row)] = course_info[2]
+            ws2['D' + str(start_row)] = course_info[3]
+            ws2['E' + str(start_row)] = course_info[4]
+            ws2['F' + str(start_row)] = course_info[5]
+            ws2['G' + str(start_row)] = course_info[6]
+            ws2['H' + str(start_row)] = course_info[7]
+            ws2['I' + str(start_row)] = course_info[8]
+            ws2['J' + str(start_row)] = course_info[9]
+            ws2['K' + str(start_row)] = course_info[10]
+            ws2['L' + str(start_row)] = course_info[11]
+            ws2['M' + str(start_row)] = course_info[12]
+            ws2['N' + str(start_row)] = course_info[13]
+            ws2['O' + str(start_row)] = course_info[14]
+            ws2['P' + str(start_row)] = course_info[15]
+            ws2['Q' + str(start_row)] = course_info[16]
+            ws2['R' + str(start_row)] = course_info[17]
+            ws2['S' + str(start_row)] = course_info[18]
+            ws2['T' + str(start_row)] = course_info[19]
+            ws2['U' + str(start_row)] = course_info[20]
+            ws2['V' + str(start_row)] = course_info[21]
+
+            # 학습활동자수
+            ws2['W' + str(start_row)] = course_info[22] if len(course_info) > 22 else ''
+            ws2['X' + str(start_row)] = course_info[23] if len(course_info) > 23 else ''
+            # ws2['Y' + str(start_row)] = '-'
+            ws2['Z' + str(start_row)] = course_info[24] if len(course_info) > 24 else ''
+
+            # 이수
+            ws2['AA' + str(start_row)] = course_info[25] if len(course_info) > 25 else ''
+            ws2['AB' + str(start_row)] = course_info[26] if len(course_info) > 26 else ''
+
+            # 업데이트
+            ws2['AC' + str(start_row)] = course_info[27] if len(course_info) > 27 else ''
+
+            style_base(ws2['A' + str(start_row)])
+            style_base(ws2['B' + str(start_row)])
+            style_base(ws2['C' + str(start_row)])
+            style_base(ws2['D' + str(start_row)])
+            style_base(ws2['E' + str(start_row)])
+            style_base(ws2['F' + str(start_row)])
+            style_base(ws2['G' + str(start_row)])
+            style_base(ws2['H' + str(start_row)])
+            style_base(ws2['I' + str(start_row)])
+            style_base(ws2['J' + str(start_row)])
+            style_base(ws2['K' + str(start_row)])
+            style_base(ws2['L' + str(start_row)])
+            style_base(ws2['M' + str(start_row)])
+            style_base(ws2['N' + str(start_row)])
+            style_base(ws2['O' + str(start_row)])
+            style_base(ws2['P' + str(start_row)])
+            style_base(ws2['Q' + str(start_row)])
+            style_base(ws2['R' + str(start_row)])
+            style_base(ws2['S' + str(start_row)])
+            style_base(ws2['T' + str(start_row)])
+            style_base(ws2['U' + str(start_row)])
+            style_base(ws2['V' + str(start_row)])
+            style_base(ws2['W' + str(start_row)])
+            style_base(ws2['X' + str(start_row)])
+            # style_base(ws2['Y' + str(start_row)])
+            style_base(ws2['Z' + str(start_row)])
+            style_base(ws2['AA' + str(start_row)])
+            style_base(ws2['AB' + str(start_row)])
+            style_base(ws2['AC' + str(start_row)])
+
+            start_row += 1
+
+        # user
+        member_statistics = statistics_query.member_statistics(date + '31')
+        country_statistics = statistics_query.country_statistics(date + '31')
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
+
+        row = 2
+        for c in member_statistics:
+            ws3['B' + str(row + 1)] = c[0]
+            ws3['B' + str(row + 2)] = c[1]
+            ws3['B' + str(row + 3)] = c[2]
+
+        row = 8
+        for c in country_statistics:
+            ws3['A' + str(row)] = c[0]
+            ws3['B' + str(row)] = c[1]
+            ws3['C' + str(row)] = countries[c[0]] if c[0] in countries else c[0]
+
+            ws3['A' + str(row)].border = thin_border
+            ws3['B' + str(row)].border = thin_border
+            ws3['C' + str(row)].border = thin_border
+            row += 1
+
+        wb.save(save_path)
+    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+
+
+"""
+
 def statistics_excel1(request, date):
     save_name = 'K-MoocMonth' + date + '.xlsx'
     save_path = EXCEL_PATH + save_name
@@ -659,257 +1335,7 @@ def statistics_excel1(request, date):
                              top=Side(style='thin'),
                              bottom=Side(style='thin'))
 
-        COUNTRIES = {
-            "AF": "Afghanistan",
-            "AX": "Åland Islands",
-            "AL": "Albania",
-            "DZ": "Algeria",
-            "AS": "American Samoa",
-            "AD": "Andorra",
-            "AO": "Angola",
-            "AI": "Anguilla",
-            "AQ": "Antarctica",
-            "AG": "Antigua and Barbuda",
-            "AR": "Argentina",
-            "AM": "Armenia",
-            "AW": "Aruba",
-            "AU": "Australia",
-            "AT": "Austria",
-            "AZ": "Azerbaijan",
-            "BS": "Bahamas",
-            "BH": "Bahrain",
-            "BD": "Bangladesh",
-            "BB": "Barbados",
-            "BY": "Belarus",
-            "BE": "Belgium",
-            "BZ": "Belize",
-            "BJ": "Benin",
-            "BM": "Bermuda",
-            "BT": "Bhutan",
-            "BO": "Bolivia (Plurinational State of)",
-            "BQ": "Bonaire, Sint Eustatius and Saba",
-            "BA": "Bosnia and Herzegovina",
-            "BW": "Botswana",
-            "BV": "Bouvet Island",
-            "BR": "Brazil",
-            "IO": "British Indian Ocean Territory",
-            "BN": "Brunei Darussalam",
-            "BG": "Bulgaria",
-            "BF": "Burkina Faso",
-            "BI": "Burundi",
-            "CV": "Cabo Verde",
-            "KH": "Cambodia",
-            "CM": "Cameroon",
-            "CA": "Canada",
-            "KY": "Cayman Islands",
-            "CF": "Central African Republic",
-            "TD": "Chad",
-            "CL": "Chile",
-            "CN": "China",
-            "CX": "Christmas Island",
-            "CC": "Cocos (Keeling) Islands",
-            "CO": "Colombia",
-            "KM": "Comoros",
-            "CD": "Congo (the Democratic Republic of the)",
-            "CG": "Congo",
-            "CK": "Cook Islands",
-            "CR": "Costa Rica",
-            "CI": "Côte d'Ivoire",
-            "HR": "Croatia",
-            "CU": "Cuba",
-            "CW": "Curaçao",
-            "CY": "Cyprus",
-            "CZ": "Czech Republic",
-            "DK": "Denmark",
-            "DJ": "Djibouti",
-            "DM": "Dominica",
-            "DO": "Dominican Republic",
-            "EC": "Ecuador",
-            "EG": "Egypt",
-            "SV": "El Salvador",
-            "GQ": "Equatorial Guinea",
-            "ER": "Eritrea",
-            "EE": "Estonia",
-            "ET": "Ethiopia",
-            "FK": "Falkland Islands  [Malvinas]",
-            "FO": "Faroe Islands",
-            "FJ": "Fiji",
-            "FI": "Finland",
-            "FR": "France",
-            "GF": "French Guiana",
-            "PF": "French Polynesia",
-            "TF": "French Southern Territories",
-            "GA": "Gabon",
-            "GM": "Gambia",
-            "GE": "Georgia",
-            "DE": "Germany",
-            "GH": "Ghana",
-            "GI": "Gibraltar",
-            "GR": "Greece",
-            "GL": "Greenland",
-            "GD": "Grenada",
-            "GP": "Guadeloupe",
-            "GU": "Guam",
-            "GT": "Guatemala",
-            "GG": "Guernsey",
-            "GN": "Guinea",
-            "GW": "Guinea-Bissau",
-            "GY": "Guyana",
-            "HT": "Haiti",
-            "HM": "Heard Island and McDonald Islands",
-            "VA": "Holy See",
-            "HN": "Honduras",
-            "HK": "Hong Kong",
-            "HU": "Hungary",
-            "IS": "Iceland",
-            "IN": "India",
-            "ID": "Indonesia",
-            "IR": "Iran (Islamic Republic of)",
-            "IQ": "Iraq",
-            "IE": "Ireland",
-            "IM": "Isle of Man",
-            "IL": "Israel",
-            "IT": "Italy",
-            "JM": "Jamaica",
-            "JP": "Japan",
-            "JE": "Jersey",
-            "JO": "Jordan",
-            "KZ": "Kazakhstan",
-            "KE": "Kenya",
-            "KI": "Kiribati",
-            "KP": "Korea (the Democratic People's Republic of)",
-            "KR": "Korea (the Republic of)",
-            "KW": "Kuwait",
-            "KG": "Kyrgyzstan",
-            "LA": "Lao People's Democratic Republic",
-            "LV": "Latvia",
-            "LB": "Lebanon",
-            "LS": "Lesotho",
-            "LR": "Liberia",
-            "LY": "Libya",
-            "LI": "Liechtenstein",
-            "LT": "Lithuania",
-            "LU": "Luxembourg",
-            "MO": "Macao",
-            "MK": "Macedonia (the former Yugoslav Republic of)",
-            "MG": "Madagascar",
-            "MW": "Malawi",
-            "MY": "Malaysia",
-            "MV": "Maldives",
-            "ML": "Mali",
-            "MT": "Malta",
-            "MH": "Marshall Islands",
-            "MQ": "Martinique",
-            "MR": "Mauritania",
-            "MU": "Mauritius",
-            "YT": "Mayotte",
-            "MX": "Mexico",
-            "FM": "Micronesia (Federated States of)",
-            "MD": "Moldova (the Republic of)",
-            "MC": "Monaco",
-            "MN": "Mongolia",
-            "ME": "Montenegro",
-            "MS": "Montserrat",
-            "MA": "Morocco",
-            "MZ": "Mozambique",
-            "MM": "Myanmar",
-            "NA": "Namibia",
-            "NR": "Nauru",
-            "NP": "Nepal",
-            "NL": "Netherlands",
-            "NC": "New Caledonia",
-            "NZ": "New Zealand",
-            "NI": "Nicaragua",
-            "NE": "Niger",
-            "NG": "Nigeria",
-            "NU": "Niue",
-            "NF": "Norfolk Island",
-            "MP": "Northern Mariana Islands",
-            "NO": "Norway",
-            "OM": "Oman",
-            "PK": "Pakistan",
-            "PW": "Palau",
-            "PS": "Palestine, State of",
-            "PA": "Panama",
-            "PG": "Papua New Guinea",
-            "PY": "Paraguay",
-            "PE": "Peru",
-            "PH": "Philippines",
-            "PN": "Pitcairn",
-            "PL": "Poland",
-            "PT": "Portugal",
-            "PR": "Puerto Rico",
-            "QA": "Qatar",
-            "RE": "Réunion",
-            "RO": "Romania",
-            "RU": "Russian Federation",
-            "RW": "Rwanda",
-            "BL": "Saint Barthélemy",
-            "SH": "Saint Helena, Ascension and Tristan da Cunha",
-            "KN": "Saint Kitts and Nevis",
-            "LC": "Saint Lucia",
-            "MF": "Saint Martin (French part)",
-            "PM": "Saint Pierre and Miquelon",
-            "VC": "Saint Vincent and the Grenadines",
-            "WS": "Samoa",
-            "SM": "San Marino",
-            "ST": "Sao Tome and Principe",
-            "SA": "Saudi Arabia",
-            "SN": "Senegal",
-            "RS": "Serbia",
-            "SC": "Seychelles",
-            "SL": "Sierra Leone",
-            "SG": "Singapore",
-            "SX": "Sint Maarten (Dutch part)",
-            "SK": "Slovakia",
-            "SI": "Slovenia",
-            "SB": "Solomon Islands",
-            "SO": "Somalia",
-            "ZA": "South Africa",
-            "GS": "South Georgia and the South Sandwich Islands",
-            "SS": "South Sudan",
-            "ES": "Spain",
-            "LK": "Sri Lanka",
-            "SD": "Sudan",
-            "SR": "Suriname",
-            "SJ": "Svalbard and Jan Mayen",
-            "SZ": "Swaziland",
-            "SE": "Sweden",
-            "CH": "Switzerland",
-            "SY": "Syrian Arab Republic",
-            "TW": "Taiwan (Province of China)",
-            "TJ": "Tajikistan",
-            "TZ": "Tanzania, United Republic of",
-            "TH": "Thailand",
-            "TL": "Timor-Leste",
-            "TG": "Togo",
-            "TK": "Tokelau",
-            "TO": "Tonga",
-            "TT": "Trinidad and Tobago",
-            "TN": "Tunisia",
-            "TR": "Turkey",
-            "TM": "Turkmenistan",
-            "TC": "Turks and Caicos Islands",
-            "TV": "Tuvalu",
-            "UG": "Uganda",
-            "UA": "Ukraine",
-            "AE": "United Arab Emirates",
-            "GB": "United Kingdom of Great Britain and Northern Ireland",
-            "UM": "United States Minor Outlying Islands",
-            "US": "United States of America",
-            "UY": "Uruguay",
-            "UZ": "Uzbekistan",
-            "VU": "Vanuatu",
-            "VE": "Venezuela (Bolivarian Republic of)",
-            "VN": "Viet Nam",
-            "VG": "Virgin Islands (British)",
-            "VI": "Virgin Islands (U.S.)",
-            "WF": "Wallis and Futuna",
-            "EH": "Western Sahara",
-            "YE": "Yemen",
-            "ZM": "Zambia",
-            "ZW": "Zimbabwe",
-        }
+
 
         ws1 = wb['Sheet1']
 
@@ -931,3 +1357,4 @@ def statistics_excel1(request, date):
             row += 1
         wb.save(save_path)
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+"""

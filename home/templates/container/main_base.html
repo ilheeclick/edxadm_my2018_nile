@@ -89,35 +89,18 @@
 					<span class="separator"></span>
 			
 					<div id="userbox" class="userbox">
-{#						<a href="#" data-toggle="dropdown">#}
                         <a href="#" >
 							<figure class="profile-picture">
 								<img src='{% static "assets/images/!logged-user.jpg"%}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg"%}' />
 							</figure>
 							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
 								<span class="name">
-{#                                        {{ my_info.userdetail.full_name }}님 환영합니다#}
                                     관리자님 환영합니다
                                 </span>
-{#								<span class="role">#}
-{#                                    관리자#}
-{#                                </span>#}
 							</div>
 			
-{#							<i class="fa custom-caret"></i>#}
 						</a>
 			
-{#						<div class="dropdown-menu">#}
-{#							<ul class="list-unstyled">#}
-{#								<li class="divider"></li>#}
-{#								<li>#}
-{#									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i>정보수정</a>#}
-{#								</li>#}
-{#								<li>#}
-{#									<a role="menuitem" tabindex="-1" href="/manage"><i class="fa fa-power-off"></i> 로그아웃</a>#}
-{#								</li>#}
-{#							</ul>#}
-{#						</div>#}
 					</div>
 				</div>
 				<!-- end: search & user box -->
@@ -150,17 +133,10 @@
                                         <ul class="nav nav-children">
                                             <li id="day_stastic">
                                                 <a href="/manage">
-                                                    일일/월별 통계
+                                                    일일/주간/월별 통계
                                                 </a>
                                             </li>
                                         </ul>
-{#                                        <ul class="nav nav-children">#}
-{#                                            <li id="month_stastic">#}
-{#                                                <a href="/month_stastic">#}
-{#                                                    월별 통계#}
-{#                                                </a>#}
-{#                                            </li>#}
-{#                                        </ul>#}
 									</li>
                                     <li class="nav nav-parent" id="state">
                                         <a>
@@ -174,26 +150,12 @@
                                                 </a>
                                             </li>
                                         </ul>
-{#                                        <ul class="nav nav-children">#}
-{#                                            <li id="dev_state">#}
-{#                                                <a href="/dev_state">#}
-{#                                                    개발 현황#}
-{#                                                </a>#}
-{#                                            </li>#}
-{#                                        </ul>#}
                                     </li>
                                     <li class="nav nav-parent" id="certificate">
                                         <a>
                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                             <span>이수증</span>
                                         </a>
-{#                                        <ul class="nav nav-children">#}
-{#                                            <li id="create_certificate">#}
-{#                                                <a href="/certificate">#}
-{#                                                    이수증 생성#}
-{#                                                </a>#}
-{#                                            </li>#}
-{#                                        </ul>#}
                                         <ul class="nav nav-children">
                                             <li id="uni_certificate">
                                                 <a href="/manage/uni_certificate">
@@ -325,7 +287,6 @@
                                     <span>{% block pagetitlename_header %}페이지 준비중입니다.{% endblock %}&nbsp;&nbsp;</span>
                                 </li>
 							</ol>
-{#							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>#}
 						</div>
 
                     </header>
@@ -383,7 +344,6 @@
         <script src='{% static "assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"%}' ></script>
         <script src='{% static "assets/vendor/bootstrap/js/bootstrap.js"%}' ></script>
         <script src='{% static "assets/vendor/nanoscroller/nanoscroller.js"%}' ></script>
-{#        <script src='{% static "assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"%}' ></script>#}
         <script src='{% static "assets/vendor/magnific-popup/jquery.magnific-popup.js"%}' ></script>
         <script src='{% static "assets/vendor/jquery-placeholder/jquery-placeholder.js"%}' ></script>
 
@@ -448,7 +408,6 @@
 
         <!-- Theme Initialization Files -->
         <script src='{% static "assets/javascripts/theme.init.js"%}' ></script>
-{#        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/rowreorder/1.1.2/js/dataTables.rowReorder.min.js"></script>#}
 
         {% block script_down %}{% endblock %}
 
@@ -459,12 +418,10 @@
                 /*  */
                 $('ul.nav.nav-main li').mouseover(function(e){
                     //alert($(this).find('span').text());
-{#                    $(this).addClass('nav-expanded');#}
                     $(this).addClass('nav-active');
                 });
                 $('ul.nav.nav-main li').mouseleave(function(e){
                     //alert($(this).find('span').text());
-{#                    $(this).removeClass('nav-expanded');#}
                     $(this).removeClass('nav-active');
                     setactivesidebar('none');
                 });
@@ -473,10 +430,9 @@
                 function setactivesidebar(is_expanded){
                     var pagetitlename = $('#pagetitlename').text();
 
-{#                    console.log('pagetitlename :: ' + pagetitlename);#}
 
                     switch (pagetitlename){
-                        case '일일 / 월별 통계':
+                        case '일일 / 주간 / 월별 통계':
                             if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
                             $('#stastic').addClass('nav-active');
                             $('#day_stastic').addClass('nav-active');

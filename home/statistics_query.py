@@ -4,7 +4,7 @@ from django.db import connection
 import logging
 import logging.handlers
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug
-import time
+import time, threading
 
 
 # # 로거 인스턴스를 만든다
@@ -28,24 +28,65 @@ import time
 # if debug:
 #     #logger.setLevel(logging.DEBUG)
 
+class TimePrint(threading.Thread):
+    def __init__(self):
+        print 'TimePrint __init__ called'
+        threading.Thread.__init__(self)
+        time.sleep(1)
+        self.__exit = False
+
+    def run(self):
+        sec = 1
+        while True:
+            if self.__exit:
+                break
+            print 'sec:', sec
+
+            # Suspend
+            time.sleep(1)
+
+            # Process
+            sec = sec + 1
+
+            # Exit
+
+
+    def my_exit(self):
+        self.__exit = True
+
+
 def execute_query_one(query):
     start_time = time.time()
+
+    print '--> query:\n', query
+
     with connection.cursor() as cur:
         cur.execute(query)
         row = cur.fetchone()[0]
+
     end_time = time.time()
-    print '-- duration time:', end_time - start_time
+
+    print '--> duration time:', end_time - start_time
+
     return row
 
 
 def execute_query(query):
     start_time = time.time()
+
+    print '-->> query:\n', query
+
+    tp = TimePrint()
+    tp.start()
     with connection.cursor() as cur:
         cur.execute(query)
         row = cur.fetchall()
+    tp.my_exit()
+
     end_time = time.time()
-    print '-- query:\n', query
-    print '-- duration time:\n-------------------------------------->', end_time - start_time
+
+    print '-->> duration time:\n-------------------------------------->', end_time - start_time
+
     return row
 
 
@@ -53,7 +94,7 @@ def execute_query(query):
 def overall_auth(date):
     query = '''
         SELECT sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_cnt,
-               sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.email like 'delete_%',1,0)) new_sec_cnt,
+               sum(if(date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.email like 'delete_%',1,0)) new_sec_cnt,
                sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt,
                sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and a.email like 'delete_%',1,0)) all_sec_cnt
           FROM auth_user a, auth_userprofile b
@@ -113,6 +154,55 @@ def by_course_enroll(course_id, date):
                AND a.id = '{course_id}'
          group by a.id,  a.org;
     '''.format(course_id=course_id, date=date)
+    # query = '''
+    #       SELECT a.id,
+    #              a.org,
+    #              sum(
+    #                 if(
+    #                    date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN   '{date}'
+    #                                                                                       - 6
+    #                                                                                   AND '{date}',
+    #                    1,
+    #                    0))
+    #                 `new_enroll_cnt`,
+    #              sum(
+    #                 if(
+    #                        date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN   '{date}'
+    #                                                                                           - 6
+    #                                                                                       AND '{date}'
+    #                    AND b.is_active = 0,
+    #                    1,
+    #                    0))
+    #                 `new_unenroll_cnt`,
+    #              sum(
+    #                 if(
+    #                    date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+    #                                                                                   AND '{date}',
+    #                    1,
+    #                    0))
+    #                 `all_enroll_cnt`,
+    #              sum(
+    #                 if(
+    #                        date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+    #                                                                                       AND '{date}'
+    #                    AND b.is_active = 0,
+    #                    1,
+    #                    0))
+    #                 `all_unenroll_cnt`
+    #         FROM course_overviews_courseoverview a
+    #              LEFT JOIN student_courseenrollment b
+    #                 ON     a.id = b.course_id
+    #                    AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+    #                                                                                       AND '{date}'
+    #              LEFT JOIN auth_user c
+    #                 ON     b.user_id = c.id
+    #                    AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR),
+    #                                    '%Y%m%d') BETWEEN '1'
+    #                                                  AND '{date}'
+    #              LEFT JOIN auth_userprofile d ON c.id = d.user_id
+    #        WHERE a.id = '{course_id}'
+    #     GROUP BY a.id, a.org;
+    # '''.format(course_id=course_id, date=date)
     return execute_query(query)
 
 
@@ -173,6 +263,188 @@ def by_course_demographic(course_id, date):
     return execute_query(query)
 
 
+# `by_course_enroll_week`
+def by_course_enroll_week(course_id, date):
+    query = '''
+        SELECT a.id,
+               a.org,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}', 1, 0)) `new_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+          FROM course_overviews_courseoverview a
+                left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_userprofile                d on c.id = d.user_id
+         WHERE     a.id = '{course_id}'
+         group by a.id,  a.org;
+    '''.format(course_id=course_id, date=date)
+    return execute_query(query)
+
+
+def by_course_enroll_month(course_id, date):
+    query = '''
+        SELECT a.id,
+               a.org,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}', 1, 0)) `new_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+          FROM course_overviews_courseoverview a
+                left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_userprofile                d on c.id = d.user_id
+         WHERE     a.id = '{course_id}'
+         group by a.id,  a.org;
+    '''.format(course_id=course_id, date=date)
+    return execute_query(query)
+
+
+# `by_course_enroll_week`
+def by_course_enroll_week_activity(course_id, date):
+    query = '''
+        SELECT sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `video`, 0))   video1,
+               sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `problem`, 0)) problem1,
+               sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `both`, 0))    both1,
+               sum(if(modified BETWEEN '1' AND '{date}', `video`, 0))   video2,
+               sum(if(modified BETWEEN '1' AND '{date}', `problem`, 0)) problem2,
+               sum(if(modified BETWEEN '1' AND '{date}', `both`, 0))    both2
+          FROM (  SELECT student_id,
+                         sum(if(module_type = 'video', 1, 0)) `video`,
+                         sum(if(module_type = 'problem', 1, 0))`problem`,
+                         date_format(adddate(max(modified), INTERVAL 9 HOUR), '%Y%m%d')
+                            `modified`,
+                         count(
+                            DISTINCT if(
+                                           module_type = 'video'
+                                        OR module_type = 'problem',
+                                        student_id,
+                                        0))
+                            `both`
+                    FROM (  SELECT student_id,
+                           module_type,
+                           modified,
+                           max(grade) grade
+                      FROM courseware_studentmodule
+                     WHERE     course_id =
+                                  '{course_id}'
+                           AND module_type IN ('video', 'problem')
+                           AND CASE
+                                  WHEN module_type = 'problem'
+                                  THEN
+                                     grade IS NOT NULL
+                                  ELSE
+                                     1 = 1
+                               END
+                           AND created <> modified
+                  GROUP BY student_id, module_type) t1
+                GROUP BY student_id) t2;
+        '''.format(course_id=course_id, date=date)
+    return execute_query(query)
+
+
+def by_course_enroll_month_activity(course_id, date):
+    query = '''
+        SELECT sum(if(modified = '{date}', `video`, 0))   video1,
+               sum(if(modified = '{date}', `problem`, 0)) problem1,
+               sum(if(modified = '{date}', `both`, 0))    both1,
+               sum(if(modified BETWEEN '1' AND '{date}', `video`, 0))   video2,
+               sum(if(modified BETWEEN '1' AND '{date}', `problem`, 0)) problem2,
+               sum(if(modified BETWEEN '1' AND '{date}', `both`, 0))    both2
+          FROM (  SELECT student_id,
+                         sum(if(module_type = 'video', 1, 0)) `video`,
+                         sum(if(module_type = 'problem', 1, 0))`problem`,
+                         date_format(adddate(max(modified), INTERVAL 9 HOUR), '%Y%m')
+                            `modified`,
+                         count(
+                            DISTINCT if(
+                                           module_type = 'video'
+                                        OR module_type = 'problem',
+                                        student_id,
+                                        0))
+                            `both`
+                    FROM (  SELECT student_id,
+                           module_type,
+                           modified,
+                           max(grade) grade
+                      FROM courseware_studentmodule
+                     WHERE     course_id =
+                                  '{course_id}'
+                           AND module_type IN ('video', 'problem')
+                           AND CASE
+                                  WHEN module_type = 'problem'
+                                  THEN
+                                     grade IS NOT NULL
+                                  ELSE
+                                     1 = 1
+                               END
+                           AND created <> modified
+                  GROUP BY student_id, module_type) t1
+                GROUP BY student_id) t2;
+        '''.format(course_id=course_id, date=date)
+    return execute_query(query)
+
+
+# `by_course_enroll_month`
+def by_course_enroll_month(date):
+    query = '''
+        SELECT a.id,
+               a.org,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}', 1, 0)) `new_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+          FROM course_overviews_courseoverview a
+                left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_userprofile                d on c.id = d.user_id
+         WHERE    1=1
+         group by a.id,  a.org;
+    '''.format(date=date)
+    return execute_query(query)
+
+
+# `by_course_enroll_month`
+def by_course_enroll_month(course_id, date):
+    query = '''
+        SELECT a.id,
+               a.org,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}', 1, 0)) `new_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+          FROM course_overviews_courseoverview a
+                left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
+                                                                                    AND '{date}'
+                left join auth_userprofile                d on c.id = d.user_id
+         WHERE     a.id = '{course_id}'
+         group by a.id,  a.org;
+    '''.format(course_id=course_id, date=date)
+    return execute_query(query)
+
+
+# `by_course_cert_month`
+def by_course_cert_month(course_id):
+    query = '''
+      SELECT a.id,
+             if(b.course_id IS NOT NULL, TRUE, FALSE)           is_exists,
+             sum(if(a.lowest_passing_grade / 2 <= b.grade, 1, 0)) half_cnt,
+             sum(if(b.status = 'downloadable', 1, 0))           cert_cnt
+        FROM course_overviews_courseoverview a
+             LEFT JOIN certificates_generatedcertificate b ON a.id = b.course_id
+       WHERE a.id = '{course_id}'
+    '''.format(course_id=course_id)
+    return execute_query(query)
+
+
 # `강좌 아이디 조회`
 def course_ids_all():
     query = """
@@ -183,12 +455,15 @@ def course_ids_all():
                start,
                end,
                a.enrollment_start,
-               a.enrollment_end
+               a.enrollment_end,
+               effort,
+               (select min(created_date) from certificates_generatedcertificate b where b.course_id = a.id) cert_date
           FROM course_overviews_courseoverview a
          WHERE     1 = 1
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
-               AND lower(a.id) NOT LIKE '%nile%';
+               AND lower(a.id) NOT LIKE '%nile%'
+               ;
     """
     return execute_query(query)
 
@@ -211,6 +486,85 @@ def auth_user_info(date):
     return execute_query(query)
 
 
+# `요약 주간`
+def auth_user_info_week(date):
+    query = '''
+        SELECT sum(
+                  if(
+                     date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN   '{date}'
+                                                                                            - 6
+                                                                                        AND '{date}',
+                     1,
+                     0))
+                  join_cnt_week,
+               sum(
+                  if(
+                         date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                                     '%Y%m%d') BETWEEN '{date}' - 6
+                                                   AND '{date}'
+                     AND a.email LIKE 'delete_%',
+                     1,
+                     0))
+                  sece_cnt_week,
+               sum(
+                  if(
+                         date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                                     '%Y%m%d') BETWEEN '{date}' - 6
+                                                   AND '{date}'
+                     AND a.email NOT LIKE 'delete_%'
+                     AND a.is_active = 1,
+                     1,
+                     0))
+                  active_cnt_week,
+               count(*)                               join_cnt_all,
+               sum(if(a.email LIKE 'delete_%', 1, 0)) sece_cnt_all,
+               sum(if(a.email NOT LIKE 'delete_%' AND a.is_active = 1, 1, 0))
+                  active_cnt_all
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
+
+
+def auth_user_info_month(date):
+    query = '''
+        SELECT sum(
+                  if(
+                     date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m') = '{date}',
+                     1,
+                     0))
+                  join_cnt_month,
+               sum(
+                  if(
+                         date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                                     '%Y%m') = '{date}'
+                     AND a.email LIKE 'delete_%',
+                     1,
+                     0))
+                  sece_cnt_month,
+               sum(
+                  if(
+                         date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                                     '%Y%m') = '{date}'
+                     AND a.email NOT LIKE 'delete_%'
+                     AND a.is_active = 1,
+                     1,
+                     0))
+                  active_cnt_month,
+               count(*)                               join_cnt_all,
+               sum(if(a.email LIKE 'delete_%', 1, 0)) sece_cnt_all,
+               sum(if(a.email NOT LIKE 'delete_%' AND a.is_active = 1, 1, 0))
+                  active_cnt_all
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(a.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                      AND '{date}31';
+    '''.format(date=date)
+    return execute_query(query)
+
+
 # `수강신청건수`
 def student_courseenrollment_info(date):
     query = '''
@@ -225,6 +579,280 @@ def student_courseenrollment_info(date):
                AND lower(b.course_id) NOT LIKE '%nile%'
                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}'
                AND date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
+
+
+# `수강신청건수 주간`
+def student_courseenrollment_info_week(date):
+    query = '''
+        SELECT sum(if(created BETWEEN '{date}' - 6 AND '{date}', 1, 0))
+                  week_enroll_cnt,
+               sum(
+                  if(created BETWEEN '{date}' - 6 AND '{date}' AND is_active = 0,
+                     1,
+                     0))
+                  week_unenroll_cnt,
+               count(
+                  DISTINCT if(created BETWEEN '{date}' - 6 AND '{date}',
+                              id,
+                              NULL))
+                  week_enroll_person_cnt,
+               count(
+                  DISTINCT if(
+                                  created BETWEEN '{date}' - 6 AND '{date}'
+                              AND is_active = 0,
+                              id,
+                              NULL))
+                  week_unenroll_person_cnt,
+               sum(if(created BETWEEN '1' AND '{date}', 1, 0)) all_enroll_cnt,
+               sum(if(created BETWEEN '1' AND '{date}' AND is_active = 0, 1, 0))
+                  all_unenroll_cnt,
+               count(DISTINCT if(created BETWEEN '1' AND '{date}', id, NULL))
+                  all_enroll_person_cnt,
+               count(
+                  DISTINCT if(created BETWEEN '1' AND '{date}' AND is_active = 0,
+                              id,
+                              NULL))
+                  all_unenroll_person_cnt
+          FROM (SELECT a.id,
+                       date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d')
+                          created,
+                       b.is_active
+                  FROM auth_user                       a,
+                       student_courseenrollment        b,
+                       course_overviews_courseoverview c
+                 WHERE     1 = 1
+                       AND a.id = b.user_id
+                       AND b.course_id = c.id
+                       AND lower(b.course_id) NOT LIKE '%test%'
+                       AND lower(b.course_id) NOT LIKE '%demo%'
+                       AND lower(b.course_id) NOT LIKE '%nile%'
+                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                          AND '{date}')
+               t1;    '''.format(date=date)
+    return execute_query(query)
+
+
+def student_courseenrollment_info_month(date):
+    query = '''
+        SELECT sum(if(created = '{date}', 1, 0))
+                  week_enroll_cnt,
+               sum(
+                  if(created = '{date}' AND is_active = 0,
+                     1,
+                     0))
+                  week_unenroll_cnt,
+               count(
+                  DISTINCT if(created = '{date}',
+                              id,
+                              NULL))
+                  week_enroll_person_cnt,
+               count(
+                  DISTINCT if(
+                                  created = '{date}'
+                              AND is_active = 0,
+                              id,
+                              NULL))
+                  week_unenroll_person_cnt,
+               sum(if(created BETWEEN '1' AND '{date}', 1, 0)) all_enroll_cnt,
+               sum(if(created BETWEEN '1' AND '{date}' AND is_active = 0, 1, 0))
+                  all_unenroll_cnt,
+               count(DISTINCT if(created BETWEEN '1' AND '{date}', id, NULL))
+                  all_enroll_person_cnt,
+               count(
+                  DISTINCT if(created BETWEEN '1' AND '{date}' AND is_active = 0,
+                              id,
+                              NULL))
+                  all_unenroll_person_cnt
+          FROM (SELECT a.id,
+                       date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m')
+                          created,
+                       b.is_active
+                  FROM auth_user                       a,
+                       student_courseenrollment        b,
+                       course_overviews_courseoverview c
+                 WHERE     1 = 1
+                       AND a.id = b.user_id
+                       AND b.course_id = c.id
+                       AND lower(b.course_id) NOT LIKE '%test%'
+                       AND lower(b.course_id) NOT LIKE '%demo%'
+                       AND lower(b.course_id) NOT LIKE '%nile%'
+                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
+                                                                                          AND '{date}')
+               t1;    '''.format(date=date)
+    return execute_query(query)
+
+
+# 학습활동 주간
+def student_activity_week(date):
+    query = '''
+        SELECT sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `video`, 0))
+                  video1,
+               sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `problem`, 0))
+                  problem1,
+               sum(if(modified BETWEEN '{date}' - 6 AND '{date}', `both`, 0))
+                  both1,
+               count(
+                  DISTINCT if(modified BETWEEN '{date}' - 6 AND '{date}',
+                              student_id,
+                              0))
+                  video2,
+               count(
+                  DISTINCT if(modified BETWEEN '{date}' - 6 AND '{date}',
+                              student_id,
+                              0))
+                  problem2,
+               count(
+                  DISTINCT if(modified BETWEEN '{date}' - 6 AND '{date}',
+                              student_id,
+                              0))
+                  both2,
+               sum(if(modified BETWEEN '1' AND '{date}', `video`, 0))   video3,
+               sum(if(modified BETWEEN '1' AND '{date}', `problem`, 0)) problem3,
+               sum(if(modified BETWEEN '1' AND '{date}', `both`, 0))    both3,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  video4,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  problem4,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  both4
+          FROM (  SELECT student_id,
+                         sum(if(module_type = 'video', 1, 0)) `video`,
+                         sum(if(module_type = 'problem', 1, 0))`problem`,
+                         date_format(adddate(max(modified), INTERVAL 9 HOUR), '%Y%m%d')
+                            `modified`,
+                         count(
+                            DISTINCT if(
+                                           module_type = 'video'
+                                        OR module_type = 'problem',
+                                        student_id,
+                                        0))
+                            `both`
+                    FROM (  SELECT course_id,
+                                   student_id,
+                                   module_type,
+                                   modified,
+                                   max(grade) grade
+                              FROM courseware_studentmodule
+                             WHERE     1 = 1
+                                   AND lower(course_id) NOT LIKE '%test%'
+                                   AND lower(course_id) NOT LIKE '%demo%'
+                                   AND lower(course_id) NOT LIKE '%nile%'
+                                   AND module_type IN ('video', 'problem')
+                                   AND CASE
+                                          WHEN module_type = 'problem'
+                                          THEN
+                                             grade IS NOT NULL
+                                          ELSE
+                                             1 = 1
+                                       END
+                                   AND created <> modified
+                          GROUP BY student_id, module_type, course_id) t1
+                GROUP BY course_id, student_id) t2;
+    '''.format(date=date)
+    return execute_query(query)
+
+
+def student_activity_month(date):
+    query = '''
+        SELECT sum(if(modified = '{date}', `video`, 0))
+                  video1,
+               sum(if(modified = '{date}', `problem`, 0))
+                  problem1,
+               sum(if(modified = '{date}', `both`, 0))
+                  both1,
+               count(
+                  DISTINCT if(modified = '{date}',
+                              student_id,
+                              0))
+                  video2,
+               count(
+                  DISTINCT if(modified = '{date}',
+                              student_id,
+                              0))
+                  problem2,
+               count(
+                  DISTINCT if(modified = '{date}',
+                              student_id,
+                              0))
+                  both2,
+               sum(if(modified BETWEEN '1' AND '{date}', `video`, 0))   video3,
+               sum(if(modified BETWEEN '1' AND '{date}', `problem`, 0)) problem3,
+               sum(if(modified BETWEEN '1' AND '{date}', `both`, 0))    both3,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  video4,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  problem4,
+               count(DISTINCT if(modified BETWEEN '1' AND '{date}', student_id, 0))
+                  both4
+          FROM (  SELECT student_id,
+                         sum(if(module_type = 'video', 1, 0)) `video`,
+                         sum(if(module_type = 'problem', 1, 0))`problem`,
+                         date_format(adddate(max(modified), INTERVAL 9 HOUR), '%Y%m')
+                            `modified`,
+                         count(
+                            DISTINCT if(
+                                           module_type = 'video'
+                                        OR module_type = 'problem',
+                                        student_id,
+                                        0))
+                            `both`
+                    FROM (  SELECT course_id,
+                                   student_id,
+                                   module_type,
+                                   modified,
+                                   max(grade) grade
+                              FROM courseware_studentmodule
+                             WHERE     1 = 1
+                                   AND lower(course_id) NOT LIKE '%test%'
+                                   AND lower(course_id) NOT LIKE '%demo%'
+                                   AND lower(course_id) NOT LIKE '%nile%'
+                                   AND module_type IN ('video', 'problem')
+                                   AND CASE
+                                          WHEN module_type = 'problem'
+                                          THEN
+                                             grade IS NOT NULL
+                                          ELSE
+                                             1 = 1
+                                       END
+                                   AND created <> modified
+                          GROUP BY student_id, module_type, course_id) t1
+                GROUP BY course_id, student_id) t2;
+    '''.format(date=date)
+    return execute_query(query)
+
+
+# 이수자수 주간
+def student_cert_week(date):
+    query = '''
+        SELECT sum(if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}', 1, 0)) half_cnt1,
+               sum(if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}', 1, 0))             downloadable_cnt1,
+               count(distinct if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}', b.user_id, 0)) half_cnt2,
+               count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '{date}' - 6 and '{date}', b.user_id, 0))             downloadable_cnt2,
+               sum(if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '1' and '{date}', 1, 0)) half_cnt3,
+               sum(if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '1' and '{date}', 1, 0))             downloadable_cnt3,
+               count(distinct if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '1' and '{date}', b.user_id, 0)) half_cnt4,
+               count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m%d') between '1' and '{date}', b.user_id, 0))             downloadable_cnt4
+          FROM course_overviews_courseoverview a, certificates_generatedcertificate b
+         WHERE a.id = b.course_id;
+    '''.format(date=date)
+    return execute_query(query)
+
+
+# 이수자수 주간
+def student_cert_month(date):
+    query = '''
+        SELECT sum(if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') = '{date}', 1, 0)) half_cnt1,
+               sum(if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') = '{date}', 1, 0))             downloadable_cnt1,
+               count(distinct if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') = '{date}', b.user_id, 0)) half_cnt2,
+               count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') = '{date}', b.user_id, 0))             downloadable_cnt2,
+               sum(if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') between '1' and '{date}', 1, 0)) half_cnt3,
+               sum(if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') between '1' and '{date}', 1, 0))             downloadable_cnt3,
+               count(distinct if(a.lowest_passing_grade / 2 <= b.grade and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') between '1' and '{date}', b.user_id, 0)) half_cnt4,
+               count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, interval 9 hour), '%Y%m') between '1' and '{date}', b.user_id, 0))             downloadable_cnt4
+          FROM course_overviews_courseoverview a, certificates_generatedcertificate b
+         WHERE a.id = b.course_id;
     '''.format(date=date)
     return execute_query(query)
 

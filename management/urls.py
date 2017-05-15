@@ -17,7 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from user_manage.views import user_manage, excel_manage
 from user_manage.statistics import statistics_excel, certificate_excel, statistics_excel3
-from home.statistics import statistics_excel, statistics_excel1
+from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
 from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
 
@@ -27,7 +27,8 @@ urlpatterns = [
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^manage/excel_select/$', excel_manage),
     url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),
-    url(r'^manage/excel_download1/(?P<date>.*?)$', statistics_excel1),
+    url(r'^manage/excel_download_week/(?P<date>.*?)$', statistics_excel_week),
+    url(r'^manage/excel_download_month/(?P<date>.*?)$', statistics_excel_month),
     # url(r'^manage/excel_download2/(?P<courseId>.*?)$', certificate_excel),
     # url(r'^manage/notice/reg$', notice_reg),
     # url(r'^manage/notice/list$', notice_list),
