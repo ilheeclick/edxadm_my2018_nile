@@ -66,33 +66,36 @@ def style_range(ws, cell_range, border=Border(), fill=None, font=None, alignment
     :param font: An openpyxl Font object
     """
 
-    top = Border(top=border.top)
-    left = Border(left=border.left)
-    right = Border(right=border.right)
-    bottom = Border(bottom=border.bottom)
+    try:
+        top = Border(top=border.top)
+        left = Border(left=border.left)
+        right = Border(right=border.right)
+        bottom = Border(bottom=border.bottom)
 
-    first_cell = ws[cell_range.split(":")[0]]
-    if alignment:
-        ws.merge_cells(cell_range)
-        first_cell.alignment = alignment
+        first_cell = ws[cell_range.split(":")[0]]
+        if alignment:
+            ws.merge_cells(cell_range)
+            first_cell.alignment = alignment
 
-    rows = ws[cell_range]
-    if font:
-        first_cell.font = font
+        rows = ws[cell_range]
+        if font:
+            first_cell.font = font
 
-    for cell in rows[0]:
-        cell.border = cell.border + top
-    for cell in rows[-1]:
-        cell.border = cell.border + bottom
+        for cell in rows[0]:
+            cell.border = cell.border + top
+        for cell in rows[-1]:
+            cell.border = cell.border + bottom
 
-    for row in rows:
-        l = row[0]
-        r = row[-1]
-        l.border = l.border + left
-        r.border = r.border + right
-        if fill:
-            for c in row:
-                c.fill = fill
+        for row in rows:
+            l = row[0]
+            r = row[-1]
+            l.border = l.border + left
+            r.border = r.border + right
+            if fill:
+                for c in row:
+                    c.fill = fill
+    except Exception as e:
+        print e
 
 
 def certificate_excel(request, course_id):

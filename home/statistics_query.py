@@ -94,9 +94,11 @@ def execute_query(query):
 def overall_auth(date):
     query = '''
         SELECT sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_cnt,
-               sum(if(date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.email like 'delete_%',1,0)) new_sec_cnt,
+               sum(if(date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.email like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8),1,0)) new_sec_cnt,
                sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt,
-               sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and a.email like 'delete_%',1,0)) all_sec_cnt
+               sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and a.email like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8),1,0)) all_sec_cnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
@@ -151,6 +153,7 @@ def by_course_enroll(course_id, date):
                                                                                     AND '{date}'
                AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
+                                                                                     and b.created between a.start and a.end
                AND a.id = '{course_id}'
          group by a.id,  a.org;
     '''.format(course_id=course_id, date=date)
@@ -256,6 +259,7 @@ def by_course_demographic(course_id, date):
                                                                                     AND '{date}'
                          AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                             AND '{date}'
+                                                                                             and b.created between a.start and a.end
                          AND b.is_active = 1
                          AND a.id = '{course_id}') t1
         GROUP BY course_id, org;
@@ -274,7 +278,7 @@ def by_course_enroll_week(course_id, date):
                sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
           FROM course_overviews_courseoverview a
                 left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                    AND '{date}'
+                                                                                    AND '{date}' and b.created between a.start and a.end
                 left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
                 left join auth_userprofile                d on c.id = d.user_id
@@ -294,7 +298,7 @@ def by_course_enroll_month(course_id, date):
                sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
           FROM course_overviews_courseoverview a
                 left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
-                                                                                    AND '{date}'
+                                                                                    AND '{date}' and b.created between a.start and a.end
                 left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
                                                                                     AND '{date}'
                 left join auth_userprofile                d on c.id = d.user_id
@@ -327,10 +331,12 @@ def by_course_enroll_week_activity(course_id, date):
                             `both`
                     FROM (  SELECT student_id,
                            module_type,
-                           modified,
+                           a.modified,
                            max(grade) grade
-                      FROM courseware_studentmodule
-                     WHERE     course_id =
+                      FROM courseware_studentmodule a, course_overviews_courseoverview b
+                     WHERE     1=1
+                           and a.course_id = b.id
+                           and course_id =
                                   '{course_id}'
                            AND module_type IN ('video', 'problem')
                            AND CASE
@@ -340,7 +346,9 @@ def by_course_enroll_week_activity(course_id, date):
                                   ELSE
                                      1 = 1
                                END
-                           AND created <> modified
+                           AND a.created <> a.modified
+                           and a.created between b.start and b.end
+                           and a.modified between b.start and b.end
                   GROUP BY student_id, module_type) t1
                 GROUP BY student_id) t2;
         '''.format(course_id=course_id, date=date)
@@ -369,10 +377,12 @@ def by_course_enroll_month_activity(course_id, date):
                             `both`
                     FROM (  SELECT student_id,
                            module_type,
-                           modified,
+                           a.modified,
                            max(grade) grade
-                      FROM courseware_studentmodule
-                     WHERE     course_id =
+                      FROM courseware_studentmodule a, course_overviews_courseoverview b
+                     WHERE 1=1
+                           and a.course_id = b.id
+                           and course_id =
                                   '{course_id}'
                            AND module_type IN ('video', 'problem')
                            AND CASE
@@ -382,7 +392,9 @@ def by_course_enroll_month_activity(course_id, date):
                                   ELSE
                                      1 = 1
                                END
-                           AND created <> modified
+                           AND a.created <> a.modified
+                           and a.created between b.start and b.end
+                           and a.modified between b.start and b.end
                   GROUP BY student_id, module_type) t1
                 GROUP BY student_id) t2;
         '''.format(course_id=course_id, date=date)
@@ -400,7 +412,7 @@ def by_course_enroll_month(date):
                sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
           FROM course_overviews_courseoverview a
                 left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                    AND '{date}'
+                                                                                    AND '{date}' and b.created between a.start and a.end
                 left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
                 left join auth_userprofile                d on c.id = d.user_id
@@ -421,7 +433,7 @@ def by_course_enroll_month(course_id, date):
                sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
           FROM course_overviews_courseoverview a
                 left join student_courseenrollment        b on a.id = b.course_id AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
-                                                                                    AND '{date}'
+                                                                                    AND '{date}' and b.created between a.start and a.end
                 left join auth_user                       c on b.user_id = c.id AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
                                                                                     AND '{date}'
                 left join auth_userprofile                d on c.id = d.user_id
@@ -463,6 +475,7 @@ def course_ids_all():
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
                AND lower(a.id) NOT LIKE '%nile%'
+               limit 10
                ;
     """
     return execute_query(query)
@@ -477,7 +490,8 @@ def auth_user_info(date):
                      1,
                      0))
                   newcnt,
-               sum(if(email LIKE 'delete_%', 0, 1)) allcnt
+               sum(if(email LIKE 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8), 0, 1)) allcnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
@@ -577,7 +591,6 @@ def student_courseenrollment_info(date):
                AND lower(b.course_id) NOT LIKE '%test%'
                AND lower(b.course_id) NOT LIKE '%demo%'
                AND lower(b.course_id) NOT LIKE '%nile%'
-               AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') <= '{date}'
                AND date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}';
     '''.format(date=date)
     return execute_query(query)
@@ -628,6 +641,7 @@ def student_courseenrollment_info_week(date):
                        AND lower(b.course_id) NOT LIKE '%test%'
                        AND lower(b.course_id) NOT LIKE '%demo%'
                        AND lower(b.course_id) NOT LIKE '%nile%'
+                        and b.created between c.start and c.end
                        AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                           AND '{date}')
                t1;    '''.format(date=date)
@@ -678,6 +692,7 @@ def student_courseenrollment_info_month(date):
                        AND lower(b.course_id) NOT LIKE '%test%'
                        AND lower(b.course_id) NOT LIKE '%demo%'
                        AND lower(b.course_id) NOT LIKE '%nile%'
+                        and b.created between c.start and c.end
                        AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
                                                                                           AND '{date}')
                t1;    '''.format(date=date)
@@ -732,10 +747,11 @@ def student_activity_week(date):
                     FROM (  SELECT course_id,
                                    student_id,
                                    module_type,
-                                   modified,
+                                   a.modified,
                                    max(grade) grade
-                              FROM courseware_studentmodule
-                             WHERE     1 = 1
+                              FROM courseware_studentmodule a, course_overviews_courseoverview b
+                             WHERE     1 = 0
+                                   and a.course_id = b.id
                                    AND lower(course_id) NOT LIKE '%test%'
                                    AND lower(course_id) NOT LIKE '%demo%'
                                    AND lower(course_id) NOT LIKE '%nile%'
@@ -747,7 +763,9 @@ def student_activity_week(date):
                                           ELSE
                                              1 = 1
                                        END
-                                   AND created <> modified
+                                   AND a.created <> a.modified
+                                   and a.created between b.start and b.end
+                                   and a.modified between b.start and b.end
                           GROUP BY student_id, module_type, course_id) t1
                 GROUP BY course_id, student_id) t2;
     '''.format(date=date)
@@ -801,10 +819,11 @@ def student_activity_month(date):
                     FROM (  SELECT course_id,
                                    student_id,
                                    module_type,
-                                   modified,
+                                   a.modified,
                                    max(grade) grade
-                              FROM courseware_studentmodule
+                              FROM courseware_studentmodule a, course_overviews_courseoverview b
                              WHERE     1 = 1
+                                   and a.course_id = b.id
                                    AND lower(course_id) NOT LIKE '%test%'
                                    AND lower(course_id) NOT LIKE '%demo%'
                                    AND lower(course_id) NOT LIKE '%nile%'
@@ -816,7 +835,9 @@ def student_activity_month(date):
                                           ELSE
                                              1 = 1
                                        END
-                                   AND created <> modified
+                                   AND a.created <> a.modified
+                                   and a.created between b.start and b.end
+                                   and a.modified between b.start and b.end
                           GROUP BY student_id, module_type, course_id) t1
                 GROUP BY course_id, student_id) t2;
     '''.format(date=date)
@@ -1020,7 +1041,8 @@ def age_total(date):
                                        a.gender
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
-                                      and b.email not like 'delete_%'
+                                      and (b.email not like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8))
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
@@ -1078,7 +1100,8 @@ def edu_new(date):
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') = '{date}'
-                       and b.email not like 'delete_%'
+                       and (b.email not like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8))
                 GROUP BY CASE
                             WHEN    a.level_of_education IS NULL
                                  OR a.level_of_education = ''
@@ -1137,7 +1160,8 @@ def edu_total(date):
                        if(a.gender = 'o', 1, 0) AS "etc"
                   FROM auth_userprofile a, auth_user b
                  WHERE     a.user_id = b.id
-                        and b.email not like 'delete_%'
+                        and (b.email not like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8))
                        AND date_format(adddate(b.date_joined, INTERVAL 9 HOUR),'%Y%m%d') BETWEEN '20151014' AND '{date}'
                 ) b
                   ON a.r = b.result
@@ -1206,7 +1230,8 @@ def age_edu(date):
                                        a.gender
                                   FROM auth_userprofile a, auth_user b
                                  WHERE     a.user_id = b.id
-                                      and b.email not like 'delete_%'
+                                      and (b.email not like 'delete_%' AND '{date}' >=
+                    substring(substring_index(email, '@delete.', -1), 1, 8))
                                        AND date_format(
                                               adddate(b.date_joined, INTERVAL 9 HOUR),
                                               '%Y%m%d') BETWEEN '20151014'
