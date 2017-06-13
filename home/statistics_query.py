@@ -475,7 +475,7 @@ def course_ids_all():
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
                AND lower(a.id) NOT LIKE '%nile%'
-               limit 10
+
                ;
     """
     return execute_query(query)
@@ -750,7 +750,7 @@ def student_activity_week(date):
                                    a.modified,
                                    max(grade) grade
                               FROM courseware_studentmodule a, course_overviews_courseoverview b
-                             WHERE     1 = 0
+                             WHERE     1 = 1
                                    and a.course_id = b.id
                                    AND lower(course_id) NOT LIKE '%test%'
                                    AND lower(course_id) NOT LIKE '%demo%'
