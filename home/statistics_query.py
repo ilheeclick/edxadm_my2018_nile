@@ -175,7 +175,6 @@ def overall_enroll(date):
                AND lower(c.course_id) NOT LIKE '%test%'
                AND lower(c.course_id) NOT LIKE '%demo%'
                AND lower(c.course_id) NOT LIKE '%nile%'
-               and c.created between d.start and d.end
                AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}';
     '''.format(date=date)
@@ -205,7 +204,6 @@ def by_course_enroll(date):
                                                                                     AND '{date}'
                AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                     AND '{date}'
-               and b.created between a.start and a.end
          group by a.id,  a.org;
 
     '''.format(date=date)
@@ -263,7 +261,6 @@ def by_course_demographics(date):
                          AND lower(b.course_id) NOT LIKE '%test%'
                            AND lower(b.course_id) NOT LIKE '%demo%'
                            AND lower(b.course_id) NOT LIKE '%nile%'
-                         and b.created between a.start and a.end
                          AND b.is_active = 1
                          ) t1
         GROUP BY course_id, org;
@@ -319,7 +316,6 @@ def by_course_demographic(course_id, date):
                          AND c.id = d.user_id
                          AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
                          AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
-                         and b.created between a.start and a.end
                          AND b.is_active = 1
                          AND a.id = '{course_id}') t1
         GROUP BY course_id, org;
@@ -407,8 +403,6 @@ def by_course_enroll_week_activity(course_id, date):
                                      1 = 1
                                END
                            AND a.created <> a.modified
-                           and a.created between b.start and b.end
-                           and a.modified between b.start and b.end
                   GROUP BY student_id, module_type) t1
                 GROUP BY student_id) t2;
         '''.format(course_id=course_id, date=date)
@@ -453,8 +447,6 @@ def by_course_enroll_month_activity(course_id, date):
                                      1 = 1
                                END
                            AND a.created <> a.modified
-                           and a.created between b.start and b.end
-                           and a.modified between b.start and b.end
                   GROUP BY student_id, module_type) t1
                 GROUP BY student_id) t2;
         '''.format(course_id=course_id, date=date)
@@ -535,7 +527,6 @@ def course_ids_all():
                AND lower(a.id) NOT LIKE '%test%'
                AND lower(a.id) NOT LIKE '%demo%'
                AND lower(a.id) NOT LIKE '%nile%'
-
                ;
     """
     return execute_query(query)
@@ -550,8 +541,7 @@ def auth_user_info(date):
                      1,
                      0))
                   newcnt,
-               sum(if(email LIKE 'delete_%' AND '{date}' >=
-                    substring(substring_index(email, '@delete.', -1), 1, 8), 0, 1)) allcnt
+               sum(if(email LIKE 'delete_%' and date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}', 0, 1)) allcnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
@@ -701,7 +691,6 @@ def student_courseenrollment_info_week(date):
                        AND lower(b.course_id) NOT LIKE '%test%'
                        AND lower(b.course_id) NOT LIKE '%demo%'
                        AND lower(b.course_id) NOT LIKE '%nile%'
-                        and b.created between c.start and c.end
                        AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                           AND '{date}')
                t1;    '''.format(date=date)
@@ -752,7 +741,6 @@ def student_courseenrollment_info_month(date):
                        AND lower(b.course_id) NOT LIKE '%test%'
                        AND lower(b.course_id) NOT LIKE '%demo%'
                        AND lower(b.course_id) NOT LIKE '%nile%'
-                        and b.created between c.start and c.end
                        AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m') BETWEEN '1'
                                                                                           AND '{date}')
                t1;    '''.format(date=date)
@@ -824,8 +812,6 @@ def student_activity_week(date):
                                              1 = 1
                                        END
                                    AND a.created <> a.modified
-                                   and a.created between b.start and b.end
-                                   and a.modified between b.start and b.end
                           GROUP BY student_id, module_type, course_id) t1
                 GROUP BY course_id, student_id) t2;
     '''.format(date=date)
@@ -896,8 +882,6 @@ def student_activity_month(date):
                                              1 = 1
                                        END
                                    AND a.created <> a.modified
-                                   and a.created between b.start and b.end
-                                   and a.modified between b.start and b.end
                           GROUP BY student_id, module_type, course_id) t1
                 GROUP BY course_id, student_id) t2;
     '''.format(date=date)

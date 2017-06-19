@@ -424,17 +424,17 @@ def statistics_excel(request, date):
         by_course_enroll = statistics_query.by_course_enroll(date)
         for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll:
             row = tuple()
-            row = row + (dic_univ[org] if org in dic_univ else org,)
-            row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
-            row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
-            row = row + (course_names[course_id],)
+            row = row + (get_value_from_dict(dic_univ, org),)
+            row = row + (get_value_from_dict(course_classfys, course_id, ''),)
+            row = row + (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row = row + (get_value_from_dict(course_names, course_id),)
             row = row + (course_id.split('+')[1],)
             row = row + (course_id.split('+')[2],)
-            row = row + (course_creates[course_id],)
-            row = row + (course_enroll_starts[course_id],)
-            row = row + (course_enroll_ends[course_id],)
-            row = row + (course_starts[course_id],)
-            row = row + (course_ends[course_id],)
+            row = row + (get_value_from_dict(course_creates, course_id),)
+            row = row + (get_value_from_dict(course_enroll_starts, course_id),)
+            row = row + (get_value_from_dict(course_enroll_ends, course_id),)
+            row = row + (get_value_from_dict(course_starts, course_id),)
+            row = row + (get_value_from_dict(course_ends, course_id),)
             row = row + (new_enroll_cnt,)
             row = row + (new_unenroll_cnt,)
             row = row + (all_enroll_cnt,)
@@ -495,16 +495,16 @@ def statistics_excel(request, date):
         for course_id, org, male, female, etc, age1, age2, age3, age4, age5, age6, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9, allcnt in by_course_demographic:
             row = tuple()
             row = row + (dic_univ[org] if org in dic_univ else org,)
-            row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
-            row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
-            row = row + (course_names[course_id],)
+            row = row + (get_value_from_dict(course_classfys, course_id, ''),)
+            row = row + (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row = row + (get_value_from_dict(course_names, course_id),)
             row = row + (course_id.split('+')[1],)
             row = row + (course_id.split('+')[2],)
-            row = row + (course_creates[course_id],)
-            row = row + (course_enroll_starts[course_id],)
-            row = row + (course_enroll_ends[course_id],)
-            row = row + (course_starts[course_id],)
-            row = row + (course_ends[course_id],)
+            row = row + (get_value_from_dict(course_creates, course_id),)
+            row = row + (get_value_from_dict(course_enroll_starts, course_id),)
+            row = row + (get_value_from_dict(course_enroll_ends, course_id),)
+            row = row + (get_value_from_dict(course_starts, course_id),)
+            row = row + (get_value_from_dict(course_ends, course_id),)
             row = row + (male,)
             row = row + (female,)
             row = row + (etc,)
@@ -1359,3 +1359,9 @@ def statistics_excel1(request, date):
         wb.save(save_path)
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 """
+
+
+def get_value_from_dict(dict, key, default=None):
+    if default == None:
+        default = key
+    return dict[key] if key in dict else default
