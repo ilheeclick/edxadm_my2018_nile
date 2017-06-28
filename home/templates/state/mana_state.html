@@ -1,14 +1,8 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}운영 현황{% endblock %}
 {% block pagetitlename_header %}운영 현황{% endblock %}
-{#{% block script_down %}#}
-{#<script>#}
-{#	{% include "tch/script/modify_auth.js" %}#}
-{#	{% include "tch/script/input_answer.js" %}#}
-{#</script>#}
-{#{% endblock %}#}
 {% block containor %}
-	<!-- start: page -->
+<!-- start: page -->
 
 <section class="panel panel-featured ">
     <header class="panel-heading">
@@ -16,21 +10,27 @@
     </header>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4" align="center">
+            <div class="col-xs-3" align="left">
                 대학명 &nbsp;&nbsp;&nbsp;
-                <select style="width: 100px">
+                <select>
                     <option>선택하세요</option>
                 </select>
             </div>
-            <div class="col-md-4" align="center">
+            <div class="col-xs-3" align="left">
                 강좌명&nbsp;&nbsp;&nbsp;
-                <select style="width: 200px">
+                <select>
                     <option>선택하세요</option>
                 </select>
             </div>
-            <div class="col-md-4" align="center">
+            <div class="col-xs-3" align="left">
                 기관별 강좌번호&nbsp;&nbsp;&nbsp;
-                <select style="width: 100px">
+                <select>
+                    <option>선택하세요</option>
+                </select>
+            </div>
+            <div class="col-xs-3" align="left">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;운영 상태
+                <select>
                     <option>선택하세요</option>
                 </select>
             </div>
@@ -39,34 +39,28 @@
 
 
         <div align="right">
-            <div class="col-md-4" align="left">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;운영 상태
-                <select style="width: 100px">
-                    <option>선택하세요</option>
-                </select>
-            </div>
             <input class="btn btn-primary" type="button" value="검  색">
             <input class="btn btn-success" type="button" value="엑셀다운로드">
         </div>
 
     </div>
-    <div class="panel-body" >
-        <table class="table table-hover table-striped table-primary table-bordered" >
+    <div class="panel-body">
+        <table class="table table-hover table-striped table-primary table-bordered">
             <thead>
-                <tr>
-                    <td>대학명</td>
-                    <td>강좌명</td>
-                    <td>기관별 강좌번호</td>
-                    <td>이수증 생성 여부</td>
-                </tr>
+            <tr>
+                <td>대학명</td>
+                <td>강좌명</td>
+                <td>기관별 강좌번호</td>
+                <td>이수증 생성 여부</td>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>고려대학교</td>
-                    <td>일반인을 위한 상대성이론</td>
-                    <td>2015_A04</td>
-                    <td>미생성</td>
-                </tr>
+            <tr>
+                <td>고려대학교</td>
+                <td>일반인을 위한 상대성이론</td>
+                <td>2015_A04</td>
+                <td>미생성</td>
+            </tr>
             </tbody>
         </table>
     </div>

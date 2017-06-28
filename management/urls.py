@@ -15,15 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from user_manage.views import user_manage, excel_manage
-from user_manage.statistics import statistics_excel, certificate_excel, statistics_excel3
 from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
-from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
 
 urlpatterns = [
     url(r'^manage/admin/', admin.site.urls),
-    url(r'^manage/index/', user_manage),
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^manage/excel_select/$', excel_manage),
     url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),

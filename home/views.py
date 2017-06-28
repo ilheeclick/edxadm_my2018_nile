@@ -33,8 +33,11 @@ def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
 
-# state view
+# 170628. 이종호 수정
 def mana_state(request):
+
+
+
     return render(request, 'state/mana_state.html')
 
 
