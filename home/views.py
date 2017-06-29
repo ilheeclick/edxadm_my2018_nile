@@ -74,18 +74,40 @@ def mana_state(request):
             elif method == 'test':
                 print 'ajax type 3'
 
-                test_rows = list()
-                for i in range(1, 100):
-                    test_row = dict()
-                    test_row['Email'] = 'redukyo@naver.com%03d' % i
-                    test_row['Name'] = 'Name%03d' % i
-                    test_row['Status'] = 'Status%03d' % i
-                    test_row['User'] = 'User%03d' % i
-                    test_rows.append(test_row)
+                # test_rows = list()
+                # for i in range(1, 100):
+                #     test_row = dict()
+                #     test_row['Email'] = 'redukyo@naver.com%03d' % i
+                #     test_row['Name'] = 'Name%03d' % i
+                #     test_row['Status'] = 'Status%03d' % i
+                #     test_row['User'] = 'User%03d' % i
+                #     test_rows.append(test_row)
 
-                print json.dumps(list(test_rows), cls=DjangoJSONEncoder, ensure_ascii=False)
+                query = '''
+                    SELECT id,
+                           display_name,
+                           lowest_passing_grade
+                      FROM course_overviews_courseoverview
+                     WHERE id LIKE %s AND id LIKE %s AND id LIKE %s
+                '''
 
-                return HttpResponse(json.dumps(list(test_rows), cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+                if org is None:
+                    org = '%%'
+                else:
+                    org = '%{0}%'.format(org)
+                if course is None:
+                    course = '%%'
+                else:
+                    course = '%{0}%'.format(course)
+
+                if run is None:
+                    run = '%%'
+                else:
+                    run = '%{0}%'.format(run)
+
+                cur.execute(query, [org, course, run])
+                pp.pprint(connection.queries)
+
             else:
                 print 'pass type 4'
                 pass
@@ -93,6 +115,11 @@ def mana_state(request):
             print org, course, run
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
+
+            print 'test s --------------------------------------'
+            [json.dumps(zip(columns, row)) for row in rows]
+            print 'test e --------------------------------------'
+
             return_value = [json.dumps(dict(zip(columns, row))) for row in rows]
             return HttpResponse(json.dumps(return_value, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
         else:
