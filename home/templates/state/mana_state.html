@@ -1,42 +1,148 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}운영 현황{% endblock %}
 {% block pagetitlename_header %}운영 현황{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        setCourseOptions();
+        setRunOptions();
+        //test
+        setDataTable();
+
+
+    });
+
+    function setDataTable() {
+        console.log('called setDataTable');
+        $('#userTable').dataTable({
+            pageLength: 10,
+            bPaginate: true,
+            bLengthChange: true,
+            lengthMenu: [[3, 5, 10, -1], [3, 5, 10, "All"]],
+            bAutoWidth: true,
+            processing: true,
+            ordering: true,
+            serverSide: false,
+            searching: true,
+            ajax: {
+                "url": "/manage/mana_state/",
+                "type": "POST",
+                "data": {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    method: 'test'
+                }
+            },
+            columns: [
+                {data: "Email"},
+                {data: "Name"},
+                {data: "Status"},
+                {data: "User"}
+            ]
+
+        });
+
+        /*
+        <th>Email</th>
+        <th>Name</th>
+        <th>User Status</th>
+        <th>Super User</th>
+        * */
+    }
+
+    function setCourseOptions() {
+        $("#org").change(function () {
+            console.log('setCourseOptions called');
+            $("#course, #run").val("");
+            $.post("/manage/mana_state/", {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                method: 'get_course',
+                org: $("#org").val()
+            }, function (data) {
+                $("#course option:not([value='']), #run option:not([value=''])").remove();
+                $(data).each(function (i) {
+                    var d = $.parseJSON(data[i]);
+                    $("#course").append($('<option>', {
+                        value: d.course,
+                        text: d.name
+                    }));
+                });
+            });
+        });
+    }
+
+    function setRunOptions() {
+        $("#course").change(function () {
+            console.log('setRunOptions called');
+            $("#run").val("");
+            $.post("/manage/mana_state/", {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                method: 'get_run',
+                org: $("#org").val(),
+                course: $("#course").val()
+            }, function (data) {
+                $("#run option:not([value=''])").remove();
+                $(data).each(function (i) {
+                    var d = $.parseJSON(data[i]);
+                    alert(d);
+                    $('#run').append($('<option>', {
+                        value: d.run,
+                        text: d.run
+                    }));
+                });
+            });
+        });
+    }
+</script>
+{% endblock%}
 {% block containor %}
 <!-- start: page -->
 
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">이수증 생성</h2></div>
+        <div><h2 class="panel-title">운영 현황</h2></div>
     </header>
-    <div class="panel-body">
+    <div class="panel-body container-fluid">
         <div class="row">
-            <div class="col-xs-3" align="left">
-                대학명 &nbsp;&nbsp;&nbsp;
-                <select>
+            <div class="col-xs-6" align="left">
+                대학명
+                <select id="org" name="org">
                     <option>선택하세요</option>
+                    {% for key, values in org_list.items %}
+                    <option value="{{key}}">{{values}}</option>
+                    {% endfor %}
                 </select>
             </div>
-            <div class="col-xs-3" align="left">
-                강좌명&nbsp;&nbsp;&nbsp;
-                <select>
-                    <option>선택하세요</option>
+
+            <div class="col-xs-6" align="left">
+                운영 상태
+                <select id="status" name="status">
+                    <option value="all">전체</option>
+                    <option value="ready">개강 예정</option>
+                    <option value="ing">진행중</option>
+                    <option value="end">종료</option>
                 </select>
             </div>
-            <div class="col-xs-3" align="left">
-                기관별 강좌번호&nbsp;&nbsp;&nbsp;
-                <select>
-                    <option>선택하세요</option>
-                </select>
-            </div>
-            <div class="col-xs-3" align="left">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;운영 상태
-                <select>
-                    <option>선택하세요</option>
-                </select>
-            </div>
+
         </div>
+
         <br/>
 
+        <div class="row">
+            <div class="col-xs-6" align="left">
+                강좌명
+                <select id="course" name="course">
+                    <option value="">선택하세요</option>
+                </select>
+            </div>
+            <div class="col-xs-6" align="left">
+                강좌 번호
+                <select id="run" name="run">
+                    <option value="">선택하세요</option>
+                </select>
+            </div>
+
+        </div>
+        <br/>
 
         <div align="right">
             <input class="btn btn-primary" type="button" value="검  색">
@@ -45,7 +151,23 @@
 
     </div>
     <div class="panel-body">
-        <table class="table table-hover table-striped table-primary table-bordered">
+        <table id="userTable" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>User</th>
+            </tr>
+            </thead>
+            <!-- tbody 태그 필요 없다. -->
+        </table>
+
+        <!--
+        {% load static %}
+        <table class="table table-hover table-striped table-primary table-bordered" id="datatable" data-url=""
+                   style="width: 100%;"
+                   data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
             <thead>
             <tr>
                 <td>대학명</td>
@@ -54,15 +176,7 @@
                 <td>이수증 생성 여부</td>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>고려대학교</td>
-                <td>일반인을 위한 상대성이론</td>
-                <td>2015_A04</td>
-                <td>미생성</td>
-            </tr>
-            </tbody>
-        </table>
+        -->
     </div>
 </section>
 

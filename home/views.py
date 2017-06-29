@@ -17,6 +17,8 @@ import subprocess
 import commands
 import sys
 from models import GeneratedCertificate
+from django.db import connections
+import pprint
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -33,12 +35,85 @@ def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
 
+import json
+
+
 # 170628. 이종호 수정
 def mana_state(request):
+    pp = pprint.PrettyPrinter(indent=2)
 
+    with connections['default'].cursor() as cur:
+        if request.is_ajax():
+            method = request.POST.get('method')
+            org = request.POST.get('org')
+            course = request.POST.get('course')
+            run = request.POST.get('run')
 
+            if method is None or method == '':
+                raise
+            elif method == 'get_course':
+                print 'ajax type 1'
+                query = '''
+                  SELECT DISTINCT display_number_with_default `course`, display_name `name`
+                    FROM course_overviews_courseoverview a
+                   WHERE org = %s
+                ORDER BY display_name
+                '''
+                cur.execute(query, [org])
+                pp.pprint(connection.queries)
+            elif method == 'get_run':
+                print 'ajax type 2'
+                query = '''
+                  SELECT DISTINCT substring_index(id, '+', -1) `run`
+                    FROM course_overviews_courseoverview a
+                   WHERE org = %s
+                     AND display_number_with_default = %s
+                '''
+                cur.execute(query, [org, course])
+                pp.pprint(connection.queries)
+            elif method == 'test':
+                print 'ajax type 3'
 
-    return render(request, 'state/mana_state.html')
+                test_rows = list()
+                for i in range(1, 100):
+                    test_row = dict()
+                    test_row['Email'] = 'redukyo@naver.com%03d' % i
+                    test_row['Name'] = 'Name%03d' % i
+                    test_row['Status'] = 'Status%03d' % i
+                    test_row['User'] = 'User%03d' % i
+                    test_rows.append(test_row)
+
+                print json.dumps(list(test_rows), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+                return HttpResponse(json.dumps(list(test_rows), cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+            else:
+                print 'pass type 4'
+                pass
+
+            print org, course, run
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            return_value = [json.dumps(dict(zip(columns, row))) for row in rows]
+            return HttpResponse(json.dumps(return_value, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+        else:
+            query = '''
+                SELECT DISTINCT org
+                  FROM course_overviews_courseoverview a
+                 WHERE     1 = 1
+                       AND lower(id) NOT LIKE '%test%'
+                       AND lower(id) NOT LIKE '%demo%'
+                       AND lower(id) NOT LIKE '%nile%';
+            '''
+            cur.execute(query)
+            rows = cur.fetchall()
+
+            org_list = {row[0]: dic_univ[row[0]] if row[0] in dic_univ else row[0] for row in rows}
+
+            context = {
+                'org_list': org_list,
+            }
+
+        return render(request, 'state/mana_state.html', context)
 
 
 def dev_state(request):
@@ -1343,7 +1418,6 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
-
 # 사용내역 히스토리 로그 조회
 # def history_auth(request):
 #     client = MongoClient(database_id, 27017)
@@ -1454,11 +1528,3 @@ def summer_upload(request):
 #         return HttpResponse(data, 'applications/json')
 #
 #     return render(request, 'certificate/per_certificate.html')
-
-
-
-
-
-
-
-

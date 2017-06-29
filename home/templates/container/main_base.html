@@ -60,7 +60,7 @@
         {% comment %}<script src='{% static "jquery/1.11.2/jquery-1.11.2.min.js" %}'></script>
         <script src='{% static "cookie/1.4.1/jquery.cookie.js" %}'></script>{% endcomment %}
 
-        {% block script %}{% endblock %}
+
 
 	</head>
 
@@ -497,6 +497,7 @@
                 setactivesidebar('');
             }).apply(this, [jQuery]);
         </script>
+        {% block script %}{% endblock %}
 
 	</body>
 
