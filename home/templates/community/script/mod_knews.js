@@ -116,8 +116,7 @@ $('#knews_mod').on('click', function(e){
             location.href='/manage/comm_k_news';
 
         }).fail(function(error) {
-            alert('error = ' + error.responseJSON);
-            alert('파일명이 잘못되었습니다.');
+            alert('error = ' + error.message);
         });
     }catch(e){
         alert(e);

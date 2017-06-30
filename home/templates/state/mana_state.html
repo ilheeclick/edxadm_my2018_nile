@@ -33,10 +33,10 @@
                 }
             },
             columns: [
-                {data: "Email"},
-                {data: "Name"},
-                {data: "Status"},
-                {data: "User"}
+                {data: "id"},
+                {data: "display_name"},
+                {data: "lowest_passing_grade"},
+                {data: "effort"}
             ]
 
         });
@@ -154,29 +154,13 @@
         <table id="userTable" class="table table-striped table-bordered table-hover">
             <thead>
             <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>User</th>
+                <th>id</th>
+                <th>display_name</th>
+                <th>lowest_passing_grade</th>
+                <th>effort</th>
             </tr>
             </thead>
-            <!-- tbody 태그 필요 없다. -->
         </table>
-
-        <!--
-        {% load static %}
-        <table class="table table-hover table-striped table-primary table-bordered" id="datatable" data-url=""
-                   style="width: 100%;"
-                   data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
-            <thead>
-            <tr>
-                <td>대학명</td>
-                <td>강좌명</td>
-                <td>기관별 강좌번호</td>
-                <td>이수증 생성 여부</td>
-            </tr>
-            </thead>
-        -->
     </div>
 </section>
 

@@ -86,7 +86,8 @@ def mana_state(request):
                 query = '''
                     SELECT id,
                            display_name,
-                           lowest_passing_grade
+                           lowest_passing_grade,
+                           effort
                       FROM course_overviews_courseoverview
                      WHERE id LIKE %s AND id LIKE %s AND id LIKE %s
                 '''
@@ -115,12 +116,7 @@ def mana_state(request):
             print org, course, run
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
-
-            print 'test s --------------------------------------'
-            [json.dumps(zip(columns, row)) for row in rows]
-            print 'test e --------------------------------------'
-
-            return_value = [json.dumps(dict(zip(columns, row))) for row in rows]
+            return_value = [json.dumps(dict(zip(columns, (str(col) for col in row)))) for row in rows]
             return HttpResponse(json.dumps(return_value, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
         else:
             query = '''
@@ -864,11 +860,9 @@ def new_knews(request):
             data = json.dumps({'status': "success"})
 
         elif request.POST['method'] == 'modi':
-            title = request.POST.get('nt_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('nt_cont')
-            content = content.replace("'", "''")
-            noti_id = request.POST.get('noti_id')
+            title = request.POST.get('k_news_title')
+            content = request.POST.get('k_news_cont')
+            noti_id = request.POST.get('k_news_id')
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
@@ -877,7 +871,34 @@ def new_knews(request):
             file_size = request.POST.get('file_size')
 
             cur = connection.cursor()
-            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', odby = '" + odby + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + noti_id + "'"
+
+            print 'param check s --------------------------'
+            print 'title:', title
+            print 'content:', content
+            print 'odby:', odby
+            print 'head_title:', head_title
+            print 'noti_id:', noti_id
+            print 'param check e --------------------------'
+
+            query = '''
+                UPDATE edxapp.tb_board
+                   SET subject = '{title}',
+                       content = '{content}',
+                       odby = '{odby}',
+                       mod_date = now(),
+                       head_title = '{head_title}'
+                 WHERE board_id = '{noti_id}'
+
+            '''.format(
+                title=title,
+                content=content,
+                odby=odby,
+                head_title=head_title,
+                noti_id=noti_id
+            )
+
+            print 'query:', query
+
             cur.execute(query)
             cur.close()
             print 'str(file_ext) == ', str(file_ext)
@@ -900,7 +921,6 @@ def modi_knews(request, id, use_yn):
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
             cur = connection.cursor()
-            # query = "SELECT subject, content, odby from tb_board WHERE section = 'K' and board_id = "+id
             query = """
 					SELECT subject,
 						   content,
