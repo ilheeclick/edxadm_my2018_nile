@@ -918,38 +918,37 @@ def new_knews(request):
 def modi_knews(request, id, use_yn):
     mod_knews = []
     if request.is_ajax():
+        print 'start ajax.'
+
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
-            cur = connection.cursor()
-            query = """
-					SELECT subject,
-						   content,
-						   odby,
-						   CASE
-							  WHEN head_title = 'k_news_k' THEN 'K-MOOC소식'
-							  WHEN head_title = 'report_k' THEN '보도자료'
-							  WHEN head_title = 'u_news_k' THEN '대학뉴스'
-							  WHEN head_title = 'support_k' THEN '서포터즈이야기'
-							  WHEN head_title = 'n_new_k' THEN 'NILE소식'
-							  WHEN head_title = 'etc_k' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title
-					  FROM tb_board
-					 WHERE section = 'K' and board_id = """ + id
-            cur.execute(query)
-            row = cur.fetchall()
-            cur.close()
-            # print 'query', query
+            with connection.cursor() as cur:
+                query = """
+                    SELECT subject,
+                           content,
+                           odby,
+                           CASE
+                              WHEN head_title = 'k_news_k' THEN 'K-MOOC소식'
+                              WHEN head_title = 'report_k' THEN '보도자료'
+                              WHEN head_title = 'u_news_k' THEN '대학뉴스'
+                              WHEN head_title = 'support_k' THEN '서포터즈이야기'
+                              WHEN head_title = 'n_new_k' THEN 'NILE소식'
+                              WHEN head_title = 'etc_k' THEN '기타'
+                              ELSE ''
+                           END
+                              head_title
+                      FROM tb_board
+                     WHERE section = 'K' and board_id = {id}
+                """.format(id=id)
+                cur.execute(query)
+                row = cur.fetchall()
 
-            cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where board_id = " + id
-            cur.execute(query)
-            files = cur.fetchall()
-            cur.close()
-            # print id
-            # print 'files == ',files
-            # print row
+                query = """
+                  select attatch_file_name from tb_board_attach where board_id = {id}
+                """.format(id=id)
+                cur.execute(query)
+                files = cur.fetchall()
+
             mod_knews.append(row[0][0])
             mod_knews.append(row[0][1])
             mod_knews.append(row[0][2])
@@ -957,19 +956,27 @@ def modi_knews(request, id, use_yn):
             if files:
                 mod_knews.append(files)
             data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+            print 'data s --------------------'
+            print data
+            print 'data e --------------------'
+
         elif request.GET['method'] == 'file_download':
             file_name = request.GET['file_name']
             # print 'file_name == ',file_name
             data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
         return HttpResponse(data, 'applications/json')
+    else:
+        print 'start not ajax.'
+        variables = RequestContext(request, {
+            'id': id,
+            'use_yn': use_yn
+        })
 
-    variables = RequestContext(request, {
-        'id': id,
-        'use_yn': use_yn
-    })
+        print 'variables:', variables
 
-    return render_to_response('community/comm_modi_knews.html', variables)
+        return render_to_response('community/comm_modi_knews.html', variables)
 
 
 def comm_faq(request):

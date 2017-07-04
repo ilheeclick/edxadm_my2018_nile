@@ -3,8 +3,10 @@ var file_ext= [];
 var file_size= [];
 jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
+
+    //화면 로딩후 내용 조회.
     var value_list;
-    var id = {{id}};
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     var html = "";
     $.ajax({
@@ -65,7 +67,7 @@ $(document).ready(function(){
 //파일 다운로드
 $(document).on('click', '#saved_file > li >  a', function(){
     var file_name = $(this).text();
-    var board_id = {{id}};
+    var board_id = '{{id}}';
     var use_yn = '{{use_yn}}';
 
     $.ajax({
@@ -92,8 +94,12 @@ $('#knews_mod').on('click', function(e){
         knews_content = $('.summernote').summernote('code');
         odby = $('#odby').val();
         action_mode = 'modi';
-        knews_id = {{id}}
-        //alert(uploadfile+'/'+file_name+'/'+file_ext+'/'+file_size)
+        knews_id = '{{id}}';
+
+        console.log('uploadfile:' + uploadfile);
+        console.log('file_name:' + file_name);
+        console.log('file_ext:' + file_ext);
+        console.log('file_size:' + file_size);
 
         if(head_title == 'null'){
             head_title = ''
@@ -161,7 +167,7 @@ $(document).on('click', '#fileupload', function(){
 //파일 삭제 처리
 $(document).on('click', '#delete', function(){
     var del_file = $(this).parent().text().slice(0, -2);
-    var board_id = {{id}};
+    var board_id = '{{id}}';
     $.post("/manage/new_knews/", {
         csrfmiddlewaretoken:$.cookie('csrftoken'),
         method : 'delete_file',
@@ -172,7 +178,7 @@ $(document).on('click', '#delete', function(){
 
 //숨김 처리
 $('#knews_del').on('click', function(){
-    var id = {{id}};
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     $.ajax({
         url:'/manage/comm_k_news/',
@@ -189,7 +195,7 @@ $('#knews_del').on('click', function(){
 
 //삭제 처리
 $('#knews_delete').on('click', function(){
-    var id = {{id}};
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     $.ajax({
         url:'/manage/comm_k_news/',
