@@ -24,8 +24,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-# Create your views here.
-
 # stastic view
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
@@ -75,6 +73,76 @@ def mana_state(request):
         }
         return render(request, 'state/mana_state.html', context)
 
+
+def uni_certificate(request):
+    print 'uni_certificate called'
+    if request.is_ajax():
+        print 'ajax'
+
+        with connections['default'].cursor() as cur:
+            org = request.POST.get('org')
+            course = request.POST.get('course')
+            run = request.POST.get('run')
+
+            query = """
+                SELECT org,
+                       display_name,
+                       substring_index(substring_index(course_id, '+', 2), '+', -1)
+                                    `course`,
+                       ifnull(date_format(end, '%%Y/%%m/%%d'), '-') end,
+                       ifnull(date_format(created_date, '%%Y/%%m/%%d'), '-') created_date,
+                       user_cnt,
+                       succ_cnt,
+                       if(created_date IS NULL, '-', fail_cnt)                    fail_cnt,
+                       if(created_date IS NULL, '-', (succ_cnt / user_cnt) * 100) succ_rate,
+                       if(created_date IS NULL, 'X', 'O')
+                          exists_cert
+                  FROM (  SELECT a.org,
+                                 a.display_name,
+                                 a.id course_id,
+                                 a.end                                  `end`,
+                                 max(c.created_date)                    `created_date`,
+                                 count(b.user_id)                       `user_cnt`,
+                                 sum(if(c.status = 'downloadable', 1, 0)) succ_cnt,
+                                 sum(if(c.status = 'downloadable', 0, 1)) fail_cnt
+                            FROM course_overviews_courseoverview a
+                                 JOIN student_courseenrollment b ON a.id = b.course_id
+                                 LEFT JOIN certificates_generatedcertificate c
+                                    ON b.course_id = c.course_id AND b.user_id = c.user_id
+                           WHERE 1 = 1 AND a.id like %s
+                        GROUP BY a.org,
+                                 a.display_name,
+                                 a.id,
+                                 a.end) t1;
+            """
+
+            course_id = '%{0}%{1}%{2}%'.format(org, course, run).replace('None', '')
+
+            print 'course_id:', course_id.replace('None', '')
+            print 'query:', query
+
+            cur.execute(query, [course_id])
+
+            print 'params check ------------->', org, course, run
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            return_value = [dict(zip(columns, (dic_univ[col] if col in dic_univ else str(col) for col in row))) for row
+                            in rows]
+            result = dict()
+            result['data'] = return_value
+
+            return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+
+    else:
+        print 'no ajax'
+        context = {
+            'org_list': get_options(request)
+        }
+
+        return render(request, 'certificate/uni_certificate.html', context)
+
+
+# 이종호 수정 end
 
 def get_options(request, org=None, course=None):
     pp = pprint.PrettyPrinter(indent=2)
@@ -434,74 +502,10 @@ def per_certificate(request):
     return render(request, 'certificate/per_certificate.html')
 
 
-def uni_certificate(request):
-    print 'uni_certificate called'
-    if request.is_ajax():
-        print 'ajax'
 
-        with connections['default'].cursor() as cur:
-            org = request.POST.get('org')
-            course = request.POST.get('course')
-            run = request.POST.get('run')
 
-            query = """
-                SELECT org,
-                       display_name,
-                       course,
-                       end,
-                       created_date,
-                       user_cnt,
-                       succ_cnt,
-                       if(created_date IS NULL, '-', fail_cnt)                    fail_cnt,
-                       if(created_date IS NULL, '-', (succ_cnt / user_cnt) * 100) succ_rate,
-                       if(created_date IS NULL, 'X', 'O')
-                          exists_cert
-                  FROM (  SELECT a.org,
-                                 a.display_name,
-                                 substring_index(substring_index(a.id, '+', 2), '+', -1)
-                                    `course`,
-                                 a.end                                  `end`,
-                                 max(c.created_date)                    `created_date`,
-                                 count(b.user_id)                       `user_cnt`,
-                                 sum(if(c.status = 'downloadable', 1, 0)) succ_cnt,
-                                 sum(if(c.status = 'downloadable', 0, 1)) fail_cnt
-                            FROM course_overviews_courseoverview a
-                                 JOIN student_courseenrollment b ON a.id = b.course_id
-                                 LEFT JOIN certificates_generatedcertificate c
-                                    ON b.course_id = c.course_id AND b.user_id = c.user_id
-                           WHERE 1 = 1 AND a.id = %s
-                        GROUP BY a.org,
-                                 a.display_name,
-                                 `course`,
-                                 a.end) t1;
-            """
-
-            course_id = 'course-v1:%s+%s+%s' % (org, course, run)
-
-            print 'course_id:', course_id
-            print 'query:', query
-
-            cur.execute(query, [course_id])
-
-            print 'params check ------------->', org, course, run
-            rows = cur.fetchall()
-            columns = [col[0] for col in cur.description]
-            return_value = [dict(zip(columns, (str(col) for col in row))) for row in rows]
-            result = dict()
-            result['data'] = return_value
-
-            return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
-
-    else:
-        print 'no ajax'
-        context = {
-            'org_list': get_options(request)
-        }
-
-        return render(request, 'certificate/uni_certificate.html', context)
-
-        # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
-        # cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
+    # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
+    # cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
 
 
 # community view

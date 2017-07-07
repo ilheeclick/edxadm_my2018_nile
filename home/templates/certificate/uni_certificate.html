@@ -27,42 +27,6 @@
 
     function setDataTable() {
         $('#dataTable').DataTable({
-            dom: 'Bfrtip',
-            lengthChange: true,
-            buttons: [
-                {
-                    extend: 'copyHtml5',
-                    text: 'copy',
-                    className: 'btn btn-default btn-xs',
-                },
-                {
-                    extend: 'csvHtml5',
-                    text: 'csv',
-                    className: 'btn btn-default btn-xs',
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: 'excel',
-                    className: 'btn btn-default btn-xs',
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: 'pdf',
-                    className: 'btn btn-default btn-xs',
-                },
-                {
-                    extend: 'print',
-                    text: 'print',
-                    className: 'btn btn-default btn-xs',
-                },
-            ],
-            pageLength: 10,
-            bPaginate: false,
-            bAutoWidth: true,
-            processing: true,
-            ordering: false,
-            serverSide: false,
-            searching: false,
             ajax: {
                 "url": "/manage/uni_certificate/",
                 "type": "POST",
@@ -92,7 +56,7 @@
     <header class="panel-heading">
         <div><h2 class="panel-title">대학별 이수증 발급 현황</h2></div>
     </header>
-    {% include "search_condition.html" %}
+
     <div class="panel-body">
         <table id="dataTable" class="table table-striped table-bordered table-hover">
             <thead>
