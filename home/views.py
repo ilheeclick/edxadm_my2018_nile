@@ -41,102 +41,100 @@ import json
 # 170628. 이종호 수정
 def mana_state(request):
     pp = pprint.PrettyPrinter(indent=2)
-
-    with connections['default'].cursor() as cur:
-        if request.is_ajax():
-            method = request.POST.get('method')
+    if request.is_ajax():
+        with connections['default'].cursor() as cur:
             org = request.POST.get('org')
             course = request.POST.get('course')
             run = request.POST.get('run')
 
-            if method is None or method == '':
-                raise
-            elif method == 'get_course':
-                print 'ajax type 1'
-                query = '''
-                  SELECT DISTINCT display_number_with_default `course`, display_name `name`
-                    FROM course_overviews_courseoverview a
-                   WHERE org = %s
-                ORDER BY display_name
-                '''
-                cur.execute(query, [org])
-                pp.pprint(connection.queries)
-            elif method == 'get_run':
-                print 'ajax type 2'
-                query = '''
-                  SELECT DISTINCT substring_index(id, '+', -1) `run`
-                    FROM course_overviews_courseoverview a
-                   WHERE org = %s
-                     AND display_number_with_default = %s
-                '''
-                cur.execute(query, [org, course])
-                pp.pprint(connection.queries)
-            elif method == 'test':
-                print 'ajax type 3'
+            query = '''
+                SELECT id,
+                       display_name,
+                       lowest_passing_grade,
+                       effort
+                  FROM course_overviews_courseoverview
+                 WHERE id LIKE %s AND id LIKE %s AND id LIKE %s
+            '''
 
-                # test_rows = list()
-                # for i in range(1, 100):
-                #     test_row = dict()
-                #     test_row['Email'] = 'redukyo@naver.com%03d' % i
-                #     test_row['Name'] = 'Name%03d' % i
-                #     test_row['Status'] = 'Status%03d' % i
-                #     test_row['User'] = 'User%03d' % i
-                #     test_rows.append(test_row)
+            org = '%%' if org is None else '%{0}%'.format(org)
+            course = '%%' if course is None else '%{0}%'.format(course)
+            run = '%%' if run is None else '%{0}%'.format(run)
 
-                query = '''
-                    SELECT id,
-                           display_name,
-                           lowest_passing_grade,
-                           effort
-                      FROM course_overviews_courseoverview
-                     WHERE id LIKE %s AND id LIKE %s AND id LIKE %s
-                '''
-
-                if org is None:
-                    org = '%%'
-                else:
-                    org = '%{0}%'.format(org)
-                if course is None:
-                    course = '%%'
-                else:
-                    course = '%{0}%'.format(course)
-
-                if run is None:
-                    run = '%%'
-                else:
-                    run = '%{0}%'.format(run)
-
-                cur.execute(query, [org, course, run])
-                pp.pprint(connection.queries)
-
-            else:
-                print 'pass type 4'
-                pass
+            cur.execute(query, [org, course, run])
 
             print org, course, run
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
-            return_value = [json.dumps(dict(zip(columns, (str(col) for col in row)))) for row in rows]
-            return HttpResponse(json.dumps(return_value, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
-        else:
+            return_value = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = return_value
+            return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+    else:
+        context = {
+            'org_list': get_options(request),
+        }
+        return render(request, 'state/mana_state.html', context)
+
+
+def get_options(request, org=None, course=None):
+    pp = pprint.PrettyPrinter(indent=2)
+
+    if request.is_ajax():
+        org = request.POST.get('org')
+        course = request.POST.get('course')
+
+    params = list()
+    if org:
+        params.append(org)
+    if course:
+        params.append(course)
+
+    print 'params:', len(params), params
+
+    with connection.cursor() as cur:
+        if len(params) == 0:
             query = '''
-                SELECT DISTINCT org
-                  FROM course_overviews_courseoverview a
-                 WHERE     1 = 1
-                       AND lower(id) NOT LIKE '%test%'
-                       AND lower(id) NOT LIKE '%demo%'
-                       AND lower(id) NOT LIKE '%nile%';
-            '''
+              SELECT DISTINCT org
+                FROM course_overviews_courseoverview a
+               WHERE     1 = 1
+                     AND lower(id) NOT LIKE '%test%'
+                     AND lower(id) NOT LIKE '%demo%'
+                     AND lower(id) NOT LIKE '%nile%';
+          '''
             cur.execute(query)
             rows = cur.fetchall()
 
-            org_list = {row[0]: dic_univ[row[0]] if row[0] in dic_univ else row[0] for row in rows}
+            # default object return. for django templates.
+            options = {row[0]: dic_univ[row[0]] if row[0] in dic_univ else row[0] for row in rows}
+            # options = [json.dumps({'key': row[0], 'value': row[0]}) for row in rows]
+            return options
 
-            context = {
-                'org_list': org_list,
-            }
+        elif len(params) == 1:
+            query = '''
+                SELECT DISTINCT display_number_with_default `course`, display_name `name`
+                  FROM course_overviews_courseoverview a
+                 WHERE org = %s
+              ORDER BY display_name
+            '''
+            cur.execute(query, [org])
+            rows = cur.fetchall()
+            options = [json.dumps({row[0]: row[1]}) for row in rows]
 
-        return render(request, 'state/mana_state.html', context)
+        elif len(params) == 2:
+            query = '''
+                SELECT DISTINCT substring_index(id, '+', -1) `run`
+                  FROM course_overviews_courseoverview a
+                 WHERE org = %s
+                   AND display_number_with_default = %s
+                   order by id
+            '''
+            cur.execute(query, params)
+            rows = cur.fetchall()
+            options = [json.dumps({row[0]: row[0]}) for row in rows]
+
+        else:
+            print 'len(param) more then 2'
+    return HttpResponse(json.dumps(options), 'applications/json')
 
 
 def dev_state(request):
@@ -145,6 +143,7 @@ def dev_state(request):
 
 # certificate view
 def certificate(request):
+    print 'certificate start'
     client = MongoClient(database_id, 27017)
     db = client.edxapp
     pb_list = []
@@ -436,18 +435,73 @@ def per_certificate(request):
 
 
 def uni_certificate(request):
-    # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
-    cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
+    print 'uni_certificate called'
+    if request.is_ajax():
+        print 'ajax'
 
-    print '@@@ uni_certificate called @@@', len(cert)
-    print 'sql s --------------------'
-    print cert.query
-    print 'sql e --------------------'
+        with connections['default'].cursor() as cur:
+            org = request.POST.get('org')
+            course = request.POST.get('course')
+            run = request.POST.get('run')
 
-    context = dict()
-    context['test'] = '1'
+            query = """
+                SELECT org,
+                       display_name,
+                       course,
+                       end,
+                       created_date,
+                       user_cnt,
+                       succ_cnt,
+                       if(created_date IS NULL, '-', fail_cnt)                    fail_cnt,
+                       if(created_date IS NULL, '-', (succ_cnt / user_cnt) * 100) succ_rate,
+                       if(created_date IS NULL, 'X', 'O')
+                          exists_cert
+                  FROM (  SELECT a.org,
+                                 a.display_name,
+                                 substring_index(substring_index(a.id, '+', 2), '+', -1)
+                                    `course`,
+                                 a.end                                  `end`,
+                                 max(c.created_date)                    `created_date`,
+                                 count(b.user_id)                       `user_cnt`,
+                                 sum(if(c.status = 'downloadable', 1, 0)) succ_cnt,
+                                 sum(if(c.status = 'downloadable', 0, 1)) fail_cnt
+                            FROM course_overviews_courseoverview a
+                                 JOIN student_courseenrollment b ON a.id = b.course_id
+                                 LEFT JOIN certificates_generatedcertificate c
+                                    ON b.course_id = c.course_id AND b.user_id = c.user_id
+                           WHERE 1 = 1 AND a.id = %s
+                        GROUP BY a.org,
+                                 a.display_name,
+                                 `course`,
+                                 a.end) t1;
+            """
 
-    return render(request, 'certificate/uni_certificate.html', context)
+            course_id = 'course-v1:%s+%s+%s' % (org, course, run)
+
+            print 'course_id:', course_id
+            print 'query:', query
+
+            cur.execute(query, [course_id])
+
+            print 'params check ------------->', org, course, run
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            return_value = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = return_value
+
+            return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+
+    else:
+        print 'no ajax'
+        context = {
+            'org_list': get_options(request)
+        }
+
+        return render(request, 'certificate/uni_certificate.html', context)
+
+        # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
+        # cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
 
 
 # community view
@@ -455,6 +509,7 @@ def comm_notice(request):
     noti_list = []
     if request.is_ajax():
         aaData = {}
+        print "request.GET['method'] ===========================>", request.GET['method']
         if request.GET['method'] == 'notice_list':
             cur = connection.cursor()
             query = """
@@ -511,8 +566,8 @@ def comm_notice(request):
                 value_list.append(notice[7])
                 noti_list.append(value_list)
                 index += 1
-
             aaData = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+            print 'aaData:', aaData
 
         elif request.GET['method'] == 'notice_del':
             noti_id = request.GET['noti_id']
