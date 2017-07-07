@@ -725,9 +725,7 @@ def new_knews(request):
         if request.POST['method'] == 'add':
 
             title = request.POST.get('knews_title')
-            title = title.replace("'", "''")
             content = request.POST.get('knews_content')
-            content = content.replace("'", "''")
             section = request.POST.get('k_news')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
@@ -759,11 +757,9 @@ def new_knews(request):
             data = json.dumps({'status': "success"})
 
         elif request.POST['method'] == 'modi':
-            title = request.POST.get('nt_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('nt_cont')
-            content = content.replace("'", "''")
-            noti_id = request.POST.get('noti_id')
+            title = request.POST.get('k_news_title')
+            content = request.POST.get('k_news_cont')
+            noti_id = request.POST.get('k_news_id')
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
@@ -772,9 +768,40 @@ def new_knews(request):
             file_size = request.POST.get('file_size')
 
             cur = connection.cursor()
-            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', odby = '" + odby + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + noti_id + "'"
+
+            print 'param check s --------------------------'
+            print 'title:', title
+            print 'content:', content
+            print 'odby:', odby
+            print 'head_title:', head_title
+            print 'noti_id:', noti_id
+            print 'param check e --------------------------'
+
+            query = '''
+                UPDATE edxapp.tb_board
+                   SET subject = '{title}',
+                       content = '{content}',
+                       odby = '{odby}',
+                       mod_date = now(),
+                       head_title = '{head_title}'
+                 WHERE board_id = '{noti_id}'
+
+            '''.format(
+                title=title,
+                content=content,
+                odby=odby,
+                head_title=head_title,
+                noti_id=noti_id
+            )
+
+            print 'query:', query
+
             cur.execute(query)
+
             cur.close()
+
+            print query
+
             print 'str(file_ext) == ', str(file_ext)
             if upload_file != '':
                 cur = connection.cursor()
@@ -873,6 +900,7 @@ def comm_faq(request):
 							  WHEN head_title = 'course_f ' THEN '강좌수강'
 							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
 							  WHEN head_title = 'tech_f ' THEN '기술적문제'
+							  WHEN head_title = 'mobile_f ' THEN '모바일문제'
 							  ELSE ''
 						   END
 							  head_title,
@@ -1014,6 +1042,7 @@ def modi_faq(request, id, use_yn):
 							  WHEN head_title = 'course_f ' THEN '강좌수강'
 							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
 							  WHEN head_title = 'tech_f ' THEN '기술적문제'
+							  WHEN head_title = 'mobile_f ' THEN '모바일문제'
 							  ELSE ''
 						   END
 							  head_title
@@ -1340,7 +1369,6 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
-
 # 사용내역 히스토리 로그 조회
 # def history_auth(request):
 #     client = MongoClient(database_id, 27017)
@@ -1451,11 +1479,3 @@ def summer_upload(request):
 #         return HttpResponse(data, 'applications/json')
 #
 #     return render(request, 'certificate/per_certificate.html')
-
-
-
-
-
-
-
-
