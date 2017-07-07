@@ -80,15 +80,15 @@ def uni_certificate(request):
         print 'ajax'
 
         with connections['default'].cursor() as cur:
-            org = request.POST.get('org')
-            course = request.POST.get('course')
-            run = request.POST.get('run')
+            org = request.POST.get('org', '')
+            course = request.POST.get('course', '')
+            run = request.POST.get('run', '')
 
             query = """
                 SELECT org,
                        display_name,
                        substring_index(substring_index(course_id, '+', 2), '+', -1)
-                                    `course`,
+                                    "course",
                        ifnull(date_format(end, '%%Y/%%m/%%d'), '-') end,
                        ifnull(date_format(created_date, '%%Y/%%m/%%d'), '-') created_date,
                        user_cnt,
@@ -100,9 +100,9 @@ def uni_certificate(request):
                   FROM (  SELECT a.org,
                                  a.display_name,
                                  a.id course_id,
-                                 a.end                                  `end`,
-                                 max(c.created_date)                    `created_date`,
-                                 count(b.user_id)                       `user_cnt`,
+                                 a.end                                  "end",
+                                 max(c.created_date)                    "created_date",
+                                 count(b.user_id)                       "user_cnt",
                                  sum(if(c.status = 'downloadable', 1, 0)) succ_cnt,
                                  sum(if(c.status = 'downloadable', 0, 1)) fail_cnt
                             FROM course_overviews_courseoverview a
@@ -116,7 +116,7 @@ def uni_certificate(request):
                                  a.end) t1;
             """
 
-            course_id = '%{0}%{1}%{2}%'.format(org, course, run).replace('None', '')
+            course_id = '%{0}%{1}%{2}%'.format(org, course, run)
 
             print 'course_id:', course_id.replace('None', '')
             print 'query:', query
@@ -179,7 +179,7 @@ def get_options(request, org=None, course=None):
 
         elif len(params) == 1:
             query = '''
-                SELECT DISTINCT display_number_with_default `course`, display_name `name`
+                SELECT DISTINCT display_number_with_default "course", display_name "name"
                   FROM course_overviews_courseoverview a
                  WHERE org = %s
               ORDER BY display_name
@@ -190,7 +190,7 @@ def get_options(request, org=None, course=None):
 
         elif len(params) == 2:
             query = '''
-                SELECT DISTINCT substring_index(id, '+', -1) `run`
+                SELECT DISTINCT substring_index(id, '+', -1) "run"
                   FROM course_overviews_courseoverview a
                  WHERE org = %s
                    AND display_number_with_default = %s
