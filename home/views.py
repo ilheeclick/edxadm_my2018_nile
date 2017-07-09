@@ -52,13 +52,14 @@ def mana_state(request):
                        effort
                   FROM course_overviews_courseoverview
                  WHERE id LIKE %s AND id LIKE %s AND id LIKE %s
+                  limit %s, %s
             '''
 
             org = '%%' if org is None else '%{0}%'.format(org)
             course = '%%' if course is None else '%{0}%'.format(course)
             run = '%%' if run is None else '%{0}%'.format(run)
 
-            cur.execute(query, [org, course, run])
+            cur.execute(query, [org, course, run, 1, 10])
 
             print org, course, run
             rows = cur.fetchall()
@@ -66,6 +67,9 @@ def mana_state(request):
             return_value = [dict(zip(columns, (str(col) for col in row))) for row in rows]
             result = dict()
             result['data'] = return_value
+            result['recordsTotal'] = 100
+            result['recordsFiltered'] = 50
+
             return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
     else:
         context = {

@@ -13,6 +13,18 @@
     }
 
     function buildSearchData() {
+        var table = $("#dataTable").DataTable();
+        var info = table.page.info();
+
+
+
+        console.log('page check s ----------------');
+        console.log(table.page.info());
+        console.log(info.page + 1);
+        console.log(info.pages);
+        console.log(info.length);
+        console.log('page check e ----------------');
+
         var obj = {
             csrfmiddlewaretoken: '{{ csrf_token }}',
             org: $("#org").val(),
