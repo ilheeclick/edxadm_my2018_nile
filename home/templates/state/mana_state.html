@@ -18,6 +18,7 @@
             org: $("#org").val(),
             course: $("#course").val(),
             run: $("#run").val(),
+            iDisplayStart: $(".pagination .active").html()
         }
         return obj
     }
@@ -58,7 +59,7 @@
             bAutoWidth: true,
             processing: true,
             ordering: true,
-            serverSide: false,
+            serverSide: true,
             searching: true,
             ajax: {
                 "url": "/manage/mana_state/",
@@ -78,10 +79,47 @@
                 infoEmpty: "No records available",
                 infoFiltered: "(filtered from _MAX_ total records)",
                 sEmptyTable: "조회된 데이터가 없습니다"
+            },
+            initComplete: function () {
+                console.log('initComplete called');
+                console.log(this.api().columns());
+                this.api().columns().every(function (index) {
+                    console.log('index = ' + index);
+
+                    var column = this;
+
+                    if (index < 2) {
+                        var title = $(column.footer()).text();
+                        $(column.footer()).html('<input type="text" placeholder="Search ' + title + '" />');
+
+                        $('input', this.footer()).on('keyup change', function () {
+                            console.log('event1');
+                            if (column.search() !== this.value) {
+                                column
+                                        .search(this.value)
+                                        .draw();
+                            }
+                        });
+
+                    } else {
+                        var select = $('<select><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                    );
+
+                                    column
+                                            .search(val ? '^' + val + '$' : '', true, false)
+                                            .draw();
+                                });
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    }
+                });
             }
-
         });
-
     }
 
 </script>
@@ -104,6 +142,14 @@
                 <th>effort</th>
             </tr>
             </thead>
+            <tfoot>
+            <tr>
+                <th>아이디</th>
+                <th>강좌명</th>
+                <th>lowest_passing_grade</th>
+                <th>effort</th>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </section>

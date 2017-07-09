@@ -40,7 +40,33 @@
                 {data: "fail_cnt"},
                 {data: "succ_rate"},
                 {data: "exists_cert"}
-            ]
+            ],
+            initComplete: function () {
+                console.log('initComplete called');
+                console.log(this.api().columns());
+                this.api().columns().every(function (index) {
+                    console.log('index = ' + index);
+                    if (index > 0) {
+                        return;
+                    }
+
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                );
+
+                                column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                            });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
         });
     }
 
@@ -70,6 +96,20 @@
                 <th>이수증 생성</th>
             </tr>
             </thead>
+            <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </section>

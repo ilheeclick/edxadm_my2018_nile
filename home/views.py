@@ -75,9 +75,9 @@ def mana_state(request):
 
 
 def uni_certificate(request):
-    print 'uni_certificate called'
+    # print 'uni_certificate called'
     if request.is_ajax():
-        print 'ajax'
+        # print 'ajax'
 
         with connections['default'].cursor() as cur:
             org = request.POST.get('org', '')
@@ -87,43 +87,38 @@ def uni_certificate(request):
             query = """
                 SELECT org,
                        display_name,
-                       substring_index(substring_index(course_id, '+', 2), '+', -1)
-                                    "course",
-                       ifnull(date_format(end, '%%Y/%%m/%%d'), '-') end,
-                       ifnull(date_format(created_date, '%%Y/%%m/%%d'), '-') created_date,
+                       substring_index(substring_index(id, '+', 2), '+', -1)      "course",
+                       ifnull(date_format(end, '%%Y/%%m/%%d'), '-')                  end,
+                       ifnull(date_format(created_date, '%%Y/%%m/%%d'), '-')         created_date,
                        user_cnt,
-                       succ_cnt,
+                       ifnull(succ_cnt, '-') succ_cnt,
                        if(created_date IS NULL, '-', fail_cnt)                    fail_cnt,
-                       if(created_date IS NULL, '-', (succ_cnt / user_cnt) * 100) succ_rate,
-                       if(created_date IS NULL, 'X', 'O')
-                          exists_cert
-                  FROM (  SELECT a.org,
-                                 a.display_name,
-                                 a.id course_id,
-                                 a.end                                  "end",
-                                 max(c.created_date)                    "created_date",
-                                 count(b.user_id)                       "user_cnt",
-                                 sum(if(c.status = 'downloadable', 1, 0)) succ_cnt,
-                                 sum(if(c.status = 'downloadable', 0, 1)) fail_cnt
-                            FROM course_overviews_courseoverview a
-                                 JOIN student_courseenrollment b ON a.id = b.course_id
-                                 LEFT JOIN certificates_generatedcertificate c
-                                    ON b.course_id = c.course_id AND b.user_id = c.user_id
-                           WHERE 1 = 1 AND a.id like %s
-                        GROUP BY a.org,
-                                 a.display_name,
-                                 a.id,
-                                 a.end) t1;
+                       if(created_date IS NULL, '-', round((succ_cnt / user_cnt) * 100, 2)) succ_rate,
+                       if(created_date IS NULL, 'X', 'O')                         exists_cert
+                  FROM course_overviews_courseoverview a
+                       JOIN (  SELECT course_id, sum(is_active) user_cnt
+                                 FROM student_courseenrollment
+                             GROUP BY course_id) b
+                          ON a.id = b.course_id
+                       LEFT JOIN (  SELECT course_id,
+                                           sum(if(status = 'downloadable', 1, 0)) succ_cnt,
+                                           sum(if(status = 'downloadable', 0, 1)) fail_cnt,
+                                           max(created_date)                    created_date
+                                      FROM certificates_generatedcertificate
+                                  GROUP BY course_id) c
+                          ON a.id = c.course_id
+                 WHERE     1 = 1
+                       AND lower(a.id) NOT LIKE '%%demo%%'
+                       AND lower(a.id) NOT LIKE '%%test%%'
+                       AND lower(a.id) NOT LIKE '%%nile%%'
+                       AND a.id LIKE %s;
             """
 
             course_id = '%{0}%{1}%{2}%'.format(org, course, run)
-
-            print 'course_id:', course_id.replace('None', '')
-            print 'query:', query
-
             cur.execute(query, [course_id])
+            pp = pprint.PrettyPrinter(indent=2)
+            pp.pprint(connection.queries)
 
-            print 'params check ------------->', org, course, run
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
             return_value = [dict(zip(columns, (dic_univ[col] if col in dic_univ else str(col) for col in row))) for row
