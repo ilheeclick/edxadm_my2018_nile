@@ -1380,21 +1380,24 @@ def history(request):
         pageLength = request.POST.get('pageLength')
         with connections['default'].cursor() as cur:
             query = """
-              SELECT date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
-                     a.app_label,
-                     b.user_id,
-                     b.object_repr,
-                     b.change_message,
-                     b.action_flag,
-                     b.content_type_id,
-                     (select count(*) from django_admin_log) recordsTotal
-                FROM django_content_type a, django_admin_log b
-               WHERE     a.id = b.content_type_id
-                     AND (a.app_label = 'auth' OR a.model = 'custom')
-            ORDER BY b.action_time DESC
-            limit 0, 10
-               ;
-            """
+                SELECT date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
+                         a.app_label,
+                         b.user_id,
+                         b.object_repr,
+                         b.change_message,
+                         b.action_flag,
+                         b.content_type_id,
+                         (SELECT count(*)
+                            FROM django_content_type c, django_admin_log d
+                           WHERE     c.id = d.content_type_id
+                                 AND (c.app_label = 'auth' OR c.model = 'custom'))
+                            recordsTotal
+                    FROM django_content_type a, django_admin_log b
+                   WHERE     a.id = b.content_type_id
+                         AND (a.app_label = 'auth' OR a.model = 'custom')
+                ORDER BY b.action_time DESC
+                   LIMIT {pageNo}, {pageLength};
+            """.format(pageNo=pageNo, pageLength=pageLength)
             print 'query:', query
             print pageNo, pageLength
 
@@ -1408,7 +1411,10 @@ def history(request):
         result = dict()
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
         # result_list = [list(row) for row in rows]
-        result['draw'] = 1
+        # result['draw'] = 1
+
+        print 'recordsTotal', result_list[0]['recordsTotal']
+
         result['data'] = result_list
         result['recordsTotal'] = 100
         result['recordsFiltered'] = 100
