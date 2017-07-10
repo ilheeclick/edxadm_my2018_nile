@@ -17,6 +17,8 @@ import subprocess
 import commands
 import sys
 from models import GeneratedCertificate
+import pprint
+from django.db import connections
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -1369,113 +1371,58 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
-# 사용내역 히스토리 로그 조회
-# def history_auth(request):
-#     client = MongoClient(database_id, 27017)
-#     db = client.edxapp
-#     reload(sys)
-#     sys.setdefaultencoding('utf-8')
-#     alist = []
-#     if request.is_ajax():
-#         data = json.dumps('fail')
-#         if request.GET['method'] == 'per_certi':
-#             org_id = request.GET['org_id']
-#             run = request.GET['run']
-#             cur = connection.cursor()
-#             query = """
-# 				SELECT course_id
-# 				  FROM certificates_generatedcertificate
-# 			"""
-#             if 'org_id' in request.GET:
-#                 query += "WHERE course_id like '%" + org_id + "%'"
-#             if 'run' in request.GET:
-#                 query += " and course_id LIKE '%" + run + "%'"
-#             query += "GROUP BY course_id"
-#             cur.execute(query)
-#             course_list = cur.fetchall()
-#             cur.close()
-#
-#             for c in course_list:
-#                 value_list = []
-#                 course_id = c
-#                 cid = c[0].split('+')[1]
-#                 course = org_id + '+' + cid + '+' + run
-#                 cur = connection.cursor()
-#                 # print dic_univ[org_id], cid, run, course
-#                 query = """
-# 						select @RNUM := @RNUM + 1 AS NO, a.name, b.email,'""" + dic_univ[
-#                     org_id] + """' org, '""" + cid + """' course, '""" + run + """' run,
-# 							   case when a.status = 'downloadable' then '생성완료'
-# 									when a.status = 'notpassing' then '생성 전'
-# 									when a.status = 'generated' then '생성오류' else '' end status
-# 						  from ( SELECT @RNUM := 0 ) c, certificates_generatedcertificate a inner join auth_user b
-# 							on (a.user_id = b.id)
-# 						 where a.course_id like '%""" + str(course) + """%'
-# 						 limit 2000
-#  				"""
-#
-#                 cur.execute(query)
-#                 row = cur.fetchall()
-#                 cur.close()
-#             # print str(row)
-#
-#             data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
-#         elif request.GET['method'] == 'email_search':
-#             course = ""
-#             user_list = []
-#
-#             email = request.GET['email']
-#             cur = connection.cursor()
-#             query = """
-# 					select course_id, email
-# 					from certificates_generatedcertificate a inner join auth_user b
-# 					on a.user_id = b.id
-# 					where b.email like '%""" + email + """%'
-# 			"""
-#             if 'org_id' in request.GET:
-#                 query += "and a.course_id like '%" + request.GET['org_id'] + "%'"
-#             if 'run' in request.GET:
-#                 query += " and a.course_id LIKE '%" + request.GET['run'] + "%'"
-#             cur.execute(query)
-#             course_list = cur.fetchall()
-#             cur.close()
-#             i = 1
-#             for c, email in course_list:
-#                 value_list = []
-#                 course_id = c
-#                 org_start = c.find(':') + 1
-#                 org_end = c.find('+', org_start)
-#                 org = c[org_start:org_end]
-#                 cid = c.split('+')[1]
-#                 run = c.split('+')[2]
-#
-#                 cur = connection.cursor()
-#                 # print dic_univ[org_id], cid, run, course
-#                 query = """
-# 						select a.name, b.email,'""" + dic_univ[org] + """' org, '""" + cid + """' course, '""" + run + """' run,
-# 							   case when a.status = 'downloadable' then '생성완료'
-# 									when a.status = 'notpassing' then '생성 전'
-# 									when a.status = 'generated' then '생성오류' else '' end status
-# 						  from ( SELECT @RNUM := 0 ) c, certificates_generatedcertificate a inner join auth_user b
-# 							on (a.user_id = b.id)
-# 						 where b.email like '%""" + email + """%'
-#  				"""
-#
-#                 cur.execute(query)
-#                 row = cur.fetchone()
-#                 cur.close()
-#                 value_list.append(i)
-#                 value_list.append(row[0])
-#                 value_list.append(row[1])
-#                 value_list.append(row[2])
-#                 value_list.append(row[3])
-#                 value_list.append(row[4])
-#                 value_list.append(row[5])
-#                 user_list.append(value_list)
-#                 i += 1
-#
-#             data = json.dumps(list(user_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-#
-#         return HttpResponse(data, 'applications/json')
-#
-#     return render(request, 'certificate/per_certificate.html')
+
+def history(request):
+    print 'def history called. request.is_ajax() =', request.is_ajax()
+
+    if request.is_ajax():
+        pageNo = request.POST.get('pageNo')
+        pageLength = request.POST.get('pageLength')
+        with connections['default'].cursor() as cur:
+            query = """
+              SELECT date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
+                     a.app_label,
+                     b.user_id,
+                     b.object_repr,
+                     b.change_message,
+                     b.action_flag,
+                     b.content_type_id,
+                     (select count(*) from django_admin_log) recordsTotal
+                FROM django_content_type a, django_admin_log b
+               WHERE     a.id = b.content_type_id
+                     AND (a.app_label = 'auth' OR a.model = 'custom')
+            ORDER BY b.action_time DESC
+            limit 0, 10
+               ;
+            """
+            print 'query:', query
+            print pageNo, pageLength
+
+            cur.execute(query)
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+
+            pp = pprint.PrettyPrinter(indent=2)
+            pp.pprint(connection.queries)
+
+        result = dict()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        # result_list = [list(row) for row in rows]
+        result['draw'] = 1
+        result['data'] = result_list
+        result['recordsTotal'] = 100
+        result['recordsFiltered'] = 100
+        # recordsTotal = result_list[0][len(result_list[0]) - 1]
+
+        # return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+
+        aaData = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+
+        print 'aaData s -------------------'
+        print aaData
+        print 'aaData e -------------------'
+
+        return HttpResponse(aaData, 'applications/json')
+
+    else:
+        return render(request, 'history/history.html')

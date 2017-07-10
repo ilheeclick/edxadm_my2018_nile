@@ -89,6 +89,24 @@ def execute_query(query):
     return row
 
 
+# 개인정보 조회이력
+def history(date):
+    query = '''
+        SELECT   b.id, b.action_time,
+                 a.app_label,
+                 b.user_id,
+                 b.object_repr,
+                 b.change_message,
+                 b.action_flag,
+                 b.content_type_id
+            FROM django_content_type a, django_admin_log b
+           WHERE     a.id = b.content_type_id
+                 AND (a.app_label = 'auth' OR a.model = 'custom')
+        ORDER BY b.action_time DESC;
+    '''.format(date=date)
+    return execute_query(query)
+
+
 # < 요약 : 회원가입자수 >
 def overall_only_auth(date):
     query = '''

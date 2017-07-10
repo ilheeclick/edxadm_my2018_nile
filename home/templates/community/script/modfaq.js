@@ -41,7 +41,7 @@ $(document).ready(function(){
         value_list = data[0].toString().split(',');
         //console.log(value_list);
         //$('.summernote1').summernote('code', value_list[0].replace(/\&\^\&/g, ','));
-        $('#noticecontent').html(data[0][0]);
+        $('#noticecontent').val(data[0][0]);
         $('.summernote').summernote('code',data[0][1].replace(/\&\^\&/g));
         $('#head_title').val(data[0][2])
     })
