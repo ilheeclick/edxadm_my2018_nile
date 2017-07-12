@@ -1893,8 +1893,18 @@ def history(request):
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
         # 기능 구분 값 한글화
+        import ast
         for result_dict in result_list:
             # print 'result_dict:', result_dict
+
+            change_message = result_dict['change_message']
+            change_message_dict = ast.literal_eval(change_message)
+
+            ip = change_message_dict['ip'] if 'ip' in change_message_dict else ''
+            system = change_message_dict['system'] if 'system' in change_message_dict else ''
+
+            result_dict['ip'] = ip
+            result_dict['system'] = system
 
             content_type_id = result_dict['content_type_id']
             result_dict['content_type_id'] = content_type_dict[content_type_id] if content_type_id in content_type_dict else content_type_id
