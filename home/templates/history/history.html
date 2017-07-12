@@ -1,7 +1,24 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}개인정보조회{% endblock %}
 {% block pagetitlename_header %}사용내역{% endblock %}
+{% block script %}
+
+{% endblock %}
+
 {% block script_down %}
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"/>
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
+
 <script>
     $(document).ready(function () {
         console.log('history init ' + $.fn.dataTable.version);
@@ -38,31 +55,49 @@
     function setDataTable() {
         var table = $('#dataTable');
         table.DataTable({
-            dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+            dom: 'Bfrtip',
             lengthChange: true,
-            oTableTools: {
-                sSwfPath: table.data('swf-path'),
-                aButtons: [
-                    {
-                        sExtends: 'xls',
-                        sButtonText: 'Excel',
-                        bFooter: true,
-                        className: 'test'
-                    },
-                    {
-                        sExtends: 'print',
-                        sButtonText: 'Print',
-                        bFooter: true,
-                        sInfo: 'Please press CTR+P to print or ESC to quit'
+            buttons: [
+//                {
+//                    extend: 'copyHtml5',
+//                    text: 'copy',
+//                    className: 'btn btn-default btn-xs',
+//                },
+//                {
+//                    extend: 'csvHtml5',
+//                    text: 'csv',
+//                    className: 'btn btn-default btn-xs',
+//                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'excel',
+                    className: 'btn btn-default btn-xs',
+                    action: function () {
+                        alert('준비중입니다.');
+//                        href.location = '/manage/test';
                     }
-                ]
-            },
+                },
+//                {
+//                    extend: 'pdfHtml5',
+//                    text: 'pdf',
+//                    className: 'btn btn-default btn-xs',
+//                },
+//                {
+//                    extend: 'print',
+//                    text: 'print',
+//                    className: 'btn btn-default btn-xs',
+//                },
+            ],
             pageLength: 10,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 rows', '25 rows', '50 rows', 'Show all']
+            ],
             bPaginate: true,
             bAutoWidth: true,
             processing: true,
             ordering: false,
-            serverSide: true,
+            serverSide: false,
             searching: false,
             ajax: {
                 url: "/manage/history/",
@@ -74,11 +109,11 @@
                 }
             },
             columns: [
-                {data: "action_time"},
-                {data: "app_label"},
-                {data: "user_id"},
+                {data: "id", class: "details-control"},
+                {data: "action_time", class: "details-control"},
+                {data: "username", data_value: "user_id"},
+                {data: "content_type_id"},
                 {data: "action_flag"},
-                {data: "content_type_id"}
             ],
             colReorder: true,
             columnDefs: [
@@ -98,10 +133,14 @@
             language: {
                 lengthMenu: "Display _MENU_ records per page",
                 zeroRecords: "조회된 데이터가 없습니다",
-                info: "전체페이지 _PAGE_ 중 _PAGES_",
+                info: "전체페이지 _PAGE_ / _PAGES_",
                 infoEmpty: "No records available",
                 infoFiltered: "(filtered from _MAX_ total records)",
-                sEmptyTable: "조회된 데이터가 없습니다"
+                sEmptyTable: "조회된 데이터가 없습니다",
+                paginate: {
+                    previous: "이전",
+                    next: "다음"
+                }
             },
             initComplete: function () {
                 this.api().columns().every(function (index) {
@@ -139,9 +178,28 @@
             }//end initcomplete
         });
 
-        table.on('click', 'tr', function () {
-            console.log($(this).find("td:eq(0)").text());
+//        table.on('click', 'tr', function () {
+//            console.log($(this).find("td:eq(0)").text());
+//        });
+        $('#dataTable tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                console.log('click type 1');
+
+//                row.child.hide();
+//                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                console.log('click type 2');
+//                row.child(format(row.data())).show();
+//                tr.addClass('shown');
+            }
         });
+
     }
 
 </script>
@@ -151,29 +209,66 @@
 
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">사용내역</h2></div>
+        <div><h2 class="panel-title">이력</h2></div>
     </header>
     <div class="panel-body container-fluid">
         <div class="row">
-            <div class="col-xs-6" align="left">
-                대학명
-                <select id="org" name="org">
+
+            <div class="col-md-2" align="right">
+                기능 구분
+            </div>
+            <div class="col-md-4" align="left">
+
+                <select id="content_id" name="content_id">
                     <option value="">전체</option>
-                    <!--
-                    {% for key, values in org_list.items %}
-                    <option value="{{key}}">{{values}}</option>
-                    {% endfor %}
-                    -->
+
+                    <!-- 데이터 -->
+                    <option value="292">회원 정보 리스트</option>
+                    <option value="293">회원 정보 상세</option>
+                    <option value="1">회원권한 수정</option>
+                    <option value="2">회원그룹 수정</option>
+                    <option value="3">회원정보 수정</option>
+
+                    <!-- 등록 관리 -->
+                    <option value="294">베타 테스터</option>
+                    <option value="307">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
+                    <option value="296">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
+
+                    <!-- 학습집단 -->
+                    <option value="310">학습 집단 추가</option>
+
+                    <!-- 학습자 관리 -->
+                    <option value="303">학습자의 진도 페이지 조회</option>
+                    <option value="309">문제 풀이 횟수 설정 초기화</option>
+
+                    <!-- 데이터 -->
+                    <option value="299">익명 학습자 아이디 CSV 파일</option>
+                    <option value="305">개인정보를 CSV 파일로 다운로드</option>
+                    <option value="306">등록할 수 있는 학습자의 CSV 다운로드</option>
+                    <option value="302">문제 답변 CSV 파일 다운로드</option>
+                    <option value="300">발급된 이수증 조회</option>
+                    <option value="301">발급된 이수증 CSV 파일</option>
+                    <option value="304">등록된 학습자의 프로필 목록</option>
+                    <option value="295">성적 보고서</option>
+                    <option value="308">문항 성적 보고서 생성</option>
+                    <option value="297">ORA 데이터 보고 생성하기</option>
+
+                    <option value="291">파일 다운로드</option>
+
                 </select>
             </div>
 
-            <div class="col-xs-6" align="left">
-                운영 상태
+            <div class="col-md-2" align="right">
+                처리 구분
+            </div>
+            <div class="col-md-4" align="left">
+
                 <select id="status" name="status">
-                    <option value="all">전체</option>
-                    <option value="ready">개강 예정</option>
-                    <option value="ing">진행중</option>
-                    <option value="end">종료</option>
+                    <option value="">전체</option>
+                    <option value="">조회</option>
+                    <option value="">입력</option>
+                    <option value="">수정</option>
+                    <option value="">삭제</option>
                 </select>
             </div>
 
@@ -182,19 +277,14 @@
         <br/>
 
         <div class="row">
-            <div class="col-xs-6" align="left">
-                강좌명
-                <select id="course" name="course">
-                    <option value="">전체</option>
-                </select>
+            <div class="col-xs-4" align="left">
+                사용자 아이디
+                <input type="text" id="user_id" name="user_id"/>
             </div>
-            <div class="col-xs-6" align="left">
-                강좌 번호
-                <select id="run" name="run">
-                    <option value="">전체</option>
-                </select>
+            <div class="col-xs-*" align="left">
+                대상 아이디
+                <input type="text" id="target_id" name="target_id"/>
             </div>
-
         </div>
         <br/>
 
@@ -207,15 +297,14 @@
     </div>
     <div class="panel-body">
         {% load static %}
-        <table id="dataTable" class="table table-striped table-bordered table-hover" width="100%"
-               data-swf-path="{% static 'assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf' %}">
+        <table id="dataTable" class="table table-striped table-hover" width="100%">
             <thead>
             <tr>
-                <th>action_time</th>
-                <th>app_label</th>
-                <th>user_id</th>
-                <th>action_flag</th>
-                <th>content_type_id</th>
+                <th>id</th>
+                <th>사용일시</th>
+                <th>사용자 아이디</th>
+                <th>기능 구분</th>
+                <th>처리 구분</th>
             </tr>
             </thead>
 

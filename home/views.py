@@ -31,6 +31,475 @@ def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
 
+def test(request):
+    if request.is_ajax():
+        data = {
+            "data": [
+                {
+                    "name": "Tiger Nixon",
+                    "position": "System Architect",
+                    "salary": "$320,800",
+                    "start_date": "2011/04/25",
+                    "office": "Edinburgh",
+                    "extn": "5421"
+                },
+                {
+                    "name": "Garrett Winters",
+                    "position": "Accountant",
+                    "salary": "$170,750",
+                    "start_date": "2011/07/25",
+                    "office": "Tokyo",
+                    "extn": "8422"
+                },
+                {
+                    "name": "Ashton Cox",
+                    "position": "Junior Technical Author",
+                    "salary": "$86,000",
+                    "start_date": "2009/01/12",
+                    "office": "San Francisco",
+                    "extn": "1562"
+                },
+                {
+                    "name": "Cedric Kelly",
+                    "position": "Senior Javascript Developer",
+                    "salary": "$433,060",
+                    "start_date": "2012/03/29",
+                    "office": "Edinburgh",
+                    "extn": "6224"
+                },
+                {
+                    "name": "Airi Satou",
+                    "position": "Accountant",
+                    "salary": "$162,700",
+                    "start_date": "2008/11/28",
+                    "office": "Tokyo",
+                    "extn": "5407"
+                },
+                {
+                    "name": "Brielle Williamson",
+                    "position": "Integration Specialist",
+                    "salary": "$372,000",
+                    "start_date": "2012/12/02",
+                    "office": "New York",
+                    "extn": "4804"
+                },
+                {
+                    "name": "Herrod Chandler",
+                    "position": "Sales Assistant",
+                    "salary": "$137,500",
+                    "start_date": "2012/08/06",
+                    "office": "San Francisco",
+                    "extn": "9608"
+                },
+                {
+                    "name": "Rhona Davidson",
+                    "position": "Integration Specialist",
+                    "salary": "$327,900",
+                    "start_date": "2010/10/14",
+                    "office": "Tokyo",
+                    "extn": "6200"
+                },
+                {
+                    "name": "Colleen Hurst",
+                    "position": "Javascript Developer",
+                    "salary": "$205,500",
+                    "start_date": "2009/09/15",
+                    "office": "San Francisco",
+                    "extn": "2360"
+                },
+                {
+                    "name": "Sonya Frost",
+                    "position": "Software Engineer",
+                    "salary": "$103,600",
+                    "start_date": "2008/12/13",
+                    "office": "Edinburgh",
+                    "extn": "1667"
+                },
+                {
+                    "name": "Jena Gaines",
+                    "position": "Office Manager",
+                    "salary": "$90,560",
+                    "start_date": "2008/12/19",
+                    "office": "London",
+                    "extn": "3814"
+                },
+                {
+                    "name": "Quinn Flynn",
+                    "position": "Support Lead",
+                    "salary": "$342,000",
+                    "start_date": "2013/03/03",
+                    "office": "Edinburgh",
+                    "extn": "9497"
+                },
+                {
+                    "name": "Charde Marshall",
+                    "position": "Regional Director",
+                    "salary": "$470,600",
+                    "start_date": "2008/10/16",
+                    "office": "San Francisco",
+                    "extn": "6741"
+                },
+                {
+                    "name": "Haley Kennedy",
+                    "position": "Senior Marketing Designer",
+                    "salary": "$313,500",
+                    "start_date": "2012/12/18",
+                    "office": "London",
+                    "extn": "3597"
+                },
+                {
+                    "name": "Tatyana Fitzpatrick",
+                    "position": "Regional Director",
+                    "salary": "$385,750",
+                    "start_date": "2010/03/17",
+                    "office": "London",
+                    "extn": "1965"
+                },
+                {
+                    "name": "Michael Silva",
+                    "position": "Marketing Designer",
+                    "salary": "$198,500",
+                    "start_date": "2012/11/27",
+                    "office": "London",
+                    "extn": "1581"
+                },
+                {
+                    "name": "Paul Byrd",
+                    "position": "Chief Financial Officer (CFO)",
+                    "salary": "$725,000",
+                    "start_date": "2010/06/09",
+                    "office": "New York",
+                    "extn": "3059"
+                },
+                {
+                    "name": "Gloria Little",
+                    "position": "Systems Administrator",
+                    "salary": "$237,500",
+                    "start_date": "2009/04/10",
+                    "office": "New York",
+                    "extn": "1721"
+                },
+                {
+                    "name": "Bradley Greer",
+                    "position": "Software Engineer",
+                    "salary": "$132,000",
+                    "start_date": "2012/10/13",
+                    "office": "London",
+                    "extn": "2558"
+                },
+                {
+                    "name": "Dai Rios",
+                    "position": "Personnel Lead",
+                    "salary": "$217,500",
+                    "start_date": "2012/09/26",
+                    "office": "Edinburgh",
+                    "extn": "2290"
+                },
+                {
+                    "name": "Jenette Caldwell",
+                    "position": "Development Lead",
+                    "salary": "$345,000",
+                    "start_date": "2011/09/03",
+                    "office": "New York",
+                    "extn": "1937"
+                },
+                {
+                    "name": "Yuri Berry",
+                    "position": "Chief Marketing Officer (CMO)",
+                    "salary": "$675,000",
+                    "start_date": "2009/06/25",
+                    "office": "New York",
+                    "extn": "6154"
+                },
+                {
+                    "name": "Caesar Vance",
+                    "position": "Pre-Sales Support",
+                    "salary": "$106,450",
+                    "start_date": "2011/12/12",
+                    "office": "New York",
+                    "extn": "8330"
+                },
+                {
+                    "name": "Doris Wilder",
+                    "position": "Sales Assistant",
+                    "salary": "$85,600",
+                    "start_date": "2010/09/20",
+                    "office": "Sidney",
+                    "extn": "3023"
+                },
+                {
+                    "name": "Angelica Ramos",
+                    "position": "Chief Executive Officer (CEO)",
+                    "salary": "$1,200,000",
+                    "start_date": "2009/10/09",
+                    "office": "London",
+                    "extn": "5797"
+                },
+                {
+                    "name": "Gavin Joyce",
+                    "position": "Developer",
+                    "salary": "$92,575",
+                    "start_date": "2010/12/22",
+                    "office": "Edinburgh",
+                    "extn": "8822"
+                },
+                {
+                    "name": "Jennifer Chang",
+                    "position": "Regional Director",
+                    "salary": "$357,650",
+                    "start_date": "2010/11/14",
+                    "office": "Singapore",
+                    "extn": "9239"
+                },
+                {
+                    "name": "Brenden Wagner",
+                    "position": "Software Engineer",
+                    "salary": "$206,850",
+                    "start_date": "2011/06/07",
+                    "office": "San Francisco",
+                    "extn": "1314"
+                },
+                {
+                    "name": "Fiona Green",
+                    "position": "Chief Operating Officer (COO)",
+                    "salary": "$850,000",
+                    "start_date": "2010/03/11",
+                    "office": "San Francisco",
+                    "extn": "2947"
+                },
+                {
+                    "name": "Shou Itou",
+                    "position": "Regional Marketing",
+                    "salary": "$163,000",
+                    "start_date": "2011/08/14",
+                    "office": "Tokyo",
+                    "extn": "8899"
+                },
+                {
+                    "name": "Michelle House",
+                    "position": "Integration Specialist",
+                    "salary": "$95,400",
+                    "start_date": "2011/06/02",
+                    "office": "Sidney",
+                    "extn": "2769"
+                },
+                {
+                    "name": "Suki Burks",
+                    "position": "Developer",
+                    "salary": "$114,500",
+                    "start_date": "2009/10/22",
+                    "office": "London",
+                    "extn": "6832"
+                },
+                {
+                    "name": "Prescott Bartlett",
+                    "position": "Technical Author",
+                    "salary": "$145,000",
+                    "start_date": "2011/05/07",
+                    "office": "London",
+                    "extn": "3606"
+                },
+                {
+                    "name": "Gavin Cortez",
+                    "position": "Team Leader",
+                    "salary": "$235,500",
+                    "start_date": "2008/10/26",
+                    "office": "San Francisco",
+                    "extn": "2860"
+                },
+                {
+                    "name": "Martena Mccray",
+                    "position": "Post-Sales support",
+                    "salary": "$324,050",
+                    "start_date": "2011/03/09",
+                    "office": "Edinburgh",
+                    "extn": "8240"
+                },
+                {
+                    "name": "Unity Butler",
+                    "position": "Marketing Designer",
+                    "salary": "$85,675",
+                    "start_date": "2009/12/09",
+                    "office": "San Francisco",
+                    "extn": "5384"
+                },
+                {
+                    "name": "Howard Hatfield",
+                    "position": "Office Manager",
+                    "salary": "$164,500",
+                    "start_date": "2008/12/16",
+                    "office": "San Francisco",
+                    "extn": "7031"
+                },
+                {
+                    "name": "Hope Fuentes",
+                    "position": "Secretary",
+                    "salary": "$109,850",
+                    "start_date": "2010/02/12",
+                    "office": "San Francisco",
+                    "extn": "6318"
+                },
+                {
+                    "name": "Vivian Harrell",
+                    "position": "Financial Controller",
+                    "salary": "$452,500",
+                    "start_date": "2009/02/14",
+                    "office": "San Francisco",
+                    "extn": "9422"
+                },
+                {
+                    "name": "Timothy Mooney",
+                    "position": "Office Manager",
+                    "salary": "$136,200",
+                    "start_date": "2008/12/11",
+                    "office": "London",
+                    "extn": "7580"
+                },
+                {
+                    "name": "Jackson Bradshaw",
+                    "position": "Director",
+                    "salary": "$645,750",
+                    "start_date": "2008/09/26",
+                    "office": "New York",
+                    "extn": "1042"
+                },
+                {
+                    "name": "Olivia Liang",
+                    "position": "Support Engineer",
+                    "salary": "$234,500",
+                    "start_date": "2011/02/03",
+                    "office": "Singapore",
+                    "extn": "2120"
+                },
+                {
+                    "name": "Bruno Nash",
+                    "position": "Software Engineer",
+                    "salary": "$163,500",
+                    "start_date": "2011/05/03",
+                    "office": "London",
+                    "extn": "6222"
+                },
+                {
+                    "name": "Sakura Yamamoto",
+                    "position": "Support Engineer",
+                    "salary": "$139,575",
+                    "start_date": "2009/08/19",
+                    "office": "Tokyo",
+                    "extn": "9383"
+                },
+                {
+                    "name": "Thor Walton",
+                    "position": "Developer",
+                    "salary": "$98,540",
+                    "start_date": "2013/08/11",
+                    "office": "New York",
+                    "extn": "8327"
+                },
+                {
+                    "name": "Finn Camacho",
+                    "position": "Support Engineer",
+                    "salary": "$87,500",
+                    "start_date": "2009/07/07",
+                    "office": "San Francisco",
+                    "extn": "2927"
+                },
+                {
+                    "name": "Serge Baldwin",
+                    "position": "Data Coordinator",
+                    "salary": "$138,575",
+                    "start_date": "2012/04/09",
+                    "office": "Singapore",
+                    "extn": "8352"
+                },
+                {
+                    "name": "Zenaida Frank",
+                    "position": "Software Engineer",
+                    "salary": "$125,250",
+                    "start_date": "2010/01/04",
+                    "office": "New York",
+                    "extn": "7439"
+                },
+                {
+                    "name": "Zorita Serrano",
+                    "position": "Software Engineer",
+                    "salary": "$115,000",
+                    "start_date": "2012/06/01",
+                    "office": "San Francisco",
+                    "extn": "4389"
+                },
+                {
+                    "name": "Jennifer Acosta",
+                    "position": "Junior Javascript Developer",
+                    "salary": "$75,650",
+                    "start_date": "2013/02/01",
+                    "office": "Edinburgh",
+                    "extn": "3431"
+                },
+                {
+                    "name": "Cara Stevens",
+                    "position": "Sales Assistant",
+                    "salary": "$145,600",
+                    "start_date": "2011/12/06",
+                    "office": "New York",
+                    "extn": "3990"
+                },
+                {
+                    "name": "Hermione Butler",
+                    "position": "Regional Director",
+                    "salary": "$356,250",
+                    "start_date": "2011/03/21",
+                    "office": "London",
+                    "extn": "1016"
+                },
+                {
+                    "name": "Lael Greer",
+                    "position": "Systems Administrator",
+                    "salary": "$103,500",
+                    "start_date": "2009/02/27",
+                    "office": "London",
+                    "extn": "6733"
+                },
+                {
+                    "name": "Jonas Alexander",
+                    "position": "Developer",
+                    "salary": "$86,500",
+                    "start_date": "2010/07/14",
+                    "office": "San Francisco",
+                    "extn": "8196"
+                },
+                {
+                    "name": "Shad Decker",
+                    "position": "Regional Director",
+                    "salary": "$183,000",
+                    "start_date": "2008/11/13",
+                    "office": "Edinburgh",
+                    "extn": "6373"
+                },
+                {
+                    "name": "Michael Bruce",
+                    "position": "Javascript Developer",
+                    "salary": "$183,000",
+                    "start_date": "2011/06/27",
+                    "office": "Singapore",
+                    "extn": "5384"
+                },
+                {
+                    "name": "Donna Snider",
+                    "position": "Customer Support",
+                    "salary": "$112,000",
+                    "start_date": "2011/01/25",
+                    "office": "New York",
+                    "extn": "4226"
+                }
+            ]
+        }
+        print json.dumps(data)
+
+        return HttpResponse(json.dumps(data), 'applications/json')
+    else:
+        return render(request, 'test01.html')
+
+
 def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
@@ -448,12 +917,14 @@ def comm_notice(request):
 @csrf_exempt
 def new_notice(request):
     if 'file' in request.FILES:
+        print 'file process start .'
+
         value_list = []
         file = request.FILES['file']
         filename = ''
         file_ext = ''
         file_size = ''
-        print file
+        print 'file:', file
         filename = file._name
         file_ext = filename.split('.')[1]
 
@@ -542,6 +1013,7 @@ def new_notice(request):
     return render(request, 'community/comm_newnotice.html')
 
 
+@csrf_exempt
 def modi_notice(request, id, use_yn):
     mod_notice = []
 
@@ -1378,15 +1850,22 @@ def history(request):
     if request.is_ajax():
         pageNo = request.POST.get('pageNo')
         pageLength = request.POST.get('pageLength')
+        startNo = 0
+
+        if pageLength == '-1':
+            pageLength = '999999'
+        else:
+            startNo = int(pageNo) * int(pageLength)
+
         with connections['default'].cursor() as cur:
             query = """
-                SELECT date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
+                SELECT b.content_type_id, b.id, date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
                          a.app_label,
                          b.user_id,
+                         (select username from auth_user where id = b.user_id) username,
                          b.object_repr,
                          b.change_message,
                          b.action_flag,
-                         b.content_type_id,
                          (SELECT count(*)
                             FROM django_content_type c, django_admin_log d
                            WHERE     c.id = d.content_type_id
@@ -1396,10 +1875,11 @@ def history(request):
                    WHERE     a.id = b.content_type_id
                          AND (a.app_label = 'auth' OR a.model = 'custom')
                 ORDER BY b.action_time DESC
-                   LIMIT {pageNo}, {pageLength};
-            """.format(pageNo=pageNo, pageLength=pageLength)
+
+                   LIMIT {startNo}, {pageLength};
+            """.format(startNo=startNo, pageLength=pageLength)
             print 'query:', query
-            print pageNo, pageLength
+            print startNo, pageLength
 
             cur.execute(query)
             rows = cur.fetchall()
@@ -1409,26 +1889,71 @@ def history(request):
             pp.pprint(connection.queries)
 
         result = dict()
+        # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+        # 기능 구분 값 한글화
+        for result_dict in result_list:
+            # print 'result_dict:', result_dict
+
+            content_type_id = result_dict['content_type_id']
+            result_dict['content_type_id'] = content_type_dict[content_type_id] if content_type_id in content_type_dict else content_type_id
+            action_flag = result_dict['action_flag']
+            result_dict['action_flag'] = action_flag_dict[action_flag] if action_flag in action_flag_dict else action_flag
+
         # result_list = [list(row) for row in rows]
         # result['draw'] = 1
 
-        print 'recordsTotal', result_list[0]['recordsTotal']
+        recordsTotal = result_list[0]['recordsTotal']
 
         result['data'] = result_list
-        result['recordsTotal'] = 100
-        result['recordsFiltered'] = 100
+        result['recordsTotal'] = recordsTotal
+        result['recordsFiltered'] = recordsTotal
+
         # recordsTotal = result_list[0][len(result_list[0]) - 1]
 
         # return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
 
         aaData = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
 
-        print 'aaData s -------------------'
-        print aaData
-        print 'aaData e -------------------'
+        # print 'aaData s -------------------'
+        # print aaData
+        # print 'aaData e -------------------'
 
         return HttpResponse(aaData, 'applications/json')
 
     else:
         return render(request, 'history/history.html')
+
+
+action_flag_dict = {
+    '0': u'조회',
+    '1': u'입력',
+    '2': u'수정',
+    '3': u'삭제',
+}
+content_type_dict = {
+    '0': u'조회',
+    '292': u'회원 정보 리스트',
+    '293': u'회원 정보 상세',
+    '1': u'회원권한 수정',
+    '2': u'회원그룹 수정',
+    '3': u'회원정보 수정',
+    '294': u'베타 테스터',
+    '307': u'강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)',
+    '296': u'강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)',
+    '310': u'학습 집단 추가',
+    '303': u'학습자의 진도 페이지 조회',
+    '309': u'문제 풀이 횟수 설정 초기화',
+    '299': u'익명 학습자 아이디 CSV 파일',
+    '305': u'개인정보를 CSV 파일로 다운로드',
+    '306': u'등록할 수 있는 학습자의 CSV 다운로드',
+    '302': u'문제 답변 CSV 파일 다운로드',
+    '300': u'발급된 이수증 조회',
+    '301': u'발급된 이수증 CSV 파일',
+    '304': u'등록된 학습자의 프로필 목록',
+    '295': u'성적 보고서',
+    '308': u'문항 성적 보고서 생성',
+    '297': u'ORA 데이터 보고 생성하기',
+    '291': u'파일 다운로드',
+}
