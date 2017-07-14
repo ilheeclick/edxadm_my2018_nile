@@ -4,7 +4,7 @@ var file_size= [];
 jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
     var value_list;
-    var id = {{id}};
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     var html = "";
     $('.summernote').summernote({
@@ -67,7 +67,7 @@ $(document).ready(function(){
 //파일 삭제 처리
 $(document).on('click', '#delete', function(){
     var del_file = $(this).parent().text().slice(0, -2);
-    var board_id = {{id}};
+    var board_id = '{{id}}';
     $.post("/manage/new_notice/", {
         csrfmiddlewaretoken:$.cookie('csrftoken'),
         method : 'delete_file',
@@ -79,8 +79,10 @@ $(document).on('click', '#delete', function(){
 //파일 다운로드
 $(document).on('click', '#saved_file > li > a', function(){
     var file_name = $(this).text();
-    var board_id = {{id}};
+    var board_id = '{{id}}';
     var use_yn = '{{use_yn}}';
+
+    alert('/manage/modi_notice/'+board_id+'/'+use_yn + " : " + file_name);
 
     $.ajax({
         url : '/manage/modi_notice/'+board_id+'/'+use_yn,
@@ -90,8 +92,6 @@ $(document).on('click', '#saved_file > li > a', function(){
             }
     }).done(function(data){
         window.open(data,'_blank');
-        //$("#download").prop("href", data);
-        //location.href=$("#download").attr('href');
     });
 });
 
@@ -108,7 +108,7 @@ $('#notice_mod').on('click', function(e){
         noticecontent = $('.summernote').summernote('code');
         odby = $('#odby').val();
         action_mode = 'modi';
-        noti_id = {{ id }};
+        noti_id = '{{id}}';
 
         if(head_title == 'null'){
             head_title = ''
@@ -173,7 +173,7 @@ $(document).on('click', '#fileupload', function(){
 
 //숨김 처리
 $('#notice_del').on('click', function(){
-    var id = {{id}}
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
 
     $.ajax({
@@ -191,7 +191,7 @@ $('#notice_del').on('click', function(){
 
 //삭제 처리
 $('#notice_delete').on('click', function(){
-    var id = {{id}}
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
 
     $.ajax({

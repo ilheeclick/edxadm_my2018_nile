@@ -22,6 +22,9 @@ from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
 
 urlpatterns = [
+    url(r'^manage/test_index/$', views.test_index),
+    url(r'^manage/file_download_test$', views.file_download_test),
+
     url(r'^manage/admin/', admin.site.urls),
     url(r'^manage/index/', user_manage),
     # url(r'^excel_download/?$', statistics_excel),

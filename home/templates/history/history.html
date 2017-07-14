@@ -72,12 +72,12 @@
             oTableTools: {
                 sSwfPath: $table.data('swf-path'),
                 aButtons: [
-//                    {
-//                        sExtends: 'csv',
-//                        sButtonText: 'csv',
-//                        bFooter: false,
-//
-//                    },
+                    {
+                        sExtends: 'csv',
+                        sButtonText: 'csv',
+                        bFooter: false,
+
+                    },
                     {
                         sExtends: 'print',
                         sButtonText: 'Print',
@@ -170,22 +170,81 @@
     </header>
     <div class="panel-body container-fluid">
         <div class="row">
-
-            <div class="col-xs-4" align="left">
-                이용 아이디&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="text" id="user_id" name="user_id"/>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="control-label">시스템</label>
+                    <select name="status" class="form-control">
+                        <option value="">전체</option>
+                        <option value="a">Admin</option>
+                        <option value="k">K-MOOC</option>
+                        <option value="i">Insight</option>
+                    </select>
+                </div>
             </div>
 
+            <div class="col-sm-1">
+                <div class="form-group">
+                    <label class="control-label">수행 업무</label>
+                    <select name="status" class="form-control">
+                        <option value="">전체</option>
+                        <option value="R">조회</option>
+                        <option value="C">입력</option>
+                        <option value="U">수정</option>
+                        <option value="D">삭제</option>
+                    </select>
+                </div>
+            </div>
 
-            <div class="col-md-*" align="left">
-                처리 구분&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <select id="status" name="status" style="height: 30px;">
-                    <option value="">전체</option>
-                    <option value="">조회</option>
-                    <option value="">입력</option>
-                    <option value="">수정</option>
-                    <option value="">삭제</option>
-                </select>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">기능 구분</label>
+                    <select name="status" class="form-control">
+                        <option value="">전체</option>
+
+                        <!-- 데이터 -->
+                        <option value="292">회원 정보 리스트</option>
+                        <option value="293">회원 정보 상세</option>
+                        <option value="1">회원권한 수정</option>
+                        <option value="2">회원그룹 수정</option>
+                        <option value="3">회원정보 수정</option>
+
+                        <!-- 등록 관리 -->
+                        <option value="294">베타 테스터</option>
+                        <option value="307">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
+                        <option value="296">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
+
+                        <!-- 학습집단 -->
+                        <option value="310">학습 집단 추가</option>
+
+                        <!-- 학습자 관리 -->
+                        <option value="303">학습자의 진도 페이지 조회</option>
+                        <option value="309">문제 풀이 횟수 설정 초기화</option>
+
+                        <!-- 데이터 -->
+                        <option value="299">익명 학습자 아이디 CSV 파일</option>
+                        <option value="305">개인정보를 CSV 파일로 다운로드</option>
+                        <option value="306">등록할 수 있는 학습자의 CSV 다운로드</option>
+                        <option value="302">문제 답변 CSV 파일 다운로드</option>
+                        <option value="300">발급된 이수증 조회</option>
+                        <option value="301">발급된 이수증 CSV 파일</option>
+                        <option value="304">등록된 학습자의 프로필 목록</option>
+                        <option value="295">성적 보고서</option>
+                        <option value="308">문항 성적 보고서 생성</option>
+                        <option value="297">ORA 데이터 보고 생성하기</option>
+
+                        <option value="291">파일 다운로드</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">상세 구분</label>
+                    <select name="status" class="form-control">
+                        <option value="">전체</option>
+
+                    </select>
+                </div>
             </div>
 
         </div>
@@ -193,53 +252,20 @@
         <br/>
 
         <div class="row">
-
-            <div class="col-xs-4" align="left">
-                대상 아이디&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="text" id="target_id" name="target_id"/>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="control-label">관리자</label>
+                    <input type="text" name="user" class="form-control">
+                </div>
             </div>
-
-            <div class="col-md-*" align="left">
-                기능 구분&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <select id="content_id" name="content_id" style="height: 30px;">
-                    <option value="">전체</option>
-
-                    <!-- 데이터 -->
-                    <option value="292">회원 정보 리스트</option>
-                    <option value="293">회원 정보 상세</option>
-                    <option value="1">회원권한 수정</option>
-                    <option value="2">회원그룹 수정</option>
-                    <option value="3">회원정보 수정</option>
-
-                    <!-- 등록 관리 -->
-                    <option value="294">베타 테스터</option>
-                    <option value="307">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
-                    <option value="296">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
-
-                    <!-- 학습집단 -->
-                    <option value="310">학습 집단 추가</option>
-
-                    <!-- 학습자 관리 -->
-                    <option value="303">학습자의 진도 페이지 조회</option>
-                    <option value="309">문제 풀이 횟수 설정 초기화</option>
-
-                    <!-- 데이터 -->
-                    <option value="299">익명 학습자 아이디 CSV 파일</option>
-                    <option value="305">개인정보를 CSV 파일로 다운로드</option>
-                    <option value="306">등록할 수 있는 학습자의 CSV 다운로드</option>
-                    <option value="302">문제 답변 CSV 파일 다운로드</option>
-                    <option value="300">발급된 이수증 조회</option>
-                    <option value="301">발급된 이수증 CSV 파일</option>
-                    <option value="304">등록된 학습자의 프로필 목록</option>
-                    <option value="295">성적 보고서</option>
-                    <option value="308">문항 성적 보고서 생성</option>
-                    <option value="297">ORA 데이터 보고 생성하기</option>
-
-                    <option value="291">파일 다운로드</option>
-
-                </select>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="control-label">대상자</label>
+                    <input type="text" name="target" class="form-control">
+                </div>
             </div>
         </div>
+
         <br/>
 
         <div align="right">
@@ -249,6 +275,7 @@
             -->
         </div>
     </div>
+
     <div class="panel-body">
         {% load static %}
         <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/comm_notice" style="width: 100%;"
@@ -258,9 +285,11 @@
                 <th>id</th>
                 <th>시스템</th>
                 <th>사용일시</th>
-                <th>사용자 아이디</th>
+                <th>관리자 아이디</th>
                 <th>기능 구분</th>
-                <th>처리 구분</th>
+                <th>수행 업무</th>
+                <th>검색어</th>
+                <th>건수</th>
                 <th>아이피</th>
             </tr>
             </thead>

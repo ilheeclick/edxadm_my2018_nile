@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, render_to_response, redirect
 from django.template import Context, RequestContext
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, FileResponse
 from django.utils import timezone
 import json
 from django.db import connection
@@ -19,6 +19,7 @@ import sys
 from models import GeneratedCertificate
 import pprint
 from django.db import connections
+from django.utils.encoding import smart_str
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -1065,9 +1066,20 @@ def modi_notice(request, id, use_yn):
 
             data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
         elif request.GET['method'] == 'file_download':
-            file_name = request.GET['file_name']
-            # print 'file_name == ',file_name
-            data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+            print '::::: file download start :::::'
+
+            import os
+            from django_downloadview import PathDownloadView
+
+            # file_name = request.GET['file_name']
+            # path_to_file = UPLOAD_DIR + file_name
+            path_to_file = '/Users/redukyo/workspace/management/home/static/upload/test.jpg'
+
+            print 'path_to_file:', path_to_file
+
+            static_path = PathDownloadView.as_view(path=path_to_file)
+            # file download e ------------------------
+            return static_path
 
         return HttpResponse(data, 'applications/json')
 
@@ -1077,6 +1089,28 @@ def modi_notice(request, id, use_yn):
     })
 
     return render_to_response('community/comm_modinotice.html', variables)
+
+
+from django.core.urlresolvers import reverse
+from django_downloadview import assert_download_response, temporary_media_root
+
+
+def test_index(request):
+    return render(request, 'test_index.html')
+
+
+def file_download_test(request):
+    print 'called  file_download_test'
+
+    file_path = '/Users/redukyo/workspace/management/home/static/upload/create_table1.txt'
+    # file_path = '/Users/redukyo/workspace/management/home/static/upload/test.jpg'
+
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
 
 
 def comm_k_news(request):
@@ -1845,8 +1879,6 @@ def summer_upload(request):
 
 
 def history(request):
-    print 'def history called. request.is_ajax() =', request.is_ajax()
-
     if request.is_ajax():
         pageNo = request.POST.get('pageNo')
         pageLength = request.POST.get('pageLength')
@@ -1869,11 +1901,12 @@ def history(request):
                          (SELECT count(*)
                             FROM django_content_type c, django_admin_log d
                            WHERE     c.id = d.content_type_id
-                                 AND (c.app_label = 'auth' OR c.model = 'custom'))
+                                 AND (c.app_label = 'auth' OR c.model = 'custom') and d.id > 247)
                             recordsTotal
                     FROM django_content_type a, django_admin_log b
                    WHERE     a.id = b.content_type_id
                          AND (a.app_label = 'auth' OR a.model = 'custom')
+                         and b.id > 247
                 ORDER BY b.action_time DESC
 
                    LIMIT {startNo}, {pageLength};
@@ -1892,19 +1925,38 @@ def history(request):
         # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
+
+        '''
+        content_type_id 에 따른 기능 구분 추가
+        [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
+        [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
+        :param request:
+        :return:
+        '''
+
         # 기능 구분 값 한글화
         import ast
         for result_dict in result_list:
             # print 'result_dict:', result_dict
 
             change_message = result_dict['change_message']
-            change_message_dict = ast.literal_eval(change_message)
+            try:
+                change_message_dict = ast.literal_eval(change_message)
+            except:
+                try:
+                    temp_string = change_message[:change_message.find('query') - 1] + change_message[change_message.find('>') + 2:]
+                    change_message_dict = ast.literal_eval(temp_string)
+                except Exception as e:
+                    print 'change_message s ---------------------------'
+                    print change_message
+                    print 'change_message e ---------------------------'
+                    print 'e:', e
 
             ip = change_message_dict['ip'] if 'ip' in change_message_dict else ''
             system = change_message_dict['system'] if 'system' in change_message_dict else ''
 
             result_dict['ip'] = ip
-            result_dict['system'] = system
+            result_dict['system'] = ip
 
             content_type_id = result_dict['content_type_id']
             result_dict['content_type_id'] = content_type_dict[content_type_id] if content_type_id in content_type_dict else content_type_id
