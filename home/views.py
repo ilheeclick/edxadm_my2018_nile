@@ -1066,20 +1066,9 @@ def modi_notice(request, id, use_yn):
 
             data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
         elif request.GET['method'] == 'file_download':
-            print '::::: file download start :::::'
+            pass
 
-            import os
-            from django_downloadview import PathDownloadView
-
-            # file_name = request.GET['file_name']
-            # path_to_file = UPLOAD_DIR + file_name
-            path_to_file = '/Users/redukyo/workspace/management/home/static/upload/test.jpg'
-
-            print 'path_to_file:', path_to_file
-
-            static_path = PathDownloadView.as_view(path=path_to_file)
-            # file download e ------------------------
-            return static_path
+            print 'file_download with ajax is not working'
 
         return HttpResponse(data, 'applications/json')
 
@@ -1089,10 +1078,6 @@ def modi_notice(request, id, use_yn):
     })
 
     return render_to_response('community/comm_modinotice.html', variables)
-
-
-from django.core.urlresolvers import reverse
-from django_downloadview import assert_download_response, temporary_media_root
 
 
 def test_index(request):
@@ -1925,7 +1910,6 @@ def history(request):
         # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
-
         '''
         content_type_id 에 따른 기능 구분 추가
         [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
@@ -1944,7 +1928,8 @@ def history(request):
                 change_message_dict = ast.literal_eval(change_message)
             except:
                 try:
-                    temp_string = change_message[:change_message.find('query') - 1] + change_message[change_message.find('>') + 2:]
+                    temp_string = change_message[:change_message.find('query') - 1] + change_message[
+                                                                                      change_message.find('>') + 2:]
                     change_message_dict = ast.literal_eval(temp_string)
                 except Exception as e:
                     print 'change_message s ---------------------------'
@@ -1959,9 +1944,11 @@ def history(request):
             result_dict['system'] = ip
 
             content_type_id = result_dict['content_type_id']
-            result_dict['content_type_id'] = content_type_dict[content_type_id] if content_type_id in content_type_dict else content_type_id
+            result_dict['content_type_id'] = content_type_dict[
+                content_type_id] if content_type_id in content_type_dict else content_type_id
             action_flag = result_dict['action_flag']
-            result_dict['action_flag'] = action_flag_dict[action_flag] if action_flag in action_flag_dict else action_flag
+            result_dict['action_flag'] = action_flag_dict[
+                action_flag] if action_flag in action_flag_dict else action_flag
 
         # result_list = [list(row) for row in rows]
         # result['draw'] = 1

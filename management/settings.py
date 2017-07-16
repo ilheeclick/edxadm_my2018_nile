@@ -50,17 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django_downloadview.SmartDownloadMiddleware',
 )
-
-DOWNLOADVIEW_BACKEND = 'django_downloadview.nginx.XAccelRedirectMiddleware'
-
-DOWNLOADVIEW_RULES = [
-    {
-        'source_url': '/media/nginx/',
-        'destination_url': '/nginx-optimized-by-middleware/',
-    },
-]
 
 ROOT_URLCONF = 'management.urls'
 
