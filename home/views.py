@@ -1872,11 +1872,20 @@ def history(request):
 
         system = request.POST.get('system')
         operation = request.POST.get('operation')
-        function = request.POST.get('function')
-        function_detail = request.POST.get('function_detail')
-        user = request.POST.get('user')
-        target = request.POST.get('target')
+        func = request.POST.get('func')
+        func_detail = request.POST.get('func_detail')
+        user_id = request.POST.get('user_id')
+        target_id = request.POST.get('target_id')
         # search_string = urllib.quote('검색').encode('utf8')
+
+        print 'param s ---------------------------'
+        print system
+        print operation
+        print func
+        print func_detail
+        print user_id
+        print target_id
+        print 'param e ---------------------------'
 
         if pageLength == '-1':
             pageLength = '999999'
@@ -1889,7 +1898,7 @@ def history(request):
                          a.app_label,
                          b.user_id,
                          (select username from auth_user where id = b.user_id) username,
-                         b.object_repr,
+                         b.object_id, b.object_repr,
                          b.change_message,
                          b.action_flag
                     FROM django_content_type a, django_admin_log b, auth_user c
@@ -1907,25 +1916,25 @@ def history(request):
                 elif system == 'i':
                     query1 += " and a.id = 311 "
 
-            if operation is not None:
+            if operation:
                 print '1'
                 query1 += " and b.action_flag = %s " % operation
 
-            if function is not None:
+            if func:
                 print '2'
-                query1 += " and a.id = %s " % operation
+                query1 += " and a.id = %s " % func
 
-            if function_detail is not None:
+            if func_detail:
                 print '3'
-                query1 += " and b.action_flag = %s " % operation
+                query1 += " and b.action_flag = %s " % func_detail
 
-            if user is not None:
+            if user_id:
                 print '4'
-                query1 += " and (c.id = {user} or c.username = {user})".format(user=user)
+                query1 += " and (c.id = {user_id} or c.username = {user_id})".format(user_id=user_id)
 
-            if target is not None:
+            if target_id:
                 print '5'
-                query1 += " and b.action_flag = %s " % operation
+                query1 += " and b.action_flag = %s " % target_id
 
             query2 = """
                 ORDER BY b.action_time DESC
@@ -1969,19 +1978,23 @@ def history(request):
             object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
 
             # 기능 구분에 따라 시스템 표시 구분
-            result_dict['system'] = get_system_name(content_type_id)
+            # result_dict['system'] = get_system_name(content_type_id)
+            result_dict['system'] = content_type_id
+
             # 기능 구분에 따라 상세구분 표시 내용 추가
-            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
+            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict,
+                                                                    change_message_dict)
 
             result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
 
             result_dict['content_type_id'] = content_type_dict[content_type_id]
 
-            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']] + "[" + result_dict['id'] + "]"
 
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
 
-            result_dict['cnt'] = change_message_dict['count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
+            result_dict['cnt'] = change_message_dict[
+                'count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
 
         result['data'] = result_list
         result['recordsTotal'] = recordsTotal
@@ -2001,6 +2014,8 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     elif content_type_id == '3':
         # auth_user
         pass
+    elif content_type_id == '308':
+        change_message_dict
     elif content_type_id == '297':
         # file downlaod
 
@@ -2009,7 +2024,11 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
         return object_repr_dict['filename']
     elif content_type_id in ['295', '306']:
         # role
-        rolename_en = object_repr_dict['rolename']
+        if 'rolename' in object_repr_dict:
+            rolename_en = object_repr_dict['rolename']
+        elif 'new_role' in object_repr_dict:
+            rolename_en = object_repr_dict['new_role']
+
         if rolename_en == 'staff':
             rolename = '운영팀'
         elif rolename_en == 'instructor':

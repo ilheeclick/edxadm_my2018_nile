@@ -7,20 +7,26 @@
 
 {% block script_down %}
 
-<script>
-    $(document).ready(function () {
-        console.log('history init ' + $.fn.dataTable.version);
-        setDataTable();
-    });
+    <script>
+        $(document).ready(function () {
+            console.log('history init ' + $.fn.dataTable.version);
+            setDataTable();
+        });
 
-    function search() {
-        var table = $('#datatable-ajax').DataTable();
-        table.ajax.reload();
-    }
+        function search() {
+            var table = $('#datatable-ajax').DataTable();
+            table.ajax.reload();
+        }
 
-    function buildSearchData() {
-        var table = $("#datatable-ajax").DataTable();
-        var info = table.page.info();
+        function buildSearchData() {
+            var table = $("#datatable-ajax").DataTable();
+            var info = table.page.info();
+            var system = $("#system").val();
+            var operation = $("#operation").val();
+            var func = $("#func").val();
+            var func_detail = $("#func_detail").val();
+            var user_id = $("#user_id").val();
+            var target_id = $("#target_id").val();
 
 //        console.log('page check s ----------------');
 //        console.log(table.page.info());
@@ -29,274 +35,285 @@
 //        console.log(info.length);
 //        console.log('page check e ----------------');
 
-        var obj = {
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            org: $("#org").val(),
-            course: $("#course").val(),
-            run: $("#run").val(),
-            pageNo: info.page,
-            pageLength: info.length
+            var obj = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                org: $("#org").val(),
+                course: $("#course").val(),
+                run: $("#run").val(),
+                pageNo: info.page,
+                pageLength: info.length,
+                system: system,
+                operation: operation,
+                func: func,
+                func_detail: func_detail,
+                user_id: user_id,
+                target_id: target_id
+            }
+
+            console.log(obj);
+            return obj
         }
 
-        return obj
-    }
-
-    function setDataTable() {
-        var $table = $('#datatable-ajax');
+        function setDataTable() {
+            var $table = $('#datatable-ajax');
 
 
-        $table.dataTable({
-            bProcessing: true,
-            ordering: false,
-            ajax: {
-                url: "/manage/history/",
-                type: "POST",
-                dataType: "json",
-                data: buildSearchData,
-                dataSrc: function (json) {
-                    return json.data;
-                }
-            },
-            columns: [
-                {data: "id", class: "details-control"},
-                {data: "system", data_value: "user_id"},
-                {data: "action_time", class: "details-control"},
-                {data: "username", data_value: "user_id"},
-                {data: "content_type_id"},
-                {data: "content_type_detail"},
-                {data: "action_flag"},
-                {data: "search_string"},
-                {data: "cnt"},
-                {data: "ip"},
-            ],
-            serverSide: true,
-            searching: false,
-            dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-            oTableTools: {
-                sSwfPath: $table.data('swf-path'),
-                aButtons: [
-                    {
-                        sExtends: 'csv',
-                        sButtonText: 'csv',
-                        bFooter: false,
-
-                    },
-                    {
-                        sExtends: 'print',
-                        sButtonText: 'Print',
-                        bFooter: false,
-                        sInfo: 'Please press CTR+P to print or ESC to quit'
+            $table.dataTable({
+                bProcessing: true,
+                ordering: false,
+                ajax: {
+                    url: "/manage/history/",
+                    type: "POST",
+                    dataType: "json",
+                    data: buildSearchData,
+                    dataSrc: function (json) {
+                        return json.data;
                     }
-                ]
-            },
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    //"deferRender": true
-                    //"defaultContent": "<td>" +
-                    //"<input type='checkbox' />" +
-                    //"</td>"
-                }
-            ],
+                },
+                columns: [
+                    {data: "id", class: "details-control"},
+                    {data: "system", data_value: "user_id"},
+                    {data: "action_time", class: "details-control"},
+                    {data: "username", data_value: "user_id"},
+                    {data: "content_type_id"},
+                    {data: "content_type_detail"},
+                    {data: "action_flag"},
+                    {data: "search_string"},
+                    {data: "cnt"},
+                    {data: "ip"},
+                ],
+                serverSide: true,
+                searching: false,
+                dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                oTableTools: {
+                    sSwfPath: $table.data('swf-path'),
+                    aButtons: [
+                        {
+                            sExtends: 'csv',
+                            sButtonText: 'csv',
+                            bFooter: false,
 
-            "paginate": true,
-            language: {
-                lengthMenu: "Display _MENU_ records per page",
-                zeroRecords: "조회된 데이터가 없습니다",
-                info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
-                infoEmpty: "No records available",
-                infoFiltered: "(filtered from _MAX_ total records)",
-                sEmptyTable: "조회된 데이터가 없습니다",
-                paginate: {
-                    previous: "이전",
-                    next: "다음"
-                }
-            },
+                        },
+                        {
+                            sExtends: 'print',
+                            sButtonText: 'Print',
+                            bFooter: false,
+                            sInfo: 'Please press CTR+P to print or ESC to quit'
+                        }
+                    ]
+                },
+                columnDefs: [
+                    {targets: 0, visible: false,},
+                    {targets: 1, visible: true, width: '6%'},
+                    {targets: 2, visible: true, width: '10%'},
+                    {targets: 3, visible: true, width: '8%'},
+                    {targets: 4, visible: true, width: '12%'},
+                    {targets: 6, visible: true, width: '7%'},
+                    {targets: 7, visible: true, width: '10%'},
+                    {targets: 8, visible: true, width: '6%'},
+                    {targets: 9, visible: true, width: '9%'},
+                ],
+                "paginate": true,
+                language: {
+                    lengthMenu: "Display _MENU_ records per page",
+                    zeroRecords: "조회된 데이터가 없습니다",
+                    info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                    infoEmpty: "No records available",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    sEmptyTable: "조회된 데이터가 없습니다",
+                    paginate: {
+                        previous: "이전",
+                        next: "다음"
+                    }
+                },
 
-            "initComplete": function (settings, json) {
-                $('input[type="search"]').attr('placeholder', '검색하세요');
-                $('input[type="search"]').attr('class', 'form-control');
-                $('input[type="search"]').css('width', '200px');
-                //$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
-                $('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
-                $('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
+                "initComplete": function (settings, json) {
+                    $('input[type="search"]').attr('placeholder', '검색하세요');
+                    $('input[type="search"]').attr('class', 'form-control');
+                    $('input[type="search"]').css('width', '200px');
+                    //$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
+                    $('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
+                    $('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
 
 //                $("div.toolbar").html('<b>결과 내 검색</b>');
-                this.api().columns().every(function (i) {
+                    this.api().columns().every(function (i) {
 
-                    //if (i == 0){
-                    //	return;
-                    //}
+                        //if (i == 0){
+                        //	return;
+                        //}
 
-                    var column = this;
-                    var select = $('<select style="width: 100%;"><option value=""></option></select>')
-                            .appendTo($(column.footer()).empty()).select2({placeholder: '선택하세요.', allowClear: true}).attr('width', '100%')
-                            .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                        $(this).val()
-                                );
+                        var column = this;
+                        var select = $('<select style="width: 100%;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty()).select2({
+                                    placeholder: '선택하세요.',
+                                    allowClear: true
+                                }).attr('width', '100%')
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                    );
 
-                                column
-                                        .search(val ? '^' + val + '$' : '', true, false)
-                                        .draw();
-                            });
+                                    column
+                                            .search(val ? '^' + val + '$' : '', true, false)
+                                            .draw();
+                                });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
                     });
-                });
-            }
-        });
+                }
+            });
 
 
-        $table.on('click', 'tr', function () {
-            var $row;
-            var cell;
-            var data;
-            var t = $('#datatable-ajax').DataTable();
-            $row = $(this).closest('tr');
-            data = t.row($row.get(0)).data();
-            console.log(data);
+            $table.on('click', 'tr', function () {
+                var $row;
+                var cell;
+                var data;
+                var t = $('#datatable-ajax').DataTable();
+                $row = $(this).closest('tr');
+                data = t.row($row.get(0)).data();
+                console.log(data);
 //            location.href = '/manage/modi_notice/' + data[0] + '/' + data[8]
-        });
-    }
+            });
+        }
 
-</script>
+    </script>
 {% endblock %}
 {% block containor %}
-<!-- start: page -->
+    <!-- start: page -->
 
-<section class="panel panel-featured ">
-    <header class="panel-heading">
-        <div><h2 class="panel-title">이력</h2></div>
-    </header>
-    <div class="panel-body container-fluid">
-        <div class="row">
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label class="control-label">시스템</label>
-                    <select name="system" class="form-control">
-                        <option value="">전체</option>
-                        <option value="a">Admin</option>
-                        <option value="k">K-MOOC</option>
-                        <option value="i">Insight</option>
-                    </select>
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">이력</h2></div>
+        </header>
+        <div class="panel-body container-fluid">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">시스템</label>
+                        <select name="system" id="system" class="form-control">
+                            <option value="">전체</option>
+                            <option value="a">Admin</option>
+                            <option value="k">K-MOOC</option>
+                            <option value="i">Insight</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">수행 업무</label>
+                        <select name="operation" id="operation" class="form-control">
+                            <option value="">전체</option>
+                            <option value="0">조회</option>
+                            <option value="1">입력 (생성)</option>
+                            <option value="2">수정</option>
+                            <option value="3">삭제</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="control-label">기능 구분</label>
+                        <select name="func" id="func" class="form-control">
+                            <option value="">전체</option>
+
+                            <!-- 데이터 -->
+                            <option value="291">회원 정보 상세</option>
+                            <option value="292">회원 정보 리스트</option>
+                            <option value="1">회원권한 수정</option>
+                            <option value="2">회원그룹 수정</option>
+                            <option value="3">회원정보 수정</option>
+
+                            <!-- 등록 관리 -->
+                            <option value="293">베타 테스터</option>
+                            <option value="306">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
+                            <option value="295">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
+
+                            <!-- 학습집단 -->
+                            <option value="309">학습 집단 추가</option>
+
+                            <!-- 학습자 관리 -->
+                            <option value="302">학습자의 진도 페이지 조회</option>
+                            <option value="308">문제 풀이 횟수 설정 초기화</option>
+
+                            <!-- 데이터 -->
+                            <option value="298">익명 학습자 아이디 CSV 파일</option>
+                            <option value="305">개인정보를 CSV 파일로 다운로드</option>
+                            <option value="306">등록할 수 있는 학습자의 CSV 다운로드</option>
+                            <option value="302">문제 답변 CSV 파일 다운로드</option>
+                            <option value="299">발급된 이수증 조회</option>
+                            <option value="300">발급된 이수증 CSV 파일</option>
+                            <option value="304">등록된 학습자의 프로필 목록</option>
+                            <option value="295">성적 보고서</option>
+                            <option value="301">문항 성적 보고서 생성</option>
+                            <option value="296">ORA 데이터 보고 생성하기</option>
+
+                            <option value="297">파일 다운로드</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-1">
+                    <div class="form-group">
+                        <label class="control-label">상세 구분</label>
+                        <select name="func_detail" id="func_detail" class="form-control">
+                            <option value="">전체</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">관리자 아이디</label>
+                        <input type="text" name="user_id" id="user_id"  class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">대상자 아이디</label>
+                        <input type="text" name="target_id" id="target_id" class="form-control">
+                    </div>
                 </div>
             </div>
 
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label class="control-label">수행 업무</label>
-                    <select name="operation" class="form-control">
-                        <option value="">전체</option>
-                        <option value="R">조회</option>
-                        <option value="C">입력 (생성)</option>
-                        <option value="U">수정</option>
-                        <option value="D">삭제</option>
-                    </select>
-                </div>
+            <br/>
+
+            <div align="right">
+                <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
+                <!--
+                <input class="btn btn-success" type="button" value="엑셀다운로드">
+                -->
             </div>
-
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label class="control-label">기능 구분</label>
-                    <select name="function" class="form-control">
-                        <option value="">전체</option>
-
-                        <!-- 데이터 -->
-                        <option value="292">회원 정보 리스트</option>
-                        <option value="293">회원 정보 상세</option>
-                        <option value="1">회원권한 수정</option>
-                        <option value="2">회원그룹 수정</option>
-                        <option value="3">회원정보 수정</option>
-
-                        <!-- 등록 관리 -->
-                        <option value="294">베타 테스터</option>
-                        <option value="307">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
-                        <option value="296">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
-
-                        <!-- 학습집단 -->
-                        <option value="310">학습 집단 추가</option>
-
-                        <!-- 학습자 관리 -->
-                        <option value="303">학습자의 진도 페이지 조회</option>
-                        <option value="309">문제 풀이 횟수 설정 초기화</option>
-
-                        <!-- 데이터 -->
-                        <option value="299">익명 학습자 아이디 CSV 파일</option>
-                        <option value="305">개인정보를 CSV 파일로 다운로드</option>
-                        <option value="306">등록할 수 있는 학습자의 CSV 다운로드</option>
-                        <option value="302">문제 답변 CSV 파일 다운로드</option>
-                        <option value="300">발급된 이수증 조회</option>
-                        <option value="301">발급된 이수증 CSV 파일</option>
-                        <option value="304">등록된 학습자의 프로필 목록</option>
-                        <option value="295">성적 보고서</option>
-                        <option value="308">문항 성적 보고서 생성</option>
-                        <option value="297">ORA 데이터 보고 생성하기</option>
-
-                        <option value="291">파일 다운로드</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-sm-1">
-                <div class="form-group">
-                    <label class="control-label">상세 구분</label>
-                    <select name="function_detail" class="form-control">
-                        <option value="">전체</option>
-                    </select>
-                </div>
-            </div>
-
         </div>
 
-        <br/>
-
-        <div class="row">
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label class="control-label">관리자 아이디</label>
-                    <input type="text" name="user" class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label class="control-label">대상자 아이디</label>
-                    <input type="text" name="target" class="form-control">
-                </div>
-            </div>
+        <div class="panel-body">
+            {% load static %}
+            <table class="table table-hover table-striped  table-bordered" id="datatable-ajax"
+                   data-url="/manage/comm_notice" style="width: 100%;"
+                   data-swf-path="{% static 'assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf' %}">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>시스템</th>
+                    <th>사용일시</th>
+                    <th>관리자 아이디</th>
+                    <th>기능 구분</th>
+                    <th>상세 내용</th>
+                    <th>수행 업무</th>
+                    <th>검색어</th>
+                    <th>건수</th>
+                    <th>아이피</th>
+                </tr>
+                </thead>
+            </table>
         </div>
-
-        <br/>
-
-        <div align="right">
-            <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
-            <!--
-            <input class="btn btn-success" type="button" value="엑셀다운로드">
-            -->
-        </div>
-    </div>
-
-    <div class="panel-body">
-        {% load static %}
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/comm_notice" style="width: 100%;"
-               data-swf-path="{% static 'assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf' %}">
-            <thead>
-            <tr>
-                <th>id</th>
-                <th>시스템</th>
-                <th>사용일시</th>
-                <th>관리자 아이디</th>
-                <th>기능 구분</th>
-                <th>상세 구분</th>
-                <th>수행 업무</th>
-                <th>검색어</th>
-                <th>건수</th>
-                <th>아이피</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-</section>
+    </section>
 {% endblock %}
