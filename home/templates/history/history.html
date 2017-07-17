@@ -44,9 +44,10 @@
     function setDataTable() {
         var $table = $('#datatable-ajax');
 
+
         $table.dataTable({
             bProcessing: true,
-            rowReorder: true,
+            ordering: false,
             ajax: {
                 url: "/manage/history/",
                 type: "POST",
@@ -62,12 +63,14 @@
                 {data: "action_time", class: "details-control"},
                 {data: "username", data_value: "user_id"},
                 {data: "content_type_id"},
+                {data: "content_type_detail"},
                 {data: "action_flag"},
+                {data: "search_string"},
+                {data: "cnt"},
                 {data: "ip"},
             ],
             serverSide: true,
             searching: false,
-            order: [[1, "desc"]],
             dom: 'T<"clear"><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
             oTableTools: {
                 sSwfPath: $table.data('swf-path'),
@@ -173,7 +176,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label class="control-label">시스템</label>
-                    <select name="status" class="form-control">
+                    <select name="system" class="form-control">
                         <option value="">전체</option>
                         <option value="a">Admin</option>
                         <option value="k">K-MOOC</option>
@@ -185,20 +188,20 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label class="control-label">수행 업무</label>
-                    <select name="status" class="form-control">
+                    <select name="operation" class="form-control">
                         <option value="">전체</option>
                         <option value="R">조회</option>
-                        <option value="C">입력</option>
+                        <option value="C">입력 (생성)</option>
                         <option value="U">수정</option>
                         <option value="D">삭제</option>
                     </select>
                 </div>
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="form-group">
                     <label class="control-label">기능 구분</label>
-                    <select name="status" class="form-control">
+                    <select name="function" class="form-control">
                         <option value="">전체</option>
 
                         <!-- 데이터 -->
@@ -237,12 +240,11 @@
                 </div>
             </div>
 
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <div class="form-group">
                     <label class="control-label">상세 구분</label>
-                    <select name="status" class="form-control">
+                    <select name="function_detail" class="form-control">
                         <option value="">전체</option>
-
                     </select>
                 </div>
             </div>
@@ -254,13 +256,13 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label class="control-label">관리자</label>
+                    <label class="control-label">관리자 아이디</label>
                     <input type="text" name="user" class="form-control">
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label class="control-label">대상자</label>
+                    <label class="control-label">대상자 아이디</label>
                     <input type="text" name="target" class="form-control">
                 </div>
             </div>
@@ -287,25 +289,13 @@
                 <th>사용일시</th>
                 <th>관리자 아이디</th>
                 <th>기능 구분</th>
+                <th>상세 구분</th>
                 <th>수행 업무</th>
                 <th>검색어</th>
                 <th>건수</th>
                 <th>아이피</th>
             </tr>
             </thead>
-
-            <!--
-            <tfoot>
-            <tr>
-                <th>action_time</th>
-                <th>app_label</th>
-                <th>user_id</th>
-                <th>action_flag</th>
-                <th>content_type_id</th>
-            </tr>
-            </tfoot>
-            -->
-
         </table>
     </div>
 </section>

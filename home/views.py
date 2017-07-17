@@ -19,7 +19,8 @@ import sys
 from models import GeneratedCertificate
 import pprint
 from django.db import connections
-from django.utils.encoding import smart_str
+import ast
+import urllib
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -1869,39 +1870,81 @@ def history(request):
         pageLength = request.POST.get('pageLength')
         startNo = 0
 
+        system = request.POST.get('system')
+        operation = request.POST.get('operation')
+        function = request.POST.get('function')
+        function_detail = request.POST.get('function_detail')
+        user = request.POST.get('user')
+        target = request.POST.get('target')
+        # search_string = urllib.quote('검색').encode('utf8')
+
         if pageLength == '-1':
             pageLength = '999999'
         else:
             startNo = int(pageNo) * int(pageLength)
 
         with connections['default'].cursor() as cur:
-            query = """
-                SELECT b.content_type_id, b.id, date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
+            query1 = """
+                SELECT SQL_CALC_FOUND_ROWS b.content_type_id, b.id, date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
                          a.app_label,
                          b.user_id,
                          (select username from auth_user where id = b.user_id) username,
                          b.object_repr,
                          b.change_message,
-                         b.action_flag,
-                         (SELECT count(*)
-                            FROM django_content_type c, django_admin_log d
-                           WHERE     c.id = d.content_type_id
-                                 AND (c.app_label = 'auth' OR c.model = 'custom') and d.id > 247)
-                            recordsTotal
-                    FROM django_content_type a, django_admin_log b
+                         b.action_flag
+                    FROM django_content_type a, django_admin_log b, auth_user c
                    WHERE     a.id = b.content_type_id
+                             and b.user_id = c.id
                          AND (a.app_label = 'auth' OR a.model = 'custom')
                          and b.id > 247
-                ORDER BY b.action_time DESC
+            """
 
-                   LIMIT {startNo}, {pageLength};
+            if system:
+                if system == 'a':
+                    query1 += " and a.id = 3 "
+                elif system == 'k':
+                    query1 += " and a.id not in (3, 311) "
+                elif system == 'i':
+                    query1 += " and a.id = 311 "
+
+            if operation is not None:
+                print '1'
+                query1 += " and b.action_flag = %s " % operation
+
+            if function is not None:
+                print '2'
+                query1 += " and a.id = %s " % operation
+
+            if function_detail is not None:
+                print '3'
+                query1 += " and b.action_flag = %s " % operation
+
+            if user is not None:
+                print '4'
+                query1 += " and (c.id = {user} or c.username = {user})".format(user=user)
+
+            if target is not None:
+                print '5'
+                query1 += " and b.action_flag = %s " % operation
+
+            query2 = """
+                ORDER BY b.action_time DESC
+                   LIMIT {startNo}, {pageLength}
             """.format(startNo=startNo, pageLength=pageLength)
+
+            query = query1 + query2
+
             print 'query:', query
             print startNo, pageLength
 
             cur.execute(query)
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
+
+            cur.execute('SELECT found_rows();')
+            recordsTotal = cur.fetchone()[0]
+
+            print 'recordsTotal:', recordsTotal
 
             pp = pprint.PrettyPrinter(indent=2)
             pp.pprint(connection.queries)
@@ -1919,90 +1962,154 @@ def history(request):
         '''
 
         # 기능 구분 값 한글화
-        import ast
+
         for result_dict in result_list:
-            # print 'result_dict:', result_dict
-
-            change_message = result_dict['change_message']
-            try:
-                change_message_dict = ast.literal_eval(change_message)
-            except:
-                try:
-                    temp_string = change_message[:change_message.find('query') - 1] + change_message[
-                                                                                      change_message.find('>') + 2:]
-                    change_message_dict = ast.literal_eval(temp_string)
-                except Exception as e:
-                    print 'change_message s ---------------------------'
-                    print change_message
-                    print 'change_message e ---------------------------'
-                    print 'e:', e
-
-            ip = change_message_dict['ip'] if 'ip' in change_message_dict else ''
-            system = change_message_dict['system'] if 'system' in change_message_dict else ''
-
-            result_dict['ip'] = ip
-            result_dict['system'] = ip
-
             content_type_id = result_dict['content_type_id']
-            result_dict['content_type_id'] = content_type_dict[
-                content_type_id] if content_type_id in content_type_dict else content_type_id
-            action_flag = result_dict['action_flag']
-            result_dict['action_flag'] = action_flag_dict[
-                action_flag] if action_flag in action_flag_dict else action_flag
+            change_message_dict = get_change_message_dict(result_dict['change_message'])
+            object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
 
-        # result_list = [list(row) for row in rows]
-        # result['draw'] = 1
+            # 기능 구분에 따라 시스템 표시 구분
+            result_dict['system'] = get_system_name(content_type_id)
+            # 기능 구분에 따라 상세구분 표시 내용 추가
+            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
 
-        recordsTotal = result_list[0]['recordsTotal']
+            result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+
+            result_dict['content_type_id'] = content_type_dict[content_type_id]
+
+            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+
+            result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
+
+            result_dict['cnt'] = change_message_dict['count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
 
         result['data'] = result_list
         result['recordsTotal'] = recordsTotal
         result['recordsFiltered'] = recordsTotal
 
-        # recordsTotal = result_list[0][len(result_list[0]) - 1]
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
 
-        # return HttpResponse(json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
-
-        aaData = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
-
-        # print 'aaData s -------------------'
-        # print aaData
-        # print 'aaData e -------------------'
-
-        return HttpResponse(aaData, 'applications/json')
+        return HttpResponse(context, 'applications/json')
 
     else:
         return render(request, 'history/history.html')
 
 
+def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
+    if not content_type_id:
+        return ''
+    elif content_type_id == '3':
+        # auth_user
+        pass
+    elif content_type_id == '297':
+        # file downlaod
+
+        print object_repr_dict
+
+        return object_repr_dict['filename']
+    elif content_type_id in ['295', '306']:
+        # role
+        rolename_en = object_repr_dict['rolename']
+        if rolename_en == 'staff':
+            rolename = '운영팀'
+        elif rolename_en == 'instructor':
+            rolename = '교수자'
+        elif rolename_en == 'beta':
+            rolename = '베타 테스터'
+        elif rolename_en == 'Administrator':
+            rolename = '게시판 관리자'
+        elif rolename_en == 'Moderator':
+            rolename = '토의 게시자'
+        elif rolename_en == 'Community TA':
+            rolename = '게시판 커뮤니티 조교'
+        else:
+            print 'rolename_en:', rolename_en
+            rolename = ''
+        return rolename
+    else:
+        pass
+
+    return ''
+
+
+def get_system_name(content_type_id):
+    if content_type_id in ['3', ]:
+        system = 'admin'
+    elif content_type_id in ['310', ]:
+        system = 'insight'
+    else:
+        system = 'k-mooc'
+    return system
+
+
+def get_change_message_dict(change_message):
+    try:
+        change_message_dict = ast.literal_eval(change_message)
+    except:
+        try:
+            temp_string = change_message[:change_message.find('query') - 1] + change_message[
+                                                                              change_message.find('>') + 2:]
+            change_message_dict = ast.literal_eval(temp_string)
+        except Exception as e:
+            change_message_dict = dict()
+            print 'Exception:', e, change_message
+    finally:
+        return change_message_dict
+
+
+def get_object_repr_dict(object_repr):
+    object_repr_temp = object_repr[object_repr.find('[') + 1:].replace(']', '')
+    list1 = object_repr_temp.split(';')
+    result = dict()
+    for l1 in list1:
+        list2 = l1.split(':')
+        # print 'len(list2) = ', len(list2)
+        if len(list2) == 1:
+            result[list2[0]] = list2[0]
+        else:
+            result[list2[0]] = list2[1]
+    return result
+
+
+def get_searcy_string(content_type_id, change_message_dict):
+    if content_type_id == '292' and 'query' in change_message_dict:
+        search_query = urllib.unquote(change_message_dict['query']).decode('utf8')
+        search_query = search_query.split('=')[1] if search_query else ''
+    else:
+        search_query = ''
+    return search_query
+
+
 action_flag_dict = {
     '0': u'조회',
-    '1': u'입력',
+    '1': u'생성',
     '2': u'수정',
     '3': u'삭제',
 }
 content_type_dict = {
     '0': u'조회',
-    '292': u'회원 정보 리스트',
-    '293': u'회원 정보 상세',
     '1': u'회원권한 수정',
     '2': u'회원그룹 수정',
     '3': u'회원정보 수정',
-    '294': u'베타 테스터',
-    '307': u'강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)',
-    '296': u'강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)',
-    '310': u'학습 집단 추가',
-    '303': u'학습자의 진도 페이지 조회',
-    '309': u'문제 풀이 횟수 설정 초기화',
-    '299': u'익명 학습자 아이디 CSV 파일',
-    '305': u'개인정보를 CSV 파일로 다운로드',
-    '306': u'등록할 수 있는 학습자의 CSV 다운로드',
-    '302': u'문제 답변 CSV 파일 다운로드',
-    '300': u'발급된 이수증 조회',
-    '301': u'발급된 이수증 CSV 파일',
-    '304': u'등록된 학습자의 프로필 목록',
-    '295': u'성적 보고서',
-    '308': u'문항 성적 보고서 생성',
-    '297': u'ORA 데이터 보고 생성하기',
-    '291': u'파일 다운로드',
+    '291': u'회원 정보 상세',
+    '292': u'회원 정보 리스트',
+    '293': u'베타 테스터',
+    '294': u'성적 보고서',
+    '295': u'강좌 운영팀 관리',
+    '296': u'ORA 데이터 보고 생성하기',
+    '297': u'파일 다운로드',
+    '298': u'익명 학습자 아이디 CSV 파일',
+    '299': u'발급된 이수증 조회',
+    '300': u'발급된 이수증 CSV 파일',
+    '301': u'문제 답변 CSV 파일 다운로드',
+    '302': u'학습자의 진도 페이지 조회',
+    '303': u'등록된 학습자의 프로필 목록',
+    '304': u'개인정보를 CSV 파일로 다운로드',
+    '305': u'등록할 수 있는 학습자의 CSV 다운로드',
+    '306': u'강좌 운영팀 관리',
+    '307': u'문항 성적 보고서 생성',
+    '308': u'문제 풀이 횟수 설정 초기화',
+    '309': u'학습 집단 추가',
+    '310': u'',
+    '311': u'인사이트 조회',
 }
