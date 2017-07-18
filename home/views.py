@@ -1630,10 +1630,6 @@ def comm_reference_room(request):
                 search = request.GET['search_search']
                 query += "and " + title + " like '%" + search + "%'"
 
-            # query += " ORDER BY board_id"
-
-            # print 'query', query
-
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
@@ -1641,7 +1637,6 @@ def comm_reference_room(request):
             for r in row:
                 value_list = []
                 refer = r
-                # print 'row == ',row
                 value_list.append(refer[0])
                 value_list.append(refer[1])
                 value_list.append(index)
@@ -1656,12 +1651,10 @@ def comm_reference_room(request):
         elif request.GET['method'] == 'refer_del':
             refer_id = request.GET['refer_id']
             use_yn = request.GET['use_yn']
-            yn = ''
             if use_yn == 'Y':
                 yn = 'N'
             else:
                 yn = 'Y'
-            # print 'use_yn == ',use_yn,' yn == ',yn
             cur = connection.cursor()
             query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + refer_id
             cur.execute(query)
@@ -1686,10 +1679,6 @@ def new_refer(request):
     if 'file' in request.FILES:
         value_list = []
         file = request.FILES['file']
-        filename = ''
-        file_ext = ''
-        file_size = ''
-        # print file
         filename = file._name
         file_ext = filename.split('.')[1]
 
@@ -1722,7 +1711,6 @@ def new_refer(request):
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
-            # print file_name,'/',file_ext,'/',file_size
 
             cur = connection.cursor()
             query = "insert into edxapp.tb_board(subject, content, section, head_title)"
@@ -1733,7 +1721,6 @@ def new_refer(request):
             cur.execute(query2)
             board_id = cur.fetchall()
             cur.close()
-            # print board_id[0][0]
             if upload_file != '':
                 cur = connection.cursor()
                 query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
@@ -1758,7 +1745,6 @@ def new_refer(request):
             file_size = request.POST.get('file_size')
 
             cur = connection.cursor()
-            # query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
             query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + refer_id + "'"
             cur.execute(query)
             cur.close()
@@ -1802,14 +1788,12 @@ def modi_refer(request, id, use_yn):
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
-            # print 'query', query
 
             cur = connection.cursor()
             query = "select attatch_file_name from tb_board_attach where board_id = " + id
             cur.execute(query)
             files = cur.fetchall()
             cur.close()
-            # print 'files == ',files
 
             mod_refer.append(row[0][0])
             mod_refer.append(row[0][1])
@@ -1817,11 +1801,9 @@ def modi_refer(request, id, use_yn):
             mod_refer.append(row[0][3])
             if files:
                 mod_refer.append(files)
-            # print 'mod_knews == ',mod_refer
             data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
         elif request.GET['method'] == 'file_download':
             file_name = request.GET['file_name']
-            # print 'file_name == ',file_name
             data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -1838,12 +1820,10 @@ def modi_refer(request, id, use_yn):
 def moni_storage(request):
     if request.is_ajax():
         if request.GET['method'] == 'storage_list':
-            aaData = {}
             data_list = []
             a = commands.getoutput('df -h /video')
             a_list = [1, a.split()[7], a.split()[9], a.split()[10], a.split()[11]]
             data_list.append(a_list)
-            # print 'data_list == ',data_list
             aaData = json.dumps(list(data_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(aaData, 'applications/json')
     return render(request, 'monitoring/moni_storage.html')
@@ -1859,7 +1839,6 @@ def summer_upload(request):
         for chunk in file.chunks():
             fp.write(chunk)
         fp.close()
-        # return HttpResponse('http://192.168.33.15:8000/home/static/excel/notice_file/'+filename)
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
@@ -1917,24 +1896,28 @@ def history(request):
                     query1 += " and a.id = 311 "
 
             if operation:
-                print '1'
+                print 'add query type 1'
                 query1 += " and b.action_flag = %s " % operation
 
             if func:
-                print '2'
+                print 'add query type 2'
                 query1 += " and a.id = %s " % func
 
             if func_detail:
-                print '3'
+                print 'add query type 3'
                 query1 += " and b.action_flag = %s " % func_detail
 
             if user_id:
-                print '4'
-                query1 += " and (c.id = {user_id} or c.username = {user_id})".format(user_id=user_id)
+                print 'add query type 4'
+                query1 += " and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id)
 
             if target_id:
-                print '5'
-                query1 += " and b.action_flag = %s " % target_id
+                print 'add query type 5'
+                # 강좌 운영팀 관리
+                if func in ['3', '295', '306']:
+                    query1 += " and b.object_repr like '%%%s%%' " % target_id
+                elif func in ['291']:
+                    query1 += " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id
 
             query2 = """
                 ORDER BY b.action_time DESC
@@ -1978,23 +1961,24 @@ def history(request):
             object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
 
             # 기능 구분에 따라 시스템 표시 구분
-            # result_dict['system'] = get_system_name(content_type_id)
-            result_dict['system'] = content_type_id
+            result_dict['system'] = get_system_name(content_type_id)
+            # result_dict['system'] = content_type_id
 
             # 기능 구분에 따라 상세구분 표시 내용 추가
             result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict,
                                                                     change_message_dict)
 
             result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+            result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
 
             result_dict['content_type_id'] = content_type_dict[content_type_id]
 
-            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']] + "[" + result_dict['id'] + "]"
+            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+            # result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']] + "[" + result_dict['id'] + "]"
 
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
 
-            result_dict['cnt'] = change_message_dict[
-                'count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
+            result_dict['cnt'] = change_message_dict['count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
 
         result['data'] = result_list
         result['recordsTotal'] = recordsTotal
@@ -2084,7 +2068,7 @@ def get_object_repr_dict(object_repr):
         list2 = l1.split(':')
         # print 'len(list2) = ', len(list2)
         if len(list2) == 1:
-            result[list2[0]] = list2[0]
+            result['student'] = list2[0]
         else:
             result[list2[0]] = list2[1]
     return result
@@ -2097,6 +2081,23 @@ def get_searcy_string(content_type_id, change_message_dict):
     else:
         search_query = ''
     return search_query
+
+
+def get_target_id(content_type_id, object_repr_dict):
+    print 'object_repr_dict ==> ', object_repr_dict
+    target_id = ''
+    if content_type_id == '3':
+        target_id = object_repr_dict['student']
+    elif content_type_id in ['295', '306']:
+        return object_repr_dict['user'] if 'user' in object_repr_dict else ''
+    elif content_type_id in ['291', '308']:
+        all_students = object_repr_dict['all_students'] if 'all_students' in object_repr_dict else 'False'
+        if all_students == 'True':
+            return 'All'
+        else:
+            return object_repr_dict['student'] if 'student' in object_repr_dict else ''
+
+    return target_id
 
 
 action_flag_dict = {
@@ -2112,23 +2113,21 @@ content_type_dict = {
     '3': u'회원정보 수정',
     '291': u'회원 정보 상세',
     '292': u'회원 정보 리스트',
-    '293': u'베타 테스터',
+    '293': u'등록관리 - 베타 테스터',
     '294': u'성적 보고서',
-    '295': u'강좌 운영팀 관리',
+    '295': u'강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)',
     '296': u'ORA 데이터 보고 생성하기',
     '297': u'파일 다운로드',
     '298': u'익명 학습자 아이디 CSV 파일',
     '299': u'발급된 이수증 조회',
     '300': u'발급된 이수증 CSV 파일',
     '301': u'문제 답변 CSV 파일 다운로드',
-    '302': u'학습자의 진도 페이지 조회',
+    '302': u'학습자 진도 페이지',
     '303': u'등록된 학습자의 프로필 목록',
     '304': u'개인정보를 CSV 파일로 다운로드',
     '305': u'등록할 수 있는 학습자의 CSV 다운로드',
-    '306': u'강좌 운영팀 관리',
+    '306': u'강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)',
     '307': u'문항 성적 보고서 생성',
     '308': u'문제 풀이 횟수 설정 초기화',
-    '309': u'학습 집단 추가',
-    '310': u'',
-    '311': u'인사이트 조회',
+    '309': u'등록관리 - 일괄 등록',
 }
