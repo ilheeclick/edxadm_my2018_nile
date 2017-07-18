@@ -1873,7 +1873,7 @@ def history(request):
 
         with connections['default'].cursor() as cur:
             query1 = """
-                SELECT SQL_CALC_FOUND_ROWS b.content_type_id, b.id, date_format(b.action_time, '%Y/%m/%d %H:%i:%s') action_time,
+                SELECT SQL_CALC_FOUND_ROWS b.content_type_id, b.id, date_format(adddate(b.action_time, interval 9 hour), '%Y/%m/%d %H:%i:%s') action_time,
                          a.app_label,
                          b.user_id,
                          (select username from auth_user where id = b.user_id) username,
@@ -1978,7 +1978,8 @@ def history(request):
 
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
 
-            result_dict['cnt'] = change_message_dict['count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
+            result_dict['cnt'] = change_message_dict[
+                'count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
 
         result['data'] = result_list
         result['recordsTotal'] = recordsTotal
@@ -1990,6 +1991,80 @@ def history(request):
 
     else:
         return render(request, 'history/history.html')
+
+
+import csv
+import datetime
+
+
+def csv_history(request):
+    filename = 'history_csv_%s' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
+
+    try:
+        with connections['default'].cursor() as cur:
+
+            query = '''
+                SELECT c.user_id,
+                       d.username,
+                       d.email,
+                       a.status,
+                       date_format(a.created, '%Y/%m/%d') created,
+                       date_format(a.modified, '%Y/%m/%d') modified,
+                       a.item_id
+                  FROM workflow_assessmentworkflow a,
+                       assessment_studenttrainingworkflow b,
+                       student_anonymoususerid c,
+                       auth_user d,
+                       auth_userprofile e
+                 WHERE     a.course_id = b.course_id
+                       AND a.submission_uuid = b.submission_uuid
+                       AND a.item_id = b.item_id
+                       AND b.student_id = c.anonymous_user_id
+                       AND c.user_id = d.id
+                       AND d.id = e.use
+                       AND b.student_id = c.anonymous_user_idr_id
+                       AND a.course_id = 'course-v1:EwhaK+EW10771K+2017-S04'
+                ORDER BY a.item_id, a.status, e.user_id;
+            '''
+            # print 'query1:', query
+
+            cur.execute(query)
+            datarows = cur.fetchall()
+
+            fieldnames = [i[0] for i in cur.description]
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+            csvwriter = csv.writer(
+                response,
+                dialect='excel',
+                quotechar='"',
+                quoting=csv.QUOTE_ALL)
+
+            encoded_header = [unicode(s).encode('utf-8') for s in fieldnames]
+            csvwriter.writerow(encoded_header)
+
+            for datarow in datarows:
+                encoded_row = [unicode(s).encode('utf-8') for s in datarow]
+                csvwriter.writerow(encoded_row)
+
+            try:
+                contents = unicode(response.content, 'utf-8')
+                response.content = contents.encode('utf-8-sig')
+            except Exception as e:
+                print 'except s ------------------------------------------'
+                print e
+                print 'except e ------------------------------------------'
+
+            return response
+
+
+
+
+
+
+    except Exception as e:
+        print e
 
 
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
