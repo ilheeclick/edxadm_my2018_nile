@@ -284,19 +284,15 @@
 
             var detailRows = [];
             $table.on('click', 'tr', function () {
-                //var $row;
-                //var cell;
-                //var data;
-                //var t = $('#datatable-ajax').DataTable();
-                //$row = $(this).closest('tr');
-                //data = t.row($row.get(0)).data();
-                //console.log(data.id + " : " + data.content_type_id);
-                //$row.append("<div style='position: absolute;'>test</div>")
 
 
                 var dt = $('#datatable-ajax').DataTable();
                 var tr = $(this).closest('tr');
                 var row = dt.row(tr);
+
+                console.log(row.data());
+                return;
+
                 var idx = $.inArray(tr.attr('id'), detailRows);
 
                 if (row.child.isShown()) {
@@ -305,10 +301,10 @@
 
                     // Remove from the 'open' array
                     detailRows.splice(idx, 1);
-                }
-                else {
+                } else {
                     tr.addClass('details');
                     row.child(format(row.data())).show();
+                    //row.child(JSON.stringify(row.data())).show();
 
                     // Add to the 'open' array
                     if (idx === -1) {
@@ -319,8 +315,9 @@
         }
 
         function format(d) {
-            return 'Full name: ' + d.id + '<br>' +
-                    'The child row can contain any data you wish, including links, images, inner tables etc.';
+            //console.log(d);
+            return d.object_repr + '<br/>' +
+                    d.change_message;
         }
 
     </script>
