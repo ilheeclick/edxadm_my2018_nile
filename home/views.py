@@ -2,7 +2,6 @@
 from django.shortcuts import render, render_to_response, redirect
 from django.template import Context, RequestContext
 from django.http import Http404, HttpResponse, FileResponse
-from django.utils import timezone
 import json
 from django.db import connection
 from management.settings import UPLOAD_DIR
@@ -10,7 +9,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from management.settings import dic_univ, database_id, debug
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import datetime
 import os
 from django.views.decorators.csrf import csrf_exempt
 import subprocess
@@ -21,14 +19,13 @@ import pprint
 from django.db import connections
 import ast
 import urllib
+import csv
+import datetime
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-# Create your views here.
-
-# stastic view
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
@@ -1845,142 +1842,8 @@ def summer_upload(request):
 
 def history(request):
     if request.is_ajax():
-        pageNo = request.POST.get('pageNo')
-        pageLength = request.POST.get('pageLength')
-        startNo = 0
-
-        system = request.POST.get('system')
-        operation = request.POST.get('operation')
-        func = request.POST.get('func')
-        func_detail = request.POST.get('func_detail')
-        user_id = request.POST.get('user_id')
-        target_id = request.POST.get('target_id')
-        # search_string = urllib.quote('검색').encode('utf8')
-
-        print 'param s ---------------------------'
-        print system
-        print operation
-        print func
-        print func_detail
-        print user_id
-        print target_id
-        print 'param e ---------------------------'
-
-        if pageLength == '-1':
-            pageLength = '999999'
-        else:
-            startNo = int(pageNo) * int(pageLength)
-
-        with connections['default'].cursor() as cur:
-            query1 = """
-                SELECT SQL_CALC_FOUND_ROWS b.content_type_id, b.id, date_format(adddate(b.action_time, interval 9 hour), '%Y/%m/%d %H:%i:%s') action_time,
-                         a.app_label,
-                         b.user_id,
-                         (select username from auth_user where id = b.user_id) username,
-                         b.object_id, b.object_repr,
-                         b.change_message,
-                         b.action_flag
-                    FROM django_content_type a, django_admin_log b, auth_user c
-                   WHERE     a.id = b.content_type_id
-                             and b.user_id = c.id
-                         AND (a.app_label = 'auth' OR a.model = 'custom')
-                         and b.id > 247
-            """
-
-            if system:
-                if system == 'a':
-                    query1 += " and a.id = 3 "
-                elif system == 'k':
-                    query1 += " and a.id not in (3, 311) "
-                elif system == 'i':
-                    query1 += " and a.id = 311 "
-
-            if operation:
-                print 'add query type 1'
-                query1 += " and b.action_flag = %s " % operation
-
-            if func:
-                print 'add query type 2'
-                query1 += " and a.id = %s " % func
-
-            if func_detail:
-                print 'add query type 3'
-                query1 += " and b.action_flag = %s " % func_detail
-
-            if user_id:
-                print 'add query type 4'
-                query1 += " and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id)
-
-            if target_id:
-                print 'add query type 5'
-                # 강좌 운영팀 관리
-                if func in ['3', '295', '306']:
-                    query1 += " and b.object_repr like '%%%s%%' " % target_id
-                elif func in ['291']:
-                    query1 += " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id
-
-            query2 = """
-                ORDER BY b.action_time DESC
-                   LIMIT {startNo}, {pageLength}
-            """.format(startNo=startNo, pageLength=pageLength)
-
-            query = query1 + query2
-
-            print 'query:', query
-            print startNo, pageLength
-
-            cur.execute(query)
-            rows = cur.fetchall()
-            columns = [col[0] for col in cur.description]
-
-            cur.execute('SELECT found_rows();')
-            recordsTotal = cur.fetchone()[0]
-
-            print 'recordsTotal:', recordsTotal
-
-            pp = pprint.PrettyPrinter(indent=2)
-            pp.pprint(connection.queries)
-
         result = dict()
-        # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
-        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
-
-        '''
-        content_type_id 에 따른 기능 구분 추가
-        [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
-        [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
-        :param request:
-        :return:
-        '''
-
-        # 기능 구분 값 한글화
-
-        for result_dict in result_list:
-            content_type_id = result_dict['content_type_id']
-            change_message_dict = get_change_message_dict(result_dict['change_message'])
-            object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
-
-            # 기능 구분에 따라 시스템 표시 구분
-            result_dict['system'] = get_system_name(content_type_id)
-            # result_dict['system'] = content_type_id
-
-            # 기능 구분에 따라 상세구분 표시 내용 추가
-            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict,
-                                                                    change_message_dict)
-
-            result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
-            result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
-
-            result_dict['content_type_id'] = content_type_dict[content_type_id]
-
-            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
-            # result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']] + "[" + result_dict['id'] + "]"
-
-            result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-
-            result_dict['cnt'] = change_message_dict[
-                'count'] if 'count' in change_message_dict and content_type_id not in ['303', '304'] else '-'
-
+        columns, recordsTotal, result_list = history_rows(request)
         result['data'] = result_list
         result['recordsTotal'] = recordsTotal
         result['recordsFiltered'] = recordsTotal
@@ -1993,78 +1856,234 @@ def history(request):
         return render(request, 'history/history.html')
 
 
-import csv
-import datetime
+def history_csv(request):
+    filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
+    columns, recordsTotal, result_list = history_rows(request)
 
-
-def csv_history(request):
-    filename = 'history_csv_%s' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
-
+    # csv 표시 순서 정렬을 위해 header 지정
+    csv_headers = [
+        'system',
+        'username',
+        'action_time',
+        'content_type_id',
+        'content_type_detail',
+        'action_flag',
+        'target_id',
+        'search_string',
+        'cnt',
+        'ip',
+    ]
     try:
-        with connections['default'].cursor() as cur:
 
-            query = '''
-                SELECT c.user_id,
-                       d.username,
-                       d.email,
-                       a.status,
-                       date_format(a.created, '%Y/%m/%d') created,
-                       date_format(a.modified, '%Y/%m/%d') modified,
-                       a.item_id
-                  FROM workflow_assessmentworkflow a,
-                       assessment_studenttrainingworkflow b,
-                       student_anonymoususerid c,
-                       auth_user d,
-                       auth_userprofile e
-                 WHERE     a.course_id = b.course_id
-                       AND a.submission_uuid = b.submission_uuid
-                       AND a.item_id = b.item_id
-                       AND b.student_id = c.anonymous_user_id
-                       AND c.user_id = d.id
-                       AND d.id = e.use
-                       AND b.student_id = c.anonymous_user_idr_id
-                       AND a.course_id = 'course-v1:EwhaK+EW10771K+2017-S04'
-                ORDER BY a.item_id, a.status, e.user_id;
-            '''
-            # print 'query1:', query
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        csvwriter = csv.writer(
+            response,
+            dialect='excel',
+            quotechar='"',
+            quoting=csv.QUOTE_ALL)
 
-            cur.execute(query)
-            datarows = cur.fetchall()
+        encoded_header = [unicode(s).encode('utf-8') for s in csv_headers]
+        csvwriter.writerow(encoded_header)
 
-            fieldnames = [i[0] for i in cur.description]
+        for result in result_list:
+            # encoded_row = [unicode(value).encode('utf-8') for key, value in result.iteritems()]
+            encoded_row = [result[c] if c in result else '' for c in csv_headers]
 
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
-            csvwriter = csv.writer(
-                response,
-                dialect='excel',
-                quotechar='"',
-                quoting=csv.QUOTE_ALL)
+            csvwriter.writerow(encoded_row)
 
-            encoded_header = [unicode(s).encode('utf-8') for s in fieldnames]
-            csvwriter.writerow(encoded_header)
+        try:
+            contents = unicode(response.content, 'utf-8')
+            response.content = contents.encode('utf-8-sig')
+        except Exception as e:
+            print e
 
-            for datarow in datarows:
-                encoded_row = [unicode(s).encode('utf-8') for s in datarow]
-                csvwriter.writerow(encoded_row)
-
-            try:
-                contents = unicode(response.content, 'utf-8')
-                response.content = contents.encode('utf-8-sig')
-            except Exception as e:
-                print 'except s ------------------------------------------'
-                print e
-                print 'except e ------------------------------------------'
-
-            return response
-
-
-
-
-
+        return response
 
     except Exception as e:
         print e
+def history_csv(request):
+    filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
+    columns, recordsTotal, result_list = history_rows(request)
+
+    # csv 표시 순서 정렬을 위해 header 지정
+    csv_headers = [
+        'system',
+        'username',
+        'action_time',
+        'content_type_id',
+        'content_type_detail',
+        'action_flag',
+        'target_id',
+        'search_string',
+        'cnt',
+        'ip',
+    ]
+    try:
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        csvwriter = csv.writer(
+            response,
+            dialect='excel',
+            quotechar='"',
+            quoting=csv.QUOTE_ALL)
+
+        encoded_header = [unicode(s).encode('utf-8') for s in csv_headers]
+        csvwriter.writerow(encoded_header)
+
+        for result in result_list:
+            # encoded_row = [unicode(value).encode('utf-8') for key, value in result.iteritems()]
+            encoded_row = [result[c] if c in result else '' for c in csv_headers]
+
+            csvwriter.writerow(encoded_row)
+
+        try:
+            contents = unicode(response.content, 'utf-8')
+            response.content = contents.encode('utf-8-sig')
+        except Exception as e:
+            print e
+
+        return response
+
+    except Exception as e:
+        print e
+
+
+def history_rows(request):
+    if request.is_ajax():
+        is_csv = False
+    else:
+        is_csv = True
+
+    page_no = request.GET.get('page_no')
+    page_length = request.GET.get('page_length')
+    start_no = 0
+
+    system = request.GET.get('system')
+    operation = request.GET.get('operation')
+    func = request.GET.get('func')
+    func_detail = request.GET.get('func_detail')
+    user_id = request.GET.get('user_id')
+    target_id = request.GET.get('target_id')
+    # search_string = urllib.quote('검색').encode('utf8')
+
+    print 'param s ---------------------------'
+    print page_no
+    print page_length
+    print system
+    print operation
+    print func
+    print func_detail
+    print user_id
+    print target_id
+    print 'param e ---------------------------'
+
+    if page_length == '-1' or is_csv:
+        page_length = '999999'
+    else:
+        start_no = int(page_no) * int(page_length)
+
+    with connections['default'].cursor() as cur:
+        query1 = """
+            SELECT SQL_CALC_FOUND_ROWS
+                     b.content_type_id, b.id, date_format(adddate(b.action_time, interval 9 hour), '%Y/%m/%d %H:%i:%s') action_time,
+                     a.app_label,
+                     b.user_id,
+                     (select username from auth_user where id = b.user_id) username,
+                     b.object_id, b.object_repr,
+                     b.change_message,
+                     b.action_flag
+                FROM django_content_type a, django_admin_log b, auth_user c
+               WHERE     a.id = b.content_type_id
+                         and b.user_id = c.id
+                     AND (a.app_label = 'auth' OR a.model = 'custom')
+                     and b.id > 247
+        """
+
+        if system:
+            if system == 'a':
+                query1 += " and a.id = 3 "
+            elif system == 'k':
+                query1 += " and a.id not in (3, 311) "
+            elif system == 'i':
+                query1 += " and a.id = 311 "
+
+        if operation:
+            print 'add query type 1'
+            query1 += " and b.action_flag = %s " % operation
+
+        if func:
+            print 'add query type 2'
+            query1 += " and a.id = %s " % func
+
+        if func_detail:
+            print 'add query type 3'
+            query1 += " and b.action_flag = %s " % func_detail
+
+        if user_id:
+            print 'add query type 4'
+            query1 += " and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id)
+
+        if target_id:
+            print 'add query type 5'
+            # 강좌 운영팀 관리
+            if func in ['3', '295', '306']:
+                query1 += " and b.object_repr like '%%%s%%' " % target_id
+            elif func in ['291']:
+                query1 += " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id
+
+        query2 = """
+            ORDER BY b.action_time DESC
+               LIMIT {start_no}, {page_length}
+        """.format(start_no=start_no, page_length=page_length)
+
+        query = query1 + query2
+
+        print 'query:', query
+        print start_no, page_length
+
+        cur.execute(query)
+        rows = cur.fetchall()
+        columns = [col[0] for col in cur.description]
+
+        cur.execute('SELECT found_rows();')
+        recordsTotal = cur.fetchone()[0]
+
+        print 'recordsTotal:', recordsTotal
+
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(connection.queries)
+
+    # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
+    result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    '''
+    content_type_id 에 따른 기능 구분 추가
+    [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
+    [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
+    '''
+
+    # 기능 구분 값 한글화
+
+    for result_dict in result_list:
+        content_type_id = result_dict['content_type_id']
+        change_message_dict = get_change_message_dict(result_dict['change_message'])
+        object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+
+        # 기능 구분에 따라 시스템 표시 구분
+        result_dict['system'] = get_system_name(content_type_id)
+
+        # 기능 구분별 상세구분 표시 내용 추가
+        result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
+        result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+        result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
+        result_dict['content_type_id'] = content_type_dict[content_type_id]
+        result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+        result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
+        result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
+                                                                                                                                                                                    '304'] else '-'
+    return columns, recordsTotal, result_list
 
 
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
@@ -2076,9 +2095,7 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     elif content_type_id == '308':
         change_message_dict
     elif content_type_id == '297':
-        # file downlaod
-
-        print object_repr_dict
+        # print object_repr_dict
 
         return object_repr_dict['filename']
     elif content_type_id in ['295', '306']:
@@ -2101,7 +2118,7 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
         elif rolename_en == 'Community TA':
             rolename = '게시판 커뮤니티 조교'
         else:
-            print 'rolename_en:', rolename_en
+            # print 'rolename_en:', rolename_en
             rolename = ''
         return rolename
     else:
@@ -2111,6 +2128,15 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
 
 
 def get_system_name(content_type_id):
+    """
+    시스템 표시 구분.
+    content_type_id: 3 = django admin
+    content_type_id: 310 = insight
+    etc : kmooc
+
+    :param content_type_id:
+    :return:
+    """
     if content_type_id in ['3', ]:
         system = 'admin'
     elif content_type_id in ['310', ]:
@@ -2121,12 +2147,20 @@ def get_system_name(content_type_id):
 
 
 def get_change_message_dict(change_message):
+    """
+    request의 파라미터를 dict 형태로 변환후 문자열로 재변환하여 change_message 값으로 저장하고 있음.
+    저장된 값을 사용하기 위해 다시 dict 형태로 변환처리
+
+    request 의 값중 query 의 내용중에 역슬러쉬가 포함되는 경우가 있어서 문자열 > dict 변환중 오류가 발생하므로 query 내용 제거 작업 추가.
+
+    :param change_message:
+    :return:
+    """
     try:
         change_message_dict = ast.literal_eval(change_message)
     except:
         try:
-            temp_string = change_message[:change_message.find('query') - 1] + change_message[
-                                                                              change_message.find('>') + 2:]
+            temp_string = change_message[:change_message.find('query') - 1] + change_message[change_message.find('>') + 2:]
             change_message_dict = ast.literal_eval(temp_string)
         except Exception as e:
             change_message_dict = dict()
@@ -2136,6 +2170,13 @@ def get_change_message_dict(change_message):
 
 
 def get_object_repr_dict(object_repr):
+    """
+    object_repr 의 내용은 재정의된 문자열로 저장이되고 있으며,
+    json 형식이 아니므로 split 을 이요하여 분리하여 dict 로 변환하여 사용함.
+
+    :param object_repr:
+    :return:
+    """
     object_repr_temp = object_repr[object_repr.find('[') + 1:].replace(']', '')
     list1 = object_repr_temp.split(';')
     result = dict()
@@ -2150,6 +2191,13 @@ def get_object_repr_dict(object_repr):
 
 
 def get_searcy_string(content_type_id, change_message_dict):
+    """
+    django admin 에서 사용자 검색을 한경우 검색어를 추출.
+
+    :param content_type_id:
+    :param change_message_dict:
+    :return:
+    """
     if content_type_id == '292' and 'query' in change_message_dict:
         search_query = urllib.unquote(change_message_dict['query']).decode('utf8')
         search_query = search_query.split('=')[1] if search_query else ''
@@ -2159,7 +2207,14 @@ def get_searcy_string(content_type_id, change_message_dict):
 
 
 def get_target_id(content_type_id, object_repr_dict):
-    print 'object_repr_dict ==> ', object_repr_dict
+    """
+    개인정보 수정, 사용자를 지정하여 처리하는 액션의 경우 대상 아이디를 조회하여 리턴.
+
+    :param content_type_id:
+    :param object_repr_dict:
+    :return:
+    """
+    # print 'object_repr_dict ==> ', object_repr_dict
     target_id = ''
     if content_type_id == '3':
         target_id = object_repr_dict['student']

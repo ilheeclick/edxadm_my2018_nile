@@ -1,95 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script>
-        /* Formatting function for row details - modify as you need */
-        function format(d) {
-            // `d` is the original data object for the row
-            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-                    '<tr>' +
-                    '<td>Full name:</td>' +
-                    '<td>' + d.name + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td>Extension number:</td>' +
-                    '<td>' + d.extn + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td>Extra info:</td>' +
-                    '<td>And any further details here (images etc)...</td>' +
-                    '</tr>' +
-                    '</table>';
-        }
-
-        $(document).ready(function () {
-            var table = $('#example').DataTable({
-                "ajax": "/manage/test",
-                "columns": [
-                    {
-                        "className": 'details-control',
-                        "orderable": false,
-                        "data": null,
-                        "defaultContent": ''
-                    },
-                    {"data": "name"},
-                    {"data": "position"},
-                    {"data": "office"},
-                    {"data": "salary"}
-                ],
-                "order": [[1, 'asc']]
-            });
-
-            // Add event listener for opening and closing details
-            $('#example tbody').on('click', 'td.details-control', function () {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                }
-                else {
-                    // Open this row
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
-        });
-
-    </script>
-</head>
-<body>
-
-<table id="example" class="display" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Office</th>
-        <th>Salary</th>
-    </tr>
-    </thead>
-    <tfoot>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Office</th>
-        <th>Salary</th>
-    </tr>
-    </tfoot>
-</table>
-
-</body>
-</html>
-
-
-
-
+<p><img src="http://www.kmooc.kr/static/KMOOC안내.png" alt="5" type="saveimage" target="[object Object]" preventdefault="function (){r.isDefaultPrevented=n}"
+        stoppropagation="function (){r.isPropagationStopped=n}" stopimmediatepropagation="function (){r.isImmediatePropagationStopped=n}" isdefaultprevented="function t(){return!1}"
+        ispropagationstopped="function t(){return!1}" isimmediatepropagationstopped="function t(){return!1}"/><img src="/static/KMOOC안내.png" alt="2" type="saveimage" target="[object Object]"
+                                                                                                                   preventdefault="function (){r.isDefaultPrevented=n}"
+                                                                                                                   stoppropagation="function (){r.isPropagationStopped=n}"
+                                                                                                                   stopimmediatepropagation="function (){r.isImmediatePropagationStopped=n}"
+                                                                                                                   isdefaultprevented="function t(){return!1}"
+                                                                                                                   ispropagationstopped="function t(){return!1}"
+                                                                                                                   isimmediatepropagationstopped="function t(){return!1}" width="779" height="438"/><img
+        src="www.kmooc.kr/static/KMOOC안내.png" alt="1" type="saveimage" target="[object Object]" preventdefault="function (){r.isDefaultPrevented=n}"
+        stoppropagation="function (){r.isPropagationStopped=n}" stopimmediatepropagation="function (){r.isImmediatePropagationStopped=n}" isdefaultprevented="function t(){return!1}"
+        ispropagationstopped="function t(){return!1}" isimmediatepropagationstopped="function t(){return!1}"/></p>
+<p><img src="/static/kmooc_banner_0405.jpg" alt="3" type="saveimage" target="[object Object]" preventdefault="function (){r.isDefaultPrevented=n}"
+        stoppropagation="function (){r.isPropagationStopped=n}" stopimmediatepropagation="function (){r.isImmediatePropagationStopped=n}" isdefaultprevented="function t(){return!1}"
+        ispropagationstopped="function t(){return!1}" isimmediatepropagationstopped="function t(){return!1}" width="322" height="325"/></p>
+<p><img src="www.kmooc.kr/static/kmooc_banner_0405.jpg" alt="4" type="saveimage" target="[object Object]" preventdefault="function (){r.isDefaultPrevented=n}"
+        stoppropagation="function (){r.isPropagationStopped=n}" stopimmediatepropagation="function (){r.isImmediatePropagationStopped=n}" isdefaultprevented="function t(){return!1}"
+        ispropagationstopped="function t(){return!1}" isimmediatepropagationstopped="function t(){return!1}"/></p>

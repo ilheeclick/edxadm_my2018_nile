@@ -73,7 +73,7 @@ urlpatterns = [
 
     # monitoring url
     url(r'^manage/history/', views.history, name='history'),
-    url(r'^manage/csv/history/', views.csv_history, name='history'),
+    url(r'^manage/csv/history/', views.history_csv, name='history'),
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
