@@ -6,6 +6,46 @@
 {% endblock %}
 
 {% block script_down %}
+    <style type="text/css">
+
+        div.dataTables_info {
+            width: 40%;
+        }
+
+        div.dataTables_paginate .paginate_button,
+        div.dataTables_paginate .paginate_active {
+            border: 0px solid #ddd;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            padding: 5px 13px;
+            cursor: pointer;
+            *cursor: hand;
+        }
+
+        div.dataTables_paginate .paginate_button {
+            background-color: #fff;
+
+        }
+
+        div.dataTables_paginate .paginate_button.current {
+            background-color: #0088cc;
+
+        }
+
+        div.dataTables_paginate .paginate_button:hover {
+            background-color: #ccc;
+        }
+
+        div.dataTables_paginate .paginate_active {
+            background-color: #99B3FF;
+        }
+
+        .dataTables_paginate {
+            height: 22px;
+            line-height: 22px;
+        }
+
+    </style>
 
     <script>
         $(document).ready(function () {
@@ -170,8 +210,8 @@
                     {data: "username", data_value: "user_id"},
                     {data: "action_time", class: "details-control"},
                     {data: "content_type_id"},
-                    {data: "content_type_detail"},
                     {data: "action_flag"},
+                    {data: "content_type_detail"},
                     {data: "target_id"},
                     {data: "search_string"},
                     {data: "cnt"},
@@ -183,8 +223,9 @@
                     {targets: 2, visible: true, width: '11%'},
                     {targets: 3, visible: true, width: '10%'},
                     {targets: 4, visible: true, width: '17%'},
+                    {targets: 5, visible: true, width: '8%'},
                     {
-                        targets: 5, visible: true, render: function (data, type, row) {
+                        targets: 6, visible: true, render: function (data, type, row) {
                         var data_length = data.length
                         console.log(data_length);
                         if (data_length > 25)
@@ -193,8 +234,7 @@
                             return data
                     }
                     },
-                    {targets: 6, visible: true, width: '7%'},
-                    {targets: 7, visible: true, width: '10%'},
+                    {targets: 7, visible: true, width: '8%'},
                     {targets: 8, visible: true, width: '10%'},
                     {targets: 9, visible: true, width: '6%'},
                     {targets: 10, visible: true, width: '9%'},
@@ -228,6 +268,7 @@
                     ]
                 },
                 paginate: true,
+                pagingType: "full_numbers",
                 language: {
                     lengthMenu: "_MENU_",
                     zeroRecords: "조회된 데이터가 없습니다",
@@ -236,8 +277,10 @@
                     infoFiltered: "(filtered from _MAX_ total records)",
                     sEmptyTable: "조회된 데이터가 없습니다",
                     paginate: {
+                        first: "처음",
                         previous: "이전",
-                        next: "다음"
+                        next: "다음",
+                        last: "끝"
                     }
                 },
 
@@ -290,8 +333,8 @@
                 var tr = $(this).closest('tr');
                 var row = dt.row(tr);
 
-                console.log(row.data());
-                return;
+                //console.log(row.data());
+                //return;
 
                 var idx = $.inArray(tr.attr('id'), detailRows);
 
@@ -304,7 +347,6 @@
                 } else {
                     tr.addClass('details');
                     row.child(format(row.data())).show();
-                    //row.child(JSON.stringify(row.data())).show();
 
                     // Add to the 'open' array
                     if (idx === -1) {
@@ -318,6 +360,16 @@
             //console.log(d);
             return d.object_repr + '<br/>' +
                     d.change_message;
+        }
+
+        function goFirstPage() {
+            var dt = $('#datatable-ajax').DataTable();
+            dt.page('first').draw('page');
+        }
+
+        function goLastPage() {
+            var dt = $('#datatable-ajax').DataTable();
+            dt.page('last').draw('page');
         }
 
     </script>
@@ -386,15 +438,6 @@
                     </div>
                 </div>
 
-                <div class="col-sm-1">
-                    <div class="form-group">
-                        <label class="control-label">상세 구분</label>
-                        <select name="func_detail" id="func_detail" class="form-control" disabled>
-                            <option value="">전체</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label class="control-label">수행 업무</label>
@@ -404,6 +447,15 @@
                             <option value="1">생성</option>
                             <option value="2">수정</option>
                             <option value="3">삭제</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-1">
+                    <div class="form-group">
+                        <label class="control-label">업무 내용</label>
+                        <select name="func_detail" id="func_detail" class="form-control" disabled>
+                            <option value="">전체</option>
                         </select>
                     </div>
                 </div>
@@ -430,6 +482,8 @@
             <br/>
 
             <div align="right">
+                <a href="javascript:goFirstPage();"><input class="btn btn-primary" type="button" value="First"></a>
+                <a href="javascript:goLastPage();"><input class="btn btn-primary" type="button" value="Last"></a>
                 <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
                 <!--
                 <input class="btn btn-success" type="button" value="엑셀다운로드">
@@ -449,8 +503,8 @@
                     <th>접속자 아이디</th>
                     <th>사용일시</th>
                     <th>기능 구분</th>
-                    <th>상세 내용</th>
                     <th>수행 업무</th>
+                    <th>업무 내용</th>
                     <th>대상자 아이디</th>
                     <th>검색어</th>
                     <th>건수</th>
