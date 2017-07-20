@@ -236,7 +236,7 @@
 											<span>개인정보조회</span>
 										</a>
                                         <ul class="nav nav-children">
-                                            <li>
+                                            <li id="history_list">
                                                 <a href="/manage/history">
                                                     사용내역
                                                 </a>
@@ -482,6 +482,11 @@
                             if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
                             $('#monitoring').addClass('nav-active');
                             $('#moni_storage').addClass('nav-active');
+                            break;
+                        case '개인정보조회':
+                            if (is_expanded != 'none') $('#history').addClass('nav-expanded');
+                            $('#history').addClass('nav-active');
+                            $('#history_list').addClass('nav-active');
                             break;
                     }
                 }
