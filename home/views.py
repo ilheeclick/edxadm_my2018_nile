@@ -21,6 +21,7 @@ import ast
 import urllib
 import csv
 import datetime
+from django.views.generic import View
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -2265,7 +2266,42 @@ content_type_dict = {
 }
 
 
+class community_mobile(View):
+    def __init__(self):
+        print 'community_mobile init called'
+
+    def get(self, request):
+        print 'community_mobile.get called'
+        pass
+
+    def put(self, request):
+        print 'community_mobile.put called'
+        pass
+
+    def post(self, request):
+        print 'community_mobile.post called'
+        pass
+
+    def delete(self, request):
+        print 'community_mobile.delete called'
+        pass
+
+
 def comm_mobile(request):
+    if not request.is_ajax():
+        print 'type1'
+        return render(request, 'community/comm_mobile.html')
+    else:
+        if request.method == 'POST':
+            print 'type2'
+            pass
+        elif request.method == 'PUT':
+            print 'type3'
+            pass
+        elif request.method == 'DELETE':
+            print 'type4'
+            pass
+
     """
     # add board [type: mobile]
     Args:
@@ -2275,7 +2311,12 @@ def comm_mobile(request):
 
     """
     refer_list = []
+
+    print 'request method >> '
+    print request.is_ajax(), request.method
+
     if request.is_ajax():
+
         aaData = {}
         if request.GET['method'] == 'refer_list':
             cur = connection.cursor()
@@ -2349,7 +2390,8 @@ def comm_mobile(request):
             aaData = json.dumps('success')
 
         return HttpResponse(aaData, 'applications/json')
-    return render(request, 'community/comm_mobile.html')
+    else:
+        return render(request, 'community/comm_mobile.html')
 
 
 def comm_mobile_new(request):

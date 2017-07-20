@@ -20,6 +20,7 @@ from user_manage.statistics import statistics_excel, certificate_excel, statisti
 from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
 from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
+from home.views import community_mobile
 
 urlpatterns = [
     url(r'^manage/test_index/$', views.test_index),

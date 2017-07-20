@@ -2,26 +2,59 @@
 {% block pagetitlename %}모바일{% endblock %}
 {% block pagetitlename_header %}모바일{% endblock %}
 {% block script_down %}
-<script>
-	{% include "community/script/refer.datatables.ajax.js" %}
-</script>
+    <script>
+        {% include "community/script/refer.datatables.ajax.js" %}
+
+        $(document).ready(function () {
+            console.log('document ready. ok.');
+        });
+
+        function test(no) {
+            var method = '';
+
+            if (no === 1) {
+                method = 'POST';
+            } else if (no === 2) {
+                method = 'PUT';
+            } else if (no === 3) {
+                method = 'DELETE';
+            }
+
+            $.ajax({
+                url: '/manage/comm_mobile/',
+                method: method,
+                data: {csrfmiddlewaretoken: $.cookie('csrftoken'), 'test': '0001'},
+                dataType: 'json',
+                //add below code. then enable `PUT`, `DELETE`
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                },
+                success: function (data) {
+                    console.log('ajax done 1.');
+                    console.log(data);
+                }
+            })
+        }
+    </script>
 {% endblock %}
 {% block containor %}
-	<!-- start: page -->
-<section class="panel panel-featured ">
-    <header class="panel-heading">
-        <div><h2 class="panel-title">모바일</h2></div>
-    </header>
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">모바일</h2></div>
+        </header>
 
-    <div class="panel-body" style="padding-top: 0;"> 
-        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+                <a class="btn btn-default" href="javascript:test(1);">test1</a>
+                <a class="btn btn-default" href="javascript:test(2);">test2</a>
+                <a class="btn btn-default" href="javascript:test(3);">test3</a>
+                <a class="btn btn-default" id="add_notice" href="/manage/new_refer">신규등록</a>
 
-            <a class="btn btn-default" id="add_notice" href="/manage/new_refer">신규등록</a>
+            </div>
 
-        </div>
-
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_reference_room" style="width: 100%;" >
-            <thead>
+            <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_reference_room" style="width: 100%;">
+                <thead>
                 <tr>
                     <td>ID</td>
                     <td>삭제flag</td>
@@ -30,22 +63,22 @@
                     <td>제목</td>
                     <td>작성일</td>
                     <td>공개여부</td>
-{#                    <td width="15%"> 우선 순위 변경</td>#}
+                    {#                    <td width="15%"> 우선 순위 변경</td>#}
                 </tr>
-            </thead>
-            <tbody id="notice_body">
-            </tbody>
-            <tfoot>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+                <tfoot>
                 <tr>
                     <th></th>
                     <th width="10%">No</th>
                     <th width="10%"></th>
                     <th width="10%">머리글</th>
                 </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
 
-    </div>
-</section>
+        </div>
+    </section>
 
 {% endblock %}
