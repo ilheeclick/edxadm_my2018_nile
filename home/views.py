@@ -2131,7 +2131,7 @@ def get_system_name(content_type_id):
     """
     시스템 표시 구분.
     content_type_id: 3 = django admin
-    content_type_id: 310 = insight
+    content_type_id: 311 = insight
     etc : kmooc
 
     :param content_type_id:
@@ -2139,7 +2139,7 @@ def get_system_name(content_type_id):
     """
     if content_type_id in ['3', ]:
         system = 'admin'
-    elif content_type_id in ['310', ]:
+    elif content_type_id in ['311', ]:
         system = 'insight'
     else:
         system = 'k-mooc'
@@ -2260,4 +2260,5 @@ content_type_dict = {
     '307': u'문항 성적 보고서 생성',
     '308': u'문제 풀이 횟수 설정 초기화',
     '309': u'등록관리 - 일괄 등록',
+    '311': u'Insight',
 }
