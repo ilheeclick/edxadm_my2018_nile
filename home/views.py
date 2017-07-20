@@ -1902,6 +1902,8 @@ def history_csv(request):
 
     except Exception as e:
         print e
+
+
 def history_csv(request):
     filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
     columns, recordsTotal, result_list = history_rows(request)
@@ -2055,34 +2057,140 @@ def history_rows(request):
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(connection.queries)
 
-    # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
-    result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
-    '''
-    content_type_id 에 따른 기능 구분 추가
-    [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
-    [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
-    '''
+        '''
+        content_type_id 에 따른 기능 구분 추가
+        [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
+        [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
+        '''
 
-    # 기능 구분 값 한글화
+        # 기능 구분 값 한글화
 
-    for result_dict in result_list:
-        content_type_id = result_dict['content_type_id']
-        change_message_dict = get_change_message_dict(result_dict['change_message'])
-        object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+        diff_query1 = '''
+            SELECT id,
+                   username,
+                   first_name,
+                   last_name,
+                   email,
+                   password,
+                   is_staff,
+                   is_active,
+                   is_superuser
+              FROM auth_user
+             WHERE id = %s
+            UNION
+            SELECT *
+              FROM (  SELECT id,
+                             username,
+                             first_name,
+                             last_name,
+                             email,
+                             password,
+                             is_staff,
+                             is_active,
+                             is_superuser
+                        FROM auth_user_trigger
+                       WHERE action = 'U' AND id = %s
+                    ORDER BY created DESC) t1;
+        '''
 
-        # 기능 구분에 따라 시스템 표시 구분
-        result_dict['system'] = get_system_name(content_type_id)
+        diff_query2 = '''
+            SELECT id,
+                   user_id,
+                   name,
+                   language,
+                   location,
+                   meta,
+                   courseware,
+                   gender,
+                   mailing_address,
+                   year_of_birth,
+                   level_of_education,
+                   goals,
+                   allow_certificate,
+                   country,
+                   city,
+                   bio,
+                   profile_image_uploaded_at
+              FROM auth_userprofile
+             WHERE user_id = %s
+            UNION
+            SELECT *
+              FROM (  SELECT id,
+                             user_id,
+                             name,
+                             language,
+                             location,
+                             meta,
+                             courseware,
+                             gender,
+                             mailing_address,
+                             year_of_birth,
+                             level_of_education,
+                             goals,
+                             allow_certificate,
+                             country,
+                             city,
+                             bio,
+                             profile_image_uploaded_at
+                        FROM auth_userprofile_trigger
+                       WHERE action = 'U' AND user_id = %s
+                    ORDER BY created DESC
+                       LIMIT 1) t1;
+        '''
 
-        # 기능 구분별 상세구분 표시 내용 추가
-        result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
-        result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
-        result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
-        result_dict['content_type_id'] = content_type_dict[content_type_id]
-        result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
-        result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-        result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
-                                                                                                                                                                                    '304'] else '-'
+        def git_diff_dict(columns, rows):
+            return_dict = dict()
+            if not rows or len(rows) < 2:
+                return None
+            else:
+                check_list = [dict(zip(columns, row)) for row in rows]
+
+                for column in columns:
+                    if not check_list[0][column] == check_list[1][column]:
+                        return_dict[column] = '%s > %s' % (check_list[1][column], check_list[0][column])
+
+                print 'check return_dict ---------------- s '
+                print return_dict
+                print 'check return_dict ---------------- e '
+
+                return return_dict
+
+        for result_dict in result_list:
+            content_type_id = result_dict['content_type_id']
+
+            # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
+            if content_type_id == '3':
+                diff_result = dict()
+                check_id = result_dict['object_id']
+                cur.execute(diff_query1, [check_id, check_id])
+                diff_rows1 = cur.fetchall()
+                columns1 = [col[0] for col in cur.description]
+                git_diff_dict(columns1, diff_rows1)
+                cur.execute(diff_query2, [check_id, check_id])
+                diff_rows2 = cur.fetchall()
+                columns2 = [col[0] for col in cur.description]
+                git_diff_dict(columns2, diff_rows2)
+
+            change_message_dict = get_change_message_dict(result_dict['change_message'])
+            object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+
+            # 기능 구분에 따라 시스템 표시 구분
+            result_dict['system'] = get_system_name(content_type_id)
+
+            # 기능 구분별 상세구분 표시 내용 추가
+            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict,
+                                                                    change_message_dict)
+            result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+            result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
+            result_dict['content_type_id'] = content_type_dict[content_type_id]
+            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+            result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
+                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
+                '303',
+                '304'] else '-'
     return columns, recordsTotal, result_list
 
 
@@ -2160,7 +2268,8 @@ def get_change_message_dict(change_message):
         change_message_dict = ast.literal_eval(change_message)
     except:
         try:
-            temp_string = change_message[:change_message.find('query') - 1] + change_message[change_message.find('>') + 2:]
+            temp_string = change_message[:change_message.find('query') - 1] + change_message[
+                                                                              change_message.find('>') + 2:]
             change_message_dict = ast.literal_eval(temp_string)
         except Exception as e:
             change_message_dict = dict()

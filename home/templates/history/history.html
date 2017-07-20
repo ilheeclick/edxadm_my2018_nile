@@ -284,7 +284,7 @@
                     }
                 },
 
-                //tbody 활성화 해야 사용 가능.
+                //tfooter 활성화 해야 사용 가능.
                 "initComplete": function (settings, json) {
                     $("table").css({'table-layout': 'fixed'});
                     $("table td").css({'text-overflow': 'ellipsis', 'overflow': 'hidden'});
@@ -391,14 +391,13 @@
                         <label class="control-label">기능 구분</label>
                         <select name="func" id="func" class="form-control">
                             <option value="">전체</option>
+                            <!--
+                            옵션을 value 순으로 작성하였으나 화면단위로 묶어서 재정렬.
+                            -->
 
                             <option value="292">회원 정보 리스트</option>
                             <option value="291">회원 정보 상세</option>
 
-                            <!--
-                                <option value="1">회원권한 수정</option>
-                                <option value="2">회원그룹 수정</option>
-                            -->
                             <option value="3">회원정보 수정</option>
 
                             <option value="293">등록관리 - 베타 테스터</option>
@@ -473,15 +472,7 @@
             <br/>
 
             <div align="right">
-                <!--
-                <a href="javascript:goFirstPage();"><input class="btn btn-primary" type="button" value="First"></a>
-                <a href="javascript:goLastPage();"><input class="btn btn-primary" type="button" value="Last"></a>
-                -->
-
                 <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
-                <!--
-                <input class="btn btn-success" type="button" value="엑셀다운로드">
-                -->
             </div>
         </div>
 
