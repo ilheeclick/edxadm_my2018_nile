@@ -20,7 +20,7 @@ from user_manage.statistics import statistics_excel, certificate_excel, statisti
 from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
 from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
-from home.views import community_mobile
+from home.views import CommunityMobile
 
 urlpatterns = [
     url(r'^manage/test_index/$', views.test_index),
@@ -71,9 +71,7 @@ urlpatterns = [
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
 
     # mobile
-    url(r'^manage/comm_mobile/', views.comm_mobile, name='comm_mobile'),
-    url(r'^manage/comm_mobile_new/', views.comm_mobile_new, name='comm_mobile_new'),
-    url(r'^manage/comm_mobile_modify/', views.comm_mobile_modify, name='comm_mobile_modify'),
+    url(r'^manage/comm_mobile/', CommunityMobile.as_view(), name='comm_mobile'),
 
     # monitoring url
     url(r'^manage/moni_storage/', views.moni_storage, name='moni_storage'),
