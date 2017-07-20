@@ -1,0 +1,90 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}자료실{% endblock %}
+{% block pagetitlename_header %}자료실{% endblock %}
+{% block script_down %}
+<script>
+    {% include "community/script/test.js" %}
+    {% include "community/script/refer.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">자료실 신규 등록</h2></div>
+        </header>
+        <div class="panel-body">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    머리글
+                    <span class="required">*</span>
+                </label>
+                <div id="head_content" class="col-sm-10">
+                    <select style="width: 200px" id="head_title">
+                        <option id="null">선택하세요.</option>
+                        <option id="publi_r">홍보자료</option>
+                        <option id="data_r">자료집</option>
+                        <option id="repo_r">보고서</option>
+                        <option id="etc_r">기타</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    제     목
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" id="refertitle" class="form-control" placeholder="제목을 입력하세요." required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
+                <div id="summernote_content" class="col-sm-10">
+{#                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>#}
+                    <div class="summernote" id="summernote"> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    파     일
+{#                    <span class="required">*</span>#}
+                </label>
+                    <div class="col-md-3">
+                        <form id="uploadform" enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            <span id="file_array">
+                                <input type="file" name="file" id = "uploadfile" />
+                            </span>
+                            <button type="submit" id="fileupload">upload</button>
+                        </form>
+                    </div>
+{#                    <div class="col-md-7" align="right">#}
+{#                        #}
+{#                    </div>#}
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-3" align="left">
+                    <a class="btn btn-default" href="/manage/comm_reference_room">목록으로</a>
+                </div>
+                <div class="col-sm-9" align="right">
+                    <button class="btn btn-primary" id="refer_save" >저     장</button>
+{#                    <button class="btn btn-default" id="notice_del" >삭     제</button>#}
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+
+
+
+
+{% endblock %}
