@@ -362,15 +362,6 @@
                     d.change_message;
         }
 
-        function goFirstPage() {
-            var dt = $('#datatable-ajax').DataTable();
-            dt.page('first').draw('page');
-        }
-
-        function goLastPage() {
-            var dt = $('#datatable-ajax').DataTable();
-            dt.page('last').draw('page');
-        }
 
     </script>
 {% endblock %}
@@ -482,8 +473,11 @@
             <br/>
 
             <div align="right">
+                <!--
                 <a href="javascript:goFirstPage();"><input class="btn btn-primary" type="button" value="First"></a>
                 <a href="javascript:goLastPage();"><input class="btn btn-primary" type="button" value="Last"></a>
+                -->
+
                 <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
                 <!--
                 <input class="btn btn-success" type="button" value="엑셀다운로드">
