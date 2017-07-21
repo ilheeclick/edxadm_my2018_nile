@@ -24,11 +24,13 @@
 
         div.dataTables_paginate .paginate_button {
             background-color: #fff;
+            color: #777;
 
         }
 
         div.dataTables_paginate .paginate_button.current {
             background-color: #0088cc;
+            color: #fff;
 
         }
 
@@ -345,6 +347,14 @@
                     // Remove from the 'open' array
                     detailRows.splice(idx, 1);
                 } else {
+                    var detail = format(row.data());
+
+                    console.log(row.data());
+
+                    if(!detail){
+                        return;
+                    }
+
                     tr.addClass('details');
                     row.child(format(row.data())).show();
 
@@ -357,9 +367,13 @@
         }
 
         function format(d) {
-            //console.log(d);
-            return d.object_repr + '<br/>' +
-                    d.change_message;
+            try{
+                return d.content_type_detail;
+
+            }catch(e){
+                console.log('catch 1 : ' + e);
+                return null;
+            }
         }
 
 

@@ -2065,8 +2065,6 @@ def history_rows(request):
         [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
         '''
 
-        # 기능 구분 값 한글화
-
         diff_query1 = '''
             SELECT id,
                    username,
@@ -2142,36 +2140,49 @@ def history_rows(request):
 
         def git_diff_dict(columns, rows):
             return_dict = dict()
-            if not rows or len(rows) < 2:
-                return None
+            if columns is None or rows is None:
+                pass
+
+            elif not rows or len(rows) < 2:
+                pass
+
             else:
+                print 'check type 3'
                 check_list = [dict(zip(columns, row)) for row in rows]
 
                 for column in columns:
                     if not check_list[0][column] == check_list[1][column]:
-                        return_dict[column] = '%s > %s' % (check_list[1][column], check_list[0][column])
+                        return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
 
-                print 'check return_dict ---------------- s '
-                print return_dict
-                print 'check return_dict ---------------- e '
-
-                return return_dict
+            return return_dict
 
         for result_dict in result_list:
             content_type_id = result_dict['content_type_id']
+            action_flag = result_dict['action_flag']
 
             # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
-            if content_type_id == '3':
-                diff_result = dict()
+            diff_result = dict()
+            diff_result_string = ''
+            if content_type_id == '3' and action_flag == '2':
                 check_id = result_dict['object_id']
+
+                # print 'diff_query1', diff_query1
+
                 cur.execute(diff_query1, [check_id, check_id])
-                diff_rows1 = cur.fetchall()
                 columns1 = [col[0] for col in cur.description]
-                git_diff_dict(columns1, diff_rows1)
+                diff_rows1 = cur.fetchall()
+                diff_result.update(git_diff_dict(columns1, diff_rows1))
+
+                # print 'diff_query2', diff_query2
+
                 cur.execute(diff_query2, [check_id, check_id])
-                diff_rows2 = cur.fetchall()
                 columns2 = [col[0] for col in cur.description]
-                git_diff_dict(columns2, diff_rows2)
+                diff_rows2 = cur.fetchall()
+                diff_result.update(git_diff_dict(columns2, diff_rows2))
+
+                for index, key in enumerate(diff_result.keys()):
+                    print 'index -------------->', index, key, index == 0
+                    diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
 
             change_message_dict = get_change_message_dict(result_dict['change_message'])
             object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
@@ -2180,12 +2191,12 @@ def history_rows(request):
             result_dict['system'] = get_system_name(content_type_id)
 
             # 기능 구분별 상세구분 표시 내용 추가
-            result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict,
-                                                                    change_message_dict)
+            # 개인정보 수정의 경우 수정 내역을 표시
+            result_dict['content_type_detail'] = diff_result_string if content_type_id == '3' and action_flag == '2' else get_content_detail(content_type_id, object_repr_dict, change_message_dict)
             result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
             result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
             result_dict['content_type_id'] = content_type_dict[content_type_id]
-            result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
+            result_dict['action_flag'] = action_flag_dict[action_flag]
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
             result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
                                                                              int) else '-') if 'count' in change_message_dict and content_type_id not in [
@@ -2245,7 +2256,7 @@ def get_system_name(content_type_id):
     :param content_type_id:
     :return:
     """
-    if content_type_id in ['3', ]:
+    if content_type_id in ['3', '291', '292']:
         system = 'admin'
     elif content_type_id in ['311', ]:
         system = 'insight'
