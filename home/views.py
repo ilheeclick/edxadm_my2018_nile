@@ -1989,7 +1989,7 @@ def history_rows(request):
     with connections['default'].cursor() as cur:
         query1 = """
             SELECT SQL_CALC_FOUND_ROWS
-                     b.content_type_id, b.id, date_format(adddate(b.action_time, interval 9 hour), '%Y/%m/%d %H:%i:%s') action_time,
+                     b.content_type_id, b.id, date_format(if(b.content_type_id = '311', adddate(b.action_time, interval 9 hour), b.action_time), '%Y/%m/%d %H:%i:%s') action_time,
                      a.app_label,
                      b.user_id,
                      (select username from auth_user where id = b.user_id) username,
@@ -2181,7 +2181,7 @@ def history_rows(request):
                 diff_result.update(git_diff_dict(columns2, diff_rows2))
 
                 for index, key in enumerate(diff_result.keys()):
-                    print 'index -------------->', index, key, index == 0
+                    # print 'index -------------->', index, key, index == 0
                     diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
 
             change_message_dict = get_change_message_dict(result_dict['change_message'])
