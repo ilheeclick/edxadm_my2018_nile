@@ -1990,7 +1990,7 @@ def history_rows(request):
     with connections['default'].cursor() as cur:
         query1 = """
             SELECT SQL_CALC_FOUND_ROWS
-                     b.content_type_id, b.id, date_format(adddate(b.action_time, interval 9 hour), '%Y/%m/%d %H:%i:%s') action_time,
+                     b.content_type_id, b.id, date_format(if(b.content_type_id = '311', adddate(b.action_time, interval 9 hour), b.action_time), '%Y/%m/%d %H:%i:%s') action_time,
                      a.app_label,
                      b.user_id,
                      (select username from auth_user where id = b.user_id) username,
@@ -2058,34 +2058,151 @@ def history_rows(request):
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(connection.queries)
 
-    # result_list = [dict(zip(columns, (content_type_dict[col] if idx == 0 and col in content_type_dict else col for idx, col in enumerate(row)))) for row in rows]
-    result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
-    '''
-    content_type_id 에 따른 기능 구분 추가
-    [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
-    [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
-    '''
+        '''
+        content_type_id 에 따른 기능 구분 추가
+        [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
+        [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
+        '''
 
-    # 기능 구분 값 한글화
+        diff_query1 = '''
+            SELECT id,
+                   username,
+                   first_name,
+                   last_name,
+                   email,
+                   password,
+                   is_staff,
+                   is_active,
+                   is_superuser
+              FROM auth_user
+             WHERE id = %s
+            UNION
+            SELECT *
+              FROM (  SELECT id,
+                             username,
+                             first_name,
+                             last_name,
+                             email,
+                             password,
+                             is_staff,
+                             is_active,
+                             is_superuser
+                        FROM auth_user_trigger
+                       WHERE action = 'U' AND id = %s
+                    ORDER BY created DESC) t1;
+        '''
 
-    for result_dict in result_list:
-        content_type_id = result_dict['content_type_id']
-        change_message_dict = get_change_message_dict(result_dict['change_message'])
-        object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+        diff_query2 = '''
+            SELECT id,
+                   user_id,
+                   name,
+                   language,
+                   location,
+                   meta,
+                   courseware,
+                   gender,
+                   mailing_address,
+                   year_of_birth,
+                   level_of_education,
+                   goals,
+                   allow_certificate,
+                   country,
+                   city,
+                   bio,
+                   profile_image_uploaded_at
+              FROM auth_userprofile
+             WHERE user_id = %s
+            UNION
+            SELECT *
+              FROM (  SELECT id,
+                             user_id,
+                             name,
+                             language,
+                             location,
+                             meta,
+                             courseware,
+                             gender,
+                             mailing_address,
+                             year_of_birth,
+                             level_of_education,
+                             goals,
+                             allow_certificate,
+                             country,
+                             city,
+                             bio,
+                             profile_image_uploaded_at
+                        FROM auth_userprofile_trigger
+                       WHERE action = 'U' AND user_id = %s
+                    ORDER BY created DESC
+                       LIMIT 1) t1;
+        '''
 
-        # 기능 구분에 따라 시스템 표시 구분
-        result_dict['system'] = get_system_name(content_type_id)
+        def git_diff_dict(columns, rows):
+            return_dict = dict()
+            if columns is None or rows is None:
+                pass
 
-        # 기능 구분별 상세구분 표시 내용 추가
-        result_dict['content_type_detail'] = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
-        result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
-        result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
-        result_dict['content_type_id'] = content_type_dict[content_type_id]
-        result_dict['action_flag'] = action_flag_dict[result_dict['action_flag']]
-        result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-        result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
-                                                                                                                                                                                    '304'] else '-'
+            elif not rows or len(rows) < 2:
+                pass
+
+            else:
+                print 'check type 3'
+                check_list = [dict(zip(columns, row)) for row in rows]
+
+                for column in columns:
+                    if not check_list[0][column] == check_list[1][column]:
+                        return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
+
+            return return_dict
+
+        for result_dict in result_list:
+            content_type_id = result_dict['content_type_id']
+            action_flag = result_dict['action_flag']
+
+            # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
+            diff_result = dict()
+            diff_result_string = ''
+            if content_type_id == '3' and action_flag == '2':
+                check_id = result_dict['object_id']
+
+                # print 'diff_query1', diff_query1
+
+                cur.execute(diff_query1, [check_id, check_id])
+                columns1 = [col[0] for col in cur.description]
+                diff_rows1 = cur.fetchall()
+                diff_result.update(git_diff_dict(columns1, diff_rows1))
+
+                # print 'diff_query2', diff_query2
+
+                cur.execute(diff_query2, [check_id, check_id])
+                columns2 = [col[0] for col in cur.description]
+                diff_rows2 = cur.fetchall()
+                diff_result.update(git_diff_dict(columns2, diff_rows2))
+
+                for index, key in enumerate(diff_result.keys()):
+                    # print 'index -------------->', index, key, index == 0
+                    diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
+
+            change_message_dict = get_change_message_dict(result_dict['change_message'])
+            object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+
+            # 기능 구분에 따라 시스템 표시 구분
+            result_dict['system'] = get_system_name(content_type_id)
+
+            # 기능 구분별 상세구분 표시 내용 추가
+            # 개인정보 수정의 경우 수정 내역을 표시
+            result_dict['content_type_detail'] = diff_result_string if content_type_id == '3' and action_flag == '2' else get_content_detail(content_type_id, object_repr_dict, change_message_dict)
+            result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+            result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
+            result_dict['content_type_id'] = content_type_dict[content_type_id]
+            result_dict['action_flag'] = action_flag_dict[action_flag]
+            result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
+                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
+                '303',
+                '304'] else '-'
     return columns, recordsTotal, result_list
 
 
@@ -2134,15 +2251,15 @@ def get_system_name(content_type_id):
     """
     시스템 표시 구분.
     content_type_id: 3 = django admin
-    content_type_id: 310 = insight
+    content_type_id: 311 = insight
     etc : kmooc
 
     :param content_type_id:
     :return:
     """
-    if content_type_id in ['3', ]:
+    if content_type_id in ['3', '291', '292']:
         system = 'admin'
-    elif content_type_id in ['310', ]:
+    elif content_type_id in ['311', ]:
         system = 'insight'
     else:
         system = 'k-mooc'
@@ -2163,7 +2280,8 @@ def get_change_message_dict(change_message):
         change_message_dict = ast.literal_eval(change_message)
     except:
         try:
-            temp_string = change_message[:change_message.find('query') - 1] + change_message[change_message.find('>') + 2:]
+            temp_string = change_message[:change_message.find('query') - 1] + change_message[
+                                                                              change_message.find('>') + 2:]
             change_message_dict = ast.literal_eval(temp_string)
         except Exception as e:
             change_message_dict = dict()
@@ -2263,6 +2381,7 @@ content_type_dict = {
     '307': u'문항 성적 보고서 생성',
     '308': u'문제 풀이 횟수 설정 초기화',
     '309': u'등록관리 - 일괄 등록',
+    '311': u'Insight',
 }
 
 
