@@ -1,0 +1,255 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}모바일{% endblock %}
+{% block pagetitlename_header %}모바일{% endblock %}
+{% block script_down %}
+    <script>
+
+        $(document).ready(function () {
+            console.log('document ready. ok.');
+            setDataTable();
+        });
+
+        function buildSearchData() {
+            var table = $("#datatable-ajax").DataTable();
+            var info = table.page.info();
+            var system = $("#system").val();
+            var operation = $("#operation").val();
+            var func = $("#func").val();
+            var func_detail = $("#func_detail").val();
+            var user_id = $("#user_id").val();
+            var target_id = $("#target_id").val();
+
+            var obj = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                org: $("#org").val(),
+                course: $("#course").val(),
+                run: $("#run").val(),
+                page_no: info.page,
+                page_length: info.length,
+                system: system,
+                operation: operation,
+                func: func,
+                func_detail: func_detail,
+                user_id: user_id,
+                target_id: target_id
+            }
+
+            return obj
+        }
+
+        function setDataTable() {
+            var $table = $('#datatable-ajax');
+
+            $table.dataTable({
+                dom: 'T<"clear"l><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                bProcessing: true,
+                ordering: false,
+                serverSide: false,
+                searching: false,
+                lengthMenu: [
+                    [10, 20, 50, 999999], //key
+                    [10, 20, 50, "All"] //value
+                ],
+                pageLength: 10,
+                ajax: {
+                    url: "/manage/comm_mobile/",
+                    type: "GET",
+                    dataType: "json",
+                    data: buildSearchData,
+                },
+                columnDefs: [
+                    {targets: 0, visible: false,},
+                ],
+                oTableTools: {
+                    sSwfPath: $table.data('swf-path'),
+                    aButtons: [
+                        {
+                            sExtends: 'csv',
+                            sButtonText: 'csv',
+                            fnClick: function () {
+                                var param_json = buildSearchData();
+                                window.open("/manage/csv/history?" + $.param(param_json), "_blank");
+                            }
+                        },
+                        {
+                            sExtends: 'print',
+                            sButtonText: 'Print',
+                            bFooter: false,
+                            sInfo: 'Please press CTR+P to print or ESC to quit'
+                        }
+                    ]
+                },
+                paginate: true,
+                pagingType: "full_numbers",
+                language: {
+                    lengthMenu: "_MENU_",
+                    zeroRecords: "조회된 데이터가 없습니다",
+                    info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                    infoEmpty: "No records available",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    sEmptyTable: "조회된 데이터가 없습니다",
+                    paginate: {
+                        first: "처음",
+                        previous: "이전",
+                        next: "다음",
+                        last: "끝"
+                    }
+                },
+
+                //tfooter 활성화 해야 사용 가능.
+                "initComplete": function (settings, json) {
+                    $("table").css({'table-layout': 'fixed'});
+                    $("table td").css({'text-overflow': 'ellipsis', 'overflow': 'hidden'});
+                    $("select[name=datatable-ajax_length]").css({"height": "30px", "margin-top": "5px"});
+
+                    $('input[type="search"]').attr('placeholder', '검색하세요');
+                    $('input[type="search"]').attr('class', 'form-control');
+                    $('input[type="search"]').css('width', '200px');
+                    //$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
+                    $('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
+                    $('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
+
+                    this.api().columns().every(function (i) {
+                        //if (i == 0){
+                        //	return;
+                        //}
+
+                        var column = this;
+                        var select = $('<select style="width: 100%;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty()).select2({
+                                    placeholder: '선택하세요.',
+                                    allowClear: true
+                                }).attr('width', '100%')
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                    );
+
+                                    column
+                                            .search(val ? '^' + val + '$' : '', true, false)
+                                            .draw();
+                                });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+
+            var detailRows = [];
+            $table.on('click', 'tr', function () {
+
+
+                var dt = $('#datatable-ajax').DataTable();
+                var tr = $(this).closest('tr');
+                var row = dt.row(tr);
+
+                //console.log(row.data());
+                //return;
+
+                var idx = $.inArray(tr.attr('id'), detailRows);
+
+                if (row.child.isShown()) {
+                    tr.removeClass('details');
+                    row.child.hide();
+
+                    // Remove from the 'open' array
+                    detailRows.splice(idx, 1);
+                } else {
+                    var detail = format(row.data());
+
+                    console.log(row.data());
+
+                    if(!detail){
+                        return;
+                    }
+
+                    tr.addClass('details');
+                    row.child(format(row.data())).show();
+
+                    // Add to the 'open' array
+                    if (idx === -1) {
+                        detailRows.push(tr.attr('id'));
+                    }
+                }
+            });
+        }
+
+
+        function test(no) {
+            var method = '';
+
+            if (no === 1) {
+                method = 'POST';
+            } else if (no === 2) {
+                method = 'PUT';
+            } else if (no === 3) {
+                method = 'DELETE';
+            }
+
+            $.ajax({
+                url: '/manage/comm_mobile/',
+                method: method,
+                data: {csrfmiddlewaretoken: $.cookie('csrftoken'), 'test': '0001'},
+                dataType: 'json',
+                //add below code. then enable `PUT`, `DELETE`
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                },
+                success: function (data) {
+                    console.log('ajax done 1.');
+                    console.log(data);
+                }
+            })
+        }
+    </script>
+{% endblock %}
+{% block containor %}
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">모바일</h2></div>
+        </header>
+
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+                <a class="btn btn-default" href="javascript:test(1);">test1</a>
+                <a class="btn btn-default" href="javascript:test(2);">test2</a>
+                <a class="btn btn-default" href="javascript:test(3);">test3</a>
+                <a class="btn btn-default" id="add_notice" href="/manage/new_refer">신규등록</a>
+
+            </div>
+            {% load static %}
+            <table class="table table-hover table-striped  table-bordered"
+                   id="datatable-ajax"
+                   data-url="comm_reference_room" style="width: 100%;"
+                   data-swf-path="{% static 'assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf' %}"
+            >
+                <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>제목</td>
+                    <td>내용</td>
+                    {#                    <td width="15%"> 우선 순위 변경</td>#}
+                </tr>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+
+                <!--
+                <tfoot>
+                <tr>
+                    <th></th>
+                    <th width="10%">No</th>
+                    <th width="10%"></th>
+                    <th width="10%">머리글</th>
+                </tr>
+                </tfoot>
+                -->
+            </table>
+
+        </div>
+    </section>
+
+{% endblock %}
