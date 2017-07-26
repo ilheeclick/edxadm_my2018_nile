@@ -21,6 +21,7 @@ import ast
 import urllib
 import csv
 import datetime
+from django.views.generic import View
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -1904,54 +1905,6 @@ def history_csv(request):
         print e
 
 
-def history_csv(request):
-    filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
-    columns, recordsTotal, result_list = history_rows(request)
-
-    # csv 표시 순서 정렬을 위해 header 지정
-    csv_headers = [
-        'system',
-        'username',
-        'action_time',
-        'content_type_id',
-        'content_type_detail',
-        'action_flag',
-        'target_id',
-        'search_string',
-        'cnt',
-        'ip',
-    ]
-    try:
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
-        csvwriter = csv.writer(
-            response,
-            dialect='excel',
-            quotechar='"',
-            quoting=csv.QUOTE_ALL)
-
-        encoded_header = [unicode(s).encode('utf-8') for s in csv_headers]
-        csvwriter.writerow(encoded_header)
-
-        for result in result_list:
-            # encoded_row = [unicode(value).encode('utf-8') for key, value in result.iteritems()]
-            encoded_row = [result[c] if c in result else '' for c in csv_headers]
-
-            csvwriter.writerow(encoded_row)
-
-        try:
-            contents = unicode(response.content, 'utf-8')
-            response.content = contents.encode('utf-8-sig')
-        except Exception as e:
-            print e
-
-        return response
-
-    except Exception as e:
-        print e
-
-
 def history_rows(request):
     if request.is_ajax():
         is_csv = False
@@ -1987,7 +1940,8 @@ def history_rows(request):
         start_no = int(page_no) * int(page_length)
 
     with connections['default'].cursor() as cur:
-        query1 = """
+        query_arr = []
+        query_arr.append("""
             SELECT SQL_CALC_FOUND_ROWS
                      b.content_type_id, b.id, date_format(if(b.content_type_id = '311', adddate(b.action_time, interval 9 hour), b.action_time), '%Y/%m/%d %H:%i:%s') action_time,
                      a.app_label,
@@ -2001,49 +1955,49 @@ def history_rows(request):
                          and b.user_id = c.id
                      AND (a.app_label = 'auth' OR a.model = 'custom')
                      and b.id > 247
-        """
+        """)
 
         if system:
             if system == 'a':
-                query1 += " and a.id = 3 "
+                query_arr.append(" and a.id = 3 ")
             elif system == 'k':
-                query1 += " and a.id not in (3, 311) "
+                query_arr.append(" and a.id not in (3, 311) ")
             elif system == 'i':
-                query1 += " and a.id = 311 "
+                query_arr.append(" and a.id = 311 ")
 
         if operation:
             print 'add query type 1'
-            query1 += " and b.action_flag = %s " % operation
+            query_arr.append(" and b.action_flag = %s " % operation)
 
         if func:
             print 'add query type 2'
-            query1 += " and a.id = %s " % func
+            query_arr.append(" and a.id = %s " % func)
 
         if func_detail:
             print 'add query type 3'
-            query1 += " and b.action_flag = %s " % func_detail
+            query_arr.append(" and b.action_flag = %s " % func_detail)
 
         if user_id:
             print 'add query type 4'
-            query1 += " and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id)
+            query_arr.append(" and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id))
 
         if target_id:
             print 'add query type 5'
             # 강좌 운영팀 관리
             if func in ['3', '295', '306']:
-                query1 += " and b.object_repr like '%%%s%%' " % target_id
+                query_arr.append(" and b.object_repr like '%%%s%%' " % target_id)
             elif func in ['291']:
-                query1 += " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id
+                query_arr.append(" and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id)
 
-        query2 = """
-            ORDER BY b.action_time DESC
+        query_arr.append("""
+            ORDER BY b.action_time DESC, b.id desc
                LIMIT {start_no}, {page_length}
-        """.format(start_no=start_no, page_length=page_length)
+        """.format(start_no=start_no, page_length=page_length))
 
-        query = query1 + query2
+        query = ''.join(query_arr)
 
-        print 'query:', query
-        print start_no, page_length
+        # print 'query:', query
+        # print start_no, page_length
 
         cur.execute(query)
         rows = cur.fetchall()
@@ -2053,9 +2007,6 @@ def history_rows(request):
         recordsTotal = cur.fetchone()[0]
 
         print 'recordsTotal:', recordsTotal
-
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(connection.queries)
 
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
@@ -2090,6 +2041,8 @@ def history_rows(request):
                              is_superuser
                         FROM auth_user_trigger
                        WHERE action = 'U' AND id = %s
+                         AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
+                                         AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2  SECOND)
                     ORDER BY created DESC) t1;
         '''
 
@@ -2134,11 +2087,13 @@ def history_rows(request):
                              profile_image_uploaded_at
                         FROM auth_userprofile_trigger
                        WHERE action = 'U' AND user_id = %s
+                         AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
+                                         AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2  SECOND)
                     ORDER BY created DESC
                        LIMIT 1) t1;
         '''
 
-        def get_diff_dict(columns, rows):
+        def git_diff_dict(columns, rows):
             return_dict = dict()
             if columns is None or rows is None:
                 pass
@@ -2147,18 +2102,44 @@ def history_rows(request):
                 pass
 
             else:
-                print 'check type 3'
                 check_list = [dict(zip(columns, row)) for row in rows]
 
                 for column in columns:
+                    if column == 'password':
+                        continue
+
                     if not str(check_list[0][column]).replace('None', '') == str(check_list[1][column]).replace('None', ''):
-                        return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
+                        return_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
 
             return return_dict
+
+        def git_diff_password(columns, rows):
+            return_dict = dict()
+            if columns is None or rows is None:
+                pass
+
+            elif not rows or len(rows) < 2:
+                pass
+
+            else:
+                check_list = [dict(zip(columns, row)) for row in rows]
+
+                for column in columns:
+                    if not check_list[0][column] == check_list[1][column]:
+                        return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
+
+            password_dict = dict()
+            password_dict[auth_dict['password']] = return_dict['password']
+
+            return password_dict
 
         for result_dict in result_list:
             content_type_id = result_dict['content_type_id']
             action_flag = result_dict['action_flag']
+            action_time = result_dict['action_time']
+            change_message_dict = get_change_message_dict(result_dict['change_message'])
+
+            print 'action_time:', type(action_time), action_time
 
             # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
             diff_result = dict()
@@ -2166,25 +2147,37 @@ def history_rows(request):
             if content_type_id == '3' and action_flag == '2':
                 check_id = result_dict['object_id']
 
-                # print 'diff_query1', diff_query1
+                # 비밀번호를 변경하는 화면은 회원정보 수정과 별개로 구성되어있음
+                # 비밀번호 변경의 경우와 아닌경우를 분기
+                query_string_dict = change_message_dict['query']
+                if query_string_dict.has_key('password1') and query_string_dict.has_key('password2'):
+                    print 'just password change !!'
 
-                cur.execute(diff_query1, [check_id, check_id])
-                columns1 = [col[0] for col in cur.description]
-                diff_rows1 = cur.fetchall()
-                diff_result.update(get_diff_dict(columns1, diff_rows1))
+                    cur.execute(diff_query1, [check_id, check_id, action_time, action_time])
+                    columns1 = [col[0] for col in cur.description]
+                    diff_rows1 = cur.fetchall()
+                    diff_result.update(git_diff_password(columns1, diff_rows1))
 
-                # print 'diff_query2', diff_query2
+                    for index, key in enumerate(diff_result.keys()):
+                        diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
+                else:
 
-                cur.execute(diff_query2, [check_id, check_id])
-                columns2 = [col[0] for col in cur.description]
-                diff_rows2 = cur.fetchall()
-                diff_result.update(get_diff_dict(columns2, diff_rows2))
+                    cur.execute(diff_query1, [check_id, check_id, action_time, action_time])
+                    columns1 = [col[0] for col in cur.description]
+                    diff_rows1 = cur.fetchall()
+                    diff_result.update(git_diff_dict(columns1, diff_rows1))
 
-                for index, key in enumerate(diff_result.keys()):
-                    # print 'index -------------->', index, key, index == 0
-                    diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
+                    print 'action_time ===>', result_dict['action_time']
 
-            change_message_dict = get_change_message_dict(result_dict['change_message'])
+                    cur.execute(diff_query2, [check_id, check_id, action_time, action_time])
+                    columns2 = [col[0] for col in cur.description]
+                    diff_rows2 = cur.fetchall()
+                    diff_result.update(git_diff_dict(columns2, diff_rows2))
+
+                    for index, key in enumerate(diff_result.keys()):
+                        # print 'index -------------->', index, key, index == 0
+                        diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
+
             object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
 
             # 기능 구분에 따라 시스템 표시 구분
@@ -2198,10 +2191,12 @@ def history_rows(request):
             result_dict['content_type_id'] = content_type_dict[content_type_id]
             result_dict['action_flag'] = action_flag_dict[action_flag]
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
-                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
-                '303',
-                '304'] else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
+                                                                                                                                                                                        '304'] else '-'
+
+    pp = pprint.PrettyPrinter(indent=2)
+    pp.pprint(connection.queries)
+
     return columns, recordsTotal, result_list
 
 
@@ -2380,232 +2375,101 @@ content_type_dict = {
     '307': u'문항 성적 보고서 생성',
     '308': u'문제 풀이 횟수 설정 초기화',
     '309': u'등록관리 - 일괄 등록',
-    '311': u'Insight',
+    '311': u'강좌 데이터 조회',
+}
+
+auth_dict = {
+    'username': u'아이디',
+    'first_name': u'성',
+    'last_name': u'이름',
+    'email': u'이메일 주소',
+    'password': u'비밀번호',
+    'is_staff': u'스태프 권한',
+    'is_active': u'활성',
+    'is_superuser': u'최상위 사용자 권한',
+    'last_login': u'마지막 로그인',
+    'date_joined': u'등록일',
+    'dormant_mail_cd': u'탈퇴 메일',
+    'dormant_yn': u'탈퇴 여부',
+    'dormant_dt': u'탈퇴일',
+    'name': u'프로필 이름',
+    'language': u'언어',
+    'location': u'지역',
+    'meta': u'메타정보',
+    'courseware': u'courseware',
+    'gender': u'성별',
+    'mailing_address': u'mailing_address',
+    'year_of_birth': u'출생 연도',
+    'level_of_education': u'최종 학력',
+    'goals': u'목표',
+    'allow_certificate': u'이수증 생성 허용',
+    'country': u'국가',
+    'city': u'도시',
+    'bio': u'자기소개',
+    'profile_image_uploaded_at': u'프로필 이미지 업로드 일시',
 }
 
 
-def comm_mobile(request):
-    """
-    # add board [type: mobile]
-    Args:
-        request:
+class CommunityMobile(View):
+    def __init__(self):
+        print 'community_mobile init called'
 
-    Returns:
-
-    """
-    refer_list = []
-    if request.is_ajax():
-        aaData = {}
-        if request.GET['method'] == 'refer_list':
-            cur = connection.cursor()
-            query = """
-					SELECT board_id,
-						   use_yn,
-						   CASE
-							  WHEN head_title = 'publi_r' THEN '홍보자료'
-							  WHEN head_title = 'data_r' THEN '자료집'
-							  WHEN head_title = 'repo_r' THEN '보고서'
-							  WHEN head_title = 'etc_r' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title,
-						   subject,
-						   SUBSTRING(reg_date, 1, 11),
-						   CASE
-							  WHEN use_yn = 'Y' THEN '보임'
-							  WHEN use_yn = 'N' THEN '숨김'
-							  ELSE ''
-						   END
-							  use_yn,
-						   CASE WHEN odby = '0' THEN '' ELSE odby END odby
-					  FROM tb_board
-					 WHERE section = 'R' AND NOT use_yn = 'D'
-			"""
-            if 'search_con' in request.GET:
-                title = request.GET['search_con']
-                search = request.GET['search_search']
-                query += "and " + title + " like '%" + search + "%'"
-
-            cur.execute(query)
-            row = cur.fetchall()
-            cur.close()
-            index = 1
-            for r in row:
-                value_list = []
-                refer = r
-                value_list.append(refer[0])
-                value_list.append(refer[1])
-                value_list.append(index)
-                value_list.append(refer[2])
-                value_list.append(refer[3])
-                value_list.append(refer[4])
-                value_list.append(refer[5])
-                refer_list.append(value_list)
-                index += 1
-
-            aaData = json.dumps(list(refer_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-        elif request.GET['method'] == 'refer_del':
-            refer_id = request.GET['refer_id']
-            use_yn = request.GET['use_yn']
-            if use_yn == 'Y':
-                yn = 'N'
-            else:
-                yn = 'Y'
-            cur = connection.cursor()
-            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + refer_id
-            cur.execute(query)
-            cur.close()
-            aaData = json.dumps('success')
-        elif request.GET['method'] == 'refer_delete':
-            refer_id = request.GET['refer_id']
-            use_yn = request.GET['use_yn']
-            yn = 'D'
-
-            cur = connection.cursor()
-            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + refer_id
-            cur.execute(query)
-            cur.close()
-            aaData = json.dumps('success')
-
-        return HttpResponse(aaData, 'applications/json')
-    return render(request, 'community/comm_mobile.html')
-
-
-def comm_mobile_new(request):
-    if 'file' in request.FILES:
-        value_list = []
-        file = request.FILES['file']
-        filename = file._name
-        file_ext = filename.split('.')[1]
-
-        fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
-        for chunk in file.chunks():
-            fp.write(chunk)
-        fp.close()
-        data = '성공'
-
-        n = os.path.getsize(UPLOAD_DIR + filename)
-        file_size = str(n / 1024) + "KB"  # 킬로바이트 단위로
-
-        value_list.append(filename)
-        value_list.append(file_ext)
-        value_list.append(file_size)
-        data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-        return HttpResponse(data, 'applications/json')
-
-    elif request.method == 'POST':
-        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
-        if request.POST['method'] == 'add':
-
-            title = request.POST.get('refer_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('refer_cont')
-            content = content.replace("'", "''")
-            section = request.POST.get('refer')
-            head_title = request.POST.get('head_title')
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            cur = connection.cursor()
-            query = "insert into edxapp.tb_board(subject, content, section, head_title)"
-            query += " VALUES ('" + title + "', '" + content + "', '" + section + "', '" + head_title + "') "
-            cur.execute(query)
-
-            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
-            cur.execute(query2)
-            board_id = cur.fetchall()
-            cur.close()
-            if upload_file != '':
-                cur = connection.cursor()
-                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-                        "VALUES ('" + str(board_id[0][0]) + "','" + str(file_name) + "','" + str(
-                    file_ext) + "','" + str(file_size) + "')"
+    def get(self, request):
+        if not request.is_ajax():
+            return render(request, 'community/comm_mobile.html')
+        else:
+            with connections['default'].cursor() as cur:
+                query = """
+                    SELECT board_id, subject, content
+                        FROM tb_board
+                       WHERE section = 'N' AND use_yn = 'Y'
+                    ORDER BY odby;
+                """
                 cur.execute(query)
-                cur.close()
-
-            data = json.dumps({'status': "success"})
-
-        elif request.POST['method'] == 'modi':
-            title = request.POST.get('refer_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('refer_cont')
-            content = content.replace("'", "''")
-            refer_id = request.POST.get('refer_id')
-            odby = request.POST.get('odby')
-            head_title = request.POST.get('head_title')
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            cur = connection.cursor()
-            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + refer_id + "'"
-            cur.execute(query)
-            cur.close()
-
-            if upload_file != '':
-                cur = connection.cursor()
-                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-                        "VALUES ('" + str(refer_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
-                    file_size) + "')"
-                cur.execute(query)
-                cur.close()
-            data = json.dumps({'status': "success"})
-
-        return HttpResponse(data, 'applications/json')
-    return render(request, 'community/comm_mobile_new.html')
+                rows = cur.fetchall()
 
 
-def comm_mobile_modify(request, id, use_yn):
-    mod_refer = []
+                # data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
 
-    if request.is_ajax():
-        data = json.dumps({'status': "fail"})
-        if request.GET['method'] == 'modi':
-            cur = connection.cursor()
-            # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'R' and board_id = "+id
+            return HttpResponse(json.dumps([list(row) for row in rows], cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+
+    def put(self, request):
+        with connections['default'].cursor() as cur:
             query = """
-					SELECT subject,
-						   content,
-						   odby,
-						   CASE
-							  WHEN head_title = 'publi_r' THEN '홍보자료'
-							  WHEN head_title = 'data_r' THEN '자료집'
-							  WHEN head_title = 'repo_r' THEN '보고서'
-							  WHEN head_title = 'etc_r' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title
-					  FROM tb_board
-					 WHERE section = 'R' AND board_id = """ + id
+                INSERT INTO tb_board(subject,
+                                     content,
+                                     section,
+                                     head_title)
+                     VALUES (%s,
+                             %s,
+                             %s,
+                             %s);
+            """
+            cur.execute(query, [])
+            rows = cur.fetchall()
 
+        result_dict = dict()
+        return HttpResponse(result_dict, 'applications/json')
+
+        self.get()
+
+    def post(self, request):
+        with connections['default'].cursor() as cur:
+            query = """
+            """
             cur.execute(query)
-            row = cur.fetchall()
-            cur.close()
+            rows = cur.fetchall()
 
-            cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where board_id = " + id
+        result_dict = dict()
+        return HttpResponse(result_dict, 'applications/json')
+        self.get()
+
+    def delete(self, request):
+        with connections['default'].cursor() as cur:
+            query = """
+            """
             cur.execute(query)
-            files = cur.fetchall()
-            cur.close()
+            rows = cur.fetchall()
 
-            mod_refer.append(row[0][0])
-            mod_refer.append(row[0][1])
-            mod_refer.append(row[0][2])
-            mod_refer.append(row[0][3])
-            if files:
-                mod_refer.append(files)
-            data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
-        elif request.GET['method'] == 'file_download':
-            file_name = request.GET['file_name']
-            data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
-        return HttpResponse(data, 'applications/json')
-
-    variables = RequestContext(request, {
-        'id': id,
-        'use_yn': use_yn
-    })
-
-    return render_to_response('community/comm_mobile_modify.html', variables)
+        result_dict = dict()
+        return HttpResponse(result_dict, 'applications/json')
