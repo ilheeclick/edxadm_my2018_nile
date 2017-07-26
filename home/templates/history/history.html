@@ -330,6 +330,10 @@
             var detailRows = [];
             $table.on('click', 'tr', function () {
 
+                //$("tr.details").each(function(){
+                //    $(this).removeClass('details');
+                //    $(this).next().remove();
+                //});
 
                 var dt = $('#datatable-ajax').DataTable();
                 var tr = $(this).closest('tr');
@@ -384,7 +388,7 @@
 
     <section class="panel panel-featured ">
         <header class="panel-heading">
-            <div><h2 class="panel-title">이력</h2></div>
+            <div><h2 class="panel-title">접속이력</h2></div>
         </header>
         <div class="panel-body container-fluid">
             <div class="row">
@@ -402,7 +406,7 @@
 
                 <div class="col-sm-3">
                     <div class="form-group">
-                        <label class="control-label">기능 구분</label>
+                        <label class="control-label">기능</label>
                         <select name="func" id="func" class="form-control">
                             <option value="">전체</option>
                             <!--
@@ -500,8 +504,8 @@
                     <th>id</th>
                     <th>시스템</th>
                     <th>접속자 아이디</th>
-                    <th>사용일시</th>
-                    <th>기능 구분</th>
+                    <th>접속 일시</th>
+                    <th>기능</th>
                     <th>수행 업무</th>
                     <th>업무 내용</th>
                     <th>대상자 아이디</th>
