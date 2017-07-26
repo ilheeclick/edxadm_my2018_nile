@@ -2138,7 +2138,7 @@ def history_rows(request):
                        LIMIT 1) t1;
         '''
 
-        def git_diff_dict(columns, rows):
+        def get_diff_dict(columns, rows):
             return_dict = dict()
             if columns is None or rows is None:
                 pass
@@ -2151,7 +2151,7 @@ def history_rows(request):
                 check_list = [dict(zip(columns, row)) for row in rows]
 
                 for column in columns:
-                    if not check_list[0][column] == check_list[1][column]:
+                    if not str(check_list[0][column]).replace('None', '') == str(check_list[1][column]).replace('None', ''):
                         return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
 
             return return_dict
@@ -2171,14 +2171,14 @@ def history_rows(request):
                 cur.execute(diff_query1, [check_id, check_id])
                 columns1 = [col[0] for col in cur.description]
                 diff_rows1 = cur.fetchall()
-                diff_result.update(git_diff_dict(columns1, diff_rows1))
+                diff_result.update(get_diff_dict(columns1, diff_rows1))
 
                 # print 'diff_query2', diff_query2
 
                 cur.execute(diff_query2, [check_id, check_id])
                 columns2 = [col[0] for col in cur.description]
                 diff_rows2 = cur.fetchall()
-                diff_result.update(git_diff_dict(columns2, diff_rows2))
+                diff_result.update(get_diff_dict(columns2, diff_rows2))
 
                 for index, key in enumerate(diff_result.keys()):
                     # print 'index -------------->', index, key, index == 0
