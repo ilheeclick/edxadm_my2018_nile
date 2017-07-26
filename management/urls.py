@@ -68,6 +68,12 @@ urlpatterns = [
     url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^manage/new_refer/', views.new_refer, name='new_refer'),
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
+
+    # mobile
+    url(r'^manage/comm_mobile/', views.comm_mobile, name='comm_mobile'),
+    url(r'^manage/comm_mobile_new/', views.comm_mobile_new, name='comm_mobile_new'),
+    url(r'^manage/comm_mobile_modify/', views.comm_mobile_modify, name='comm_mobile_modify'),
+
     # monitoring url
     url(r'^manage/moni_storage/', views.moni_storage, name='moni_storage'),
 

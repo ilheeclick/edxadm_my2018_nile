@@ -1,38 +1,35 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}공지사항{% endblock %}
-{% block pagetitlename_header %}공지사항{% endblock %}
+{% block pagetitlename %}모바일{% endblock %}
+{% block pagetitlename_header %}모바일{% endblock %}
 {% block script_down %}
 <script>
-	{% include "community/script/notice.datatables.ajax.js" %}
+	{% include "community/script/refer.datatables.ajax.js" %}
 </script>
-
-
 {% endblock %}
 {% block containor %}
 	<!-- start: page -->
-
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">공지사항</h2></div>
+        <div><h2 class="panel-title">모바일</h2></div>
     </header>
 
     <div class="panel-body" style="padding-top: 0;"> 
         <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
 
-            <a class="btn btn-default" id="add_notice" href="/manage/new_notice">신규등록</a>
+            <a class="btn btn-default" id="add_notice" href="/manage/new_refer">신규등록</a>
 
         </div>
-        {% load static %}
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/comm_notice" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+
+        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="comm_reference_room" style="width: 100%;" >
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th width="10%">No</th>
-                    <th width="10%">머리글</th>
-                    <th>제목</th>
-                    <th>내용</th>
-                    <th>작성일</th>
-                    <th>공개여부</th>
+                    <td>ID</td>
+                    <td>삭제flag</td>
+                    <td>No</td>
+                    <td>머리글</td>
+                    <td>제목</td>
+                    <td>작성일</td>
+                    <td>공개여부</td>
 {#                    <td width="15%"> 우선 순위 변경</td>#}
                 </tr>
             </thead>
@@ -42,6 +39,7 @@
                 <tr>
                     <th></th>
                     <th width="10%">No</th>
+                    <th width="10%"></th>
                     <th width="10%">머리글</th>
                 </tr>
             </tfoot>
@@ -49,6 +47,5 @@
 
     </div>
 </section>
-
 
 {% endblock %}

@@ -2382,3 +2382,230 @@ content_type_dict = {
     '309': u'등록관리 - 일괄 등록',
     '311': u'Insight',
 }
+
+
+def comm_mobile(request):
+    """
+    # add board [type: mobile]
+    Args:
+        request:
+
+    Returns:
+
+    """
+    refer_list = []
+    if request.is_ajax():
+        aaData = {}
+        if request.GET['method'] == 'refer_list':
+            cur = connection.cursor()
+            query = """
+					SELECT board_id,
+						   use_yn,
+						   CASE
+							  WHEN head_title = 'publi_r' THEN '홍보자료'
+							  WHEN head_title = 'data_r' THEN '자료집'
+							  WHEN head_title = 'repo_r' THEN '보고서'
+							  WHEN head_title = 'etc_r' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title,
+						   subject,
+						   SUBSTRING(reg_date, 1, 11),
+						   CASE
+							  WHEN use_yn = 'Y' THEN '보임'
+							  WHEN use_yn = 'N' THEN '숨김'
+							  ELSE ''
+						   END
+							  use_yn,
+						   CASE WHEN odby = '0' THEN '' ELSE odby END odby
+					  FROM tb_board
+					 WHERE section = 'R' AND NOT use_yn = 'D'
+			"""
+            if 'search_con' in request.GET:
+                title = request.GET['search_con']
+                search = request.GET['search_search']
+                query += "and " + title + " like '%" + search + "%'"
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            index = 1
+            for r in row:
+                value_list = []
+                refer = r
+                value_list.append(refer[0])
+                value_list.append(refer[1])
+                value_list.append(index)
+                value_list.append(refer[2])
+                value_list.append(refer[3])
+                value_list.append(refer[4])
+                value_list.append(refer[5])
+                refer_list.append(value_list)
+                index += 1
+
+            aaData = json.dumps(list(refer_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        elif request.GET['method'] == 'refer_del':
+            refer_id = request.GET['refer_id']
+            use_yn = request.GET['use_yn']
+            if use_yn == 'Y':
+                yn = 'N'
+            else:
+                yn = 'Y'
+            cur = connection.cursor()
+            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + refer_id
+            cur.execute(query)
+            cur.close()
+            aaData = json.dumps('success')
+        elif request.GET['method'] == 'refer_delete':
+            refer_id = request.GET['refer_id']
+            use_yn = request.GET['use_yn']
+            yn = 'D'
+
+            cur = connection.cursor()
+            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + refer_id
+            cur.execute(query)
+            cur.close()
+            aaData = json.dumps('success')
+
+        return HttpResponse(aaData, 'applications/json')
+    return render(request, 'community/comm_mobile.html')
+
+
+def comm_mobile_new(request):
+    if 'file' in request.FILES:
+        value_list = []
+        file = request.FILES['file']
+        filename = file._name
+        file_ext = filename.split('.')[1]
+
+        fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
+        for chunk in file.chunks():
+            fp.write(chunk)
+        fp.close()
+        data = '성공'
+
+        n = os.path.getsize(UPLOAD_DIR + filename)
+        file_size = str(n / 1024) + "KB"  # 킬로바이트 단위로
+
+        value_list.append(filename)
+        value_list.append(file_ext)
+        value_list.append(file_size)
+        data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    elif request.method == 'POST':
+        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
+        if request.POST['method'] == 'add':
+
+            title = request.POST.get('refer_title')
+            title = title.replace("'", "''")
+            content = request.POST.get('refer_cont')
+            content = content.replace("'", "''")
+            section = request.POST.get('refer')
+            head_title = request.POST.get('head_title')
+            upload_file = request.POST.get('uploadfile')
+            file_name = request.POST.get('file_name')
+            file_ext = request.POST.get('file_ext')
+            file_size = request.POST.get('file_size')
+
+            cur = connection.cursor()
+            query = "insert into edxapp.tb_board(subject, content, section, head_title)"
+            query += " VALUES ('" + title + "', '" + content + "', '" + section + "', '" + head_title + "') "
+            cur.execute(query)
+
+            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
+            cur.execute(query2)
+            board_id = cur.fetchall()
+            cur.close()
+            if upload_file != '':
+                cur = connection.cursor()
+                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+                        "VALUES ('" + str(board_id[0][0]) + "','" + str(file_name) + "','" + str(
+                    file_ext) + "','" + str(file_size) + "')"
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+        elif request.POST['method'] == 'modi':
+            title = request.POST.get('refer_title')
+            title = title.replace("'", "''")
+            content = request.POST.get('refer_cont')
+            content = content.replace("'", "''")
+            refer_id = request.POST.get('refer_id')
+            odby = request.POST.get('odby')
+            head_title = request.POST.get('head_title')
+            upload_file = request.POST.get('uploadfile')
+            file_name = request.POST.get('file_name')
+            file_ext = request.POST.get('file_ext')
+            file_size = request.POST.get('file_size')
+
+            cur = connection.cursor()
+            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + refer_id + "'"
+            cur.execute(query)
+            cur.close()
+
+            if upload_file != '':
+                cur = connection.cursor()
+                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+                        "VALUES ('" + str(refer_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
+                    file_size) + "')"
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
+
+        return HttpResponse(data, 'applications/json')
+    return render(request, 'community/comm_mobile_new.html')
+
+
+def comm_mobile_modify(request, id, use_yn):
+    mod_refer = []
+
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi':
+            cur = connection.cursor()
+            # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'R' and board_id = "+id
+            query = """
+					SELECT subject,
+						   content,
+						   odby,
+						   CASE
+							  WHEN head_title = 'publi_r' THEN '홍보자료'
+							  WHEN head_title = 'data_r' THEN '자료집'
+							  WHEN head_title = 'repo_r' THEN '보고서'
+							  WHEN head_title = 'etc_r' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE section = 'R' AND board_id = """ + id
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = "select attatch_file_name from tb_board_attach where board_id = " + id
+            cur.execute(query)
+            files = cur.fetchall()
+            cur.close()
+
+            mod_refer.append(row[0][0])
+            mod_refer.append(row[0][1])
+            mod_refer.append(row[0][2])
+            mod_refer.append(row[0][3])
+            if files:
+                mod_refer.append(files)
+            data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+        elif request.GET['method'] == 'file_download':
+            file_name = request.GET['file_name']
+            data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id,
+        'use_yn': use_yn
+    })
+
+    return render_to_response('community/comm_mobile_modify.html', variables)

@@ -213,6 +213,17 @@
                                                 </a>
                                             </li>
                                         </ul>
+
+                                        <!-- 개발중 -->
+                                        <!--
+                                        <ul class="nav nav-children">
+                                            <li id="comm_mobile">
+                                                <a href="/manage/comm_mobile">
+                                                    모바일
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        -->
 									</li>
                                     <li class="nav nav-parent" id="monitoring">
 										<a>
@@ -420,6 +431,7 @@
 
                 function setactivesidebar(is_expanded){
                     var pagetitlename = $('#pagetitlename').text();
+                    console.log('pagetitlename: ' + pagetitlename);
 
 
                     switch (pagetitlename){
@@ -477,6 +489,11 @@
                             if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                             $('#community').addClass('nav-active');
                             $('#comm_reference_room').addClass('nav-active');
+                            break;
+                        case '모바일':
+                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                            $('#community').addClass('nav-active');
+                            $('#comm_mobile').addClass('nav-active');
                             break;
                         case '스토리지':
                             if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
