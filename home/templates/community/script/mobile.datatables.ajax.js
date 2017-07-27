@@ -20,7 +20,7 @@ Theme Version: 	1.5.2
 			"order": [[ 1, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'notice_list'});
+				 aoData.push({ "name": 'method', "value": 'mobile_list'});
 			},
 
 
@@ -49,6 +49,11 @@ Theme Version: 	1.5.2
 					//"defaultContent": "<td>" +
 					//"<input type='checkbox' />" +
 					//"</td>"
+				},
+				{
+					"targets": [2],
+					"visible": false,
+
 				},
 				{
 					"targets": [4],
@@ -121,7 +126,7 @@ Theme Version: 	1.5.2
 			var noti_id = data[0];
 			//alert(data[2]);
 			//console.log(data);
-			location.href='/manage/modi_notice/'+data[0]+'/'+data[8]
+			location.href='/manage/modi_mobile/'+data[0]+'/'+data[8]
 		});
 	};
 

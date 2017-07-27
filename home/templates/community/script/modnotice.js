@@ -82,7 +82,7 @@ $(document).on('click', '#saved_file > li > a', function(){
     var board_id = '{{id}}';
     var use_yn = '{{use_yn}}';
 
-    alert('/manage/modi_notice/'+board_id+'/'+use_yn + " : " + file_name);
+    //alert('/manage/modi_notice/'+board_id+'/'+use_yn + " : " + file_name);
 
     $.ajax({
         url : '/manage/modi_notice/'+board_id+'/'+use_yn,

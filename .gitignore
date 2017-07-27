@@ -4,4 +4,6 @@
 *.xml
 *.txt
 *.iml
+*.csv
 venv/
+home/static/upload/

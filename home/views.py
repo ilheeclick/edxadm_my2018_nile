@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, render_to_response, redirect
 from django.template import Context, RequestContext
-from django.http import Http404, HttpResponse, FileResponse
+from django.http import Http404, HttpResponse, FileResponse, JsonResponse
 import json
 from django.db import connection
 from management.settings import UPLOAD_DIR
@@ -1023,21 +1023,22 @@ def modi_notice(request, id, use_yn):
             cur = connection.cursor()
             # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
             query = """
-					SELECT subject,
-						   content,
-						   odby,
-						   CASE
-							  WHEN head_title = 'noti_n' THEN '공지'
-							  WHEN head_title = 'advert_n' THEN '공고'
-							  WHEN head_title = 'guide_n' THEN '안내'
-							  WHEN head_title = 'event_n' THEN '이벤트'
-							  WHEN head_title = 'etc_n' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title
-					  FROM tb_board
-					 WHERE section = 'N' and board_id = """ + id
-            cur.execute(query)
+                SELECT subject,
+                       content,
+                       odby,
+                       CASE
+                          WHEN head_title = 'noti_n' THEN '공지'
+                          WHEN head_title = 'advert_n' THEN '공고'
+                          WHEN head_title = 'guide_n' THEN '안내'
+                          WHEN head_title = 'event_n' THEN '이벤트'
+                          WHEN head_title = 'etc_n' THEN '기타'
+                          ELSE ''
+                       END
+                          head_title
+                  FROM tb_board
+                 WHERE section = 'M' AND board_id = %s
+            """
+            cur.execute(query, [id, ])
             row = cur.fetchall()
             cur.close()
             # print 'query', query
@@ -1047,12 +1048,14 @@ def modi_notice(request, id, use_yn):
             # print 'row[3] == ',row[0][3]
 
             cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach " \
-                    "where board_id = " + id
-            cur.execute(query)
+            query = """
+                SELECT attatch_id, attatch_file_name
+                  FROM tb_board_attach
+                 WHERE 1 = 1 AND del_yn = 'N' AND board_id = %s
+            """
+            cur.execute(query, [id, ])
             files = cur.fetchall()
             cur.close()
-            # print 'files == ',files
 
             mod_notice.append(row[0][0])
             mod_notice.append(row[0][1])
@@ -1060,6 +1063,8 @@ def modi_notice(request, id, use_yn):
             mod_notice.append(row[0][3])
 
             if files:
+                print 'files:', files
+
                 mod_notice.append(files)
             # print 'mod_notice == ',mod_notice
 
@@ -1337,7 +1342,7 @@ def modi_knews(request, id, use_yn):
             # print 'query', query
 
             cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where board_id = " + id
+            query = "select attatch_file_name from tb_board_attach where 1=1 and del_yn = 'N' and board_id = " + id
             cur.execute(query)
             files = cur.fetchall()
             cur.close()
@@ -1769,26 +1774,26 @@ def modi_refer(request, id, use_yn):
             cur = connection.cursor()
             # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'R' and board_id = "+id
             query = """
-					SELECT subject,
-						   content,
-						   odby,
-						   CASE
-							  WHEN head_title = 'publi_r' THEN '홍보자료'
-							  WHEN head_title = 'data_r' THEN '자료집'
-							  WHEN head_title = 'repo_r' THEN '보고서'
-							  WHEN head_title = 'etc_r' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title
-					  FROM tb_board
-					 WHERE section = 'R' AND board_id = """ + id
+                SELECT subject,
+                       content,
+                       odby,
+                       CASE
+                          WHEN head_title = 'publi_r' THEN '홍보자료'
+                          WHEN head_title = 'data_r' THEN '자료집'
+                          WHEN head_title = 'repo_r' THEN '보고서'
+                          WHEN head_title = 'etc_r' THEN '기타'
+                          ELSE ''
+                       END
+                          head_title
+                  FROM tb_board
+                 WHERE section = 'R' AND board_id = """ + id
 
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
 
             cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where board_id = " + id
+            query = "select attatch_file_name from tb_board_attach where 1=1 and del_yn = 'N' and board_id = " + id
             cur.execute(query)
             files = cur.fetchall()
             cur.close()
@@ -2408,66 +2413,377 @@ auth_dict = {
 }
 
 
-class CommunityMobile(View):
-    def __init__(self):
-        print 'community_mobile init called'
+# class CommunityMobile(View):
+#     def __init__(self):
+#         print 'community_mobile init called'
+#
+#     def get(self, request):
+#         if not request.is_ajax():
+#             return render(request, 'community/comm_mobile.html')
+#         else:
+#             with connections['default'].cursor() as cur:
+#                 query = """
+#                     SELECT board_id, subject, content
+#                         FROM tb_board
+#                        WHERE section = 'N' AND use_yn = 'Y'
+#                     ORDER BY odby;
+#                 """
+#                 cur.execute(query)
+#                 rows = cur.fetchall()
+#
+#
+#                 # data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+#
+#             return HttpResponse(json.dumps([list(row) for row in rows], cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+#
+#     def put(self, request):
+#         with connections['default'].cursor() as cur:
+#             query = """
+#                 INSERT INTO tb_board(subject,
+#                                      content,
+#                                      section,
+#                                      head_title)
+#                      VALUES (%s,
+#                              %s,
+#                              %s,
+#                              %s);
+#             """
+#             cur.execute(query, [])
+#             rows = cur.fetchall()
+#
+#         result_dict = dict()
+#         return HttpResponse(result_dict, 'applications/json')
+#
+#         self.get()
+#
+#     def post(self, request):
+#         with connections['default'].cursor() as cur:
+#             query = """
+#             """
+#             cur.execute(query)
+#             rows = cur.fetchall()
+#
+#         result_dict = dict()
+#         return HttpResponse(result_dict, 'applications/json')
+#         self.get()
+#
+#     def delete(self, request):
+#         with connections['default'].cursor() as cur:
+#             query = """
+#             """
+#             cur.execute(query)
+#             rows = cur.fetchall()
+#
+#         result_dict = dict()
+#         return HttpResponse(result_dict, 'applications/json')
 
-    def get(self, request):
-        if not request.is_ajax():
-            return render(request, 'community/comm_mobile.html')
-        else:
-            with connections['default'].cursor() as cur:
-                query = """
-                    SELECT board_id, subject, content
-                        FROM tb_board
-                       WHERE section = 'N' AND use_yn = 'Y'
-                    ORDER BY odby;
-                """
+# community view
+def comm_mobile(request):
+    noti_list = []
+    if request.is_ajax():
+        aaData = {}
+        if request.GET['method'] == 'mobile_list':
+            cur = connection.cursor()
+            query = """
+                SELECT board_id,
+                       content,
+                       subject,
+                       SUBSTRING(reg_date, 1, 11),
+                       CASE
+                          WHEN use_yn = 'Y' THEN '보임'
+                          WHEN use_yn = 'N' THEN '숨김'
+                          ELSE ''
+                       END
+                          use_yn,
+                       CASE WHEN odby = '0' THEN '' ELSE odby END odby,
+                       CASE
+                          WHEN head_title = 'noti_n' THEN '공지'
+                          WHEN head_title = 'advert_n' THEN '공고'
+                          WHEN head_title = 'guide_n' THEN '안내'
+                          WHEN head_title = 'event_n' THEN '이벤트'
+                          WHEN head_title = 'etc_n' THEN '기타'
+                          ELSE ''
+                       END
+                          head_title,
+                       use_yn
+                  FROM tb_board
+                 WHERE section = 'M' AND NOT use_yn = 'D'
+			"""
+
+            if 'search_con' in request.GET:
+                title = request.GET['search_con']
+                search = request.GET['search_search']
+                query += "and " + title + " like '%" + search + "%'"
+
+            # query += " ORDER BY board_id"
+
+            # print 'query', query
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            index = 1
+            for noti in row:
+                value_list = []
+                mobile = noti
+                # print mobile
+                value_list.append(mobile[0])
+                value_list.append(index)
+                value_list.append(mobile[6])
+                value_list.append(mobile[2])
+                value_list.append(mobile[1])
+                value_list.append(mobile[3])
+                value_list.append(mobile[4])
+                value_list.append(mobile[5])
+                value_list.append(mobile[7])
+                noti_list.append(value_list)
+                index += 1
+
+            aaData = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+        elif request.GET['method'] == 'mobile_del':
+            noti_id = request.GET['noti_id']
+            use_yn = request.GET['use_yn']
+            yn = ''
+            if use_yn == 'Y':
+                yn = 'N'
+            else:
+                yn = 'Y'
+            # print 'use_yn == ',use_yn,' yn == ',yn
+            cur = connection.cursor()
+            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + noti_id
+            cur.execute(query)
+            cur.close()
+            aaData = json.dumps('success')
+        elif request.GET['method'] == 'mobile_delete':
+            noti_id = request.GET['noti_id']
+            use_yn = request.GET['use_yn']
+            yn = 'D'
+
+            # print 'use_yn == ',use_yn,' yn == ',yn
+            cur = connection.cursor()
+            query = "update edxapp.tb_board SET use_yn = '" + yn + "' where board_id = " + noti_id
+            cur.execute(query)
+            cur.close()
+            aaData = json.dumps('success')
+        return HttpResponse(aaData, 'applications/json')
+
+    return render(request, 'community/comm_mobile.html')
+
+
+@csrf_exempt
+def new_mobile(request):
+    if 'file' in request.FILES:
+        print 'file process start .'
+
+        value_list = []
+        file = request.FILES['file']
+        filename = ''
+        file_ext = ''
+        file_size = ''
+        print 'file:', file
+        filename = file._name
+        file_ext = filename.split('.')[1]
+
+        fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
+        for chunk in file.chunks():
+            fp.write(chunk)
+        fp.close()
+        data = '성공'
+
+        n = os.path.getsize(UPLOAD_DIR + filename)
+        file_size = str(n / 1024) + "KB"  # 킬로바이트 단위로
+
+        value_list.append(filename)
+        value_list.append(file_ext)
+        value_list.append(file_size)
+        data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    elif request.method == 'POST':
+        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
+        if request.POST['method'] == 'add':
+
+            title = request.POST.get('nt_title')
+            title = title.replace("'", "''")
+            content = request.POST.get('nt_cont')
+            content = content.replace("'", "''")
+            section = request.POST.get('mobile')
+            head_title = request.POST.get('head_title')
+
+            if not head_title:
+                head_title = ''
+
+            upload_file = request.POST.get('uploadfile')
+            file_name = request.POST.get('file_name')
+            file_ext = request.POST.get('file_ext')
+            file_size = request.POST.get('file_size')
+            print file_name, '/', file_ext, '/', file_size
+
+            cur = connection.cursor()
+            query = "insert into edxapp.tb_board(subject, content, head_title, section)"
+            query += " VALUES ('" + title + "', '" + content + "', '" + head_title + "', '" + section + "') "
+            cur.execute(query)
+
+            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
+            cur.execute(query2)
+            board_id = cur.fetchall()
+            cur.close()
+            # print board_id[0][0]
+            if upload_file != '':
+                cur = connection.cursor()
+                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+                        "VALUES ('" + str(board_id[0][0]) + "','" + str(file_name) + "','" + str(
+                    file_ext) + "','" + str(file_size) + "')"
                 cur.execute(query)
-                rows = cur.fetchall()
+                cur.close()
 
+            data = json.dumps({'status': "success"})
 
-                # data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
+        elif request.POST['method'] == 'modi':
+            title = request.POST.get('nt_title')
+            title = title.replace("'", "''")
+            content = request.POST.get('nt_cont')
+            content = content.replace("'", "''")
+            noti_id = request.POST.get('noti_id')
+            odby = request.POST.get('odby')
+            head_title = request.POST.get('head_title')
+            if not head_title:
+                head_title = ''
 
-            return HttpResponse(json.dumps([list(row) for row in rows], cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
+            upload_file = request.POST.get('uploadfile')
+            file_name = request.POST.get('file_name')
+            file_ext = request.POST.get('file_ext')
+            file_size = request.POST.get('file_size')
 
-    def put(self, request):
-        with connections['default'].cursor() as cur:
-            query = """
-                INSERT INTO tb_board(subject,
-                                     content,
-                                     section,
-                                     head_title)
-                     VALUES (%s,
-                             %s,
-                             %s,
-                             %s);
-            """
-            cur.execute(query, [])
-            rows = cur.fetchall()
-
-        result_dict = dict()
-        return HttpResponse(result_dict, 'applications/json')
-
-        self.get()
-
-    def post(self, request):
-        with connections['default'].cursor() as cur:
-            query = """
-            """
+            cur = connection.cursor()
+            # query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
+            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', head_title = '" + head_title + "', mod_date = now() where board_id = '" + noti_id + "'"
             cur.execute(query)
-            rows = cur.fetchall()
+            cur.close()
 
-        result_dict = dict()
-        return HttpResponse(result_dict, 'applications/json')
-        self.get()
+            if upload_file != '':
+                cur = connection.cursor()
+                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+                        "VALUES ('" + str(noti_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
+                    file_size) + "')"
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
 
-    def delete(self, request):
-        with connections['default'].cursor() as cur:
+        return HttpResponse(data, 'applications/json')
+
+    return render(request, 'community/comm_newmobile.html')
+
+
+@csrf_exempt
+def modi_mobile(request, id, use_yn):
+    mod_mobile = []
+
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi':
+            cur = connection.cursor()
+            # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
             query = """
-            """
+					SELECT subject,
+						   content,
+						   odby,
+						   CASE
+							  WHEN head_title = 'noti_n' THEN '공지'
+							  WHEN head_title = 'advert_n' THEN '공고'
+							  WHEN head_title = 'guide_n' THEN '안내'
+							  WHEN head_title = 'event_n' THEN '이벤트'
+							  WHEN head_title = 'etc_n' THEN '기타'
+							  ELSE ''
+						   END
+							  head_title
+					  FROM tb_board
+					 WHERE section = 'M' and board_id = """ + id
             cur.execute(query)
-            rows = cur.fetchall()
+            row = cur.fetchall()
+            cur.close()
+            # print 'query', query
+            # print 'row[0] == ',row[0][0]
+            # print 'row[1] == ',row[0][1]
+            # print 'row[2] == ',row[0][2]
+            # print 'row[3] == ',row[0][3]
 
-        result_dict = dict()
-        return HttpResponse(result_dict, 'applications/json')
+            cur = connection.cursor()
+
+            query = """
+                SELECT attatch_id, attatch_file_name
+                  FROM tb_board_attach
+                 WHERE 1 = 1 AND del_yn = 'N' AND board_id = %s
+            """
+            cur.execute(query, [id, ])
+
+            files = cur.fetchall()
+            cur.close()
+            # print 'files == ',files
+
+            mod_mobile.append(row[0][0])
+            mod_mobile.append(row[0][1])
+            mod_mobile.append(row[0][2])
+            mod_mobile.append(row[0][3])
+
+            if files:
+                # mod_mobile.append([list(file) for file in files])
+                mod_mobile.append(files)
+
+            print 'mod_mobile == ', mod_mobile
+
+            data = json.dumps(list(mod_mobile), cls=DjangoJSONEncoder, ensure_ascii=False)
+        elif request.GET['method'] == 'file_download':
+            pass
+
+            print 'file_download with ajax is not working'
+
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id,
+        'use_yn': use_yn
+    })
+
+    return render_to_response('community/comm_modimobile.html', variables)
+
+
+# execute mysql query : alter table tb_board_attach modify del_yn varchar(1) default 'N';
+def file_delete(request):
+    # `attatch` 이딴 단어는 어디서 나온겁니까???
+
+    attach_id = request.POST.get('attach_id')
+
+    with connections['default'].cursor() as cur:
+        query = """
+            UPDATE tb_board_attach
+               SET del_yn = 'Y'
+             WHERE del_yn = 'N' and attatch_id = %s;
+        """
+        result = cur.execute(query, [attach_id])
+
+        context = dict()
+
+        context['result'] = result
+
+        print context
+
+    return HttpResponse(json.dumps(context), 'applications/json')
+
+
+def file_download(request, file_name):
+    print 'called  file_download_test'
+
+    # 실제 있는 파일로 지정
+    file_path = '%s/%s' % (UPLOAD_DIR, file_name)
+    # file_path = '/Users/redukyo/workspace/management/home/static/upload/test.jpg'
+
+    print 'file_path:', file_path
+
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404

@@ -20,7 +20,7 @@ from user_manage.statistics import statistics_excel, certificate_excel, statisti
 from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
 from user_manage.notice import notice_reg, notice_list, notice_mod, notice_del
 from home import views
-from home.views import CommunityMobile
+
 
 urlpatterns = [
     url(r'^manage/test_index/$', views.test_index),
@@ -71,7 +71,9 @@ urlpatterns = [
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
 
     # mobile
-    url(r'^manage/comm_mobile/', CommunityMobile.as_view(), name='comm_mobile'),
+    url(r'^manage/comm_mobile/', views.comm_mobile, name='comm_mobile'),
+    url(r'^manage/new_mobile/', views.new_mobile, name='new_mobile'),
+    url(r'^manage/modi_mobile/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_mobile, name='modi_mobile'),
 
     # monitoring url
     url(r'^manage/moni_storage/', views.moni_storage, name='moni_storage'),
@@ -79,6 +81,9 @@ urlpatterns = [
     # monitoring url
     url(r'^manage/history/', views.history, name='history'),
     url(r'^manage/csv/history/', views.history_csv, name='history'),
+
+    url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
+    url(r'^manage/file_download/(?P<file_name>.*?)/$', views.file_download, name='file_download'),
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
