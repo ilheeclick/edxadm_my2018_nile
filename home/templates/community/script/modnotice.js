@@ -45,10 +45,10 @@ $(document).ready(function(){
     }).done(function(data){
         //console.log(value_list);
         console.log(data);
-        if(data[4] != null){
-            value_list = data[4].toString().split(',');
-            for(var i=0;i<value_list.length;i++){
-                html += "<li><a href='#' id='download'>"+value_list[i]+"</a> <button class='btn btn-default' id='delete'>X</button></li>";
+        if (data[4] != null) {
+            value_list = data[4];
+            for (var i = 0; i < value_list.length; i++) {
+                html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -64,36 +64,6 @@ $(document).ready(function(){
     })
 });
 
-//파일 삭제 처리
-$(document).on('click', '#delete', function(){
-    var del_file = $(this).parent().text().slice(0, -2);
-    var board_id = '{{id}}';
-    $.post("/manage/new_notice/", {
-        csrfmiddlewaretoken:$.cookie('csrftoken'),
-        method : 'delete_file',
-        board_id : board_id,
-        del_file : del_file
-    });
-});
-
-//파일 다운로드
-$(document).on('click', '#saved_file > li > a', function(){
-    var file_name = $(this).text();
-    var board_id = '{{id}}';
-    var use_yn = '{{use_yn}}';
-
-    //alert('/manage/modi_notice/'+board_id+'/'+use_yn + " : " + file_name);
-
-    $.ajax({
-        url : '/manage/modi_notice/'+board_id+'/'+use_yn,
-            data : {
-                method : 'file_download',
-                file_name : file_name
-            }
-    }).done(function(data){
-        window.open(data,'_blank');
-    });
-});
 
 
 //수정 처리

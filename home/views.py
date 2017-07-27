@@ -1036,7 +1036,7 @@ def modi_notice(request, id, use_yn):
                        END
                           head_title
                   FROM tb_board
-                 WHERE section = 'M' AND board_id = %s
+                 WHERE section = 'N' AND board_id = %s
             """
             cur.execute(query, [id, ])
             row = cur.fetchall()
@@ -1342,8 +1342,13 @@ def modi_knews(request, id, use_yn):
             # print 'query', query
 
             cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where 1=1 and del_yn = 'N' and board_id = " + id
-            cur.execute(query)
+
+            query = """
+                SELECT attatch_id, attatch_file_name
+                  FROM tb_board_attach
+                 WHERE 1 = 1 AND del_yn = 'N' AND board_id = %s
+            """
+            cur.execute(query, [id, ])
             files = cur.fetchall()
             cur.close()
             # print id
@@ -1793,8 +1798,12 @@ def modi_refer(request, id, use_yn):
             cur.close()
 
             cur = connection.cursor()
-            query = "select attatch_file_name from tb_board_attach where 1=1 and del_yn = 'N' and board_id = " + id
-            cur.execute(query)
+            query = """
+                SELECT attatch_id, attatch_file_name
+                  FROM tb_board_attach
+                 WHERE 1 = 1 AND del_yn = 'N' AND board_id = %s
+            """
+            cur.execute(query, [id, ])
             files = cur.fetchall()
             cur.close()
 

@@ -509,8 +509,36 @@
                 }
                 setactivesidebar('');
             }).apply(this, [jQuery]);
+
+
+            //파일 다운로드 처리
+            function file_download(attach_id) {
+                $.post("/manage/file_download/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    attach_id: attach_id
+                }, function (data) {
+
+                }, "json");
+            };
+
+
+            //파일 삭제 처리
+            function file_delete(attach_id) {
+                if (confirm('파일을 삭제 하시겠습니까?')) {
+                    $.post("/manage/file_delete/", {
+                        csrfmiddlewaretoken: $.cookie('csrftoken'),
+                        attach_id: attach_id
+                    }, function (data) {
+                        if (data.result == 1) {
+                            $("#" + attach_id).parent().remove();
+                        }
+                    }, "json");
+                }
+            };
+
+
         </script>
 
 	</body>
-
+    <iframe name="hidden_target" style="display: none;"></iframe>
 </html>

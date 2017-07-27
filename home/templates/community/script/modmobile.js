@@ -46,15 +46,7 @@ $(document).ready(function () {
         //console.log(value_list);
         console.log(data);
         if (data[4] != null) {
-
             value_list = data[4];
-
-            console.log('value_list s');
-            console.log(value_list);
-            console.log(value_list.length);
-            console.log('value_list e');
-
-
             for (var i = 0; i < value_list.length; i++) {
                 html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }
@@ -72,32 +64,6 @@ $(document).ready(function () {
     })
 
 });
-
-//파일 다운로드 처리
-function file_download(attach_id) {
-    $.post("/manage/file_download/", {
-        csrfmiddlewaretoken: $.cookie('csrftoken'),
-        attach_id: attach_id
-    }, function (data) {
-
-    }, "json");
-};
-
-
-//파일 삭제 처리
-function file_delete(attach_id) {
-    if (confirm('파일을 삭제 하시겠습니까?')) {
-        $.post("/manage/file_delete/", {
-            csrfmiddlewaretoken: $.cookie('csrftoken'),
-            attach_id: attach_id
-        }, function (data) {
-            if (data.result == 1) {
-                $("#" + attach_id).parent().remove();
-            }
-        }, "json");
-    }
-};
-
 
 //수정 처리
 $('#mobile_mod').on('click', function (e) {
