@@ -45,8 +45,8 @@ $(document).ready(function () {
     }).done(function (data) {
         //console.log(value_list);
         console.log(data);
-        if (data[4] != null) {
-            value_list = data[4];
+        if (data[3] != null) {
+            value_list = data[3];
             for (var i = 0; i < value_list.length; i++) {
                 html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }

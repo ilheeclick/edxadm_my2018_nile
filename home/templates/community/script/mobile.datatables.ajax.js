@@ -45,18 +45,9 @@ Theme Version: 	1.5.2
 				{
 					"targets": [0],
 					"visible": false,
-					//"deferRender": true
-					//"defaultContent": "<td>" +
-					//"<input type='checkbox' />" +
-					//"</td>"
 				},
 				{
-					"targets": [2],
-					"visible": false,
-
-				},
-				{
-					"targets": [4],
+					"targets": [3],
 					"visible": false,
 
 				}
@@ -126,7 +117,7 @@ Theme Version: 	1.5.2
 			var noti_id = data[0];
 			//alert(data[2]);
 			//console.log(data);
-			location.href='/manage/modi_mobile/'+data[0]+'/'+data[8]
+			location.href='/manage/modi_mobile/'+data[0]+'/'+data[7]
 		});
 	};
 

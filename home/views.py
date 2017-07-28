@@ -2488,67 +2488,30 @@ auth_dict = {
 
 # community view
 def comm_mobile(request):
-    noti_list = []
     if request.is_ajax():
-        aaData = {}
         if request.GET['method'] == 'mobile_list':
             cur = connection.cursor()
             query = """
-                SELECT board_id,
-                       content,
-                       subject,
-                       SUBSTRING(reg_date, 1, 11),
-                       CASE
-                          WHEN use_yn = 'Y' THEN '보임'
-                          WHEN use_yn = 'N' THEN '숨김'
-                          ELSE ''
-                       END
-                          use_yn,
-                       CASE WHEN odby = '0' THEN '' ELSE odby END odby,
-                       CASE
-                          WHEN head_title = 'noti_n' THEN '공지'
-                          WHEN head_title = 'advert_n' THEN '공고'
-                          WHEN head_title = 'guide_n' THEN '안내'
-                          WHEN head_title = 'event_n' THEN '이벤트'
-                          WHEN head_title = 'etc_n' THEN '기타'
-                          ELSE ''
-                       END
-                          head_title,
-                       use_yn
-                  FROM tb_board
-                 WHERE section = 'M' AND NOT use_yn = 'D'
+              SELECT board_id,
+                     (@rn := @rn + 1)                   rn,
+                     subject,
+                     content,
+                     SUBSTRING(reg_date, 1, 11),
+                     if(use_yn = 'Y', '보임', '숨김') use_yn,
+                     if(odby = '0', '', odby)           odby,
+                     use_yn
+                FROM tb_board a, (SELECT @rn := 0) b
+               WHERE section = 'M' AND NOT use_yn = 'D'
+            ORDER BY reg_date;
 			"""
 
-            if 'search_con' in request.GET:
-                title = request.GET['search_con']
-                search = request.GET['search_search']
-                query += "and " + title + " like '%" + search + "%'"
-
-            # query += " ORDER BY board_id"
-
-            # print 'query', query
-
             cur.execute(query)
-            row = cur.fetchall()
+            rows = cur.fetchall()
             cur.close()
-            index = 1
-            for noti in row:
-                value_list = []
-                mobile = noti
-                # print mobile
-                value_list.append(mobile[0])
-                value_list.append(index)
-                value_list.append(mobile[6])
-                value_list.append(mobile[2])
-                value_list.append(mobile[1])
-                value_list.append(mobile[3])
-                value_list.append(mobile[4])
-                value_list.append(mobile[5])
-                value_list.append(mobile[7])
-                noti_list.append(value_list)
-                index += 1
 
-            aaData = json.dumps(list(noti_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+            print [list(row) for row in rows]
+
+            aaData = json.dumps([list(row) for row in rows], cls=DjangoJSONEncoder, ensure_ascii=False)
 
         elif request.GET['method'] == 'mobile_del':
             noti_id = request.GET['noti_id']
@@ -2695,46 +2658,32 @@ def modi_mobile(request, id, use_yn):
             cur = connection.cursor()
             # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
             query = """
-					SELECT subject,
-						   content,
-						   odby,
-						   CASE
-							  WHEN head_title = 'noti_n' THEN '공지'
-							  WHEN head_title = 'advert_n' THEN '공고'
-							  WHEN head_title = 'guide_n' THEN '안내'
-							  WHEN head_title = 'event_n' THEN '이벤트'
-							  WHEN head_title = 'etc_n' THEN '기타'
-							  ELSE ''
-						   END
-							  head_title
-					  FROM tb_board
-					 WHERE section = 'M' and board_id = """ + id
-            cur.execute(query)
+                SELECT subject, content, odby
+                  FROM tb_board
+                 WHERE section = 'M' AND board_id = %s
+            """
+            cur.execute(query, [id])
             row = cur.fetchall()
             cur.close()
-            # print 'query', query
-            # print 'row[0] == ',row[0][0]
-            # print 'row[1] == ',row[0][1]
-            # print 'row[2] == ',row[0][2]
-            # print 'row[3] == ',row[0][3]
 
             cur = connection.cursor()
 
             query = """
                 SELECT attatch_id, attatch_file_name
                   FROM tb_board_attach
-                 WHERE 1 = 1 AND del_yn = 'N' AND board_id = %s
+                 WHERE del_yn = 'N' AND board_id = %s
             """
-            cur.execute(query, [id, ])
+            cur.execute(query, [id])
+            # print 'connection.queries check s'
+            # print connection.queries
+            # print 'connection.queries check e'
 
             files = cur.fetchall()
             cur.close()
-            # print 'files == ',files
 
             mod_mobile.append(row[0][0])
             mod_mobile.append(row[0][1])
             mod_mobile.append(row[0][2])
-            mod_mobile.append(row[0][3])
 
             if files:
                 # mod_mobile.append([list(file) for file in files])
