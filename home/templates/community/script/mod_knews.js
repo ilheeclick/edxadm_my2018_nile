@@ -3,8 +3,6 @@ var file_ext= [];
 var file_size= [];
 jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
-
-    //화면 로딩후 내용 조회.
     var value_list;
     var id = '{{id}}';
     var use_yn = '{{use_yn}}';
@@ -64,26 +62,6 @@ $(document).ready(function(){
     }
 });
 
-<<<<<<< HEAD
-=======
-//파일 다운로드
-$(document).on('click', '#saved_file > li >  a', function(){
-    var file_name = $(this).text();
-    var board_id = '{{id}}';
-    var use_yn = '{{use_yn}}';
-
-    $.ajax({
-        url : '/manage/modi_knews/'+board_id+'/'+use_yn,
-            data : {
-                method : 'file_download',
-                file_name : file_name
-            }
-    }).done(function(data){
-        window.open(data,'_blank');
-    });
-});
-
->>>>>>> fa2d72a59a86e40a6638d8d10a885047b220bf7c
 
 //수정 처리
 $('#knews_mod').on('click', function(e){
@@ -98,11 +76,7 @@ $('#knews_mod').on('click', function(e){
         odby = $('#odby').val();
         action_mode = 'modi';
         knews_id = '{{id}}';
-
-        console.log('uploadfile:' + uploadfile);
-        console.log('file_name:' + file_name);
-        console.log('file_ext:' + file_ext);
-        console.log('file_size:' + file_size);
+        //alert(uploadfile+'/'+file_name+'/'+file_ext+'/'+file_size)
 
         if(head_title == 'null'){
             head_title = ''
@@ -125,7 +99,8 @@ $('#knews_mod').on('click', function(e){
             location.href='/manage/comm_k_news';
 
         }).fail(function(error) {
-            alert('error = ' + error.message);
+            alert('error = ' + error.responseJSON);
+            alert('파일명이 잘못되었습니다.');
         });
     }catch(e){
         alert(e);

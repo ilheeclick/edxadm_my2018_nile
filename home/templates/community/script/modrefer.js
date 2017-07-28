@@ -4,7 +4,7 @@ var file_size= [];
 jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
     var value_list;
-    var id = {{id}}
+    var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     var html = "";
 
@@ -74,7 +74,7 @@ $('#refer_mod').on('click', function(e){
         refercontent = $('.summernote').summernote('code');
         odby = $('#odby').val();
         action_mode = 'modi';
-        refer_id = {{ id }}
+        refer_id = '{{id}}';
         var head_title = $('#head_title').find('option:selected').attr('id');
         //alert('file_name =='+file_name);
         //alert('file_ext =='+file_ext);
@@ -146,7 +146,7 @@ $(document).on('click', '#fileupload', function(){
 
 //숨김 처리
 $('#refer_del').on('click', function(){
-    var id = {{id}};
+    var id = '{{id}}';;
     var use_yn = '{{use_yn}}';
 
     $.ajax({
@@ -164,7 +164,7 @@ $('#refer_del').on('click', function(){
 
 //삭제 처리
 $('#refer_delete').on('click', function(){
-    var id = {{id}};
+    var id = '{{id}}';;
     var use_yn = '{{use_yn}}';
 
     $.ajax({

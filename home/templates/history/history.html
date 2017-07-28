@@ -164,25 +164,6 @@
             return obj
         }
 
-        $(document).ready(function () {
-            $('#example').dataTable({
-                "sDom": 'Tlfrtip',
-                "oTableTools": {
-                    "aButtons": [{
-                        "sExtends": "ajax",
-                        "fnClick": function () {
-                            var search = this.s.dt.oPreviousSearch.sSearch;
-                            var iframe = document.createElement('iframe');
-                            iframe.style.height = "0px";
-                            iframe.style.width = "0px";
-                            iframe.src = "/generate_csv.php?filter=" + encodeURIComponent(search);
-                            document.body.appendChild(iframe);
-                        }
-                    }]
-                }
-            });
-        });
-
         function setDataTable() {
             var $table = $('#datatable-ajax');
 
@@ -248,15 +229,6 @@
                             sExtends: 'csv',
                             sButtonText: 'csv',
                             fnClick: function () {
-
-////                          파일 다운로드 화면 표시로 window.open 으로 대체
-
-//                            var iframe = document.createElement('iframe');
-//                            iframe.style.height = "0px";
-//                            iframe.style.width = "0px";
-//                            iframe.src = "/manage/csv/history";
-//                            document.body.appendChild(iframe);
-
                                 var param_json = buildSearchData();
                                 window.open("/manage/csv/history?" + $.param(param_json), "_blank");
                             }
@@ -291,6 +263,8 @@
                     $("table").css({'table-layout': 'fixed'});
                     $("table td").css({'text-overflow': 'ellipsis', 'overflow': 'hidden'});
                     $("select[name=datatable-ajax_length]").css({"height": "30px", "margin-top": "5px"});
+
+                    $("#datatable-ajax").before("<span style='float: right; padding-top: 15px;'>* 회원정보 수정 기능의 수정 업무는 업무 내용이 있을시 클릭하여 상세 내역을 확인할수 있습니다.</span>");
 
                     $('input[type="search"]').attr('placeholder', '검색하세요');
                     $('input[type="search"]').attr('class', 'form-control');

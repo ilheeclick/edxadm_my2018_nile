@@ -41,7 +41,7 @@ urlpatterns = [
     url(r'^manage/month_stastic/', views.month_stastic, name='month_stastic'),
     # state url
     url(r'^manage/mana_state/', views.mana_state, name='mana_state'),
-    url(r'^manage/get_options/', views.get_options, name='mana_state'),
+    # url(r'^manage/get_options/', views.get_options, name='mana_state'),
     url(r'^manage/dev_state/', views.dev_state, name='dev_state'),
     # certificate url
     url(r'^manage/certificate/', views.certificate, name='certificate'),
