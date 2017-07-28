@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.pyc
 *.xlsx
 *.DS_Store
@@ -7,3 +8,8 @@
 *.csv
 venv/
 home/static/upload/
+=======
+venv/
+*.xml
+*.pyc
+>>>>>>> fa2d72a59a86e40a6638d8d10a885047b220bf7c

@@ -67,7 +67,8 @@ Theme Version: 	1.5.2
 				$('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
 
 				$("div.toolbar").html('<b>결과 내 검색</b>');
-				this.api().columns().every( function (i) {
+				this.api().
+				().every( function (i) {
 
 					//if (i == 0){
 					//	return;

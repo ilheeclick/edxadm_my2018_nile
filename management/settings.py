@@ -36,7 +36,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_manage',
     'home',
 
 )
@@ -85,6 +84,8 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+APPEND_SLASH = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

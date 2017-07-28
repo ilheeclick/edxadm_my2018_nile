@@ -134,35 +134,3 @@ $(document).on('change', '#org', function(){
         });
     }
 });
-
-////기관별 강좌번호 처리
-//$(document).on('change', '#course', function(){
-//    var course = $(this).find('option:selected').attr('id');
-//    var html = "";
-//    if(course == '' || course == null){
-//        alert('error');
-//    }else{
-//        html="";
-//        $.ajax({
-//            url : '/certificate/',
-//            data : {
-//                method : 'run',
-//                course : course
-//            }
-//        }).done(function(data){
-//            html+="<option>선택하세요</option>";
-//            html+="<option id="+data+">"+data+"</option>";
-//            $('#run').html(html);
-//        })
-//    }
-//});
-
-
-
-
-
-
-
-
-
-

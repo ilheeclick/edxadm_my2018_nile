@@ -21,6 +21,7 @@ div.dataTables_paginate {
 }
 
 table.table {
+	width: 100% !important;
 	clear: both;
 	margin-bottom: 6px !important;
 	max-width: none !important;

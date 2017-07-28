@@ -1,0 +1,50 @@
+<div class="panel-body container-fluid">
+    <div class="row">
+        <div class="col-xs-6" align="left">
+            대학명
+            <select id="org" name="org">
+                <option value="">전체</option>
+                {% for key, values in org_list.items %}
+                <option value="{{key}}">{{values}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-xs-6" align="left">
+            운영 상태
+            <select id="status" name="status">
+                <option value="all">전체</option>
+                <option value="ready">개강 예정</option>
+                <option value="ing">진행중</option>
+                <option value="end">종료</option>
+            </select>
+        </div>
+
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-xs-6" align="left">
+            강좌명
+            <select id="course" name="course">
+                <option value="">전체</option>
+            </select>
+        </div>
+        <div class="col-xs-6" align="left">
+            강좌 번호
+            <select id="run" name="run">
+                <option value="">전체</option>
+            </select>
+        </div>
+
+    </div>
+    <br/>
+
+    <div align="right">
+        <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
+        <!--
+        <input class="btn btn-success" type="button" value="엑셀다운로드">
+        -->
+    </div>
+</div>

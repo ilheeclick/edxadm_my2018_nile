@@ -89,13 +89,14 @@ Theme Version: 	1.5.2
 			var course_id= $('#course').find('option:selected').attr('id');
 			var t = $('#datatable-ajax').DataTable();
 			if(org_id == null){
+				alert(1);
 				$.ajax({
 					url : '/manage/certificate/',
 					data : {
 						method : 'uni_certi'
 					}
 				}).done(function(data){
-					//console.log(data);
+
 					t.clear();
 					for(var i=0; i<data.length; i++){
 						//console.log(data[i][1]);
@@ -103,6 +104,7 @@ Theme Version: 	1.5.2
 					}
 				});
 			}else if(org_id != null && course_id != null){
+				alert(2);
 				$.ajax({
 					url : '/manage/certificate/',
 					data : {
@@ -117,11 +119,13 @@ Theme Version: 	1.5.2
 						alert('정보가 없습니다.')
 					}else{
 						for(var i=0; i<data.length; i++){
+							alert(data[i]);
 							t.row.add(data[i]).draw(true);
 						}
 					}
 				});
 			}else{
+				alert(3);
 				$.ajax({
 					url : '/manage/certificate/',
 					data : {
