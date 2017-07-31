@@ -1,544 +1,546 @@
 <!doctype html>
 <html class="fixed" xmlns="http://www.w3.org/1999/html">
 
-	<head>
-        <!-- Basic -->
-        <meta charset="UTF-8">
+<head>
+    <!-- Basic -->
+    <meta charset="UTF-8">
 
-        <title>국가평생교육진흥원 - KMOOC 관리자 페이지</title>
-        <meta name="keywords" content="HTML5 Admin Template" />
-        <meta name="description" content="Porto Admin - Responsive HTML5 Template">
-        <meta name="author" content="okler.net">
+    <title>국가평생교육진흥원 - KMOOC 관리자 페이지</title>
+    <meta name="keywords" content="HTML5 Admin Template"/>
+    <meta name="description" content="Porto Admin - Responsive HTML5 Template">
+    <meta name="author" content="okler.net">
 
-        <!-- Mobile Metas -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-        <!-- Web Fonts  -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
 
-        {% load staticfiles %}
+    {% load staticfiles %}
 
-        <!-- Vendor CSS -->
-        <link rel="stylesheet" href='{% static "assets/vendor/bootstrap/css/bootstrap.css" %}' />
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap/css/bootstrap.css" %}'/>
 
-        <link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/magnific-popup/magnific-popup.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" %}' />
+    <link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/magnific-popup/magnific-popup.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" %}'/>
 
-        <!-- Specific Page Vendor CSS -->
-        <link rel="stylesheet" href='{% static "assets/vendor/jquery-ui/jquery-ui.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/jquery-ui/jquery-ui.theme.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/morris.js/morris.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/summernote/summernote.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/codemirror/lib/codemirror.css" %}' />
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href='{% static "assets/vendor/jquery-ui/jquery-ui.theme.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/morris.js/morris.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/summernote/summernote.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/codemirror/lib/codemirror.css" %}'/>
 
-        <link rel="stylesheet" href='{% static "assets/vendor/select2/css/select2.css" %}'/>
-        <link rel="stylesheet" href='{% static "assets/vendor/select2-bootstrap-theme/select2-bootstrap.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css"%}' />
+    <link rel="stylesheet" href='{% static "assets/vendor/select2/css/select2.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/select2-bootstrap-theme/select2-bootstrap.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css"%}'/>
 
-        <link rel="stylesheet" href='{% static "assets/vendor/hover/hover.css" %}' />
-		<link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}' />
-        <link rel="stylesheet" href='{% static "assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" %}' />
-		<link rel="stylesheet" href='{% static "assets/vendor/pnotify/pnotify.custom.css" %}' />
-
-
-
-        <!-- Theme CSS -->
-        <link rel="stylesheet" href='{% static "assets/stylesheets/theme.css" %}' />
-
-        <!-- Skin CSS -->
-        <link rel="stylesheet" href='{% static "assets/stylesheets/skins/default.css" %}' />
-
-        <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href='{% static "assets/stylesheets/theme-custom.css" %}' >
-
-        <!-- Head Libs -->
-        <script src='{% static "assets/vendor/modernizr/modernizr.js" %}'></script>
-
-        <!--jquery setting -->
-        {% comment %}<script src='{% static "jquery/1.11.2/jquery-1.11.2.min.js" %}'></script>
-        <script src='{% static "cookie/1.4.1/jquery.cookie.js" %}'></script>{% endcomment %}
-
-        {% block script %}{% endblock %}
-
-	</head>
-
-    <body background="{%  static "assets/images/login_background.jpg"%}">
+    <link rel="stylesheet" href='{% static "assets/vendor/hover/hover.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" %}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/pnotify/pnotify.custom.css" %}'/>
 
 
-        <section class="body">
-			<!-- start: header -->
-			<header class="header">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href='{% static "assets/stylesheets/theme.css" %}'/>
 
-				<div class="logo-container">
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href='{% static "assets/stylesheets/skins/default.css" %}'/>
 
-					<a href="../manage" class="logo"></a>
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href='{% static "assets/stylesheets/theme-custom.css" %}'>
 
-					<a href="../../../../../manage" class="logo">
-						<img src='{%  static "assets/images/logo.png"%}' height="35" alt="Porto Admin" />
-					</a>
-					<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
-						<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
-					</div>
-				</div>
-			
-				<!-- start: search & user box -->
-				<div class="header-right">
+    <!-- Head Libs -->
+    <script src='{% static "assets/vendor/modernizr/modernizr.js" %}'></script>
 
-					<span class="separator"></span>
-			
-					<div id="userbox" class="userbox">
-                        <a href="#" >
-							<figure class="profile-picture">
-								<img src='{% static "assets/images/!logged-user.jpg"%}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg"%}' />
-							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
+    <!--jquery setting -->
+    {% comment %}{% endcomment %}
+
+    {% block script %}{% endblock %}
+
+</head>
+
+<body background="{%  static " assets
+/images/login_background.jpg"%}">
+
+
+<section class="body">
+    <!-- start: header -->
+    <header class="header">
+
+        <div class="logo-container">
+
+            <a href="../manage" class="logo"></a>
+
+            <a href="../../../../../manage" class="logo">
+                <img src='{%  static "assets/images/logo.png"%}' height="35" alt="Porto Admin"/>
+            </a>
+
+            <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+            </div>
+        </div>
+
+        <!-- start: search & user box -->
+        <div class="header-right">
+
+            <span class="separator"></span>
+
+            <div id="userbox" class="userbox">
+                <a href="#">
+                    <figure class="profile-picture">
+                        <img src='{% static "assets/images/!logged-user.jpg"%}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg"%}'/>
+                    </figure>
+                    <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
 								<span class="name">
                                     관리자님 환영합니다
                                 </span>
-							</div>
-			
-						</a>
-			
-					</div>
-				</div>
-				<!-- end: search & user box -->
+                    </div>
 
-			</header>
-			<!-- end: header -->
-
-			<div class="inner-wrapper">
-				<!-- start: sidebar -->
-				<aside id="sidebar-left" class="sidebar-left">
-				
-					<div class="sidebar-header">
-						<div class="sidebar-title">
-						<font color="white"> KMOOC - 관리시스템</font>
-						</div>
-						<div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
-							<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
-						</div>
-					</div>
-				
-					<div class="nano">
-						<div class="nano-content">
-							<nav id="menu" class="nav-main" role="navigation">
-								<ul class="nav nav-main">
-									<li class="nav nav-parent" id="stastic">
-										<a>
-											<i class="fa fa-bar-chart" aria-hidden="true"></i>
-											<span>통계</span>
-										</a>
-                                        <ul class="nav nav-children">
-                                            <li id="day_stastic">
-                                                <a href="/manage">
-                                                    일일/주간/월별 통계
-                                                </a>
-                                            </li>
-                                        </ul>
-									</li>
-                                    <!--
-                                    <li class="nav nav-parent" id="state">
-                                        <a>
-                                            <i class="fa fa-book" aria-hidden="true"></i>
-                                            <span>강좌현황</span>
-                                        </a>
-                                        <ul class="nav nav-children">
-                                            <li id="mana_state">
-                                                <a href="/manage/mana_state">
-                                                    운영 현황
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    -->
-                                    <li class="nav nav-parent" id="certificate">
-                                        <a>
-                                            <i class="fa fa-edit" aria-hidden="true"></i>
-                                            <span>이수증</span>
-                                        </a>
-                                        <ul class="nav nav-children">
-                                            <li id="uni_certificate">
-                                                <a href="/manage/uni_certificate">
-                                                    대학별 이수증 발급 현황
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <ul class="nav nav-children">
-                                            <li id="per_certificate">
-                                                <a href="/manage/per_certificate">
-                                                    사용자별 이수증 발급 현황
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-									<li class="nav nav-parent" id="community">
-										<a>
-											<i class="fa fa-bullhorn" aria-hidden="true"></i>
-											<span>게시판</span>
-										</a>
-                                        <ul class="nav nav-children">
-                                            <li id="comm_notice">
-                                                <a href="/manage/comm_notice">
-                                                    공지사항
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <ul class="nav nav-children">
-                                            <li id="comm_k_news">
-                                                <a href="/manage/comm_k_news">
-                                                    K-MOOC 소식
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <ul class="nav nav-children">
-                                            <li id="comm_faq">
-                                                <a href="/manage/comm_faq">
-                                                    Q&A
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <ul class="nav nav-children">
-                                            <li id="comm_faqrequest">
-                                                <a href="/manage/comm_faqrequest">
-                                                    Q&A 질문현황
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <ul class="nav nav-children">
-                                            <li id="comm_reference_room">
-                                                <a href="/manage/comm_reference_room">
-                                                    자료실
-                                                </a>
-                                            </li>
-                                        </ul>
-
-                                        <!-- 개발중 -->
-                                        <!--
-                                        -->
-                                        <ul class="nav nav-children">
-                                            <li id="comm_mobile">
-                                                <a href="/manage/comm_mobile">
-                                                    모바일
-                                                </a>
-                                            </li>
-                                        </ul>
-									</li>
-                                    <li class="nav nav-parent" id="monitoring">
-										<a>
-											<i class="fa fa-laptop" aria-hidden="true"></i>
-											<span>모니터링</span>
-										</a>
-                                        <ul class="nav nav-children">
-                                            <li id="moni_storage">
-                                                <a href="/manage/moni_storage">
-                                                    스토리지
-                                                </a>
-                                            </li>
-                                        </ul>
-									</li>
-
-
-                                    <!-- 로그 조회 기능 추가 예정 -->
-                                    <li class="nav nav-parent" id="history">
-										<a>
-											<i class="fa fa-history" aria-hidden="true"></i>
-											<span>개인정보조회</span>
-										</a>
-                                        <ul class="nav nav-children">
-                                            <li id="history_list">
-                                                <a href="/manage/history">
-                                                    접속이력
-                                                </a>
-                                            </li>
-                                        </ul>
-									</li>
-
-								</ul>
-							</nav>
-                            <script>
-                                // Preserve Scroll Position
-                                if (typeof localStorage !== 'undefined') {
-                                    if (localStorage.getItem('sidebar-left-position') !== null) {
-                                        var initialPosition = localStorage.getItem('sidebar-left-position'),
-                                            sidebarLeft = document.querySelector('#sidebar-left .nano-content');
-
-                                        sidebarLeft.scrollTop = initialPosition;
-                                    }
-                                }
-                            </script>
-				
-					    </div>
-				    </div>
-                </aside>
-                <!-- end: sidebar -->
-
-                <!-- start: containor -->
-                <section role="main" class="content-body">
-                    <header class="page-header">
-                        <h2 id="pagetitlename">{% block pagetitlename %}페이지 준비중입니다.{% endblock %}</h2>
-                        <div class="right-wrapper pull-right">
-							<ol class="breadcrumbs">
-								<li>
-									<a href="">
-										<i class="fa fa-home"></i>
-									</a>
-								</li>
-								<li>
-                                    <span>{% block pagetitlename_header %}페이지 준비중입니다.{% endblock %}&nbsp;&nbsp;</span>
-                                </li>
-							</ol>
-						</div>
-
-                    </header>
-
-                    {% block containor %}
-                        <div class="row">
-                            <div class="col-md-6 col-lg-12 col-xl-6">
-                                <section class="panel">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="panel-body">
-                                                <h2 class="panel-title">페이지 준비중입니다.</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        </div>
-                    {% endblock %}
-                </section>
-                <!-- end: containor -->
-
-
-                <!-- commom modal form : start -->
-                <div class="modal fade" id="modal" style="z-index: 9000">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Error!</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="modal-icon">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
-                                <div id="msg">
-
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-                                <!--button type="button" class="btn btn-primary">확인</button-->
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
-                <!-- commom modal form : end -->
+                </a>
 
             </div>
+        </div>
+        <!-- end: search & user box -->
 
-        </section>
+    </header>
+    <!-- end: header -->
 
-        <!-- Vendor -->
-        <script src='{% static "assets/vendor/jquery/jquery.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"%}' ></script>
-        <script src='{% static "assets/vendor/bootstrap/js/bootstrap.js"%}' ></script>
-        <script src='{% static "assets/vendor/nanoscroller/nanoscroller.js"%}' ></script>
-        <script src='{% static "assets/vendor/magnific-popup/jquery.magnific-popup.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery-placeholder/jquery-placeholder.js"%}' ></script>
+    <div class="inner-wrapper">
+        <!-- start: sidebar -->
+        <aside id="sidebar-left" class="sidebar-left">
 
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <font color="white"> KMOOC - 관리시스템</font>
+                </div>
+                <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+                    <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+            </div>
 
-        <!-- Specific Page Vendor -->
-        <script src='{% static "assets/vendor/jquery-ui/jquery-ui.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery-cookie/jquery-cookie.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqueryui-touch-punch/jqueryui-touch-punch.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery-appear/jquery-appear.js"%}' ></script>
-        <script src='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.js"%}' ></script>
-        <script src='{% static "assets/vendor/flot/jquery.flot.js"%}' ></script>
-        <script src='{% static "assets/vendor/flot.tooltip/flot.tooltip.js"%}' ></script>
-        <script src='{% static "assets/vendor/flot/jquery.flot.pie.js"%}' ></script>
-        <script src='{% static "assets/vendor/flot/jquery.flot.categories.js"%}' ></script>
-        <script src='{% static "assets/vendor/flot/jquery.flot.resize.js"%}' ></script>
-        <script src='{% static "assets/vendor/jquery-sparkline/jquery-sparkline.js"%}' ></script>
-        <script src='{% static "assets/vendor/raphael/raphael.js"%}' ></script>
-        <script src='{% static "assets/vendor/morris.js/morris.js"%}' ></script>
-        <script src='{% static "assets/vendor/gauge/gauge.js"%}' ></script>
-        <script src='{% static "assets/vendor/snap.svg/snap.svg.js"%}' ></script>
-        <script src='{% static "assets/vendor/liquid-meter/liquid.meter.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/jquery.vmap.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/data/jquery.vmap.sampledata.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/jquery.vmap.world.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"%}' ></script>
-        <script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"%}' ></script>
-        <script src='{% static "assets/vendor/bootstrap-timepicker/bootstrap-timepicker.js"%}'></script>
+            <div class="nano">
+                <div class="nano-content">
+                    <nav id="menu" class="nav-main" role="navigation">
+                        <ul class="nav nav-main">
+                            <li class="nav nav-parent" id="stastic">
+                                <a>
+                                    <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                    <span>통계</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="day_stastic">
+                                        <a href="/manage">
+                                            일일/주간/월별 통계
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--
+                            <li class="nav nav-parent" id="state">
+                                <a>
+                                    <i class="fa fa-book" aria-hidden="true"></i>
+                                    <span>강좌현황</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="mana_state">
+                                        <a href="/manage/mana_state">
+                                            운영 현황
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            -->
+                            <li class="nav nav-parent" id="certificate">
+                                <a>
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                    <span>이수증</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="uni_certificate">
+                                        <a href="/manage/uni_certificate">
+                                            대학별 이수증 발급 현황
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="per_certificate">
+                                        <a href="/manage/per_certificate">
+                                            사용자별 이수증 발급 현황
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="community">
+                                <a>
+                                    <i class="fa fa-bullhorn" aria-hidden="true"></i>
+                                    <span>게시판</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="comm_notice">
+                                        <a href="/manage/comm_notice">
+                                            공지사항
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="comm_k_news">
+                                        <a href="/manage/comm_k_news">
+                                            K-MOOC 소식
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="comm_faq">
+                                        <a href="/manage/comm_faq">
+                                            Q&A
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="comm_faqrequest">
+                                        <a href="/manage/comm_faqrequest">
+                                            Q&A 질문현황
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="comm_reference_room">
+                                        <a href="/manage/comm_reference_room">
+                                            자료실
+                                        </a>
+                                    </li>
+                                </ul>
 
-        <script src='{% static "assets/vendor/jquery-validation/jquery.validate.js" %}'></script>
-        <script src='{% static "assets/vendor/select2/js/select2.js" %}'></script>
-		<script src='{% static "assets/vendor/jquery-datatables/media/js/jquery.dataTables.js" %}'></script>
-		<script src='{% static "assets/vendor/jquery-datatables-bs3/assets/js/datatables.js" %}'></script>
-        <script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.js" %}'></script>
-        <script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.rowReorder.js" %}'></script>
-
-
-
-        <script src='{% static "assets/vendor/codemirror/lib/codemirror.js" %}'></script>
-        <script src='{% static "assets/vendor/summernote/summernote.js" %}'></script>
-        <script src='{% static "assets/vendor/summernote/lang/summernote-ko-KR.js" %}'></script>
-
-
-
-        <script src='{% static "assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js" %}'></script>
-        <script src='{% static "assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js" %}'></script>
-		<script src='{% static "assets/vendor/pnotify/pnotify.custom.js" %}'></script>
-
-        <script src='{% static "assets/javascripts/jquery.twbsPagination.js" %}'></script>
-
-
-        <!-- Theme Base, Components and Settings -->
-        <script src='{% static "assets/javascripts/theme.js"%}' ></script>
-
-
-        <!-- Theme Custom -->
-        <script src='{% static "assets/javascripts/theme.custom.js"%}' ></script>
-
-        <!-- Theme Initialization Files -->
-        <script src='{% static "assets/javascripts/theme.init.js"%}' ></script>
-
-        {% block script_down %}{% endblock %}
-
-        {% block contents %}{% endblock %}
-        <script>
-            // Toggle
-            (function($) {
-                /*  */
-                $('ul.nav.nav-main li').mouseover(function(e){
-                    //alert($(this).find('span').text());
-                    $(this).addClass('nav-active');
-                });
-                $('ul.nav.nav-main li').mouseleave(function(e){
-                    //alert($(this).find('span').text());
-                    $(this).removeClass('nav-active');
-                    setactivesidebar('none');
-                });
-                //alert($('#pagetitlename').text());
-
-                function setactivesidebar(is_expanded){
-                    var pagetitlename = $('#pagetitlename').text();
-                    console.log('pagetitlename: ' + pagetitlename);
-
-
-                    switch (pagetitlename){
-                        case '일일 / 주간 / 월별 통계':
-                            if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
-                            $('#stastic').addClass('nav-active');
-                            $('#day_stastic').addClass('nav-active');
-                            break;
-                        case '운영 현황':
-                            if (is_expanded != 'none') $('#state').addClass('nav-expanded');
-                            $('#state').addClass('nav-active');
-                            $('#mana_state').addClass('nav-active');
-                            break;
-                        case '개발 현황':
-                            if (is_expanded != 'none') $('#state').addClass('nav-expanded');
-                            $('#state').addClass('nav-active');
-                            $('#dev_state').addClass('nav-active');
-                            break;
-                        case '이수증 생성':
-                            if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                            $('#certificate').addClass('nav-active');
-                            $('#create_certificate').addClass('nav-active');
-                            break;
-                        case '대학별 이수증 발급 현황':
-                            if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                            $('#certificate').addClass('nav-active');
-                            $('#uni_certificate').addClass('nav-active');
-                            break;
-                        case '사용자별 이수증 발급 현황':
-                            if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                            $('#certificate').addClass('nav-active');
-                            $('#per_certificate').addClass('nav-active');
-                            break;
-                        case '공지사항':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_notice').addClass('nav-active');
-                            break;
-                        case 'K-MOOC 소식':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_k_news').addClass('nav-active');
-                            break;
-                        case 'Q&A':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_faq').addClass('nav-active');
-                            break;
-                        case 'Q&A 질문현황':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_faqrequest').addClass('nav-active');
-                            break;
-                        case '자료실':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_reference_room').addClass('nav-active');
-                            break;
-                        case '모바일':
-                            if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                            $('#community').addClass('nav-active');
-                            $('#comm_mobile').addClass('nav-active');
-                            break;
-                        case '스토리지':
-                            if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
-                            $('#monitoring').addClass('nav-active');
-                            $('#moni_storage').addClass('nav-active');
-                            break;
-                        case '개인정보조회':
-                            if (is_expanded != 'none') $('#history').addClass('nav-expanded');
-                            $('#history').addClass('nav-active');
-                            $('#history_list').addClass('nav-active');
-                            break;
-                    }
-                }
-                setactivesidebar('');
-            }).apply(this, [jQuery]);
+                                <!-- 개발중 -->
+                                <!--
+                                -->
+                                <ul class="nav nav-children">
+                                    <li id="comm_mobile">
+                                        <a href="/manage/comm_mobile">
+                                            모바일
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="monitoring">
+                                <a>
+                                    <i class="fa fa-laptop" aria-hidden="true"></i>
+                                    <span>모니터링</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="moni_storage">
+                                        <a href="/manage/moni_storage">
+                                            스토리지
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
 
-            //파일 다운로드 처리
-            function file_download(attach_id) {
-                $.post("/manage/file_download/", {
-                    csrfmiddlewaretoken: $.cookie('csrftoken'),
-                    attach_id: attach_id
-                }, function (data) {
+                            <!-- 로그 조회 기능 추가 예정 -->
+                            <li class="nav nav-parent" id="history">
+                                <a>
+                                    <i class="fa fa-history" aria-hidden="true"></i>
+                                    <span>개인정보조회</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="history_list">
+                                        <a href="/manage/history">
+                                            접속이력
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                }, "json");
-            };
+                        </ul>
+                    </nav>
+                    <script>
+                        // Preserve Scroll Position
+                        if (typeof localStorage !== 'undefined') {
+                            if (localStorage.getItem('sidebar-left-position') !== null) {
+                                var initialPosition = localStorage.getItem('sidebar-left-position'),
+                                        sidebarLeft = document.querySelector('#sidebar-left .nano-content');
 
-
-            //파일 삭제 처리
-            function file_delete(attach_id) {
-                if (confirm('파일을 삭제 하시겠습니까?')) {
-                    $.post("/manage/file_delete/", {
-                        csrfmiddlewaretoken: $.cookie('csrftoken'),
-                        attach_id: attach_id
-                    }, function (data) {
-                        if (data.result == 1) {
-                            $("#" + attach_id).parent().remove();
+                                sidebarLeft.scrollTop = initialPosition;
+                            }
                         }
-                    }, "json");
+                    </script>
+
+                </div>
+            </div>
+        </aside>
+        <!-- end: sidebar -->
+
+        <!-- start: containor -->
+        <section role="main" class="content-body">
+            <header class="page-header">
+                <h2 id="pagetitlename">{% block pagetitlename %}페이지 준비중입니다.{% endblock %}</h2>
+
+                <div class="right-wrapper pull-right">
+                    <ol class="breadcrumbs">
+                        <li>
+                            <a href="">
+                                <i class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <span>{% block pagetitlename_header %}페이지 준비중입니다.{% endblock %}&nbsp;&nbsp;</span>
+                        </li>
+                    </ol>
+                </div>
+
+            </header>
+
+            {% block containor %}
+            <div class="row">
+                <div class="col-md-6 col-lg-12 col-xl-6">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="panel-body">
+                                    <h2 class="panel-title">페이지 준비중입니다.</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            {% endblock %}
+        </section>
+        <!-- end: containor -->
+
+
+        <!-- commom modal form : start -->
+        <div class="modal fade" id="modal" style="z-index: 9000">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Error!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-icon">
+                            <i class="fa fa-question-circle"></i>
+                        </div>
+                        <div id="msg">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                        <!--button type="button" class="btn btn-primary">확인</button-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- commom modal form : end -->
+
+    </div>
+
+</section>
+
+<!-- Vendor -->
+<script src='{% static "assets/vendor/jquery/jquery.js"%}'></script>
+<script src='{% static "assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"%}'></script>
+<script src='{% static "assets/vendor/bootstrap/js/bootstrap.js"%}'></script>
+<script src='{% static "assets/vendor/nanoscroller/nanoscroller.js"%}'></script>
+<script src='{% static "assets/vendor/magnific-popup/jquery.magnific-popup.js"%}'></script>
+<script src='{% static "assets/vendor/jquery-placeholder/jquery-placeholder.js"%}'></script>
+
+
+<!-- Specific Page Vendor -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src='{% static "assets/vendor/jquery-cookie/jquery-cookie.js"%}'></script>
+<script src='{% static "assets/vendor/jqueryui-touch-punch/jqueryui-touch-punch.js"%}'></script>
+<script src='{% static "assets/vendor/jquery-appear/jquery-appear.js"%}'></script>
+<script src='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"%}'></script>
+<script src='{% static "assets/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.js"%}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.js"%}'></script>
+<script src='{% static "assets/vendor/flot.tooltip/flot.tooltip.js"%}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.pie.js"%}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.categories.js"%}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.resize.js"%}'></script>
+<script src='{% static "assets/vendor/jquery-sparkline/jquery-sparkline.js"%}'></script>
+<script src='{% static "assets/vendor/raphael/raphael.js"%}'></script>
+<script src='{% static "assets/vendor/morris.js/morris.js"%}'></script>
+<script src='{% static "assets/vendor/gauge/gauge.js"%}'></script>
+<script src='{% static "assets/vendor/snap.svg/snap.svg.js"%}'></script>
+<script src='{% static "assets/vendor/liquid-meter/liquid.meter.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/jquery.vmap.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/data/jquery.vmap.sampledata.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/jquery.vmap.world.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"%}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"%}'></script>
+<script src='{% static "assets/vendor/bootstrap-timepicker/bootstrap-timepicker.js"%}'></script>
+
+<script src='{% static "assets/vendor/jquery-validation/jquery.validate.js" %}'></script>
+<script src='{% static "assets/vendor/select2/js/select2.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-datatables/media/js/jquery.dataTables.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-datatables-bs3/assets/js/datatables.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.rowReorder.js" %}'></script>
+
+
+<script src='{% static "assets/vendor/codemirror/lib/codemirror.js" %}'></script>
+<script src='{% static "assets/vendor/summernote/summernote.js" %}'></script>
+<script src='{% static "assets/vendor/summernote/lang/summernote-ko-KR.js" %}'></script>
+
+
+<script src='{% static "assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js" %}'></script>
+<script src='{% static "assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js" %}'></script>
+<script src='{% static "assets/vendor/pnotify/pnotify.custom.js" %}'></script>
+
+<script src='{% static "assets/javascripts/jquery.twbsPagination.js" %}'></script>
+
+
+<!-- Theme Base, Components and Settings -->
+<script src='{% static "assets/javascripts/theme.js"%}'></script>
+
+
+<!-- Theme Custom -->
+<script src='{% static "assets/javascripts/theme.custom.js"%}'></script>
+
+<!-- Theme Initialization Files -->
+<script src='{% static "assets/javascripts/theme.init.js"%}'></script>
+
+{% block script_down %}{% endblock %}
+
+{% block contents %}{% endblock %}
+<script>
+    // Toggle
+    (function ($) {
+        /*  */
+        $('ul.nav.nav-main li').mouseover(function (e) {
+            //alert($(this).find('span').text());
+            $(this).addClass('nav-active');
+        });
+        $('ul.nav.nav-main li').mouseleave(function (e) {
+            //alert($(this).find('span').text());
+            $(this).removeClass('nav-active');
+            setactivesidebar('none');
+        });
+        //alert($('#pagetitlename').text());
+
+        function setactivesidebar(is_expanded) {
+            var pagetitlename = $('#pagetitlename').text();
+            console.log('pagetitlename: ' + pagetitlename);
+
+
+            switch (pagetitlename) {
+                case '일일 / 주간 / 월별 통계':
+                    if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
+                    $('#stastic').addClass('nav-active');
+                    $('#day_stastic').addClass('nav-active');
+                    break;
+                case '운영 현황':
+                    if (is_expanded != 'none') $('#state').addClass('nav-expanded');
+                    $('#state').addClass('nav-active');
+                    $('#mana_state').addClass('nav-active');
+                    break;
+                case '개발 현황':
+                    if (is_expanded != 'none') $('#state').addClass('nav-expanded');
+                    $('#state').addClass('nav-active');
+                    $('#dev_state').addClass('nav-active');
+                    break;
+                case '이수증 생성':
+                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
+                    $('#certificate').addClass('nav-active');
+                    $('#create_certificate').addClass('nav-active');
+                    break;
+                case '대학별 이수증 발급 현황':
+                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
+                    $('#certificate').addClass('nav-active');
+                    $('#uni_certificate').addClass('nav-active');
+                    break;
+                case '사용자별 이수증 발급 현황':
+                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
+                    $('#certificate').addClass('nav-active');
+                    $('#per_certificate').addClass('nav-active');
+                    break;
+                case '공지사항':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_notice').addClass('nav-active');
+                    break;
+                case 'K-MOOC 소식':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_k_news').addClass('nav-active');
+                    break;
+                case 'Q&A':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_faq').addClass('nav-active');
+                    break;
+                case 'Q&A 질문현황':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_faqrequest').addClass('nav-active');
+                    break;
+                case '자료실':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_reference_room').addClass('nav-active');
+                    break;
+                case '모바일':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_mobile').addClass('nav-active');
+                    break;
+                case '스토리지':
+                    if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
+                    $('#monitoring').addClass('nav-active');
+                    $('#moni_storage').addClass('nav-active');
+                    break;
+                case '개인정보조회':
+                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
+                    $('#history').addClass('nav-active');
+                    $('#history_list').addClass('nav-active');
+                    break;
+            }
+        }
+
+        setactivesidebar('');
+    }).apply(this, [jQuery]);
+
+
+    //파일 다운로드 처리
+    function file_download(attach_id) {
+        $.post("/manage/file_download/", {
+            csrfmiddlewaretoken: $.cookie('csrftoken'),
+            attach_id: attach_id
+        }, function (data) {
+
+        }, "json");
+    }
+    ;
+
+
+    //파일 삭제 처리
+    function file_delete(attach_id) {
+        if (confirm('파일을 삭제 하시겠습니까?')) {
+            $.post("/manage/file_delete/", {
+                csrfmiddlewaretoken: $.cookie('csrftoken'),
+                attach_id: attach_id
+            }, function (data) {
+                if (data.result == 1) {
+                    $("#" + attach_id).parent().remove();
                 }
-            };
+            }, "json");
+        }
+    }
+    ;
 
 
-        </script>
+</script>
 
-	</body>
-    <iframe name="hidden_target" style="display: none;"></iframe>
+</body>
+<iframe name="hidden_target" style="display: none;"></iframe>
 </html>

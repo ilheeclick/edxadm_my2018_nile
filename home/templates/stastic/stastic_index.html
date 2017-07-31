@@ -1,9 +1,9 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}일일 / 주간 / 월별 통계{% endblock %}
 {% block pagetitlename_header %}일일 / 주간 / 월별 통계{% endblock %}
-{% block script %}
+{% block script %}{% endblock %}
+{% block script_down %}
 <script>
-
     var dateObj = new Date();
     var year = dateObj.getFullYear();
     var month = dateObj.getMonth() + 1;
@@ -21,8 +21,7 @@
         return (new Date((new Date(year, month + 1, 1)) - 1)).getDate();
     }
 
-    $(function () {
-
+    $(document).ready(function () {
         // calendar setting
         $("#datepicker").datepicker({
             minDate: new Date(2015, 10 - 1, 14),
