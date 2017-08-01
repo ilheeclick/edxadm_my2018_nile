@@ -1,5 +1,6 @@
 *.pyc
 *.xlsx
+*.back
 *.DS_Store
 *.xml
 *.txt
