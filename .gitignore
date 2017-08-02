@@ -1,6 +1,6 @@
-!base.xlsx
 *.pyc
 *.xlsx
+!base.xlsx
 *.back
 *.DS_Store
 *.xml
