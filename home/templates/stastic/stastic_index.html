@@ -1,6 +1,6 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}일일 / 주간 / 월별 통계{% endblock %}
-{% block pagetitlename_header %}일일 / 주간 / 월별 통계{% endblock %}
+{% block pagetitlename %}일일 통계{% endblock %}
+{% block pagetitlename_header %}일일 통계{% endblock %}
 {% block script %}{% endblock %}
 {% block script_down %}
 <script>
@@ -153,7 +153,7 @@
 
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">일일 / 주간 / 월별 통계</h2></div>
+        <div><h2 class="panel-title">일일 통계</h2></div>
     </header>
     <div class="panel-body">
         <form class="form-inline">
@@ -166,6 +166,7 @@
                 vertical-align: middle;"/></a>
 
 
+            <!--
             <br><br>
 
             <div class="form-group">
@@ -185,6 +186,8 @@
             <a class="btn btn-default" id="month_down">다운로드</a>
             <a href="#" id="download_month"><span id="downloadBtn_month" style="display: none;">download</span><img id="img_month" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
                 vertical-align: middle;"/></a>
+
+            -->
 
         </form>
     </div>

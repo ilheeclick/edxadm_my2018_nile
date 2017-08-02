@@ -212,21 +212,31 @@ def statistics_excel(request, date):
         client = MongoClient(database_id, 27017)
         db = client.edxapp
         course_orgs = {}
-        course_names = {}
-        course_creates = {}
-        course_starts = {}
-        course_ends = {}
-        course_enroll_starts = {}
-        course_enroll_ends = {}
         course_classfys = {}
         course_middle_classfys = {}
+        course_names = {}
+        course_creates = {}
+        course_enroll_starts = {}
+        course_enroll_ends = {}
+        course_starts = {}
+        course_ends = {}
+        course_edited = {}
+
+        course_effort = {}
+        course_video = {}
+        course_week = {}
+        course_cert_date = {}
 
         print 'step1 : course_info search'
 
         for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
             print course_id, org, display_name, start, end, enrollment_start, enrollment_end
+
             cid = course_id.split('+')[1]
             run = course_id.split('+')[2]
+
+            if cert_date:
+                course_cert_date[course_id] = cert_date
 
             cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
             if not cursor:
@@ -238,11 +248,12 @@ def statistics_excel(request, date):
             course_orgs[course_id] = cursor.get('org')
             course_creates[course_id] = cursor.get('edited_on')
 
-            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)},
-                                                        {"blocks": {"$elemMatch": {"block_type": "course"}}})
+            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)}, {"blocks": {"$elemMatch": {"block_type": "course"}}})
 
             _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
             _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+
+            _course_edited = cursor.get('blocks')[0].get('edit_info').get('edited_on')  # middle_classfy
 
             if start is not None:
                 course_starts[course_id] = start
@@ -265,15 +276,25 @@ def statistics_excel(request, date):
             if _mclassfy is not None and _mclassfy != 'all':
                 course_middle_classfys[course_id] = middle_classfy[_mclassfy] if _mclassfy in middle_classfy else _mclassfy
 
+            if _course_edited is not None:
+                course_edited[course_id] = _course_edited
+
+            if effort:
+                course_effort[course_id] = effort.split('@')[0] if effort and '@' in effort else '-'
+                course_week[course_id] = effort.split('@')[1].split('#')[0] if effort and '@' in effort and '#' in effort else '-'
+                course_video[course_id] = effort.split('#')[1] if effort and '#' in effort else '-'
+
         print 'step2 : mysql search'
 
         # 요약
         auth_user_info = statistics_query.auth_user_info(date)
         student_courseenrollment_info = statistics_query.student_courseenrollment_info(date)
+        certificate_info = statistics_query.overall_only_cert(date)
 
         # 회원가입/수강신청 세부사항
         overall_auth = statistics_query.overall_auth(date)
         overall_enroll = statistics_query.overall_enroll(date)
+        overall_cert = statistics_query.overall_cert(date)
 
         # 연령구분
         age_new = statistics_query.age_new(date)
@@ -290,7 +311,7 @@ def statistics_excel(request, date):
         wb = load_workbook(EXCEL_PATH + 'base.xlsx')
 
         ws1 = wb['overall']
-        ws2 = wb['by_course_enroll']
+        ws2 = wb['by_course_KPI']
         ws3 = wb['by_course_demographic']
 
         # excel style
@@ -303,40 +324,62 @@ def statistics_excel(request, date):
         al = Alignment(horizontal="center", vertical="center")
 
         # sheet1
+
+        # 요약
         style_range(ws1, 'B2:C2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'D2:E2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'F2:G2', border=thin_border, fill=fill, font=font, alignment=al)
 
+        # 세부사항
         style_range(ws1, 'B7:C8', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'D7:F7', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G7:I7', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'B9:B10', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'B11:B12', border=thin_border, fill=fill, font=font, alignment=al)
-
-        style_range(ws1, 'C16:F16', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G16:J16', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'D7:E7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'F7:G7', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B9:B12', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B13:B15', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'B16:B17', border=thin_border, fill=fill, font=font, alignment=al)
 
-        style_range(ws1, 'B27:B28', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C27:F27', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G27:J27', border=thin_border, fill=fill, font=font, alignment=al)
+        # 연령구분
+        style_range(ws1, 'B20:B21', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C20:F20', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G20:J20', border=thin_border, fill=fill, font=font, alignment=al)
 
-        style_range(ws1, 'B41:B42', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C41:L41', border=thin_border, fill=fill, font=font, alignment=al)
+        # 학력구분
+        style_range(ws1, 'B31:B32', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C31:F31', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G31:J31', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # 연령별 학력
+        style_range(ws1, 'B45:B46', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C45:L45', border=thin_border, fill=fill, font=font, alignment=al)
 
         # sheet2
-        style_range(ws2, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'L1:P1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'L2:M2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'N2:O2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'P2:P3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'K1:Q2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R1:V1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'R2:S2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'T2:U2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'W1:X2', border=thin_border, fill=fill, font=font, alignment=al)
 
         # sheet3
-        style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'L1:AD1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'L2:N2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'O2:T2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'U2:AC2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AD2:AD3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'K1:AC1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AD1:AV1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AW1:BO1', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws3, 'K2:M2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'N2:S2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'T2:AB2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AC2:AC3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws3, 'AD2:AF2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AG2:AL2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AM2:AU2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AV2:AV3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws3, 'AW2:AY2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'AZ2:BE2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'BF2:BN2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'BO2:BO3', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 가입현황
         # logger.info('가입현황')
@@ -344,37 +387,56 @@ def statistics_excel(request, date):
         ws1['C4'] = auth_user_info[0][1]
         ws1['D4'] = student_courseenrollment_info[0][0]
         ws1['E4'] = student_courseenrollment_info[0][1]
+        ws1['F4'] = certificate_info[0][1]
+        ws1['G4'] = certificate_info[0][1]
 
         # 회원가입 / 수강신청 세부사항
         # logger.info('수강신청구분')
-        ws1['D10'] = overall_auth[0][0]
+        ws1['E9'] = overall_auth[0][0]
         ws1['E10'] = overall_auth[0][1]
-        ws1['D12'] = overall_auth[0][2]
-        ws1['E12'] = overall_auth[0][3]
+        ws1['E12'] = overall_auth[0][2]
+        ws1['G9'] = overall_auth[0][3]
+        ws1['G10'] = overall_auth[0][4]
+        ws1['G12'] = overall_auth[0][5]
 
-        #: 수강신청 건
-        ws1['G9'] = overall_enroll[0][0]
-        ws1['H9'] = overall_enroll[0][1]
-        ws1['G11'] = overall_enroll[0][2]
-        ws1['H11'] = overall_enroll[0][3]
+        #: 수강신청
+        ws1['D13'] = overall_enroll[0][0]
+        ws1['D14'] = overall_enroll[0][1]
+        ws1['E13'] = overall_enroll[0][2]
+        ws1['E14'] = overall_enroll[0][3]
+        ws1['F13'] = overall_enroll[0][4]
+        ws1['F14'] = overall_enroll[0][5]
+        ws1['G13'] = overall_enroll[0][6]
+        ws1['G14'] = overall_enroll[0][7]
 
-        #: 수강신청 인원
-        ws1['G10'] = overall_enroll[0][4]
-        ws1['H10'] = overall_enroll[0][5]
-        ws1['G12'] = overall_enroll[0][6]
-        ws1['H12'] = overall_enroll[0][7]
+        #: 이수
+        ws1['D16'] = overall_cert[0][0]
+        ws1['D17'] = overall_cert[0][1]
+        ws1['E16'] = overall_cert[0][2]
+        ws1['E17'] = overall_cert[0][3]
+        ws1['F16'] = overall_cert[0][4]
+        ws1['F17'] = overall_cert[0][5]
+        ws1['G16'] = overall_cert[0][6]
+        ws1['G17'] = overall_cert[0][7]
 
         # 연령구분
+
         # logger.info('연령구분')
-        start_row = 18
+
+        start_row = 22
+
         print 'len(age_new):', len(age_new)
+
         for male, female, etc in age_new:
             ws1['C' + str(start_row)] = male
+
             ws1['D' + str(start_row)] = female
+
             ws1['E' + str(start_row)] = etc
+
             start_row += 1
 
-        start_row = 18
+        start_row = 22
         print 'len(age_total):', len(age_total)
         for male, female, etc in age_total:
             ws1['G' + str(start_row)] = male
@@ -385,7 +447,7 @@ def statistics_excel(request, date):
         # 학력구분
         # logger.info('학력구분')
         print 'step5: edu gubn '
-        start_row = 29
+        start_row = 33
         print 'len(edu_new):', len(edu_new)
         for male, female, etc in edu_new:
             ws1['C' + str(start_row)] = male
@@ -393,7 +455,7 @@ def statistics_excel(request, date):
             ws1['E' + str(start_row)] = etc
             start_row += 1
 
-        start_row = 29
+        start_row = 33
         print 'len(edu_total):', len(edu_total)
         for male, female, etc in edu_total:
             ws1['G' + str(start_row)] = male
@@ -403,7 +465,7 @@ def statistics_excel(request, date):
 
         # 연령별 학력
         print 'step6: age + edu gubn '
-        start_row = 43
+        start_row = 47
         print 'len(age_edu):', len(age_edu)
         for a, b, c, d, e, f, g, h, i in age_edu:
             ws1['C' + str(start_row)] = a
@@ -417,73 +479,59 @@ def statistics_excel(request, date):
             ws1['K' + str(start_row)] = i
             start_row += 1
 
-        # by_course_enroll
-        print 's -----------------------------------------------------'
+        #: SHEET 2
+        # by_course_KPI
 
         sortlist = list()
         by_course_enroll = statistics_query.by_course_enroll(date)
-        for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll:
+        for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt in by_course_enroll:
             row = tuple()
-            row = row + (get_value_from_dict(dic_univ, org),)
-            row = row + (get_value_from_dict(course_classfys, course_id, ''),)
-            row = row + (get_value_from_dict(course_middle_classfys, course_id, ''),)
-            row = row + (get_value_from_dict(course_names, course_id),)
-            row = row + (course_id.split('+')[1],)
-            row = row + (course_id.split('+')[2],)
-            row = row + (get_value_from_dict(course_creates, course_id),)
-            row = row + (get_value_from_dict(course_enroll_starts, course_id),)
-            row = row + (get_value_from_dict(course_enroll_ends, course_id),)
-            row = row + (get_value_from_dict(course_starts, course_id),)
-            row = row + (get_value_from_dict(course_ends, course_id),)
-            row = row + (new_enroll_cnt,)
-            row = row + (new_unenroll_cnt,)
-            row = row + (all_enroll_cnt,)
-            row = row + (all_unenroll_cnt,)
-            if all_enroll_cnt is None or all_unenroll_cnt is None:
-                row = row + ('-',)
-            else:
-                row = row + (all_enroll_cnt - all_unenroll_cnt,)
+            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(course_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
+            row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_week, course_id),)
+            row += (org,)
+            row += (course_id.split('+')[1],)
+            row += (course_id.split('+')[2],)
+
+            row += ('이수증발급' if course_id in course_cert_date else '',)
+            row += (get_value_from_dict(course_creates, course_id),)
+            row += (get_value_from_dict(course_enroll_starts, course_id),)
+            row += (get_value_from_dict(course_enroll_ends, course_id),)
+            row += (get_value_from_dict(course_starts, course_id),)
+            row += (get_value_from_dict(course_ends, course_id),)
+            row += (get_value_from_dict(course_cert_date, course_id, ''),)
+            row += (new_enroll_cnt,)
+            row += (new_unenroll_cnt,)
+            row += (all_enroll_cnt,)
+            row += (all_unenroll_cnt,)
+            row += (all_enroll_cnt - all_unenroll_cnt,)
+
+            # over 50% cert target
+            row += (half_cnt if course_id in course_cert_date else '',)
+            # certed target
+            row += (cert_cnt if course_id in course_cert_date else '',)
+            # course update date
+            row += (get_value_from_dict(course_edited, course_id),)
+
             sortlist.append(row)
 
         sortlist.sort(key=itemgetter(0, 4, 5))
 
         start_row = 4
         for course_info in sortlist:
+            print 'course_info --- s'
             print course_info
-            ws2['A' + str(start_row)] = course_info[0]
-            ws2['B' + str(start_row)] = course_info[1]
-            ws2['C' + str(start_row)] = course_info[2]
-            ws2['D' + str(start_row)] = course_info[3]
-            ws2['E' + str(start_row)] = course_info[4]
-            ws2['F' + str(start_row)] = course_info[5]
-            ws2['G' + str(start_row)] = course_info[6]
-            ws2['H' + str(start_row)] = course_info[7]
-            ws2['I' + str(start_row)] = course_info[8]
-            ws2['J' + str(start_row)] = course_info[9]
-            ws2['K' + str(start_row)] = course_info[10]
-            ws2['L' + str(start_row)] = course_info[11]
-            ws2['M' + str(start_row)] = course_info[12]
-            ws2['N' + str(start_row)] = course_info[13]
-            ws2['O' + str(start_row)] = course_info[14]
-            ws2['P' + str(start_row)] = course_info[15]
+            print 'course_info --- e'
 
-            style_base(ws2['A' + str(start_row)])
-            style_base(ws2['B' + str(start_row)])
-            style_base(ws2['C' + str(start_row)])
-            style_base(ws2['D' + str(start_row)])
-            style_base(ws2['E' + str(start_row)])
-            style_base(ws2['F' + str(start_row)])
-            style_base(ws2['G' + str(start_row)])
-            style_base(ws2['H' + str(start_row)])
-            style_base(ws2['I' + str(start_row)])
-            style_base(ws2['J' + str(start_row)])
-            style_base(ws2['K' + str(start_row)])
-            style_base(ws2['L' + str(start_row)])
-            style_base(ws2['M' + str(start_row)])
-            style_base(ws2['N' + str(start_row)])
-            style_base(ws2['O' + str(start_row)])
-            style_base(ws2['P' + str(start_row)])
-
+            start_char = 65
+            for idx in range(0, len(course_info)):
+                ws2[chr(start_char) + str(start_row)] = course_info[idx]
+                style_base(ws2[chr(start_char) + str(start_row)])
+                start_char += 1
             start_row += 1
 
         print 'e -----------------------------------------------------'
@@ -492,106 +540,115 @@ def statistics_excel(request, date):
 
         sortlist = list()
         by_course_demographic = statistics_query.by_course_demographics(date)
-        for course_id, org, male, female, etc, age1, age2, age3, age4, age5, age6, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9, allcnt in by_course_demographic:
+        for course_id, org, \
+            male_1, female_1, etc_1, age1_1, age2_1, age3_1, age4_1, age5_1, age6_1, edu1_1, edu2_1, edu3_1, edu4_1, edu5_1, edu6_1, edu7_1, edu8_1, edu9_1, allcnt_1, \
+            male_2, female_2, etc_2, age1_2, age2_2, age3_2, age4_2, age5_2, age6_2, edu1_2, edu2_2, edu3_2, edu4_2, edu5_2, edu6_2, edu7_2, edu8_2, edu9_2, allcnt_2, \
+            male_3, female_3, etc_3, age1_3, age2_3, age3_3, age4_3, age5_3, age6_3, edu1_3, edu2_3, edu3_3, edu4_3, edu5_3, edu6_3, edu7_3, edu8_3, edu9_3, allcnt_3 \
+                in by_course_demographic:
             row = tuple()
-            row = row + (dic_univ[org] if org in dic_univ else org,)
-            row = row + (get_value_from_dict(course_classfys, course_id, ''),)
-            row = row + (get_value_from_dict(course_middle_classfys, course_id, ''),)
-            row = row + (get_value_from_dict(course_names, course_id),)
-            row = row + (course_id.split('+')[1],)
-            row = row + (course_id.split('+')[2],)
-            row = row + (get_value_from_dict(course_creates, course_id),)
-            row = row + (get_value_from_dict(course_enroll_starts, course_id),)
-            row = row + (get_value_from_dict(course_enroll_ends, course_id),)
-            row = row + (get_value_from_dict(course_starts, course_id),)
-            row = row + (get_value_from_dict(course_ends, course_id),)
-            row = row + (male,)
-            row = row + (female,)
-            row = row + (etc,)
-            row = row + (age1,)
-            row = row + (age2,)
-            row = row + (age3,)
-            row = row + (age4,)
-            row = row + (age5,)
-            row = row + (age6,)
-            row = row + (edu1,)
-            row = row + (edu2,)
-            row = row + (edu3,)
-            row = row + (edu4,)
-            row = row + (edu5,)
-            row = row + (edu6,)
-            row = row + (edu7,)
-            row = row + (edu8,)
-            row = row + (edu9,)
-            row = row + (allcnt,)
+            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(course_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
+            row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_week, course_id),)
+            row += (org,)
+            row += (course_id.split('+')[1],)
+            row += (course_id.split('+')[2],)
+
+            row += (male_1,)
+            row += (female_1,)
+            row += (etc_1,)
+            row += (age1_1,)
+            row += (age2_1,)
+            row += (age3_1,)
+            row += (age4_1,)
+            row += (age5_1,)
+            row += (age6_1,)
+            row += (edu1_1,)
+            row += (edu2_1,)
+            row += (edu3_1,)
+            row += (edu4_1,)
+            row += (edu5_1,)
+            row += (edu6_1,)
+            row += (edu7_1,)
+            row += (edu8_1,)
+            row += (edu9_1,)
+            row += (allcnt_1,)
+
+            row += (male_2 if course_id in course_cert_date else '-',)
+            row += (female_2 if course_id in course_cert_date else '-',)
+            row += (etc_2 if course_id in course_cert_date else '-',)
+            row += (age1_2 if course_id in course_cert_date else '-',)
+            row += (age2_2 if course_id in course_cert_date else '-',)
+            row += (age3_2 if course_id in course_cert_date else '-',)
+            row += (age4_2 if course_id in course_cert_date else '-',)
+            row += (age5_2 if course_id in course_cert_date else '-',)
+            row += (age6_2 if course_id in course_cert_date else '-',)
+            row += (edu1_2 if course_id in course_cert_date else '-',)
+            row += (edu2_2 if course_id in course_cert_date else '-',)
+            row += (edu3_2 if course_id in course_cert_date else '-',)
+            row += (edu4_2 if course_id in course_cert_date else '-',)
+            row += (edu5_2 if course_id in course_cert_date else '-',)
+            row += (edu6_2 if course_id in course_cert_date else '-',)
+            row += (edu7_2 if course_id in course_cert_date else '-',)
+            row += (edu8_2 if course_id in course_cert_date else '-',)
+            row += (edu9_2 if course_id in course_cert_date else '-',)
+            row += (allcnt_2 if course_id in course_cert_date else '-',)
+
+            row += (male_3 if course_id in course_cert_date else '-',)
+            row += (female_3 if course_id in course_cert_date else '-',)
+            row += (etc_3 if course_id in course_cert_date else '-',)
+            row += (age1_3 if course_id in course_cert_date else '-',)
+            row += (age2_3 if course_id in course_cert_date else '-',)
+            row += (age3_3 if course_id in course_cert_date else '-',)
+            row += (age4_3 if course_id in course_cert_date else '-',)
+            row += (age5_3 if course_id in course_cert_date else '-',)
+            row += (age6_3 if course_id in course_cert_date else '-',)
+            row += (edu1_3 if course_id in course_cert_date else '-',)
+            row += (edu2_3 if course_id in course_cert_date else '-',)
+            row += (edu3_3 if course_id in course_cert_date else '-',)
+            row += (edu4_3 if course_id in course_cert_date else '-',)
+            row += (edu5_3 if course_id in course_cert_date else '-',)
+            row += (edu6_3 if course_id in course_cert_date else '-',)
+            row += (edu7_3 if course_id in course_cert_date else '-',)
+            row += (edu8_3 if course_id in course_cert_date else '-',)
+            row += (edu9_3 if course_id in course_cert_date else '-',)
+            row += (allcnt_3 if course_id in course_cert_date else '-',)
+
             sortlist.append(row)
 
         sortlist.sort(key=itemgetter(0, 4, 5))
 
         start_row = 4
         for course_info in sortlist:
-            print course_info
-            ws3['A' + str(start_row)] = course_info[0]
-            ws3['B' + str(start_row)] = course_info[1]
-            ws3['C' + str(start_row)] = course_info[2]
-            ws3['D' + str(start_row)] = course_info[3]
-            ws3['E' + str(start_row)] = course_info[4]
-            ws3['F' + str(start_row)] = course_info[5]
-            ws3['G' + str(start_row)] = course_info[6]
-            ws3['H' + str(start_row)] = course_info[7]
-            ws3['I' + str(start_row)] = course_info[8]
-            ws3['J' + str(start_row)] = course_info[9]
-            ws3['K' + str(start_row)] = course_info[10]
-            ws3['L' + str(start_row)] = course_info[11]
-            ws3['M' + str(start_row)] = course_info[12]
-            ws3['N' + str(start_row)] = course_info[13]
-            ws3['O' + str(start_row)] = course_info[14]
-            ws3['P' + str(start_row)] = course_info[15]
-            ws3['Q' + str(start_row)] = course_info[16]
-            ws3['R' + str(start_row)] = course_info[17]
-            ws3['S' + str(start_row)] = course_info[18]
-            ws3['T' + str(start_row)] = course_info[19]
-            ws3['U' + str(start_row)] = course_info[20]
-            ws3['V' + str(start_row)] = course_info[21]
-            ws3['W' + str(start_row)] = course_info[22]
-            ws3['X' + str(start_row)] = course_info[23]
-            ws3['Y' + str(start_row)] = course_info[24]
-            ws3['Z' + str(start_row)] = course_info[25]
-            ws3['AA' + str(start_row)] = course_info[26]
-            ws3['AB' + str(start_row)] = course_info[27]
-            ws3['AC' + str(start_row)] = course_info[28]
-            ws3['AD' + str(start_row)] = course_info[29]
+            print len(course_info), course_info
 
-            style_base(ws3['A' + str(start_row)])
-            style_base(ws3['B' + str(start_row)])
-            style_base(ws3['C' + str(start_row)])
-            style_base(ws3['D' + str(start_row)])
-            style_base(ws3['E' + str(start_row)])
-            style_base(ws3['F' + str(start_row)])
-            style_base(ws3['G' + str(start_row)])
-            style_base(ws3['H' + str(start_row)])
-            style_base(ws3['I' + str(start_row)])
-            style_base(ws3['J' + str(start_row)])
-            style_base(ws3['K' + str(start_row)])
-            style_base(ws3['L' + str(start_row)])
-            style_base(ws3['M' + str(start_row)])
-            style_base(ws3['N' + str(start_row)])
-            style_base(ws3['O' + str(start_row)])
-            style_base(ws3['P' + str(start_row)])
-            style_base(ws3['Q' + str(start_row)])
-            style_base(ws3['R' + str(start_row)])
-            style_base(ws3['S' + str(start_row)])
-            style_base(ws3['T' + str(start_row)])
-            style_base(ws3['U' + str(start_row)])
-            style_base(ws3['V' + str(start_row)])
-            style_base(ws3['W' + str(start_row)])
-            style_base(ws3['X' + str(start_row)])
-            style_base(ws3['Y' + str(start_row)])
-            style_base(ws3['Z' + str(start_row)])
-            style_base(ws3['AA' + str(start_row)])
-            style_base(ws3['AB' + str(start_row)])
-            style_base(ws3['AC' + str(start_row)])
-            style_base(ws3['AD' + str(start_row)])
+            start_char = 65
+            for idx in range(0, len(course_info)):
+                if start_char > 116:
+                    print 'type3:', start_char - 52, idx, 'B' + chr(start_char - 52) + str(start_row)
+
+                    ws3['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
+                    style_base(ws3['B' + chr(start_char - 52) + str(start_row)])
+
+                    start_char += 1
+                elif start_char > 90:
+                    print 'type2:', start_char - 26, idx, 'A' + chr(start_char - 26) + str(start_row)
+
+                    ws3['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
+                    style_base(ws3['A' + chr(start_char - 26) + str(start_row)])
+
+                    start_char += 1
+                else:
+                    print 'type1:', start_char, idx, chr(start_char) + str(start_row)
+
+                    ws3[chr(start_char) + str(start_row)] = course_info[idx]
+                    style_base(ws3[chr(start_char) + str(start_row)])
+
+                    start_char += 1
+                    # print 'case2:',  chr(start_char) + str(start_row)
 
             start_row += 1
 
@@ -599,6 +656,7 @@ def statistics_excel(request, date):
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
+"""
 # 주간통계 : week
 def statistics_excel_week(request, date):
     print 'run statistics_excel_week'
@@ -815,49 +873,49 @@ def statistics_excel_week(request, date):
 
             row = tuple()
             for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll_week:
-                row = row + (dic_univ[org] if org in dic_univ else org,)
-                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
-                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
-                row = row + (course_names[course_id],)
+                row += (dic_univ[org] if org in dic_univ else org,)
+                row += (course_classfys[course_id] if course_id in course_classfys else '',)
+                row += (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row += (course_names[course_id],)
 
                 # 주간 학습 권장시간
-                row = row + (course_effort[course_id],)
+                row += (course_effort[course_id],)
                 # 총 동영상 재생시간
-                row = row + (course_video[course_id],)
+                row += (course_video[course_id],)
                 # 총 주차
-                row = row + (course_week[course_id],)
+                row += (course_week[course_id],)
 
-                row = row + (org,)
-                row = row + (course_id.split('+')[1],)
-                row = row + (course_id.split('+')[2],)
-                row = row + (course_status[course_id],)
-                row = row + (course_creates[course_id],)
-                row = row + (course_enroll_starts[course_id],)
-                row = row + (course_enroll_ends[course_id],)
-                row = row + (course_starts[course_id],)
-                row = row + (course_ends[course_id],)
-                row = row + (course_cert[course_id],)
-                row = row + (new_enroll_cnt,)
-                row = row + (new_unenroll_cnt,)
-                row = row + (all_enroll_cnt,)
-                row = row + (all_unenroll_cnt,)
+                row += (org,)
+                row += (course_id.split('+')[1],)
+                row += (course_id.split('+')[2],)
+                row += (course_status[course_id],)
+                row += (course_creates[course_id],)
+                row += (course_enroll_starts[course_id],)
+                row += (course_enroll_ends[course_id],)
+                row += (course_starts[course_id],)
+                row += (course_ends[course_id],)
+                row += (course_cert[course_id],)
+                row += (new_enroll_cnt,)
+                row += (new_unenroll_cnt,)
+                row += (all_enroll_cnt,)
+                row += (all_unenroll_cnt,)
 
                 if all_enroll_cnt is None or all_unenroll_cnt is None:
-                    row = row + ('-',)
+                    row += ('-',)
                 else:
-                    row = row + (all_enroll_cnt - all_unenroll_cnt,)
+                    row += (all_enroll_cnt - all_unenroll_cnt,)
 
             for video1, problem1, both1, video2, problem2, both2 in by_course_enroll_week_activity:
-                # row = row + (video1, problem1, both1,)
-                row = row + (video2, problem2, both2,)
+                # row += (video1, problem1, both1,)
+                row += (video2, problem2, both2,)
 
             for course_id, is_exists, half_cnt, cert_cnt in by_course_cert_month:
                 if is_exists:
-                    row = row + (half_cnt, cert_cnt,)
+                    row += (half_cnt, cert_cnt,)
                 else:
-                    row = row + ('-', '-',)
+                    row += ('-', '-',)
 
-            row = row + (course_last_update[course_id],)
+            row += (course_last_update[course_id],)
 
             sortlist.append(row)
 
@@ -1168,49 +1226,49 @@ def statistics_excel_month(request, date):
 
             row = tuple()
             for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt in by_course_enroll_month:
-                row = row + (dic_univ[org] if org in dic_univ else org,)
-                row = row + (course_classfys[course_id] if course_id in course_classfys else '',)
-                row = row + (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
-                row = row + (course_names[course_id],)
+                row += (dic_univ[org] if org in dic_univ else org,)
+                row += (course_classfys[course_id] if course_id in course_classfys else '',)
+                row += (course_middle_classfys[course_id] if course_id in course_middle_classfys else '',)
+                row += (course_names[course_id],)
 
                 # 주간 학습 권장시간
-                row = row + (course_effort[course_id],)
+                row += (course_effort[course_id],)
                 # 총 동영상 재생시간
-                row = row + (course_video[course_id],)
+                row += (course_video[course_id],)
                 # 총 주차
-                row = row + (course_week[course_id],)
+                row += (course_week[course_id],)
 
-                row = row + (org,)
-                row = row + (course_id.split('+')[1],)
-                row = row + (course_id.split('+')[2],)
-                row = row + (course_status[course_id],)
-                row = row + (course_creates[course_id],)
-                row = row + (course_enroll_starts[course_id],)
-                row = row + (course_enroll_ends[course_id],)
-                row = row + (course_starts[course_id],)
-                row = row + (course_ends[course_id],)
-                row = row + (course_cert[course_id],)
-                row = row + (new_enroll_cnt,)
-                row = row + (new_unenroll_cnt,)
-                row = row + (all_enroll_cnt,)
-                row = row + (all_unenroll_cnt,)
+                row += (org,)
+                row += (course_id.split('+')[1],)
+                row += (course_id.split('+')[2],)
+                row += (course_status[course_id],)
+                row += (course_creates[course_id],)
+                row += (course_enroll_starts[course_id],)
+                row += (course_enroll_ends[course_id],)
+                row += (course_starts[course_id],)
+                row += (course_ends[course_id],)
+                row += (course_cert[course_id],)
+                row += (new_enroll_cnt,)
+                row += (new_unenroll_cnt,)
+                row += (all_enroll_cnt,)
+                row += (all_unenroll_cnt,)
 
                 if all_enroll_cnt is None or all_unenroll_cnt is None:
-                    row = row + ('-',)
+                    row += ('-',)
                 else:
-                    row = row + (all_enroll_cnt - all_unenroll_cnt,)
+                    row += (all_enroll_cnt - all_unenroll_cnt,)
 
             for video1, problem1, both1, video2, problem2, both2 in by_course_enroll_month_activity:
-                # row = row + (video1, problem1, both1,)
-                row = row + (video2, problem2, both2,)
+                # row += (video1, problem1, both1,)
+                row += (video2, problem2, both2,)
 
             for course_id, is_exists, half_cnt, cert_cnt in by_course_cert_month:
                 if is_exists:
-                    row = row + (half_cnt, cert_cnt,)
+                    row += (half_cnt, cert_cnt,)
                 else:
-                    row = row + ('-', '-',)
+                    row += ('-', '-',)
 
-            row = row + (course_last_update[course_id],)
+            row += (course_last_update[course_id],)
 
             sortlist.append(row)
 
@@ -1318,7 +1376,6 @@ def statistics_excel_month(request, date):
     return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
-"""
 
 def statistics_excel1(request, date):
     save_name = 'K-MoocMonth' + date + '.xlsx'

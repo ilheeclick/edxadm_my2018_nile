@@ -89,42 +89,24 @@ def execute_query(query):
     return row
 
 
-# 개인정보 조회이력
-def history(date):
-    query = '''
-        SELECT   b.id, b.action_time,
-                 a.app_label,
-                 b.user_id,
-                 b.object_repr,
-                 b.change_message,
-                 b.action_flag,
-                 b.content_type_id
-            FROM django_content_type a, django_admin_log b
-           WHERE     a.id = b.content_type_id
-                 AND (a.app_label = 'auth' OR a.model = 'custom')
-        ORDER BY b.action_time DESC;
-    '''.format(date=date)
-    return execute_query(query)
-
-
 # < 요약 : 회원가입자수 >
 def overall_only_auth(date):
     query = '''
-        SELECT sum(
+        SELECT count(
                   if(
                      date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',
-                     1,
-                     0))
+                     a.id,
+                     NULL))
                   new_cnt,
-                 count(*)
-               - sum(
+                 count(a.id)
+               - count(
                     if(
                            a.email LIKE 'delete_%'
                        AND date_format(adddate(last_login, INTERVAL 9 HOUR),
                                        '%Y%m%d') BETWEEN '20151014'
                                                      AND '{date}',
-                       1,
-                       0))
+                       a.id,
+                       NULL))
                   all_cnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
@@ -143,7 +125,7 @@ def overall_only_enroll(date):
                      1,
                      0))
                   new_enroll_cnt,
-               sum(if(c.is_active = 1, 1, 0)) all_enroll_cnt
+               sum(c.is_active = 1) all_enroll_cnt
           FROM auth_user                       a,
                auth_userprofile                b,
                student_courseenrollment        c,
@@ -160,17 +142,37 @@ def overall_only_enroll(date):
     return execute_query(query)
 
 
+# < 요약 : 이수건수 >
+def overall_only_cert(date):
+    query = '''
+SELECT count(
+          if(
+             date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',
+             id,
+             NULL))
+          new_cnt,
+       count(id) all_cnt
+  FROM certificates_generatedcertificate
+ WHERE     status = 'downloadable'
+       AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                             AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
+
+
 # `회원가입 세부사항`
 def overall_auth(date):
     query = '''
-        SELECT sum(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_cnt,
-                       sum(if(date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.email like 'delete_%',1,0)) new_sec_cnt,
-                       count(*) all_cnt,
-                       sum(if(a.email like 'delete_%' and date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') between '20151014' and '{date}', 1, 0)) all_sec_cnt
-                  FROM auth_user a, auth_userprofile b
-                 WHERE     a.id = b.user_id
-                       AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
-                                                                                            AND '{date}';
+        SELECT
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',a.id,NULL)) new_all_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}' and a.email like 'delete_%',a.id,NULL)) new_sec_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}' and a.is_active = 1 ,a.id,NULL)) new_active_cnt,
+            count(a.id) all_cnt,
+            count(if(a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}', a.id, NULL)) all_sec_cnt,
+            count(if(a.email not LIKE 'delete_%' and a.is_active = 1, a.id, NULL)) all_active_cnt
+          FROM auth_user a, auth_userprofile b
+         WHERE     a.id = b.user_id
+               AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}';
     '''.format(date=date)
     return execute_query(query)
 
@@ -178,14 +180,14 @@ def overall_auth(date):
 # `수강신청 세부사항`
 def overall_enroll(date):
     query = '''
-        SELECT sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_enroll_cnt1,
-               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,1,0)) new_sec_cnt1,
-               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt1,
-               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,1,0)) all_sec_cnt1,
-               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', a.id,null)) new_enroll_cnt2,
-               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,a.id,null)) new_sec_cnt2,
-               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',a.id,null)) all_cnt2,
-               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_cnt2
+        SELECT sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_enroll_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,1,0)) new_sec_cnt,
+			   count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', a.id,null)) new_enroll_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,a.id,null)) new_sec_id,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,1,0)) all_sec_cnt,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',a.id,null)) all_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_id
           FROM auth_user a, auth_userprofile b, student_courseenrollment c, course_overviews_courseoverview d
          WHERE     a.id = b.user_id
                and a.id = c.user_id
@@ -199,32 +201,52 @@ def overall_enroll(date):
     return execute_query(query)
 
 
+# `이수 세부사항`
+def overall_cert(date):
+    query = '''
+        SELECT sum(if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', 1, 0))     new_half_cert,
+                sum(if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', 1, 0))     new_cert,
+                count(distinct if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', b.user_id, null))     cert,
+                count(distinct if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', b.user_id, null))     cert,
+                sum(if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', 1, 0))     all_half_cert,
+                sum(if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', 1, 0))     all_cert,
+                count(distinct if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and  '{date}', b.user_id, null))     all_half_cert,
+                count(distinct if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and  '{date}', b.user_id, null))     all_id
+          FROM course_overviews_courseoverview a, certificates_generatedcertificate b
+         WHERE a.id = b.course_id;
+    '''.format(date=date)
+    return execute_query(query)
+
+
 # `by_course_enroll`
 def by_course_enroll(date):
     query = '''
+        select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
+                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2) half_cnt,
+                 (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable') cert_cnt
+          from (
         SELECT a.id,
-               a.org,
-               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) `new_enroll_cnt`,
-               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
-               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
-               sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
-          FROM course_overviews_courseoverview a,
-               student_courseenrollment        b,
-               auth_user                       c,
-               auth_userprofile                d
-         WHERE     a.id = b.course_id
-               AND b.user_id = c.id
-               AND c.id = d.user_id
-               AND lower(b.course_id) NOT LIKE '%test%'
-               AND lower(b.course_id) NOT LIKE '%demo%'
-               AND lower(b.course_id) NOT LIKE '%nile%'
-               AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                    AND '{date}'
-               AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                    AND '{date}'
-         group by a.id,  a.org;
-
-    '''.format(date=date)
+                       a.org,
+                       a.lowest_passing_grade,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) `new_enroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+                  FROM course_overviews_courseoverview a,
+                       student_courseenrollment        b,
+                       auth_user                       c,
+                       auth_userprofile                d
+                 WHERE     a.id = b.course_id
+                       AND b.user_id = c.id
+                       AND c.id = d.user_id
+                       AND lower(b.course_id) NOT LIKE '%test%'
+                       AND lower(b.course_id) NOT LIKE '%demo%'
+                       AND lower(b.course_id) NOT LIKE '%nile%'
+                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                            AND '{date}'
+                       AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                            AND '{date}'
+                 group by a.id,  a.org, a.lowest_passing_grade ) t1;    '''.format(date=date)
     return execute_query(query)
 
 
@@ -233,54 +255,153 @@ def by_course_demographics(date):
     query = '''
           SELECT course_id,
                  org,
-                 sum(if(gender = 'm', 1, 0))        male,
-                 sum(if(gender = 'f', 1, 0))        female,
-                 sum(if(gender is null or gender not in ('m', 'f'), 1, 0))        etc,
-                 sum(if(age < 20, 1, 0))            age1,
-                 sum(if(age BETWEEN 20 AND 29, 1, 0)) age2,
-                 sum(if(age BETWEEN 30 AND 39, 1, 0)) age3,
-                 sum(if(age BETWEEN 40 AND 49, 1, 0)) age4,
-                 sum(if(age BETWEEN 50 AND 59, 1, 0)) age5,
-                 sum(if(age > 59, 1, 0))            age6,
-                 sum(if(edu = 'p', 1, 0))           edu1,
-                 sum(if(edu = 'm', 1, 0))           edu2,
-                 sum(if(edu = 'b', 1, 0))           edu3,
-                 sum(if(edu = 'a', 1, 0))           edu4,
-                 sum(if(edu = 'hs', 1, 0))          edu5,
-                 sum(if(edu = 'jhs', 1, 0))         edu6,
-                 sum(if(edu = 'el', 1, 0))          edu7,
-                 sum(if(edu = 'other', 1, 0))       edu8,
-                 sum(if(edu is null or edu NOT IN ('p',
-                                    'm',
-                                    'b',
-                                    'a',
-                                    'hs',
-                                    'jhs',
-                                    'el',
-                                    'other'),
+                 sum(if(pass_type < 3 AND gender = 'm', 1, 0))        male,
+                 sum(if(pass_type < 3 AND gender = 'f', 1, 0))        female,
+                 count(
+                    if(pass_type < 3 AND gender IS NULL OR gender NOT IN ('m', 'f'),
+                       1,
+                       null))
+                    etc,
+                 sum(if(pass_type < 3 AND age < 20, 1, 0))            age1,
+                 sum(if(pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0)) age2,
+                 sum(if(pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0)) age3,
+                 sum(if(pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0)) age4,
+                 sum(if(pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+                 sum(if(pass_type < 3 AND age > 59, 1, 0))            age6,
+                 sum(if(pass_type < 3 AND edu = 'p', 1, 0))           edu1,
+                 sum(if(pass_type < 3 AND edu = 'm', 1, 0))           edu2,
+                 sum(if(pass_type < 3 AND edu = 'b', 1, 0))           edu3,
+                 sum(if(pass_type < 3 AND edu = 'a', 1, 0))           edu4,
+                 sum(if(pass_type < 3 AND edu = 'hs', 1, 0))          edu5,
+                 sum(if(pass_type < 3 AND edu = 'jhs', 1, 0))         edu6,
+                 sum(if(pass_type < 3 AND edu = 'el', 1, 0))          edu7,
+                 sum(if(pass_type < 3 AND edu = 'other', 1, 0))       edu8,
+                 sum(if(    pass_type < 3
+                        AND (   edu IS NULL
+                             OR edu NOT IN ('p',
+                                            'm',
+                                            'b',
+                                            'a',
+                                            'hs',
+                                            'jhs',
+                                            'el',
+                                            'other')),
                         1,
                         0))
                     edu9,
-                 count(*)                           allcnt
-            FROM (SELECT a.id                       course_id,
-                         a.org,
-                         d.gender,
-                         substring('{date}', 1, 4) + 1 - ifnull(d.year_of_birth, 0) age,
-                         d.level_of_education       edu
-                    FROM course_overviews_courseoverview a,
-                         student_courseenrollment      b,
-                         auth_user                     c,
-                         auth_userprofile              d
-                   WHERE     a.id = b.course_id
-                         AND b.user_id = c.id
-                         AND c.id = d.user_id
-                         AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
-                         AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1' AND '{date}'
-                         AND lower(b.course_id) NOT LIKE '%test%'
-                           AND lower(b.course_id) NOT LIKE '%demo%'
-                           AND lower(b.course_id) NOT LIKE '%nile%'
-                         AND b.is_active = 1
-                         ) t1
+                 count(if(pass_type < 3, 1, NULL))                    allcnt,
+                 sum(if(pass_type < 2 AND gender = 'm', 1, 0))        male,
+                 sum(if(pass_type < 2 AND gender = 'f', 1, 0))        female,
+                 count(
+                    if(pass_type < 2 AND gender IS NULL OR gender NOT IN ('m', 'f'),
+                       1,
+                       null))
+                    etc,
+                 sum(if(pass_type < 2 AND age < 20, 1, 0))            age1,
+                 sum(if(pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0)) age2,
+                 sum(if(pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0)) age3,
+                 sum(if(pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0)) age4,
+                 sum(if(pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+                 sum(if(pass_type < 2 AND age > 59, 1, 0))            age6,
+                 sum(if(pass_type < 2 AND edu = 'p', 1, 0))           edu1,
+                 sum(if(pass_type < 2 AND edu = 'm', 1, 0))           edu2,
+                 sum(if(pass_type < 2 AND edu = 'b', 1, 0))           edu3,
+                 sum(if(pass_type < 2 AND edu = 'a', 1, 0))           edu4,
+                 sum(if(pass_type < 2 AND edu = 'hs', 1, 0))          edu5,
+                 sum(if(pass_type < 2 AND edu = 'jhs', 1, 0))         edu6,
+                 sum(if(pass_type < 2 AND edu = 'el', 1, 0))          edu7,
+                 sum(if(pass_type < 2 AND edu = 'other', 1, 0))       edu8,
+                 sum(if(    pass_type < 2
+                        AND (   edu IS NULL
+                             OR edu NOT IN ('p',
+                                            'm',
+                                            'b',
+                                            'a',
+                                            'hs',
+                                            'jhs',
+                                            'el',
+                                            'other')),
+                        1,
+                        0))
+                    edu9,
+                 count(if(pass_type < 2, 1, NULL))                    allcnt,
+                 sum(if(pass_type < 1 AND gender = 'm', 1, 0))        male,
+                 sum(if(pass_type < 1 AND gender = 'f', 1, 0))        female,
+                 count(
+                    if(pass_type < 1 AND gender IS NULL OR gender NOT IN ('m', 'f'),
+                       1,
+                       null))
+                    etc,
+                 sum(if(pass_type < 1 AND age < 20, 1, 0))            age1,
+                 sum(if(pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0)) age2,
+                 sum(if(pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0)) age3,
+                 sum(if(pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0)) age4,
+                 sum(if(pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+                 sum(if(pass_type < 1 AND age > 59, 1, 0))            age6,
+                 sum(if(pass_type < 1 AND edu = 'p', 1, 0))           edu1,
+                 sum(if(pass_type < 1 AND edu = 'm', 1, 0))           edu2,
+                 sum(if(pass_type < 1 AND edu = 'b', 1, 0))           edu3,
+                 sum(if(pass_type < 1 AND edu = 'a', 1, 0))           edu4,
+                 sum(if(pass_type < 1 AND edu = 'hs', 1, 0))          edu5,
+                 sum(if(pass_type < 1 AND edu = 'jhs', 1, 0))         edu6,
+                 sum(if(pass_type < 1 AND edu = 'el', 1, 0))          edu7,
+                 sum(if(pass_type < 1 AND edu = 'other', 1, 0))       edu8,
+                 sum(if(    pass_type < 1
+                        AND (   edu IS NULL
+                             OR edu NOT IN ('p',
+                                            'm',
+                                            'b',
+                                            'a',
+                                            'hs',
+                                            'jhs',
+                                            'el',
+                                            'other')),
+                        1,
+                        0))
+                    edu9,
+                 count(if(pass_type < 1, 1, NULL))                    allcnt
+            FROM (SELECT t1.course_id,
+                         org,
+                         gender,
+                         age,
+                         edu,
+                         CASE
+                            WHEN t2.grade >= lowest_passing_grade THEN 0
+                            WHEN t2.grade >= (lowest_passing_grade / 2) THEN 1
+                            ELSE 2
+                         END
+                            pass_type
+                    FROM (SELECT a.id               course_id,
+                                 a.org,
+                                 a.lowest_passing_grade,
+                                 c.id               user_id,
+                                 d.gender,
+                                   substring('{date}', 1, 4)
+                                 + 1
+                                 - ifnull(d.year_of_birth, 0)
+                                    age,
+                                 d.level_of_education edu
+                            FROM course_overviews_courseoverview a,
+                                 student_courseenrollment      b,
+                                 auth_user                     c,
+                                 auth_userprofile              d
+                           WHERE     a.id = b.course_id
+                                 AND b.user_id = c.id
+                                 AND c.id = d.user_id
+                                 AND date_format(
+                                        adddate(c.date_joined, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}'
+                                 AND date_format(adddate(b.created, INTERVAL 9 HOUR),
+                                                 '%Y%m%d') BETWEEN '1'
+                                                               AND '{date}'
+                                 AND lower(b.course_id) NOT LIKE '%test%'
+                                 AND lower(b.course_id) NOT LIKE '%demo%'
+                                 AND lower(b.course_id) NOT LIKE '%nile%'
+                                 AND b.is_active = 1) t1
+                         LEFT JOIN certificates_generatedcertificate t2
+                            ON t1.course_id = t2.course_id AND t1.user_id = t2.user_id)
+                 t3
         GROUP BY course_id, org;
     '''.format(date=date)
     return execute_query(query)

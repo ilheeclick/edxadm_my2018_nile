@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
+# from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
+
+from home.statistics import statistics_excel
 from home import views
 
 
@@ -27,8 +29,9 @@ urlpatterns = [
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^manage/excel_select/$', excel_manage),
     url(r'^manage/excel_download/(?P<date>.*?)$', statistics_excel),
-    url(r'^manage/excel_download_week/(?P<date>.*?)$', statistics_excel_week),
-    url(r'^manage/excel_download_month/(?P<date>.*?)$', statistics_excel_month),
+    # url(r'^manage/excel_download_week/(?P<date>.*?)$', statistics_excel_week),
+    # url(r'^manage/excel_download_month/(?P<date>.*?)$', statistics_excel_month),
+
     # url(r'^manage/excel_download2/(?P<courseId>.*?)$', certificate_excel),
     # url(r'^manage/notice/reg$', notice_reg),
     # url(r'^manage/notice/list$', notice_list),
