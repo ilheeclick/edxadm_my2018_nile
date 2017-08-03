@@ -2031,78 +2031,44 @@ def history_rows(request):
         '''
 
         diff_query1 = '''
-            SELECT id,
-                   username,
-                   first_name,
-                   last_name,
-                   email,
-                   password,
-                   is_staff,
-                   is_active,
-                   is_superuser
-              FROM auth_user
-             WHERE id = %s
-            UNION
-            SELECT *
-              FROM (  SELECT id,
-                             username,
-                             first_name,
-                             last_name,
-                             email,
-                             password,
-                             is_staff,
-                             is_active,
-                             is_superuser
-                        FROM auth_user_trigger
-                       WHERE action = 'U' AND id = %s
-                         AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
-                                         AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2  SECOND)
-                    ORDER BY created DESC) t1;
+              SELECT id,
+                     username,
+                     first_name,
+                     last_name,
+                     email,
+                     password,
+                     is_staff,
+                     is_active,
+                     is_superuser
+                FROM auth_user_trigger
+               WHERE id = %s
+                     AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
+                                     AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2 SECOND)
+            ORDER BY action;
         '''
 
         diff_query2 = '''
-            SELECT id,
-                   user_id,
-                   name,
-                   language,
-                   location,
-                   courseware,
-                   gender,
-                   mailing_address,
-                   year_of_birth,
-                   level_of_education,
-                   goals,
-                   allow_certificate,
-                   country,
-                   city,
-                   bio,
-                   profile_image_uploaded_at
-              FROM auth_userprofile
-             WHERE user_id = %s
-            UNION
-            SELECT *
-              FROM (  SELECT id,
-                             user_id,
-                             name,
-                             language,
-                             location,
-                             courseware,
-                             gender,
-                             mailing_address,
-                             year_of_birth,
-                             level_of_education,
-                             goals,
-                             allow_certificate,
-                             country,
-                             city,
-                             bio,
-                             profile_image_uploaded_at
-                        FROM auth_userprofile_trigger
-                       WHERE action = 'U' AND user_id = %s
-                         AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
-                                         AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2  SECOND)
-                    ORDER BY created DESC
-                       LIMIT 1) t1;
+              SELECT id,
+                     user_id,
+                     name,
+                     language,
+                     location,
+                     courseware,
+                     gender,
+                     mailing_address,
+                     year_of_birth,
+                     level_of_education,
+                     goals,
+                     allow_certificate,
+                     country,
+                     city,
+                     bio,
+                     profile_image_uploaded_at
+                FROM auth_userprofile_trigger
+               WHERE     user_id = %s
+                     AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
+                                     AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2 SECOND)
+            ORDER BY action;
         '''
 
         def git_diff_dict(columns, rows):
@@ -2121,7 +2087,7 @@ def history_rows(request):
                         continue
 
                     if not str(check_list[0][column]).replace('None', '') == str(check_list[1][column]).replace('None', ''):
-                        return_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
+                        return_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
 
             return return_dict
 
@@ -2138,7 +2104,7 @@ def history_rows(request):
 
                 for column in columns:
                     if not check_list[0][column] == check_list[1][column]:
-                        return_dict[column] = '"%s" > "%s"' % (check_list[1][column], check_list[0][column])
+                        return_dict[column] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
 
             password_dict = dict()
             password_dict[auth_dict['password']] = return_dict['password']
@@ -2162,10 +2128,15 @@ def history_rows(request):
                 # 비밀번호를 변경하는 화면은 회원정보 수정과 별개로 구성되어있음
                 # 비밀번호 변경의 경우와 아닌경우를 분기
                 query_string_dict = change_message_dict['query']
+
+                # print 'check diff ---------------------------------------------- s'
+                # print diff_query1, [check_id, check_id, action_time, action_time]
+                # print 'check diff ---------------------------------------------- e'
+
                 if query_string_dict.has_key('password1') and query_string_dict.has_key('password2'):
                     print 'just password change !!'
 
-                    cur.execute(diff_query1, [check_id, check_id, action_time, action_time])
+                    cur.execute(diff_query1, [check_id, action_time, action_time])
                     columns1 = [col[0] for col in cur.description]
                     diff_rows1 = cur.fetchall()
                     diff_result.update(git_diff_password(columns1, diff_rows1))
@@ -2174,14 +2145,14 @@ def history_rows(request):
                         diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
                 else:
 
-                    cur.execute(diff_query1, [check_id, check_id, action_time, action_time])
+                    cur.execute(diff_query1, [check_id, action_time, action_time])
                     columns1 = [col[0] for col in cur.description]
                     diff_rows1 = cur.fetchall()
                     diff_result.update(git_diff_dict(columns1, diff_rows1))
 
                     print 'action_time ===>', result_dict['action_time']
 
-                    cur.execute(diff_query2, [check_id, check_id, action_time, action_time])
+                    cur.execute(diff_query2, [check_id, action_time, action_time])
                     columns2 = [col[0] for col in cur.description]
                     diff_rows2 = cur.fetchall()
                     diff_result.update(git_diff_dict(columns2, diff_rows2))
