@@ -201,7 +201,7 @@ def statistics_excel(request, date):
     save_name = 'K-Mooc{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path):
+    if os.path.isfile(save_path) and False:
         print 'file exists. so just download.'
     else:
         # Get course name
@@ -227,13 +227,29 @@ def statistics_excel(request, date):
         course_week = {}
         course_cert_date = {}
 
+        course_state = {}
+
         print 'step1 : course_info search'
 
         for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
-            print course_id, org, display_name, start, end, enrollment_start, enrollment_end
+            print course_id, org, display_name, type(start), start, type(end), end, type(enrollment_start), enrollment_start, type(enrollment_end), enrollment_end
 
             cid = course_id.split('+')[1]
             run = course_id.split('+')[2]
+
+            # course_state setting
+            utc_time = datetime.datetime.utcnow()
+
+            if cert_date:
+                course_state[course] = '이수증발급'
+            elif utc_time < start:
+                course_state[course] = '준비중'
+            elif start < utc_time < end:
+                course_state[course] = 'ing'
+            elif end < utc_time:
+                course_state[course] = 'end'
+            else:
+                pass
 
             if cert_date:
                 course_cert_date[course_id] = cert_date
@@ -242,6 +258,8 @@ def statistics_excel(request, date):
             if not cursor:
                 print 'not exists: ', cid, run
                 continue
+
+
 
             pb = cursor.get('versions').get('published-branch')
             # course_orgs

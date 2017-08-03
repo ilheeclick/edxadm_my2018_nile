@@ -1402,7 +1402,7 @@ def comm_faq(request):
 							  WHEN head_title = 'course_f ' THEN '강좌수강'
 							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
 							  WHEN head_title = 'tech_f ' THEN '기술적문제'
-							  WHEN head_title = 'mobile_f ' THEN '모바일문제'
+							  WHEN head_title = 'mobile_f ' THEN '모바일앱'
 							  ELSE ''
 						   END
 							  head_title,
@@ -1544,7 +1544,7 @@ def modi_faq(request, id, use_yn):
 							  WHEN head_title = 'course_f ' THEN '강좌수강'
 							  WHEN head_title = 'certi_f  ' THEN '성적/이수증'
 							  WHEN head_title = 'tech_f ' THEN '기술적문제'
-							  WHEN head_title = 'mobile_f ' THEN '모바일문제'
+							  WHEN head_title = 'mobile_f ' THEN '모바일앱'
 							  ELSE ''
 						   END
 							  head_title
