@@ -5,6 +5,7 @@
 *.DS_Store
 *.xml
 *.txt
+!requirements.txt
 *.iml
 *.csv
 venv/
