@@ -405,7 +405,7 @@ def statistics_excel(request, date):
         ws1['C4'] = auth_user_info[0][1]
         ws1['D4'] = student_courseenrollment_info[0][0]
         ws1['E4'] = student_courseenrollment_info[0][1]
-        ws1['F4'] = certificate_info[0][1]
+        ws1['F4'] = certificate_info[0][0]
         ws1['G4'] = certificate_info[0][1]
 
         # 회원가입 / 수강신청 세부사항

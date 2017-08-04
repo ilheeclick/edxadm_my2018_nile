@@ -145,17 +145,17 @@ def overall_only_enroll(date):
 # < 요약 : 이수건수 >
 def overall_only_cert(date):
     query = '''
-SELECT count(
-          if(
-             date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',
-             id,
-             NULL))
-          new_cnt,
-       count(id) all_cnt
-  FROM certificates_generatedcertificate
- WHERE     status = 'downloadable'
-       AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
-                                                                             AND '{date}';
+        SELECT count(
+                  if(
+                     date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',
+                     id,
+                     NULL))
+                  new_cnt,
+               count(id) all_cnt
+          FROM certificates_generatedcertificate
+         WHERE     status = 'downloadable'
+               AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+                                                                                     AND '{date}';
     '''.format(date=date)
     return execute_query(query)
 

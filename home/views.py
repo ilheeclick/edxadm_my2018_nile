@@ -2092,7 +2092,7 @@ def history_rows(request):
             return return_dict
 
         def git_diff_password(columns, rows):
-            return_dict = dict()
+            password_dict = dict()
             if columns is None or rows is None:
                 pass
 
@@ -2104,10 +2104,7 @@ def history_rows(request):
 
                 for column in columns:
                     if not check_list[0][column] == check_list[1][column]:
-                        return_dict[column] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
-
-            password_dict = dict()
-            password_dict[auth_dict['password']] = return_dict['password']
+                        password_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
 
             return password_dict
 
@@ -2177,8 +2174,8 @@ def history_rows(request):
             result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
                                                                                                                                                                                         '304'] else '-'
 
-    pp = pprint.PrettyPrinter(indent=2)
-    pp.pprint(connection.queries)
+    # pp = pprint.PrettyPrinter(indent=2)
+    # pp.pprint(connection.queries)
 
     return columns, recordsTotal, result_list
 
