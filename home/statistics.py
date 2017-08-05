@@ -228,6 +228,7 @@ def statistics_excel(request, date):
         course_cert_date = {}
 
         course_state = {}
+        course_order = {}
 
         print 'step1 : course_info search'
 
@@ -242,12 +243,16 @@ def statistics_excel(request, date):
 
             if cert_date:
                 course_state[course] = '이수증발급'
+                course_order[course] = 1
             elif utc_time < start:
-                course_state[course] = '준비중'
+                course_state[course] = '개강예정'
+                course_order[course] = 2
             elif start < utc_time < end:
-                course_state[course] = 'ing'
+                course_state[course] = '운영중'
+                course_order[course] = 3
             elif end < utc_time:
-                course_state[course] = 'end'
+                course_state[course] = '개강예정'
+                course_order[course] = 4
             else:
                 pass
 
@@ -502,6 +507,8 @@ def statistics_excel(request, date):
         by_course_enroll = statistics_query.by_course_enroll(date)
         for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt in by_course_enroll:
             row = tuple()
+            row += (get_value_from_dict(course_order, course_id, 99999),)
+
             row += (get_value_from_dict(dic_univ, org),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
@@ -535,13 +542,18 @@ def statistics_excel(request, date):
 
             sortlist.append(row)
 
-        sortlist.sort(key=itemgetter(10, 0, 4, 5))
+        # sortlist.sort(key=itemgetter(0, 17, 12))
+        sortlist.sort(key=lambda r: r.person.birthdate)
 
         start_row = 4
         for course_info in sortlist:
+
             print 'course_info --- s'
             print course_info
             print 'course_info --- e'
+
+            # order 값 제거
+            course_info = course_info[1:]
 
             start_char = 65
             for idx in range(0, len(course_info)):
