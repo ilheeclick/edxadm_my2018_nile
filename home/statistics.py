@@ -259,8 +259,6 @@ def statistics_excel(request, date):
                 print 'not exists: ', cid, run
                 continue
 
-
-
             pb = cursor.get('versions').get('published-branch')
             # course_orgs
             course_orgs[course_id] = cursor.get('org')
@@ -515,7 +513,7 @@ def statistics_excel(request, date):
             row += (course_id.split('+')[1],)
             row += (course_id.split('+')[2],)
 
-            row += ('이수증발급' if course_id in course_cert_date else '',)
+            row += (get_value_from_dict(course_state, course_id),)
             row += (get_value_from_dict(course_creates, course_id),)
             row += (get_value_from_dict(course_enroll_starts, course_id),)
             row += (get_value_from_dict(course_enroll_ends, course_id),)
@@ -537,7 +535,7 @@ def statistics_excel(request, date):
 
             sortlist.append(row)
 
-        sortlist.sort(key=itemgetter(0, 4, 5))
+        sortlist.sort(key=itemgetter(10, 0, 4, 5))
 
         start_row = 4
         for course_info in sortlist:
