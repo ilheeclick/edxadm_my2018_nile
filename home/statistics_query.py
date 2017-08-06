@@ -154,7 +154,7 @@ def overall_only_cert(date):
                count(id) all_cnt
           FROM certificates_generatedcertificate
          WHERE     status = 'downloadable'
-               AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014'
+               AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                      AND '{date}';
     '''.format(date=date)
     return execute_query(query)
@@ -207,11 +207,11 @@ def overall_cert(date):
         SELECT sum(if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', 1, 0))     new_half_cert,
                 sum(if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', 1, 0))     new_cert,
                 count(distinct if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', b.user_id, null))     cert,
-                count(distinct if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', b.user_id, null))     cert,
+                count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', b.user_id, null))     cert,
                 sum(if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', 1, 0))     all_half_cert,
                 sum(if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', 1, 0))     all_cert,
                 count(distinct if(a.lowest_passing_grade/2 <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and  '{date}', b.user_id, null))     all_half_cert,
-                count(distinct if(a.lowest_passing_grade <= b.grade and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and  '{date}', b.user_id, null))     all_id
+                count(distinct if(b.status = 'downloadable' and date_format(adddate(b.created_date, INTERVAL 9 HOUR), '%Y%m%d') between '1' and  '{date}', b.user_id, null))     all_id
           FROM course_overviews_courseoverview a, certificates_generatedcertificate b
          WHERE a.id = b.course_id;
     '''.format(date=date)
