@@ -12,7 +12,6 @@ from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classf
 from openpyxl.styles import Alignment
 from bson.objectid import ObjectId
 import time
-
 import logging
 import logging.handlers
 
@@ -366,13 +365,13 @@ def statistics_excel(request, date):
         style_range(ws1, 'G20:J20', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 학력구분
-        style_range(ws1, 'B32:B33', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C32:F32', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G32:J32', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B31:B32', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C31:F31', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'G31:J31', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 연령별 학력
-        style_range(ws1, 'B46:B47', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C46:L46', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B45:B46', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'C45:L45', border=thin_border, fill=fill, font=font, alignment=al)
 
         # sheet2
         style_range(ws2, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
