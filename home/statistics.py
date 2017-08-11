@@ -99,7 +99,7 @@ def style_range(ws, cell_range, border=Border(), fill=None, font=None, alignment
 
 
 def certificate_excel(request, course_id):
-    print 'course_id', course_id
+    # print 'course_id', course_id
 
     d = datetime.date.today()
     year = d.year
@@ -111,8 +111,8 @@ def certificate_excel(request, course_id):
     if day < 10:
         day = '0' + str(day)
 
-    print 'month', month
-    print 'day', day
+    # print 'month', month
+    # print 'day', day
 
     certificates = statistics_query.certificateInfo(course_id)
 
@@ -128,31 +128,31 @@ def certificate_excel(request, course_id):
     for c in certificates:
         cid = str(c[2])
 
-        print 'cid', cid
+        # print 'cid', cid
 
         cursor = db.modulestore.active_versions.find({'course': cid})
         for document in cursor:
-            print '>> 1'
+            # print '>> 1'
             pb = document.get('versions').get('published-branch')
             break
         cursor.close()
 
         cursor = db.modulestore.structures.find({'_id': pb})
         for document in cursor:
-            print '>> 2'
+            # print '>> 2'
             ov = document.get('original_version')
             break
         cursor.close()
 
         cursor = db.modulestore.structures.find({'_id': ov})
         for document in cursor:
-            print '>> 3'
+            # print '>> 3'
             blocks = document.get('blocks')
             for block in blocks:
-                print '>> 4'
+                # print '>> 4'
                 fields = block.get('fields')
                 for field in fields:
-                    print '>> 5'
+                    # print '>> 5'
                     dn = fields['display_name']
                     courseName = dn
                     break
@@ -195,7 +195,7 @@ def certificate_excel(request, course_id):
 
 # 일일통계
 def statistics_excel(request, date):
-    print 'run statistics_excel'
+    # print 'run statistics_excel'
     time.sleep(1)
 
     save_name = 'K-Mooc{0}.xlsx'.format(date)
@@ -244,13 +244,13 @@ def statistics_excel(request, date):
             if cert_date:
                 course_state[course_id] = '이수증발급'
                 course_order[course_id] = 1
-            elif end < utc_time:
+            elif end and end < utc_time:
                 course_state[course_id] = '종료'
                 course_order[course_id] = 2
-            elif start < utc_time < end:
+            elif start and start < utc_time < end:
                 course_state[course_id] = '운영중'
                 course_order[course_id] = 3
-            elif utc_time < start:
+            elif start and utc_time < start:
                 course_state[course_id] = '개강예정'
                 course_order[course_id] = 4
             else:
@@ -446,7 +446,7 @@ def statistics_excel(request, date):
 
         start_row = 22
 
-        print 'len(age_new):', len(age_new)
+        # print 'len(age_new):', len(age_new)
 
         for male, female, etc in age_new:
             ws1['C' + str(start_row)] = male
@@ -458,7 +458,7 @@ def statistics_excel(request, date):
             start_row += 1
 
         start_row = 22
-        print 'len(age_total):', len(age_total)
+        # print 'len(age_total):', len(age_total)
         for male, female, etc in age_total:
             ws1['G' + str(start_row)] = male
             ws1['H' + str(start_row)] = female
@@ -467,9 +467,9 @@ def statistics_excel(request, date):
 
         # 학력구분
         # logger.info('학력구분')
-        print 'step5: edu gubn '
+        # print 'step5: edu gubn '
         start_row = 33
-        print 'len(edu_new):', len(edu_new)
+        # print 'len(edu_new):', len(edu_new)
         for male, female, etc in edu_new:
             ws1['C' + str(start_row)] = male
             ws1['D' + str(start_row)] = female
@@ -477,7 +477,7 @@ def statistics_excel(request, date):
             start_row += 1
 
         start_row = 33
-        print 'len(edu_total):', len(edu_total)
+        # print 'len(edu_total):', len(edu_total)
         for male, female, etc in edu_total:
             ws1['G' + str(start_row)] = male
             ws1['H' + str(start_row)] = female
@@ -485,9 +485,9 @@ def statistics_excel(request, date):
             start_row += 1
 
         # 연령별 학력
-        print 'step6: age + edu gubn '
+        # print 'step6: age + edu gubn '
         start_row = 47
-        print 'len(age_edu):', len(age_edu)
+        # print 'len(age_edu):', len(age_edu)
         for a, b, c, d, e, f, g, h, i in age_edu:
             ws1['C' + str(start_row)] = a
             ws1['D' + str(start_row)] = b
@@ -507,8 +507,8 @@ def statistics_excel(request, date):
         by_course_enroll = statistics_query.by_course_enroll(date)
         for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt in by_course_enroll:
             row = tuple()
+            # 0
             row += (get_value_from_dict(course_order, course_id, 99999),)
-
             row += (get_value_from_dict(dic_univ, org),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
@@ -518,8 +518,9 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_week, course_id),)
             row += (org,)
             row += (course_id.split('+')[1],)
-            row += (course_id.split('+')[2],)
 
+            # 10
+            row += (course_id.split('+')[2],)
             row += (get_value_from_dict(course_state, course_id),)
             row += (get_value_from_dict(course_creates, course_id),)
             row += (get_value_from_dict(course_enroll_starts, course_id),)
@@ -529,6 +530,8 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_cert_date, course_id, ''),)
             row += (new_enroll_cnt,)
             row += (new_unenroll_cnt,)
+
+            # 20
             row += (all_enroll_cnt,)
             row += (all_unenroll_cnt,)
             row += (all_enroll_cnt - all_unenroll_cnt,)
@@ -542,16 +545,18 @@ def statistics_excel(request, date):
 
             sortlist.append(row)
 
-        print 'course_order:', course_order
+            print row
+
+        # print 'course_order:', course_order
         sortlist.sort(key=itemgetter(0, 17, 12, 1))
         # sortlist.sort(key=lambda order, cert, created: )
 
         start_row = 4
         for course_info in sortlist:
 
-            print 'course_info --- s'
-            print course_info
-            print 'course_info --- e'
+            # print 'course_info --- s'
+            # print course_info
+            # print 'course_info --- e'
 
             # order 값 제거
             course_info = course_info[1:]
@@ -563,7 +568,7 @@ def statistics_excel(request, date):
                 start_char += 1
             start_row += 1
 
-        print 'e -----------------------------------------------------'
+        # print 'e -----------------------------------------------------'
 
         # by_course_demographic
 
@@ -662,21 +667,21 @@ def statistics_excel(request, date):
             start_char = 65
             for idx in range(0, len(course_info)):
                 if start_char > 116:
-                    print 'type3:', start_char - 52, idx, 'B' + chr(start_char - 52) + str(start_row)
+                    # print 'type3:', start_char - 52, idx, 'B' + chr(start_char - 52) + str(start_row)
 
                     ws3['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
                     style_base(ws3['B' + chr(start_char - 52) + str(start_row)])
 
                     start_char += 1
                 elif start_char > 90:
-                    print 'type2:', start_char - 26, idx, 'A' + chr(start_char - 26) + str(start_row)
+                    # print 'type2:', start_char - 26, idx, 'A' + chr(start_char - 26) + str(start_row)
 
                     ws3['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
                     style_base(ws3['A' + chr(start_char - 26) + str(start_row)])
 
                     start_char += 1
                 else:
-                    print 'type1:', start_char, idx, chr(start_char) + str(start_row)
+                    # print 'type1:', start_char, idx, chr(start_char) + str(start_row)
 
                     ws3[chr(start_char) + str(start_row)] = course_info[idx]
                     style_base(ws3[chr(start_char) + str(start_row)])
