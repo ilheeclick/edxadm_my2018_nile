@@ -164,9 +164,9 @@ def overall_only_cert(date):
 def overall_auth(date):
     query = '''
         SELECT
-            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',a.id,NULL)) new_all_cnt,
-            count(if(date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',a.id,NULL)) new_sec_cnt,
-            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}' and a.is_active = 1 ,a.id,NULL)) new_active_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',a.id,NULL)) new_all_cnt,
+            count(if(a.email like 'delete_%' and date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',a.id,NULL)) new_sec_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.is_active = 1 ,a.id,NULL)) new_active_cnt,
             count(a.id) all_cnt,
             count(if(a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}', a.id, NULL)) all_sec_cnt,
             count(if(a.email not LIKE 'delete_%' and a.is_active = 1, a.id, NULL)) all_active_cnt
