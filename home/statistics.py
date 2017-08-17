@@ -9,7 +9,6 @@ import os
 from operator import itemgetter
 import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy, countries
-from openpyxl.styles import Alignment
 from bson.objectid import ObjectId
 import time
 import logging
@@ -201,7 +200,7 @@ def statistics_excel(request, date):
     save_name = 'K-Mooc{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
 
-    if os.path.isfile(save_path) and False:
+    if os.path.isfile(save_path):
         print 'file exists. so just download.'
     else:
         # Get course name
@@ -318,22 +317,44 @@ def statistics_excel(request, date):
         overall_cert = statistics_query.overall_cert(date)
 
         # 연령구분
-        age_new = statistics_query.age_new(date)
-        age_total = statistics_query.age_total(date)
+        # age_new = statistics_query.age_new(date)
+        # age_total = statistics_query.age_total(date)
 
         # 학력구분
-        edu_new = statistics_query.edu_new(date)
-        edu_total = statistics_query.edu_total(date)
+        # edu_new = statistics_query.edu_new(date)
+        # edu_total = statistics_query.edu_total(date)
 
         # 연령별 학력
-        age_edu = statistics_query.age_edu(date)
+        # age_edu = statistics_query.age_edu(date)
+
+        # 연령/성별
+        age_gender_join = statistics_query.age_gender_join(date)
+        age_gender_enroll = statistics_query.age_gender_enroll(date)
+        age_gender_cert_half = statistics_query.age_gender_cert_half(date)
+        age_gender_cert = statistics_query.age_gender_cert(date)
+
+        # 학력/성별
+        edu_gender_join = statistics_query.edu_gender_join(date)
+        edu_gender_enroll = statistics_query.edu_gender_enroll(date)
+        edu_gender_cert_half = statistics_query.edu_gender_cert_half(date)
+        edu_gender_cert = statistics_query.edu_gender_cert(date)
+
+        # 연령/학력
+        age_edu_join = statistics_query.age_edu_join(date)
+        age_edu_enroll = statistics_query.age_edu_enroll(date)
+        age_edu_cert_half = statistics_query.age_edu_cert_half(date)
+        age_edu_cert = statistics_query.age_edu_cert(date)
+
 
         print 'step3: info '
         wb = load_workbook(EXCEL_PATH + 'base.xlsx')
 
         ws1 = wb['overall']
-        ws2 = wb['by_course_KPI']
-        ws3 = wb['by_course_demographic']
+        ws2 = wb['overall_demographic']
+        ws3 = wb['by_course_KPI']
+        ws4 = wb['by_course_demographic']
+
+        # 20170816 추가 시트
 
         # excel style
         thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
@@ -359,48 +380,58 @@ def statistics_excel(request, date):
         style_range(ws1, 'B13:B15', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'B16:B17', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # 연령구분
-        style_range(ws1, 'B20:B21', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C20:F20', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G20:J20', border=thin_border, fill=fill, font=font, alignment=al)
+        # 연령/성별
+        style_range(ws2, 'B2:C3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'D2:G2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'H2:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B4:B10', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B11:B17', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B18:B24', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B25:B31', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # 학력구분
-        style_range(ws1, 'B31:B32', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C31:F31', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'G31:J31', border=thin_border, fill=fill, font=font, alignment=al)
+        # 학력/성별
+        style_range(ws2, 'B34:C35', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'D34:G34', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'H34:K34', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B36:B45', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B46:B55', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B56:B65', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B66:B75', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # 연령별 학력
-        style_range(ws1, 'B45:B46', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'C45:L45', border=thin_border, fill=fill, font=font, alignment=al)
+        # 연령/학력
+        style_range(ws2, 'B78:C79', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'D78:M78', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B80:B86', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B87:B93', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B94:B100', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws2, 'B101:B107', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # sheet2
-        style_range(ws2, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'K1:Q2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'R1:V1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'R2:S2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'T2:U2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws2, 'W1:X2', border=thin_border, fill=fill, font=font, alignment=al)
+        # by_course_KPI
+        style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'L1:R2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'S1:W1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'S2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'U2:V2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'X1:Y2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'Z1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # sheet3
-        style_range(ws3, 'A1:J2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'K1:AC1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AD1:AV1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AW1:BO1', border=thin_border, fill=fill, font=font, alignment=al)
-
-        style_range(ws3, 'K2:M2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'N2:S2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'T2:AB2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AC2:AC3', border=thin_border, fill=fill, font=font, alignment=al)
-
-        style_range(ws3, 'AD2:AF2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AG2:AL2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AM2:AU2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AV2:AV3', border=thin_border, fill=fill, font=font, alignment=al)
-
-        style_range(ws3, 'AW2:AY2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'AZ2:BE2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'BF2:BN2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws3, 'BO2:BO3', border=thin_border, fill=fill, font=font, alignment=al)
+        # by_course_demographic
+        style_range(ws4, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'L1:AD1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AE1:AW1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AX1:BP1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'L2:N2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'O2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'U2:AC2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AD2:AD3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AE2:AG2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AH2:AM2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AN2:AV2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AW2:AW3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'AX2:AZ2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'BA2:BF2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'BG2:BO2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'BP2:BP3', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 가입현황
         # logger.info('가입현황')
@@ -440,67 +471,150 @@ def statistics_excel(request, date):
         ws1['G16'] = overall_cert[0][6]
         ws1['G17'] = overall_cert[0][7]
 
-        # 연령구분
+        # ::::::::::::::::::::::::::::::::::::::::::::::::::: 연령/성별
 
-        # logger.info('연령구분')
-
-        start_row = 22
-
-        # print 'len(age_new):', len(age_new)
-
-        for male, female, etc in age_new:
-            ws1['C' + str(start_row)] = male
-
-            ws1['D' + str(start_row)] = female
-
-            ws1['E' + str(start_row)] = etc
-
+        start_row = 4
+        for age_group, m1, f1, e1, m2, f2, e2 in age_gender_join:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
             start_row += 1
 
-        start_row = 22
-        # print 'len(age_total):', len(age_total)
-        for male, female, etc in age_total:
-            ws1['G' + str(start_row)] = male
-            ws1['H' + str(start_row)] = female
-            ws1['I' + str(start_row)] = etc
+        start_row = 11
+        for age_group, m1, f1, e1, m2, f2, e2 in age_gender_enroll:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
             start_row += 1
 
-        # 학력구분
-        # logger.info('학력구분')
-        # print 'step5: edu gubn '
-        start_row = 33
-        # print 'len(edu_new):', len(edu_new)
-        for male, female, etc in edu_new:
-            ws1['C' + str(start_row)] = male
-            ws1['D' + str(start_row)] = female
-            ws1['E' + str(start_row)] = etc
+        start_row = 18
+        for age_group, m1, f1, e1, m2, f2, e2 in age_gender_cert_half:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
             start_row += 1
 
-        start_row = 33
-        # print 'len(edu_total):', len(edu_total)
-        for male, female, etc in edu_total:
-            ws1['G' + str(start_row)] = male
-            ws1['H' + str(start_row)] = female
-            ws1['I' + str(start_row)] = etc
+        start_row = 25
+        for age_group, m1, f1, e1, m2, f2, e2 in age_gender_cert:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
             start_row += 1
 
-        # 연령별 학력
-        # print 'step6: age + edu gubn '
-        start_row = 47
-        # print 'len(age_edu):', len(age_edu)
-        for a, b, c, d, e, f, g, h, i in age_edu:
-            ws1['C' + str(start_row)] = a
-            ws1['D' + str(start_row)] = b
-            ws1['E' + str(start_row)] = c
-            ws1['F' + str(start_row)] = d
-            ws1['G' + str(start_row)] = e
-            ws1['H' + str(start_row)] = f
-            ws1['I' + str(start_row)] = g
-            ws1['J' + str(start_row)] = h
-            ws1['K' + str(start_row)] = i
+        # ::::::::::::::::::::::::::::::::::::::::::::::::::: 학력/성별
+
+        start_row = 36
+        for edu_group, m1, f1, e1, m2, f2, e2 in edu_gender_join:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
             start_row += 1
 
-        #: SHEET 2
+        start_row = 46
+        for edu_group, m1, f1, e1, m2, f2, e2 in edu_gender_enroll:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
+            start_row += 1
+
+        start_row = 56
+        for edu_group, m1, f1, e1, m2, f2, e2 in edu_gender_cert_half:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
+            start_row += 1
+
+        start_row = 66
+        for edu_group, m1, f1, e1, m2, f2, e2 in edu_gender_cert:
+            ws2['D' + str(start_row)] = m1
+            ws2['E' + str(start_row)] = f1
+            ws2['F' + str(start_row)] = e1
+            ws2['H' + str(start_row)] = m2
+            ws2['I' + str(start_row)] = f2
+            ws2['J' + str(start_row)] = e2
+            start_row += 1
+
+
+        # ::::::::::::::::::::::::::::::::::::::::::::::::::: 연령/학력
+
+        start_row = 80
+        for age_group, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in age_edu_join:
+            ws2['D' + str(start_row)] = edu1
+            ws2['E' + str(start_row)] = edu2
+            ws2['F' + str(start_row)] = edu3
+            ws2['G' + str(start_row)] = edu4
+            ws2['H' + str(start_row)] = edu5
+            ws2['I' + str(start_row)] = edu6
+            ws2['J' + str(start_row)] = edu7
+            ws2['K' + str(start_row)] = edu8
+            ws2['L' + str(start_row)] = edu9
+            start_row += 1
+
+        start_row = 87
+        for age_group, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in age_edu_enroll:
+            ws2['D' + str(start_row)] = edu1
+            ws2['E' + str(start_row)] = edu2
+            ws2['F' + str(start_row)] = edu3
+            ws2['G' + str(start_row)] = edu4
+            ws2['H' + str(start_row)] = edu5
+            ws2['I' + str(start_row)] = edu6
+            ws2['J' + str(start_row)] = edu7
+            ws2['K' + str(start_row)] = edu8
+            ws2['L' + str(start_row)] = edu9
+            start_row += 1
+
+        start_row = 94
+        for age_group, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in age_edu_cert_half:
+            ws2['D' + str(start_row)] = edu1
+            ws2['E' + str(start_row)] = edu2
+            ws2['F' + str(start_row)] = edu3
+            ws2['G' + str(start_row)] = edu4
+            ws2['H' + str(start_row)] = edu5
+            ws2['I' + str(start_row)] = edu6
+            ws2['J' + str(start_row)] = edu7
+            ws2['K' + str(start_row)] = edu8
+            ws2['L' + str(start_row)] = edu9
+            start_row += 1
+
+        start_row = 101
+        for age_group, edu1, edu2, edu3, edu4, edu5, edu6, edu7, edu8, edu9 in age_edu_cert:
+            ws2['D' + str(start_row)] = edu1
+            ws2['E' + str(start_row)] = edu2
+            ws2['F' + str(start_row)] = edu3
+            ws2['G' + str(start_row)] = edu4
+            ws2['H' + str(start_row)] = edu5
+            ws2['I' + str(start_row)] = edu6
+            ws2['J' + str(start_row)] = edu7
+            ws2['K' + str(start_row)] = edu8
+            ws2['L' + str(start_row)] = edu9
+            start_row += 1
+
+
+
+
+
+        #: SHEET 3
         # by_course_KPI
 
         sortlist = list()
@@ -516,6 +630,7 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_video, course_id),)
             row += (get_value_from_dict(course_week, course_id),)
+            row += (0,)
             row += (org,)
             row += (course_id.split('+')[1],)
 
@@ -548,7 +663,7 @@ def statistics_excel(request, date):
             print row
 
         # print 'course_order:', course_order
-        sortlist.sort(key=itemgetter(0, 17, 12, 1))
+        sortlist.sort(key=itemgetter(0, 18, 17, 1))
         # sortlist.sort(key=lambda order, cert, created: )
 
         start_row = 4
@@ -563,8 +678,8 @@ def statistics_excel(request, date):
 
             start_char = 65
             for idx in range(0, len(course_info)):
-                ws2[chr(start_char) + str(start_row)] = course_info[idx]
-                style_base(ws2[chr(start_char) + str(start_row)])
+                ws3[chr(start_char) + str(start_row)] = course_info[idx]
+                style_base(ws3[chr(start_char) + str(start_row)])
                 start_char += 1
             start_row += 1
 
@@ -582,7 +697,7 @@ def statistics_excel(request, date):
             row = tuple()
             row += (get_value_from_dict(course_order, course_id, 99999),)
             row += (get_value_from_dict(course_cert_date, course_id, ''),)
-            row += (get_value_from_dict(course_creates, course_id, ''),)
+            row += (get_value_from_dict(course_ends, course_id, ''),)
 
             row += (get_value_from_dict(dic_univ, org),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
@@ -591,6 +706,7 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_video, course_id),)
             row += (get_value_from_dict(course_week, course_id),)
+            row += (0,)
             row += (org,)
             row += (course_id.split('+')[1],)
             row += (course_id.split('+')[2],)
@@ -657,8 +773,7 @@ def statistics_excel(request, date):
 
             sortlist.append(row)
 
-        # sortlist.sort(key=itemgetter(0, 4, 5))
-        sortlist.sort(key=itemgetter(0, 1, 2))
+        sortlist.sort(key=itemgetter(0, 1, 2, 6))
 
         start_row = 4
         for course_info in sortlist:
@@ -667,27 +782,20 @@ def statistics_excel(request, date):
             start_char = 65
             for idx in range(0, len(course_info)):
                 if start_char > 116:
-                    # print 'type3:', start_char - 52, idx, 'B' + chr(start_char - 52) + str(start_row)
-
-                    ws3['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
-                    style_base(ws3['B' + chr(start_char - 52) + str(start_row)])
+                    ws4['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
+                    style_base(ws4['B' + chr(start_char - 52) + str(start_row)])
 
                     start_char += 1
                 elif start_char > 90:
-                    # print 'type2:', start_char - 26, idx, 'A' + chr(start_char - 26) + str(start_row)
-
-                    ws3['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
-                    style_base(ws3['A' + chr(start_char - 26) + str(start_row)])
+                    ws4['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
+                    style_base(ws4['A' + chr(start_char - 26) + str(start_row)])
 
                     start_char += 1
                 else:
-                    # print 'type1:', start_char, idx, chr(start_char) + str(start_row)
-
-                    ws3[chr(start_char) + str(start_row)] = course_info[idx]
-                    style_base(ws3[chr(start_char) + str(start_row)])
+                    ws4[chr(start_char) + str(start_row)] = course_info[idx]
+                    style_base(ws4[chr(start_char) + str(start_row)])
 
                     start_char += 1
-                    # print 'case2:',  chr(start_char) + str(start_row)
 
             start_row += 1
 
