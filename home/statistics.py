@@ -345,7 +345,6 @@ def statistics_excel(request, date):
         age_edu_cert_half = statistics_query.age_edu_cert_half(date)
         age_edu_cert = statistics_query.age_edu_cert(date)
 
-
         print 'step3: info '
         wb = load_workbook(EXCEL_PATH + 'base.xlsx')
 
@@ -555,7 +554,6 @@ def statistics_excel(request, date):
             ws2['J' + str(start_row)] = e2
             start_row += 1
 
-
         # ::::::::::::::::::::::::::::::::::::::::::::::::::: 연령/학력
 
         start_row = 80
@@ -610,12 +608,8 @@ def statistics_excel(request, date):
             ws2['L' + str(start_row)] = edu9
             start_row += 1
 
-
-
-
-
-        #: SHEET 3
-        # by_course_KPI
+        # :SHEET 3
+        # ------------------------> by_course_KPI
 
         sortlist = list()
         by_course_enroll = statistics_query.by_course_enroll(date)
@@ -627,10 +621,22 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
-            row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_week, course_id),)
-            row += (0,)
+
+            effort = get_value_from_dict(course_effort, course_id, None)
+            week = get_value_from_dict(course_week, course_id, None)
+
+            if effort and week:
+                if effort.find(':') > 0:
+                    hh = effort.split(':')[0]
+                    mm = effort.split(':')[1]
+                    row += (str((int(hh) * int(week)) + (int(mm) * int(week)) / 60) + ':' + ("%02d" % ((int(mm) * int(week)) % 60)),)
+                else:
+                    row += ('-',)
+            else:
+                row += ('-',)
             row += (org,)
             row += (course_id.split('+')[1],)
 
@@ -683,9 +689,8 @@ def statistics_excel(request, date):
                 start_char += 1
             start_row += 1
 
-        # print 'e -----------------------------------------------------'
-
-        # by_course_demographic
+        # :SHEET 4
+        # ------------------------> by_course_demographic
 
         sortlist = list()
         by_course_demographic = statistics_query.by_course_demographics(date)
@@ -703,10 +708,23 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
-            row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
             row += (get_value_from_dict(course_week, course_id),)
-            row += (0,)
+
+            effort = get_value_from_dict(course_effort, course_id, None)
+            week = get_value_from_dict(course_week, course_id, None)
+
+            if effort and week:
+                if effort.find(':') > 0:
+                    hh = effort.split(':')[0]
+                    mm = effort.split(':')[1]
+                    row += (str((int(hh) * int(week)) + (int(mm) * int(week)) / 60) + ':' + ("%02d" % ((int(mm) * int(week)) % 60)),)
+                else:
+                    row += ('-',)
+            else:
+                row += ('-',)
+
             row += (org,)
             row += (course_id.split('+')[1],)
             row += (course_id.split('+')[2],)
@@ -804,6 +822,4 @@ def statistics_excel(request, date):
 
 
 def get_value_from_dict(dict, key, default=None):
-    if default == None:
-        default = key
     return dict[key] if key in dict else default
