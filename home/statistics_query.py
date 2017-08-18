@@ -165,7 +165,13 @@ def overall_auth(date):
     query = '''
         SELECT
             count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',a.id,NULL)) new_all_cnt,
-            count(if(a.email like 'delete_%' and date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',a.id,NULL)) new_sec_cnt,
+            count(if(date_format(
+          adddate(
+             str_to_date(
+                substring(substring_index(email, '@delete.', -1), 1, 14),
+                '%Y%m%d%H%i%S'),
+             INTERVAL 9 HOUR),
+          '%Y%m%d')  = '{date}',a.id,NULL)) new_sec_cnt,
             count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.is_active = 1 ,a.id,NULL)) new_active_cnt,
             count(a.id) all_cnt,
             count(if(a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}', a.id, NULL)) all_sec_cnt,
@@ -1177,14 +1183,9 @@ def age_gender_join(date):
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user a, auth_userprofile b
                            WHERE     a.id = b.user_id
-                                 AND NOT (    a.email LIKE 'delete_%'
-                                  AND date_format(
-                                         adddate(last_login, INTERVAL 9 HOUR),
-                                         '%Y%m%d') BETWEEN '20151014'
-                                                       AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
@@ -1220,11 +1221,11 @@ def age_gender_enroll(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
@@ -1270,11 +1271,11 @@ def age_gender_cert_half(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1324,11 +1325,11 @@ def age_gender_cert(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1386,14 +1387,9 @@ def edu_gender_join(date):
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user a, auth_userprofile b
                            WHERE     a.id = b.user_id
-                                 AND NOT (    a.email LIKE 'delete_%'
-                                  AND date_format(
-                                         adddate(last_login, INTERVAL 9 HOUR),
-                                         '%Y%m%d') BETWEEN '20151014'
-                                                       AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
@@ -1432,12 +1428,12 @@ def edu_gender_enroll(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
@@ -1486,12 +1482,12 @@ def edu_gender_cert_half(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1544,12 +1540,12 @@ def edu_gender_cert(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1607,14 +1603,9 @@ def age_edu_join(date):
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user a, auth_userprofile b
                            WHERE     a.id = b.user_id
-                                 AND NOT (    a.email LIKE 'delete_%'
-                                  AND date_format(
-                                         adddate(last_login, INTERVAL 9 HOUR),
-                                         '%Y%m%d') BETWEEN '20151014'
-                                                       AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
@@ -1653,12 +1644,12 @@ def age_edu_enroll(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
@@ -1707,12 +1698,12 @@ def age_edu_cert_half(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1764,12 +1755,12 @@ def age_edu_cert(date):
                          if(gender = 'm', 1, 0)           male,
                          if(gender = 'f', 1, 0)           female,
                          if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
+                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
                                              '%Y%m%d')
                                     date_joined,
                                  ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
                                  ifnull(level_of_education, '') level_of_education,
-                                 ifnull(b.gender, 'e') gender
+                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
