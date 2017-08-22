@@ -154,6 +154,9 @@ def overall_only_cert(date):
                count(id) all_cnt
           FROM certificates_generatedcertificate
          WHERE     status = 'downloadable'
+               AND lower(course_id) NOT LIKE '%test%'
+               AND lower(course_id) NOT LIKE '%demo%'
+               AND lower(course_id) NOT LIKE '%nile%'
                AND date_format(adddate(created_date, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
                                                                                      AND '{date}';
     '''.format(date=date)
@@ -188,12 +191,16 @@ def overall_enroll(date):
     query = '''
         SELECT sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_enroll_cnt,
                sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,1,0)) new_sec_cnt,
-			   count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', a.id,null)) new_enroll_id,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', c.is_active,0)) new_total_cnt,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', a.id,null)) new_enroll_id,
                count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,a.id,null)) new_sec_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 1, c.user_id, null)) new_total_id,
                sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt,
                sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,1,0)) all_sec_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', c.is_active,0)) all_total_cnt,
                count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',a.id,null)) all_id,
-               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_id
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 1,a.id,null)) all_total_id
           FROM auth_user a, auth_userprofile b, student_courseenrollment c, course_overviews_courseoverview d
          WHERE     a.id = b.user_id
                and a.id = c.user_id
@@ -232,8 +239,14 @@ def overall_cert(date):
 def by_course_enroll(date):
     query = '''
         select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2) half_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable') cert_cnt
+                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2 AND date_format(
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}') half_cnt,
+                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable' AND date_format(
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}') cert_cnt
           from (
         SELECT a.id,
                        a.org,
@@ -265,28 +278,41 @@ def by_course_demographics(date):
     query = '''
           SELECT course_id,
                  org,
-                 sum(if(pass_type < 3 AND gender = 'm', 1, 0))        male,
-                 sum(if(pass_type < 3 AND gender = 'f', 1, 0))        female,
-                 count(
-                    if(pass_type < 3 AND gender IS NULL OR gender NOT IN ('m', 'f'),
+                 sum(if(is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
+                 sum(if(is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
+                 sum(if(is_active = 1 AND pass_type < 3 AND gender = 'e', 1, 0)) etc,
+                 sum(
+                    if(
+                           is_active = 1
+                       AND pass_type < 3
+                       AND gender NOT IN ('m', 'f', 'e'),
                        1,
-                       null))
-                    etc,
-                 sum(if(pass_type < 3 AND age < 20, 1, 0))            age1,
-                 sum(if(pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0)) age2,
-                 sum(if(pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0)) age3,
-                 sum(if(pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0)) age4,
-                 sum(if(pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0)) age5,
-                 sum(if(pass_type < 3 AND age > 59, 1, 0))            age6,
-                 sum(if(pass_type < 3 AND edu = 'p', 1, 0))           edu1,
-                 sum(if(pass_type < 3 AND edu = 'm', 1, 0))           edu2,
-                 sum(if(pass_type < 3 AND edu = 'b', 1, 0))           edu3,
-                 sum(if(pass_type < 3 AND edu = 'a', 1, 0))           edu4,
-                 sum(if(pass_type < 3 AND edu = 'hs', 1, 0))          edu5,
-                 sum(if(pass_type < 3 AND edu = 'jhs', 1, 0))         edu6,
-                 sum(if(pass_type < 3 AND edu = 'el', 1, 0))          edu7,
-                 sum(if(pass_type < 3 AND edu = 'other', 1, 0))       edu8,
-                 sum(if(    pass_type < 3
+                       0))
+                    no_gender1,
+                 sum(if(is_active = 1 AND pass_type < 3 AND age < 20, 1, 0))    age1,
+                 sum(
+                    if(is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0))
+                    age2,
+                 sum(
+                    if(is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0))
+                    age3,
+                 sum(
+                    if(is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0))
+                    age4,
+                 sum(
+                    if(is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0))
+                    age5,
+                 sum(if(is_active = 1 AND pass_type < 3 AND age > 59, 1, 0))    age6,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0))   edu1,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0))   edu2,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0))   edu3,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0))   edu4,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0))  edu5,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0))  edu7,
+                 sum(if(is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
+                 sum(if(    is_active = 1
+                        AND pass_type < 3
                         AND (   edu IS NULL
                              OR edu NOT IN ('p',
                                             'm',
@@ -299,28 +325,28 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(pass_type < 3, 1, NULL))                    allcnt,
-                 sum(if(pass_type < 2 AND gender = 'm', 1, 0))        male,
-                 sum(if(pass_type < 2 AND gender = 'f', 1, 0))        female,
-                 count(
-                    if(pass_type < 2 AND gender IS NULL OR gender NOT IN ('m', 'f'),
-                       1,
-                       null))
-                    etc,
-                 sum(if(pass_type < 2 AND age < 20, 1, 0))            age1,
-                 sum(if(pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0)) age2,
-                 sum(if(pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0)) age3,
-                 sum(if(pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0)) age4,
-                 sum(if(pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0)) age5,
-                 sum(if(pass_type < 2 AND age > 59, 1, 0))            age6,
-                 sum(if(pass_type < 2 AND edu = 'p', 1, 0))           edu1,
-                 sum(if(pass_type < 2 AND edu = 'm', 1, 0))           edu2,
-                 sum(if(pass_type < 2 AND edu = 'b', 1, 0))           edu3,
-                 sum(if(pass_type < 2 AND edu = 'a', 1, 0))           edu4,
-                 sum(if(pass_type < 2 AND edu = 'hs', 1, 0))          edu5,
-                 sum(if(pass_type < 2 AND edu = 'jhs', 1, 0))         edu6,
-                 sum(if(pass_type < 2 AND edu = 'el', 1, 0))          edu7,
-                 sum(if(pass_type < 2 AND edu = 'other', 1, 0))       edu8,
+                 count(if(is_active = 1 AND pass_type < 3, 1, NULL))
+                    allcnt,
+                 sum(if(pass_type < 2 AND gender = 'm', 1, 0))                  male,
+                 sum(if(pass_type < 2 AND gender = 'f', 1, 0))
+                    female,
+                 sum(if(pass_type < 2 AND gender = 'e', 1, 0))                  etc,
+                 sum(if(pass_type < 2 AND gender IN ('m', 'f', 'e'), 1, 0))
+                    no_gender2,
+                 sum(if(pass_type < 2 AND age < 20, 1, 0))                      age1,
+                 sum(if(pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
+                 sum(if(pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0))         age3,
+                 sum(if(pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0))         age4,
+                 sum(if(pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0))         age5,
+                 sum(if(pass_type < 2 AND age > 59, 1, 0))                      age6,
+                 sum(if(pass_type < 2 AND edu = 'p', 1, 0))                     edu1,
+                 sum(if(pass_type < 2 AND edu = 'm', 1, 0))                     edu2,
+                 sum(if(pass_type < 2 AND edu = 'b', 1, 0))                     edu3,
+                 sum(if(pass_type < 2 AND edu = 'a', 1, 0))                     edu4,
+                 sum(if(pass_type < 2 AND edu = 'hs', 1, 0))                    edu5,
+                 sum(if(pass_type < 2 AND edu = 'jhs', 1, 0))                   edu6,
+                 sum(if(pass_type < 2 AND edu = 'el', 1, 0))                    edu7,
+                 sum(if(pass_type < 2 AND edu = 'other', 1, 0))                 edu8,
                  sum(if(    pass_type < 2
                         AND (   edu IS NULL
                              OR edu NOT IN ('p',
@@ -334,28 +360,28 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(pass_type < 2, 1, NULL))                    allcnt,
-                 sum(if(pass_type < 1 AND gender = 'm', 1, 0))        male,
-                 sum(if(pass_type < 1 AND gender = 'f', 1, 0))        female,
-                 count(
-                    if(pass_type < 1 AND gender IS NULL OR gender NOT IN ('m', 'f'),
-                       1,
-                       null))
-                    etc,
-                 sum(if(pass_type < 1 AND age < 20, 1, 0))            age1,
-                 sum(if(pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0)) age2,
-                 sum(if(pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0)) age3,
-                 sum(if(pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0)) age4,
-                 sum(if(pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0)) age5,
-                 sum(if(pass_type < 1 AND age > 59, 1, 0))            age6,
-                 sum(if(pass_type < 1 AND edu = 'p', 1, 0))           edu1,
-                 sum(if(pass_type < 1 AND edu = 'm', 1, 0))           edu2,
-                 sum(if(pass_type < 1 AND edu = 'b', 1, 0))           edu3,
-                 sum(if(pass_type < 1 AND edu = 'a', 1, 0))           edu4,
-                 sum(if(pass_type < 1 AND edu = 'hs', 1, 0))          edu5,
-                 sum(if(pass_type < 1 AND edu = 'jhs', 1, 0))         edu6,
-                 sum(if(pass_type < 1 AND edu = 'el', 1, 0))          edu7,
-                 sum(if(pass_type < 1 AND edu = 'other', 1, 0))       edu8,
+                 count(if(pass_type < 2, 1, NULL))
+                    allcnt,
+                 sum(if(pass_type < 1 AND gender = 'm', 1, 0))                  male,
+                 sum(if(pass_type < 1 AND gender = 'f', 1, 0))
+                    female,
+                 sum(if(pass_type < 1 AND gender = 'e', 1, 0))                  etc,
+                 sum(if(pass_type < 1 AND gender NOT IN ('m', 'f', 'e'), 1, 0))
+                    no_gender3,
+                 sum(if(pass_type < 1 AND age < 20, 1, 0))                      age1,
+                 sum(if(pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
+                 sum(if(pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0))         age3,
+                 sum(if(pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0))         age4,
+                 sum(if(pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0))         age5,
+                 sum(if(pass_type < 1 AND age > 59, 1, 0))                      age6,
+                 sum(if(pass_type < 1 AND edu = 'p', 1, 0))                     edu1,
+                 sum(if(pass_type < 1 AND edu = 'm', 1, 0))                     edu2,
+                 sum(if(pass_type < 1 AND edu = 'b', 1, 0))                     edu3,
+                 sum(if(pass_type < 1 AND edu = 'a', 1, 0))                     edu4,
+                 sum(if(pass_type < 1 AND edu = 'hs', 1, 0))                    edu5,
+                 sum(if(pass_type < 1 AND edu = 'jhs', 1, 0))                   edu6,
+                 sum(if(pass_type < 1 AND edu = 'el', 1, 0))                    edu7,
+                 sum(if(pass_type < 1 AND edu = 'other', 1, 0))                 edu8,
                  sum(if(    pass_type < 1
                         AND (   edu IS NULL
                              OR edu NOT IN ('p',
@@ -369,8 +395,10 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(pass_type < 1, 1, NULL))                    allcnt
-            FROM (SELECT t1.course_id,
+                 count(if(pass_type < 1, 1, NULL))
+                    allcnt
+            FROM (SELECT is_active,
+                         t1.course_id,
                          org,
                          gender,
                          age,
@@ -381,12 +409,13 @@ def by_course_demographics(date):
                             ELSE 2
                          END
                             pass_type
-                    FROM (SELECT a.id               course_id,
+                    FROM (SELECT b.is_active,
+                                 a.id               course_id,
                                  a.org,
                                  a.lowest_passing_grade,
                                  c.id               user_id,
-                                 d.gender,
-                                   substring('{date}', 1, 4)
+                                 ifnull(d.gender, '') gender,
+                                   substring('{year}', 1, 4)
                                  + 1
                                  - ifnull(d.year_of_birth, 0)
                                     age,
@@ -405,10 +434,16 @@ def by_course_demographics(date):
                                  AND lower(b.course_id) NOT LIKE '%demo%'
                                  AND lower(b.course_id) NOT LIKE '%nile%') t1
                          LEFT JOIN certificates_generatedcertificate t2
-                            ON t1.course_id = t2.course_id AND t1.user_id = t2.user_id)
+                            ON t1.course_id = t2.course_id AND t1.user_id = t2.user_id AND date_format(
+                                        adddate(t2.created_date, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}')
                  t3
         GROUP BY course_id, org;
-    '''.format(date=date)
+    '''.format(
+        year=date[:4],
+        date=date
+    )
     return execute_query(query)
 
 
@@ -1160,37 +1195,35 @@ def course_case(date):
 def age_gender_join(date):
     query = """
           SELECT age_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
                             age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user a, auth_userprofile b
-                           WHERE     a.id = b.user_id
+                           WHERE     a.id = b.user_id and not (a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
+
     """.format(
         year=date[:4],
         date=date
@@ -1202,44 +1235,43 @@ def age_gender_join(date):
 def age_gender_enroll(date):
     query = """
           SELECT age_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
                             age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
                            WHERE     a.id = b.user_id
                                  AND a.id = c.user_id
                                  AND c.is_active = 1
-                                 and exists (select 1 from course_overviews_courseoverview x where x.id = c.course_id )
+                                 AND EXISTS
+                                        (SELECT 1
+                                           FROM course_overviews_courseoverview x
+                                          WHERE x.id = c.course_id)
                                  AND lower(c.course_id) NOT LIKE '%test%'
                                  AND lower(c.course_id) NOT LIKE '%demo%'
                                  AND lower(c.course_id) NOT LIKE '%nile%'
-                                 AND date_format(
-                                        adddate(c.created, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') t1) t2
+                                 AND date_format(adddate(c.created, INTERVAL 9 HOUR),
+                                                 '%Y%m%d') BETWEEN '1'
+                                                               AND '{date}') t1) t2
         GROUP BY age_group;
     """.format(
         year=date[:4],
@@ -1252,30 +1284,28 @@ def age_gender_enroll(date):
 def age_gender_cert_half(date):
     query = """
           SELECT age_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT user_id,
                          CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
                             age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '') gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1291,7 +1321,7 @@ def age_gender_cert_half(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
@@ -1306,30 +1336,27 @@ def age_gender_cert_half(date):
 def age_gender_cert(date):
     query = """
           SELECT age_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
                             age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1345,7 +1372,7 @@ def age_gender_cert(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
@@ -1360,14 +1387,11 @@ def age_gender_cert(date):
 def edu_gender_join(date):
     query = """
           SELECT edu_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    gender,
+                 count(DISTINCT female)  femail,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN level_of_education = 'p' THEN 1
                             WHEN level_of_education = 'm' THEN 2
                             WHEN level_of_education = 'b' THEN 3
@@ -1379,17 +1403,15 @@ def edu_gender_join(date):
                             ELSE 9
                          END
                             edu_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user a, auth_userprofile b
-                           WHERE     a.id = b.user_id
+                           WHERE     a.id = b.user_id and not (a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
@@ -1406,14 +1428,11 @@ def edu_gender_join(date):
 def edu_gender_enroll(date):
     query = """
           SELECT edu_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN level_of_education = 'p' THEN 1
                             WHEN level_of_education = 'm' THEN 2
                             WHEN level_of_education = 'b' THEN 3
@@ -1425,29 +1444,30 @@ def edu_gender_enroll(date):
                             ELSE 9
                          END
                             edu_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
                            WHERE     a.id = b.user_id
                                  AND a.id = c.user_id
                                  AND c.is_active = 1
-                                 and exists (select 1 from course_overviews_courseoverview x where x.id = c.course_id )
+                                 AND EXISTS
+                                        (SELECT 1
+                                           FROM course_overviews_courseoverview x
+                                          WHERE x.id = c.course_id)
                                  AND lower(c.course_id) NOT LIKE '%test%'
                                  AND lower(c.course_id) NOT LIKE '%demo%'
                                  AND lower(c.course_id) NOT LIKE '%nile%'
-                                 AND date_format(
-                                        adddate(c.created, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') t1) t2
+                                 AND date_format(adddate(c.created, INTERVAL 9 HOUR),
+                                                 '%Y%m%d') BETWEEN '1'
+                                                               AND '{date}') t1) t2
         GROUP BY edu_group;
     """.format(
         year=date[:4],
@@ -1460,14 +1480,11 @@ def edu_gender_enroll(date):
 def edu_gender_cert_half(date):
     query = """
           SELECT edu_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN level_of_education = 'p' THEN 1
                             WHEN level_of_education = 'm' THEN 2
                             WHEN level_of_education = 'b' THEN 3
@@ -1479,15 +1496,14 @@ def edu_gender_cert_half(date):
                             ELSE 9
                          END
                             edu_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                                 ('{year}' - b.year_of_birth) + 1 age,
+                                 ifnull(b.gender, '')         gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1503,7 +1519,7 @@ def edu_gender_cert_half(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY edu_group;
@@ -1518,14 +1534,11 @@ def edu_gender_cert_half(date):
 def edu_gender_cert(date):
     query = """
           SELECT edu_group,
-                 sum(if(date_joined = '{date}', male, 0)) m1,
-                 sum(if(date_joined = '{date}', female, 0)) f1,
-                 sum(if(date_joined = '{date}', etc, 0))  e1,
-                 sum(male)                                  m2,
-                 sum(female)                                f2,
-                 sum(etc)                                   e2
-            FROM (SELECT date_joined,
-                         CASE
+                 count(DISTINCT male)    male,
+                 count(DISTINCT female)  female,
+                 count(DISTINCT etc)     etc,
+                 count(DISTINCT no_gender) no_gender
+            FROM (SELECT CASE
                             WHEN level_of_education = 'p' THEN 1
                             WHEN level_of_education = 'm' THEN 2
                             WHEN level_of_education = 'b' THEN 3
@@ -1537,15 +1550,14 @@ def edu_gender_cert(date):
                             ELSE 9
                          END
                             edu_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                         if(gender = 'm', user_id, NULL)                male,
+                         if(gender = 'f', user_id, NULL)                female,
+                         if(gender = 'e', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                    FROM (SELECT b.user_id,
+                                 ifnull(level_of_education, '')
+                                    level_of_education,
+                                 ifnull(b.gender, '')                      gender
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1561,7 +1573,7 @@ def edu_gender_cert(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY edu_group;
@@ -1576,36 +1588,40 @@ def edu_gender_cert(date):
 def age_edu_join(date):
     query = """
           SELECT age_group,
-                 sum(if(level_of_education = 'P', 1, 0)) edu1,
-                 sum(if(level_of_education = 'm', 1, 0)) edu2,
-                 sum(if(level_of_education = 'b', 1, 0)) edu3,
-                 sum(if(level_of_education = 'a', 1, 0)) edu4,
-                 sum(if(level_of_education = 'hs', 1, 0)) edu5,
+                 sum(if(level_of_education = 'P', 1, 0))   edu1,
+                 sum(if(level_of_education = 'm', 1, 0))   edu2,
+                 sum(if(level_of_education = 'b', 1, 0))   edu3,
+                 sum(if(level_of_education = 'a', 1, 0))   edu4,
+                 sum(if(level_of_education = 'hs', 1, 0))  edu5,
                  sum(if(level_of_education = 'jhs', 1, 0)) edu6,
-                 sum(if(level_of_education = 'el', 1, 0)) edu7,
+                 sum(if(level_of_education = 'el', 1, 0))  edu7,
                  sum(if(level_of_education = 'other', 1, 0)) edu8,
-                 sum(if(level_of_education not in ('p','m','b','a','hs','jhs','el', 'other'), 1, 0)) edu9
-            FROM (SELECT date_joined, level_of_education,
+                 sum(if(level_of_education NOT IN ('p',
+                                                   'm',
+                                                   'b',
+                                                   'a',
+                                                   'hs',
+                                                   'jhs',
+                                                   'el',
+                                                   'other'),
+                        1,
+                        0))
+                    edu9
+            FROM (SELECT level_of_education,
                          CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
-                            age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(a.date_joined, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                            age_group
+                    FROM (SELECT ifnull(level_of_education, '') level_of_education,
+                                 ('{year}' - b.year_of_birth) + 1 age
                             FROM auth_user a, auth_userprofile b
-                           WHERE     a.id = b.user_id
+                           WHERE     a.id = b.user_id and not (a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}')
                                  AND date_format(
                                         adddate(a.date_joined, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '20151014'
@@ -1622,48 +1638,53 @@ def age_edu_join(date):
 def age_edu_enroll(date):
     query = """
           SELECT age_group,
-                 sum(if(level_of_education = 'P', 1, 0)) edu1,
-                 sum(if(level_of_education = 'm', 1, 0)) edu2,
-                 sum(if(level_of_education = 'b', 1, 0)) edu3,
-                 sum(if(level_of_education = 'a', 1, 0)) edu4,
-                 sum(if(level_of_education = 'hs', 1, 0)) edu5,
-                 sum(if(level_of_education = 'jhs', 1, 0)) edu6,
-                 sum(if(level_of_education = 'el', 1, 0)) edu7,
-                 sum(if(level_of_education = 'other', 1, 0)) edu8,
-                 sum(if(level_of_education not in ('p','m','b','a','hs','jhs','el', 'other'), 1, 0)) edu9
-            FROM (SELECT date_joined, level_of_education,
+                 count(distinct if(level_of_education = 'P', user_id, null))   edu1,
+                 count(distinct if(level_of_education = 'm', user_id, null))   edu2,
+                 count(distinct if(level_of_education = 'b', user_id, null))   edu3,
+                 count(distinct if(level_of_education = 'a', user_id, null))   edu4,
+                 count(distinct if(level_of_education = 'hs', user_id, null))  edu5,
+                 count(distinct if(level_of_education = 'jhs', user_id, null)) edu6,
+                 count(distinct if(level_of_education = 'el', user_id, null))  edu7,
+                 count(distinct if(level_of_education = 'other', user_id, null)) edu8,
+                 count(distinct if(level_of_education NOT IN ('p',
+                                                   'm',
+                                                   'b',
+                                                   'a',
+                                                   'hs',
+                                                   'jhs',
+                                                   'el',
+                                                   'other'),
+                        user_id, null))
+                    edu9
+            FROM (SELECT user_id, level_of_education,
                          CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
-                            age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(c.created, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                            age_group
+                    FROM (SELECT b.user_id, ifnull(level_of_education, '') level_of_education,
+                                 ('{year}' - b.year_of_birth) + 1 age
                             FROM auth_user              a,
                                  auth_userprofile       b,
                                  student_courseenrollment c
                            WHERE     a.id = b.user_id
                                  AND a.id = c.user_id
                                  AND c.is_active = 1
-                                 and exists (select 1 from course_overviews_courseoverview x where x.id = c.course_id )
+                                 AND EXISTS
+                                        (SELECT 1
+                                           FROM course_overviews_courseoverview x
+                                          WHERE x.id = c.course_id)
                                  AND lower(c.course_id) NOT LIKE '%test%'
                                  AND lower(c.course_id) NOT LIKE '%demo%'
                                  AND lower(c.course_id) NOT LIKE '%nile%'
-                                 AND date_format(
-                                        adddate(c.created, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') t1) t2
+                                 AND date_format(adddate(c.created, INTERVAL 9 HOUR),
+                                                 '%Y%m%d') BETWEEN '1'
+                                                               AND '{date}') t1) t2
         GROUP BY age_group;
     """.format(
         year=date[:4],
@@ -1676,34 +1697,37 @@ def age_edu_enroll(date):
 def age_edu_cert_half(date):
     query = """
           SELECT age_group,
-                 sum(if(level_of_education = 'P', 1, 0)) edu1,
-                 sum(if(level_of_education = 'm', 1, 0)) edu2,
-                 sum(if(level_of_education = 'b', 1, 0)) edu3,
-                 sum(if(level_of_education = 'a', 1, 0)) edu4,
-                 sum(if(level_of_education = 'hs', 1, 0)) edu5,
-                 sum(if(level_of_education = 'jhs', 1, 0)) edu6,
-                 sum(if(level_of_education = 'el', 1, 0)) edu7,
-                 sum(if(level_of_education = 'other', 1, 0)) edu8,
-                 sum(if(level_of_education not in ('p','m','b','a','hs','jhs','el', 'other'), 1, 0)) edu9
-            FROM (SELECT date_joined, level_of_education,
+                 count(distinct if(level_of_education = 'P', user_id, null))   edu1,
+                 count(distinct if(level_of_education = 'm', user_id, null))   edu2,
+                 count(distinct if(level_of_education = 'b', user_id, null))   edu3,
+                 count(distinct if(level_of_education = 'a', user_id, null))   edu4,
+                 count(distinct if(level_of_education = 'hs', user_id, null))  edu5,
+                 count(distinct if(level_of_education = 'jhs', user_id, null)) edu6,
+                 count(distinct if(level_of_education = 'el', user_id, null))  edu7,
+                 count(distinct if(level_of_education = 'other', user_id, null)) edu8,
+                 count(distinct if(level_of_education NOT IN ('p',
+                                                   'm',
+                                                   'b',
+                                                   'a',
+                                                   'hs',
+                                                   'jhs',
+                                                   'el',
+                                                   'other'),
+                        user_id, null))
+                    edu9
+            FROM (SELECT user_id, level_of_education,
                          CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
-                            age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                            age_group
+                    FROM (SELECT b.user_id, ifnull(level_of_education, '') level_of_education,
+                                 ('{year}' - b.year_of_birth) + 1 age
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1719,7 +1743,7 @@ def age_edu_cert_half(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
@@ -1733,34 +1757,37 @@ def age_edu_cert_half(date):
 def age_edu_cert(date):
     query = """
           SELECT age_group,
-                 sum(if(level_of_education = 'P', 1, 0)) edu1,
-                 sum(if(level_of_education = 'm', 1, 0)) edu2,
-                 sum(if(level_of_education = 'b', 1, 0)) edu3,
-                 sum(if(level_of_education = 'a', 1, 0)) edu4,
-                 sum(if(level_of_education = 'hs', 1, 0)) edu5,
-                 sum(if(level_of_education = 'jhs', 1, 0)) edu6,
-                 sum(if(level_of_education = 'el', 1, 0)) edu7,
-                 sum(if(level_of_education = 'other', 1, 0)) edu8,
-                 sum(if(level_of_education not in ('p','m','b','a','hs','jhs','el', 'other'), 1, 0)) edu9
-            FROM (SELECT date_joined, level_of_education,
+                 count(distinct if(level_of_education = 'P', user_id, null))   edu1,
+                 count(distinct if(level_of_education = 'm', user_id, null))   edu2,
+                 count(distinct if(level_of_education = 'b', user_id, null))   edu3,
+                 count(distinct if(level_of_education = 'a', user_id, null))   edu4,
+                 count(distinct if(level_of_education = 'hs', user_id, null))  edu5,
+                 count(distinct if(level_of_education = 'jhs', user_id, null)) edu6,
+                 count(distinct if(level_of_education = 'el', user_id, null))  edu7,
+                 count(distinct if(level_of_education = 'other', user_id, null)) edu8,
+                 count(distinct if(level_of_education NOT IN ('p',
+                                                   'm',
+                                                   'b',
+                                                   'a',
+                                                   'hs',
+                                                   'jhs',
+                                                   'el',
+                                                   'other'),
+                        user_id, null))
+                    edu9
+            FROM (SELECT user_id, level_of_education,
                          CASE
                             WHEN age < 20 THEN 'age1'
                             WHEN age BETWEEN 20 AND 29 THEN 'age2'
                             WHEN age BETWEEN 30 AND 39 THEN 'age3'
                             WHEN age BETWEEN 40 AND 49 THEN 'age4'
                             WHEN age BETWEEN 50 AND 59 THEN 'age5'
-                            ELSE 'age6'
+                            WHEN age > 59 THEN 'age6'
+                            ELSE 'age7'
                          END
-                            age_group,
-                         if(gender = 'm', 1, 0)           male,
-                         if(gender = 'f', 1, 0)           female,
-                         if(gender NOT IN ('m', 'f'), 1, 0) etc
-                    FROM (SELECT date_format(adddate(e.created_date, INTERVAL 9 HOUR),
-                                             '%Y%m%d')
-                                    date_joined,
-                                 ('{year}' - ifnull(b.year_of_birth, 0)) + 1 age,
-                                 ifnull(level_of_education, '') level_of_education,
-                                 if(b.gender is null or b.gender = '', 'e', b.gender) gender
+                            age_group
+                    FROM (SELECT b.user_id, ifnull(level_of_education, '') level_of_education,
+                                 ('{year}' - b.year_of_birth) + 1 age
                             FROM auth_user                       a,
                                  auth_userprofile                b,
                                  student_courseenrollment        c,
@@ -1776,7 +1803,7 @@ def age_edu_cert(date):
                                  AND lower(e.course_id) NOT LIKE '%demo%'
                                  AND lower(e.course_id) NOT LIKE '%nile%'
                                  AND date_format(
-                                        adddate(a.date_joined, INTERVAL 9 HOUR),
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
                                         '%Y%m%d') BETWEEN '1'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
