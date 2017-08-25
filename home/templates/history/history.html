@@ -62,8 +62,6 @@
 
         function inputFuncChange() {
             $("#func").change(function () {
-                console.log('select func value = ' + $(this).val());
-
                 var func_val = eval($(this).val());
 
 
@@ -91,8 +89,6 @@
                             'Community TA': '게시판 커뮤니티 조교',
                         }
                         $.each(options, function (key, value) {
-                            console.log(key + ":" + value);
-
                             $("#func_detail").append($('<option>', {
                                 value: key,
                                 text: value
@@ -111,8 +107,6 @@
                             'instructor': '교수자',
                             'beta': '베타 테스터',
                         }
-
-                        console.log(key + ":" + value);
 
                         $("#func_detail").append($('<option>', {
                             value: key,
@@ -208,14 +202,21 @@
                     {
                         targets: 6, visible: true, render: function (data, type, row) {
                         var data_length = data.length
-                        console.log(data_length);
                         if (data_length > 25)
                             return data.substr(0, 25) + ' ...'
                         else
                             return data
-                    }
+                        }
                     },
-                    {targets: 7, visible: true, width: '8%'},
+                    {
+                        targets: 7, visible: true, render: function (data, type, row) {
+                        var data_length = data.length
+                        if (data_length > 15)
+                            return data.substr(0, 15) + ' ...'
+                        else
+                            return data
+                        }
+                    },
                     {targets: 8, visible: true, width: '10%'},
                     {targets: 9, visible: true, width: '6%'},
                     {targets: 10, visible: true, width: '9%'},
@@ -344,10 +345,13 @@
 
         function format(d) {
             try{
-                return d.content_type_detail;
+                if (d.content_type_detail)
+                    return d.content_type_detail;
+                else if (d.target_id)
+                    return d.target_id;
 
             }catch(e){
-                console.log('catch 1 : ' + e);
+                console.log(e);
                 return null;
             }
         }

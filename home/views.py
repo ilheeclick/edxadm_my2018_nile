@@ -2107,7 +2107,7 @@ def history_rows(request):
                 for column in columns:
                     if not check_list[0][column] == check_list[1][column]:
                         password_dict[auth_dict[column]] = '"%s" > "%s"' % (
-                        check_list[0][column], check_list[1][column])
+                            check_list[0][column], check_list[1][column])
 
             return password_dict
 
@@ -2168,18 +2168,26 @@ def history_rows(request):
 
             # 기능 구분별 상세구분 표시 내용 추가
             # 개인정보 수정의 경우 수정 내역을 표시
-            result_dict[
-                'content_type_detail'] = diff_result_string if content_type_id == '3' and action_flag == '2' else get_content_detail(
-                content_type_id, object_repr_dict, change_message_dict)
+            if content_type_id in ['2', '3']:
+                content_detail = diff_result_string
+            else:
+                content_detail = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
+
+            result_dict['content_type_detail'] = content_detail
             result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
-            result_dict['target_id'] = get_target_id(content_type_id, object_repr_dict)
+
+            if content_type_id in ['293', '309']:
+                beta_testers = object_repr_dict['identifiers']
+                targets = beta_testers.replace('[', '').replace("u'", "").replace('\'', '')
+            else:
+                targets = get_target_id(content_type_id, object_repr_dict)
+
+            result_dict['target_id'] = targets
             result_dict['content_type_id'] = content_type_dict[content_type_id]
             result_dict['action_flag'] = action_flag_dict[action_flag]
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
-                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
-                '303',
-                '304'] else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
+                                                                                                                                                                                        '304'] else '-'
 
     # pp = pprint.PrettyPrinter(indent=2)
     # pp.pprint(connection.queries)
@@ -2196,12 +2204,10 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     elif content_type_id == '308':
         change_message_dict
     elif content_type_id == '297':
-        # print object_repr_dict
-
         return object_repr_dict['filename']
-    elif content_type_id in ['293', '309']:
-        beta_testers = object_repr_dict['identifiers']
-        return beta_testers.replace('[', '').replace("u'", "").replace('\'', '')
+    # elif content_type_id in ['293', '309']:
+    #     beta_testers = object_repr_dict['identifiers']
+    #     return beta_testers.replace('[', '').replace("u'", "").replace('\'', '')
     elif content_type_id in ['295', '306']:
         # role
         if 'rolename' in object_repr_dict:
