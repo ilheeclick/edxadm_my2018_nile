@@ -245,15 +245,16 @@ def statistics_excel(request, date):
                 course_order[course_id] = 1
             elif end and end < utc_time:
                 course_state[course_id] = '종료'
-                course_order[course_id] = 2
+                course_order[course_id] = 3
             elif start and start < utc_time < end:
                 course_state[course_id] = '운영중'
-                course_order[course_id] = 3
+                course_order[course_id] = 4
             elif start and utc_time < start:
                 course_state[course_id] = '개강예정'
-                course_order[course_id] = 4
+                course_order[course_id] = 5
             else:
-                pass
+                course_state[course_id] = '미정'
+                course_order[course_id] = 9
 
             if cert_date:
                 course_cert_date[course_id] = cert_date
@@ -420,15 +421,15 @@ def statistics_excel(request, date):
         style_range(ws4, 'L2:O2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'P2:U2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'V2:AD2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AE2:AE3', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws4, 'AE2:AE3', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'AF2:AI2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'AJ2:AO2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'AP2:AX2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AY2:AY3', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws4, 'AY2:AY3', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'AZ2:BC2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'BD2:BI2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws4, 'BJ2:BR2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'BS2:BS3', border=thin_border, fill=fill, font=font, alignment=al)
+        # style_range(ws4, 'BS2:BS3', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 가입현황
         # logger.info('가입현황')
@@ -624,9 +625,9 @@ def statistics_excel(request, date):
             else:
                 row += ('-',)
             row += (org,)
-            row += (course_id.split('+')[1],)
 
             # 10
+            row += (course_id.split('+')[1],)
             row += (course_id.split('+')[2],)
             row += (get_value_from_dict(course_state, course_id),)
             row += (get_value_from_dict(course_creates, course_id),)
@@ -655,7 +656,7 @@ def statistics_excel(request, date):
             print row
 
         # print 'course_order:', course_order
-        sortlist.sort(key=itemgetter(0, 18, 17, 1))
+        sortlist.sort(key=itemgetter(0, 16, 4))
         # sortlist.sort(key=lambda order, cert, created: )
 
         start_row = 4
@@ -686,9 +687,12 @@ def statistics_excel(request, date):
             male_3, female_3, etc_3, no_gender3, age1_3, age2_3, age3_3, age4_3, age5_3, age6_3, edu1_3, edu2_3, edu3_3, edu4_3, edu5_3, edu6_3, edu7_3, edu8_3, edu9_3, allcnt_3 \
                 in by_course_demographic:
             row = tuple()
+
+            # 정렬을 위한 변수. 정렬 후 해당 내용은 사용하지 않음. s
             row += (get_value_from_dict(course_order, course_id, 99999),)
-            row += (get_value_from_dict(course_cert_date, course_id, ''),)
-            row += (get_value_from_dict(course_ends, course_id, ''),)
+            row += (get_value_from_dict(course_starts, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id, ''),)
+            # e
 
             row += (get_value_from_dict(dic_univ, org),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
@@ -780,7 +784,7 @@ def statistics_excel(request, date):
 
             sortlist.append(row)
 
-        sortlist.sort(key=itemgetter(0, 1, 2, 6))
+        sortlist.sort(key=itemgetter(0, 1, 2))
 
         start_row = 4
         for course_info in sortlist:
