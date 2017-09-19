@@ -53,7 +53,6 @@ Theme Version: 	1.5.2
 				{
 					"targets": [4],
 					"visible": false,
-
 				}
 			],
 

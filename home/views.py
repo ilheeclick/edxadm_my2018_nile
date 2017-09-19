@@ -22,11 +22,17 @@ import urllib
 import csv
 import datetime
 from django.views.generic import View
+from .forms import UserForm, LoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+@login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
@@ -499,21 +505,33 @@ def test(request):
     else:
         return render(request, 'test01.html')
 
+def signin(request):
+    form = LoginForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.authenticate_user()
+        print user.is_staff
+        if (user.is_staff == True):
+            login(request, user)
+            return render(request, 'stastic/stastic_index.html')
+    return render(request, 'registration/login.html', {'form': form})
 
+@login_required
 def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
 
 # state view
+@login_required
 def mana_state(request):
     return render(request, 'state/mana_state.html')
 
-
+@login_required
 def dev_state(request):
     return render(request, 'state/dev_state.html')
 
 
 # certificate view
+@login_required
 def certificate(request):
     client = MongoClient(database_id, 27017)
     db = client.edxapp
@@ -693,7 +711,7 @@ def certificate(request):
 
     return render(request, 'certificate/certificate.html')
 
-
+@login_required
 def per_certificate(request):
     client = MongoClient(database_id, 27017)
     db = client.edxapp
@@ -804,7 +822,7 @@ def per_certificate(request):
 
     return render(request, 'certificate/per_certificate.html')
 
-
+@login_required
 def uni_certificate(request):
     # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
     cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
@@ -821,6 +839,7 @@ def uni_certificate(request):
 
 
 # community view
+@login_required
 def comm_notice(request):
     noti_list = []
     if request.is_ajax():
@@ -912,7 +931,6 @@ def comm_notice(request):
         return HttpResponse(aaData, 'applications/json')
 
     return render(request, 'community/comm_notice.html')
-
 
 @csrf_exempt
 def new_notice(request):
@@ -1083,11 +1101,11 @@ def modi_notice(request, id, use_yn):
 
     return render_to_response('community/comm_modinotice.html', variables)
 
-
+@login_required
 def test_index(request):
     return render(request, 'test_index.html')
 
-
+@login_required
 def file_download_test(request):
     print 'called  file_download_test'
 
@@ -1101,7 +1119,7 @@ def file_download_test(request):
             return response
     raise Http404
 
-
+@login_required
 def comm_k_news(request):
     knews_list = []
     if request.is_ajax():
@@ -1190,7 +1208,7 @@ def comm_k_news(request):
 
     return render(request, 'community/comm_k_news.html')
 
-
+@login_required
 def new_knews(request):
     if 'file' in request.FILES:
         value_list = []
@@ -1312,7 +1330,7 @@ def new_knews(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newknews.html')
 
-
+@login_required
 def modi_knews(request, id, use_yn):
     mod_knews = []
     if request.is_ajax():
@@ -1375,7 +1393,7 @@ def modi_knews(request, id, use_yn):
 
     return render_to_response('community/comm_modi_knews.html', variables)
 
-
+@login_required
 def comm_faq(request):
     faq_list = []
     data = json.dumps({'status': "fail"})
@@ -1490,7 +1508,7 @@ def comm_faq(request):
 
     return render(request, 'community/comm_faq.html')
 
-
+@login_required
 def new_faq(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -1526,7 +1544,7 @@ def new_faq(request):
 
     return render(request, 'community/comm_newfaq.html')
 
-
+@login_required
 def modi_faq(request, id, use_yn):
     mod_faq = []
     if request.is_ajax():
@@ -1567,7 +1585,7 @@ def modi_faq(request, id, use_yn):
 
     return render_to_response('community/comm_modifaq.html', variables)
 
-
+@login_required
 def comm_faqrequest(request):
     if request.is_ajax():
         aaData = json.dumps({'status': "fail"})
@@ -1603,7 +1621,7 @@ def comm_faqrequest(request):
         return HttpResponse(aaData, 'applications/json')
     return render_to_response('community/comm_faqrequest.html')
 
-
+@login_required
 def comm_reference_room(request):
     refer_list = []
     if request.is_ajax():
@@ -1682,7 +1700,7 @@ def comm_reference_room(request):
         return HttpResponse(aaData, 'applications/json')
     return render(request, 'community/comm_reference_room.html')
 
-
+@login_required
 def new_refer(request):
     if 'file' in request.FILES:
         value_list = []
@@ -1769,7 +1787,7 @@ def new_refer(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newrefer.html')
 
-
+@login_required
 def modi_refer(request, id, use_yn):
     mod_refer = []
 
@@ -1829,6 +1847,7 @@ def modi_refer(request, id, use_yn):
 
 # RSA 설정 필요
 # monitoring view
+@login_required
 def moni_storage(request):
     if request.is_ajax():
         if request.GET['method'] == 'storage_list':
@@ -1854,7 +1873,7 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
-
+@login_required
 def history(request):
     if request.is_ajax():
         result = dict()
@@ -1870,7 +1889,7 @@ def history(request):
     else:
         return render(request, 'history/history.html')
 
-
+@login_required
 def history_csv(request):
     filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
     columns, recordsTotal, result_list = history_rows(request)
@@ -1918,7 +1937,7 @@ def history_csv(request):
     except Exception as e:
         print e
 
-
+@login_required
 def history_rows(request):
     if request.is_ajax():
         is_csv = False
@@ -2194,7 +2213,7 @@ def history_rows(request):
 
     return columns, recordsTotal, result_list
 
-
+@login_required
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     if not content_type_id:
         return ''
@@ -2236,7 +2255,7 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
 
     return ''
 
-
+@login_required
 def get_system_name(content_type_id):
     """
     시스템 표시 구분.
@@ -2255,7 +2274,7 @@ def get_system_name(content_type_id):
         system = 'k-mooc'
     return system
 
-
+@login_required
 def get_change_message_dict(change_message):
     """
     request의 파라미터를 dict 형태로 변환후 문자열로 재변환하여 change_message 값으로 저장하고 있음.
@@ -2279,7 +2298,7 @@ def get_change_message_dict(change_message):
     finally:
         return change_message_dict
 
-
+@login_required
 def get_object_repr_dict(object_repr):
     """
     object_repr 의 내용은 재정의된 문자열로 저장이되고 있으며,
@@ -2300,7 +2319,7 @@ def get_object_repr_dict(object_repr):
             result[list2[0]] = list2[1]
     return result
 
-
+@login_required
 def get_searcy_string(content_type_id, change_message_dict):
     """
     django admin 에서 사용자 검색을 한경우 검색어를 추출.
@@ -2316,7 +2335,7 @@ def get_searcy_string(content_type_id, change_message_dict):
         search_query = ''
     return search_query
 
-
+@login_required
 def get_target_id(content_type_id, object_repr_dict):
     """
     개인정보 수정, 사용자를 지정하여 처리하는 액션의 경우 대상 아이디를 조회하여 리턴.
@@ -2630,6 +2649,7 @@ def new_mobile(request):
         return HttpResponse(data, 'applications/json')
 
     return render(request, 'community/comm_newmobile.html')
+
 
 
 @csrf_exempt

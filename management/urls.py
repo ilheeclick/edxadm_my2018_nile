@@ -19,9 +19,16 @@ from django.contrib import admin
 
 from home.statistics import statistics_excel
 from home import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
+    url(
+        r'^accounts/login/',
+        views.signin,
+        name='login'
+    ),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/manage/'}, name='logout'),
     url(r'^manage/test_index/$', views.test_index),
     url(r'^manage/file_download_test$', views.file_download_test),
 
