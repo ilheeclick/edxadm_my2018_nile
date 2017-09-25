@@ -243,6 +243,9 @@ def statistics_excel(request, date):
             if cert_date:
                 course_state[course_id] = '이수증발급'
                 course_order[course_id] = 1
+            elif start > end and enrollment_start < enrollment_end:
+                course_state[course_id] = '미정'
+                course_order[course_id] = 9
             elif end and end < utc_time:
                 course_state[course_id] = '종료'
                 course_order[course_id] = 3
