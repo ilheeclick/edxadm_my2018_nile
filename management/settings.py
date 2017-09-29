@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD': 'password',
-        'HOST': '192.168.44.10',
+        'HOST': '192.168.33.10',
         'PORT': '3306',
     }
 }
