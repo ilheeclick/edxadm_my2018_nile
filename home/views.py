@@ -27,6 +27,12 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+def popup_add(request):
+    return render(request, 'popup/popup_add.html')
+
+def new_popup(request):
+    return render(request, 'popup/popup_newpopup.html')
+
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 

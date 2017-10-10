@@ -85,6 +85,10 @@ urlpatterns = [
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
     url(r'^manage/file_download/(?P<file_name>.*?)/$', views.file_download, name='file_download'),
 
+    # popup url
+    url(r'^manage/popup_add/', views.popup_add, name='popup_add'),
+    url(r'^manage/new_popup/', views.new_popup, name='popup_add'),
+
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),

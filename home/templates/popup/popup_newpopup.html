@@ -1,0 +1,112 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}팝업추가{% endblock %}
+{% block pagetitlename_header %}팝업추가{% endblock %}
+{% block script_down %}
+<script>
+    {% include "community/script/test.js" %}
+    {% include "community/script/notice.js" %}
+
+    function Display(id)
+    {
+       if(id == "Radio_TEXT")
+       {
+          document.getElementById('Radio_TEXT').style.display = '';         // 보이게
+          document.getElementById('Radio_IMAGE').style.display = 'none';  // 안보이게
+       }
+       else
+       {
+          document.getElementById('Radio_TEXT').style.display = 'none';  // 안보이게
+          document.getElementById('Radio_IMAGE').style.display = '';         // 보이게
+       }
+    }
+</script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">팝업추가</h2></div>
+        </header>
+        <div class="panel-body">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    관리자명
+                </label>
+                <div class="col-sm-10">
+                    <b>{{ user.username }}</b>
+                </div>
+            </div>
+
+             <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    종     류
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <form>
+                        TEXT  <input type="radio" name="radio" value="text" onclick="Display('Radio_TEXT');"> &nbsp;&nbsp;
+                        IMAGE  <input type="radio" name="radio" value="image" onclick="Display('Radio_IMAGE');">
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="form-group" id="Radio_TEXT" style="display:none;">
+                <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
+                <div id="summernote_content" class="col-sm-10">
+{#                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>#}
+                    <div class="summernote" id="summernote"> </div>
+                </div>
+            </div>
+            <div class="form-group" id="Radio_IMAGE" style="display:none;">
+                <label class="col-sm-2 control-label">
+                    파     일
+                </label>
+                <div class="col-md-3">
+                    <form id="uploadform" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <span id="file_array">
+                            <input type="file" name="file" id = "uploadfile" />
+                        </span>
+                        <button type="submit" id="fileupload">upload</button>
+                    </form>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    시작일
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" id="noticetitle" class="form-control" placeholder="2017-01-01" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    종료일
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" id="noticetitle" class="form-control" placeholder="2017-12-01" required/>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-3" align="left">
+                    <a class="btn btn-default" href="/manage/comm_notice">목록으로</a>
+                </div>
+                <div class="col-sm-9" align="right">
+                    <button class="btn btn-primary" id="notice_save" >저     장</button>
+{#                    <button class="btn btn-default" id="notice_del" >삭     제</button>#}
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+{% endblock %}
