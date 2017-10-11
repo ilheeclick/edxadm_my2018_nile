@@ -1,45 +1,130 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}팝업추가{% endblock %}
 {% block pagetitlename_header %}팝업추가{% endblock %}
+{% block script %}{% endblock %}
 {% block script_down %}
+
+<style>
+    div.date{
+        float:left;
+        padding:3px;
+    }
+</style>
 <script>
     {% include "community/script/test.js" %}
     {% include "community/script/notice.js" %}
 
     function Display(id)
     {
-       if(id == "Radio_TEXT")
+       if(id == "Radio_HTML")
        {
-          document.getElementById('Radio_TEXT').style.display = '';         // 보이게
+          document.getElementById('Radio_HTML').style.display = '';         // 보이게
           document.getElementById('Radio_IMAGE').style.display = 'none';  // 안보이게
        }
-       else
+       else if(id == "Radio_IMAGE")
        {
-          document.getElementById('Radio_TEXT').style.display = 'none';  // 안보이게
+          document.getElementById('Radio_HTML').style.display = 'none';  // 안보이게
           document.getElementById('Radio_IMAGE').style.display = '';         // 보이게
        }
     }
+
+
+    function setValues() {
+        var link_type = document.getElementById("link_type");
+
+        if(link_type.options[link_type.selectedIndex].text == "없음") {
+            document.getElementById('imagemap').style.display = 'none';
+            document.getElementById('linkurl').style.display = 'none';
+        }
+        else if (link_type.options[link_type.selectedIndex].text =="전체링크") {
+            document.getElementById('imagemap').style.display = 'none';
+            document.getElementById('linkurl').style.display = '';
+        }
+        else if (link_type.options[link_type.selectedIndex].text == "이미지맵"){
+            document.getElementById('imagemap').style.display = '';
+            document.getElementById('linkurl').style.display = 'none';
+        }
+    }
+
+
+    function save() {
+        try {
+            var popup_type = $("input[type=radio][name=radio]:checked").val();
+            if (popup_type == "image") {
+                popup_type = "I";
+            }
+            else if (popup_type == "text") {
+                popup_type = "H";
+            }
+
+            var link_type = document.getElementById("link_type");
+            if (link_type.options[link_type.selectedIndex].text == "없음") {
+                link_type = "0"
+            }
+            else if (link_type.options[link_type.selectedIndex].text == "전체링크") {
+                link_type = "1"
+            }
+            else if (link_type.options[link_type.selectedIndex].text == "이미지맵") {
+                link_type = "2"
+            }
+
+            var image_map = $('#image_map').val();
+            var title = $('#title').val();
+            var contecnts = $('#image_URL').val();
+            var link_url = $('#link_URL').val();
+            var link_target = document.getElementById("link_target");
+            if (link_target.options[link_target.selectedIndex].text == "blank") {
+                link_target = "B"
+            }
+            else if (link_target.options[link_target.selectedIndex].text == "self") {
+                link_target = "S"
+            }
+
+            var start_date = $('#start_date').val();
+            var start_time = $('#start_time').val();
+            var end_date = $('#end_date').val();
+            var end_time = $('#end_time').val();
+            var regist_id = {{ user.id }};
+
+
+            $.post("/manage/popup_db/", {
+                csrfmiddlewaretoken: $.cookie('csrftoken'),
+                popup_type: popup_type,
+                link_type: link_type,
+                image_map: image_map,
+                title: title,
+                contecnts: contecnts,
+                link_url: link_url,
+                link_target: link_target,
+                start_date: start_date,
+                start_time: start_time,
+                end_date: end_date,
+                end_time: end_time,
+                regist_id: regist_id,
+                method: add
+            }).done(function (data) {
+                location.href = '/manage/popup_db';
+            }).fail(function (error) {
+                alert('error = ' + error.responseJSON);
+            });
+        } catch (e) {
+            alert(e);
+        }
+    }
+
 </script>
 {% endblock %}
 {% block containor %}
 
     <!-- start: page -->
-
+{#{{ user.id }}#}
 <div class="row">
     <section class="panel panel-featured ">
         <header class="panel-heading">
-            <div><h2 class="panel-title">팝업추가</h2></div>
+            <div><h2 class="panel-title">팝업추가 </h2></div>
         </header>
         <div class="panel-body">
             {% csrf_token %}
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    관리자명
-                </label>
-                <div class="col-sm-10">
-                    <b>{{ user.username }}</b>
-                </div>
-            </div>
 
              <div class="form-group">
                 <label class="col-sm-2 control-label">
@@ -48,61 +133,108 @@
                 </label>
                 <div class="col-sm-10">
                     <form>
-                        TEXT  <input type="radio" name="radio" value="text" onclick="Display('Radio_TEXT');"> &nbsp;&nbsp;
-                        IMAGE  <input type="radio" name="radio" value="image" onclick="Display('Radio_IMAGE');">
-
+                        HTML  <input type="radio" name="radio" value="text" onclick="Display('Radio_HTML');"> &nbsp;&nbsp;
+                        Image  <input type="radio" name="radio" value="image" onclick="Display('Radio_IMAGE');">
                     </form>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    Link Type
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <div style="float:left ">
+                        <select style="width: 150px" id="link_type" onchange="setValues();">
+                            <option id="null">없음</option>
+                            <option id="all_link">전체링크</option>
+                            <option id="map">이미지맵</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="imagemap" style="display:none;">
+                <label class="col-sm-2 control-label">
+                    이미지맵 좌표
+                </label>
+                <div class="col-sm-2">
+                    <div>
+                        <input type="text" class="form-control" id="image_map" placeholder="0.0.100.100">
+                    </div>
+                </div>
+            </div>
 
-            <div class="form-group" id="Radio_TEXT" style="display:none;">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    제 목
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <div>
+                        <input type="text" class="form-control" id="title">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="Radio_HTML" style="display:none;">
                 <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
                 <div id="summernote_content" class="col-sm-10">
 {#                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>#}
                     <div class="summernote" id="summernote"> </div>
                 </div>
             </div>
+
             <div class="form-group" id="Radio_IMAGE" style="display:none;">
                 <label class="col-sm-2 control-label">
-                    파     일
+                    Image URL
                 </label>
-                <div class="col-md-3">
-                    <form id="uploadform" enctype="multipart/form-data" method="post">
-                        {% csrf_token %}
-                        <span id="file_array">
-                            <input type="file" name="file" id = "uploadfile" />
-                        </span>
-                        <button type="submit" id="fileupload">upload</button>
-                    </form>
+                <div class="col-sm-10">
+                    <input type="text" id="image_URL" class="form-control" required/>
+                </div>
+            </div>
+            <div class="form-group" id="linkurl" style="display:none;">
+                <label id="linkurl" class="col-sm-2 control-label">
+                    Link URL
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" id="link_URL" class="form-control" required/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    시작일
+                    Link Target
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="noticetitle" class="form-control" placeholder="2017-01-01" required/>
+                        <select style="width: 150px" id="link_target">
+                            <option id="null">blank</option>
+                            <option id="all_link">self</option>
+                        </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    종료일
+                    게시기간
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="noticetitle" class="form-control" placeholder="2017-12-01" required/>
+                    <div class="date"><input type="text" class="form-control" id="start_date" placeholder="yyyy/mm/dd" required/></div>
+                    <div class="date"><input type="text" class="form-control" id="start_time" placeholder="hh:mm" required/></div>
+                    <div class="date"> <b> ~ </b> </div>
+                    <div class="date"><input type="text" class="form-control" id="end_date" placeholder="yyyy/mm/dd" required/></div>
+                    <div class="date"><input type="text" class="form-control" id="end_time" placeholder="hh:mm" required/></div>
                 </div>
             </div>
         </div>
         <footer class="panel-footer">
             <div class="row">
                 <div class="col-sm-3" align="left">
-                    <a class="btn btn-default" href="/manage/comm_notice">목록으로</a>
+                    <a class="btn btn-default" href="/manage/popup_add">목록으로</a>
                 </div>
                 <div class="col-sm-9" align="right">
-                    <button class="btn btn-primary" id="notice_save" >저     장</button>
-{#                    <button class="btn btn-default" id="notice_del" >삭     제</button>#}
+                    <button class="btn btn-primary" id="notice_save" >미리보기</button>
+{#                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="PreviewBtn" value="미리보기"></a>#}
+                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
                 </div>
             </div>
         </footer>

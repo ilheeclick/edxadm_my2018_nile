@@ -88,6 +88,7 @@ urlpatterns = [
     # popup url
     url(r'^manage/popup_add/', views.popup_add, name='popup_add'),
     url(r'^manage/new_popup/', views.new_popup, name='popup_add'),
+    url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

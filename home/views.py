@@ -33,6 +33,70 @@ def popup_add(request):
 def new_popup(request):
     return render(request, 'popup/popup_newpopup.html')
 
+@csrf_exempt
+def popup_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
+        if request.POST['method'] == 'add':
+
+            popup_type = request.POST.get('popup_type')
+            link_type = request.POST.get('link_type')
+            image_map = request.POST.get('image_map')
+            title = request.POST.get('nt_title')
+            contecnts = request.POST.get('contecnts')
+            link_url = request.POST.get('link_url')
+            link_target = request.POST.get('link_target')
+            start_date = request.POST.get('start_date')
+            start_time = request.POST.get('start_time')
+            end_date = request.POST.get('end_date')
+            end_time = request.POST.get('end_time')
+            regist_id = request.POST.get('regist_id')
+
+            cur = connection.cursor()
+            query = "insert into edxapp.popup(subject, content, head_title, section)"
+            query += " VALUES ('" + title + "', '" + content + "', '" + head_title + "', '" + section + "') "
+            cur.execute(query)
+
+            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
+            cur.execute(query2)
+            board_id = cur.fetchall()
+            cur.close()
+
+            data = json.dumps({'status': "success"})
+
+        elif request.POST['method'] == 'modi':
+            title = request.POST.get('nt_title')
+            title = title.replace("'", "''")
+            content = request.POST.get('nt_cont')
+            content = content.replace("'", "''")
+            noti_id = request.POST.get('noti_id')
+            odby = request.POST.get('odby')
+            head_title = request.POST.get('head_title')
+
+            upload_file = request.POST.get('uploadfile')
+            file_name = request.POST.get('file_name')
+            file_ext = request.POST.get('file_ext')
+            file_size = request.POST.get('file_size')
+
+            cur = connection.cursor()
+            # query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
+            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', head_title = '" + head_title + "', mod_date = now() where board_id = '" + noti_id + "'"
+            cur.execute(query)
+            cur.close()
+
+            if upload_file != '':
+                cur = connection.cursor()
+                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
+                        "VALUES ('" + str(noti_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
+                    file_size) + "')"
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
+
+        return HttpResponse(data, 'applications/json')
+
+    return render(request, 'popup/popup_add.html')
+
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
