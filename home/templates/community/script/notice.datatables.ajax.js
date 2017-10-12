@@ -41,7 +41,7 @@ Theme Version: 	1.5.2
 					}
 				]
 			},
-			"columnDefs":[
+			"columnDefs":[z
 				{
 					"targets": [0],
 					"visible": false,

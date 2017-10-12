@@ -3,14 +3,11 @@
 {% block pagetitlename_header %}팝업추가{% endblock %}
 {% block script_down %}
 <script>
-
+    {% include "popup/script/popup_datatables.js" %}
 </script>
-
-
 {% endblock %}
 {% block containor %}
 	<!-- start: page -->
-
 <section class="panel panel-featured ">
     <header class="panel-heading">
         <div><h2 class="panel-title">팝업추가</h2></div>
@@ -22,24 +19,23 @@
             <a class="btn btn-default" id="add_notice" href="/manage/new_popup">신규등록</a>
 
         </div>
-        {% load static %}
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/comm_notice" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+
+        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="popup_db" style="width: 100%;" >
             <thead>
                 <tr>
-                    <th width="5%">No</th>
-                    <th width="5%">종류</th>
-                    <th width="20%">제목</th>
-                    <th>등록자</th>
-                    <th>게시시작일</th>
-                    <th>게시종료일</th>
-                    <th>링크타입</th>
-                    <th>링크URL</th>
+                    <td>No</td>
+                    <td>종류</td>
+                    <td>제목</td>
+                    <td>등록자</td>
+                    <td>게시시작일</td>
+                    <td>게시종료일</td>
+                    <td>링크타입</td>
+                    <td>링크URL</td>
                 </tr>
             </thead>
             <tbody id="notice_body">
             </tbody>
         </table>
-
     </div>
 </section>
 

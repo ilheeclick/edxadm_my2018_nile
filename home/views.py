@@ -35,31 +35,60 @@ def new_popup(request):
 
 @csrf_exempt
 def popup_db(request):
-    if request.method == 'POST':
-        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
-        if request.POST['method'] == 'add':
+    if request.is_ajax():
+        popup_list = []
+        data = {}
+        if request.GET['method'] == 'popup_list':
+            cur = connection.cursor()
+            query = """
+                SELECT popup_id,
+                       popup_type,
+                       title,
+                       regist_id,
+                       start_date,
+                       end_date,
+                       link_type,
+                       link_url
+                  FROM popup
+			"""
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for pop in row:
+                value_list = []
+                value_list.append(pop[0])
+                value_list.append(pop[1])
+                value_list.append(pop[2])
+                value_list.append(pop[3])
+                value_list.append(pop[4])
+                value_list.append(pop[5])
+                value_list.append(pop[6])
+                value_list.append(pop[7])
+                popup_list.append(value_list)
+
+            data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+        elif request.GET['method'] == 'add':
 
             popup_type = request.POST.get('popup_type')
             link_type = request.POST.get('link_type')
             image_map = request.POST.get('image_map')
-            title = request.POST.get('nt_title')
+            title = request.POST.get('title')
             contecnts = request.POST.get('contecnts')
             link_url = request.POST.get('link_url')
             link_target = request.POST.get('link_target')
-            start_date = request.POST.get('start_date')
-            start_time = request.POST.get('start_time')
-            end_date = request.POST.get('end_date')
-            end_time = request.POST.get('end_time')
+            start_date = request.POST.get('start_date').replace("/", "")
+            start_time = request.POST.get('start_time').replace(":", "")
+            end_date = request.POST.get('end_date').replace("/", "")
+            end_time = request.POST.get('end_time').replace(":", "")
+            template = request.POST.get('template')
+            hidden_day = request.POST.get('hidden_day')
             regist_id = request.POST.get('regist_id')
 
             cur = connection.cursor()
-            query = "insert into edxapp.popup(subject, content, head_title, section)"
-            query += " VALUES ('" + title + "', '" + content + "', '" + head_title + "', '" + section + "') "
+            query = "insert into edxapp.popup(popup_type, link_type, image_map, title, contecnts, link_url, link_target, start_date, start_time, end_date, end_time, template, hidden_day, regist_id, modify_id)"
+            query += " VALUES ('" + popup_type + "', '" + link_type + "', '" + image_map + "', '" + title + "', '" + contecnts + "', '" + link_url + "', '" + link_target + "', '" + start_date + "', '" + start_time + "', '" + end_date + "', '" + end_time + "', '" + template + "', '" + hidden_day + "', '" + regist_id + "', '" + regist_id + "') "
             cur.execute(query)
-
-            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
-            cur.execute(query2)
-            board_id = cur.fetchall()
             cur.close()
 
             data = json.dumps({'status': "success"})
@@ -84,13 +113,7 @@ def popup_db(request):
             cur.execute(query)
             cur.close()
 
-            if upload_file != '':
-                cur = connection.cursor()
-                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-                        "VALUES ('" + str(noti_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
-                    file_size) + "')"
-                cur.execute(query)
-                cur.close()
+
             data = json.dumps({'status': "success"})
 
         return HttpResponse(data, 'applications/json')
