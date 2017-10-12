@@ -87,8 +87,11 @@ urlpatterns = [
 
     # popup url
     url(r'^manage/popup_add/', views.popup_add, name='popup_add'),
-    url(r'^manage/new_popup/', views.new_popup, name='popup_add'),
+    url(r'^manage/create_popup/', views.create_popup, name='create_popup'),
     url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
+    url(r'^manage/new_popup/', views.new_popup, name='new_popup'),
+    url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
+
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
