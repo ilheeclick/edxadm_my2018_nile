@@ -36,6 +36,7 @@ def new_popup(request):
 @csrf_exempt
 def popup_db(request):
     if request.is_ajax():
+        data = json.dumps({'status': "fail"})
         popup_list = []
         data = {}
         if request.GET['method'] == 'popup_list':
@@ -68,7 +69,7 @@ def popup_db(request):
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
 
-        elif request.GET['method'] == 'add':
+        elif request.POST['method'] == 'add':
 
             popup_type = request.POST.get('popup_type')
             link_type = request.POST.get('link_type')

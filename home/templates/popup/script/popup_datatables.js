@@ -19,8 +19,8 @@ Theme Version: 	1.5.2
 			//sDom: 'T<"clear">lfrtip',
 			"order": [[ 0, "desc" ]],
 			"fnReloadAjax": true,
-			"fnServerParams": function ( aoData ) {
-				 aoData.push({ "name": 'method', "value": 'popup_list'});
+			"fnServerParams": function ( data ) {
+				 data.push({ "name": 'method', "value": 'popup_list'});
 			},
 
 
