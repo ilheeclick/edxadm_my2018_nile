@@ -95,12 +95,13 @@
                     </figure>
                     <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
 								<span class="name">
-                                    관리자님 환영합니다
+                                    {{ user.username }} 님 환영합니다.
+                                    <a href="{% url 'logout' %}">
+                                        <button id="logout">로그아웃</button>
+                                         </a>
                                 </span>
                     </div>
-
                 </a>
-
             </div>
         </div>
         <!-- end: search & user box -->
