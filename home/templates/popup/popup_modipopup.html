@@ -125,6 +125,11 @@
             alert(e);
         }
     }
+
+    function test() {
+        alert(pop_id);
+        alert('ddd');
+    }
 </script>
 {% endblock %}
 {% block containor %}
@@ -282,6 +287,7 @@
                     <button class="btn btn-primary" id="notice_save" >미리보기</button>
 {#                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="PreviewBtn" value="미리보기"></a>#}
                     <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
+                    <a href="javascript:test();"><input class="btn btn-primary" type="button" id="SaveBtn" value="Test"></a>
                 </div>
             </div>
         </footer>
