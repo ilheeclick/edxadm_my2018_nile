@@ -100,59 +100,6 @@ function Display(id)
         }
         else if (link_type.options[link_type.selectedIndex].text == "이미지맵"){
             document.getElementById('imagemap').style.display = '';
-            document.getElementById('linkurl').style.display = 'none';
+            document.getElementById('linkurl').style.display = '';
         }
     }
-
-
-////수정 처리
-//$('#faq_mod').on('click', function(){
-//    try{
-//        var action_mode;
-//        var faq_question, faq_answer, faq_id;
-//        var head_title =  $('#head_title').find('option:selected').attr('id');
-//        faq_question = $('#noticecontent').val();
-//        faq_answer = $('.summernote').summernote('code');
-//        action_mode = 'modi';
-//        faq_id = {{ id }}
-//        if(head_title == 'null'){
-//            head_title='';
-//        }else{
-//            /* insert to database */
-//            $.post("/manage/new_faq/", {
-//                csrfmiddlewaretoken:$.cookie('csrftoken'),
-//                faq_question: faq_question,
-//                faq_answer: faq_answer,
-//                faq_id : faq_id,
-//                head_title : head_title,
-//                notice: 'F',
-//                method: action_mode
-//            }).done(function(data){
-//                location.href='/manage/comm_faq';
-//
-//            }).fail(function(error) {
-//                alert('error = ' + error.responseJSON);
-//            });
-//        }
-//    }catch(e){
-//        alert(e);
-//    }
-//});
-//
-////삭제 처리
-//$('#faq_delete').on('click', function(){
-//    var id = {{ id }};
-//    var use_yn = '{{use_yn}}';
-//
-//    $.ajax({
-//        url:'/manage/comm_faq/',
-//        data:{
-//            faq_id:id,
-//            use_yn:use_yn,
-//            method:'faq_delete'
-//        }
-//    }).done(function(data){
-//        console.log(data);
-//        location.href='/manage/comm_faq'
-//    });
-//});

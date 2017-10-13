@@ -89,7 +89,7 @@ def modi_popup(request, id):
     return render_to_response('popup/popup_modipopup.html', variables)
 
 def create_popup(request):
-    return render(request, 'popup/popup_newpopup.html')
+    return render(request, 'popup/popup_modipopup.html')
 
 @csrf_exempt
 def popup_db(request):
