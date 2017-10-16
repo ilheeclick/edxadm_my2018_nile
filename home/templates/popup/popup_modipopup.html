@@ -204,6 +204,7 @@
                 $('#Popup_0').center();
                 $('#pop_0').attr("href", $('#link_URL').val());
                 $('#IMG').attr('src',image_url);
+                $('#CONTENTS_0').text(contents);
 
             }
             else if (template.options[template.selectedIndex].text == "기본") {
@@ -274,12 +275,17 @@
 		                <img src="" alt="팝업 이미지" id="IMG">
 		            </a>
 		        </p>
+                <div class="templet-con">
+                    <p id = "CONTENTS_0">
+                        contents
+                    </p>
+                </div>
 		        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
 	                    <span class="fleft">
 	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
                     	</span>
                     	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-	                </div>
+                </div>
     		</div>
 
 
