@@ -30,6 +30,9 @@ sys.setdefaultencoding('utf-8')
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
+def popup_list(request):
+    return render(request, 'popup/popup_list.html')
+
 def modi_popup(request, id):
     mod_pop = []
     if request.is_ajax():
@@ -68,12 +71,15 @@ def modi_popup(request, id):
 							  WHEN template = '2' THEN '중간템플릿'
 						   END
 						   template,
+						   width,
+						   height,
 						   CASE
 							  WHEN hidden_day = '0' THEN '그만보기'
 							  WHEN hidden_day = '1' THEN '1일'
 							  WHEN hidden_day = '7' THEN '7일'
 						   END
-						   hidden_day
+						   hidden_day,
+						   use_yn
 					  FROM popup
 					 WHERE popup_id = """ + id
             cur.execute(query)
@@ -83,6 +89,7 @@ def modi_popup(request, id):
                 mod_pop.append(p)
             data = json.dumps(list(mod_pop), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
+
     variables = RequestContext(request, {
         'id': id
     })
@@ -151,10 +158,11 @@ def new_popup(request):
             height = request.POST.get('height')
             hidden_day = request.POST.get('hidden_day')
             regist_id = request.POST.get('regist_id')
+            use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
-            query = "insert into edxapp.popup(popup_type, link_type, image_map, title, contents, image_url, link_url, link_target, start_date, start_time, end_date, end_time, template, width, height hidden_day, regist_id, modify_id)"
-            query += " VALUES ('" + popup_type + "', '" + link_type + "', '" + image_map + "', '" + title + "', '" + contents + "', '" + image_url + "', '" + link_url + "', '" + link_target + "', '" + start_date + "', '" + start_time + "', '" + end_date + "', '" + end_time + "', '" + template + "', '" + width + "', '" + height + "', '" + hidden_day + "', '" + regist_id + "', '" + regist_id + "') "
+            query = "insert into edxapp.popup(popup_type, link_type, image_map, title, contents, image_url, link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, modify_id, use_yn)"
+            query += " VALUES ('" + popup_type + "', '" + link_type + "', '" + image_map + "', '" + title + "', '" + contents + "', '" + image_url + "', '" + link_url + "', '" + link_target + "', '" + start_date + "', '" + start_time + "', '" + end_date + "', '" + end_time + "', '" + template + "', '" + width + "', '" + height + "', '" + hidden_day + "', '" + regist_id + "', '" + regist_id + "', '" + use_yn + "') "
             cur.execute(query)
             cur.close()
 
@@ -182,9 +190,10 @@ def new_popup(request):
             hidden_day = request.POST.get('hidden_day')
             regist_id = request.POST.get('regist_id')
             pop_id = request.POST.get('pop_id')
+            use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
-            query = "update edxapp.popup SET popup_type = '" + popup_type + "', link_type = '" + link_type + "', image_map = '" + image_map + "', title = '" + title + "', contents = '" + contents + "', image_url = '" + image_url + "', link_url = '" + link_url + "', link_target = '" + link_target + "', start_date = '" + start_date + "', start_time = '" + start_time + "', end_date = '" + end_date + "', end_time = '" + end_time + "', template = '" + template + "', width = '" + width + "', height = '" + height + "', hidden_day = '" + hidden_day + "', modify_id = '" + regist_id + "', modify_date = now() WHERE popup_id =" +pop_id
+            query = "update edxapp.popup SET popup_type = '" + popup_type + "', link_type = '" + link_type + "', image_map = '" + image_map + "', title = '" + title + "', contents = '" + contents + "', image_url = '" + image_url + "', link_url = '" + link_url + "', link_target = '" + link_target + "', start_date = '" + start_date + "', start_time = '" + start_time + "', end_date = '" + end_date + "', end_time = '" + end_time + "', template = '" + template + "', width = '" + width + "', height = '" + height + "', hidden_day = '" + hidden_day + "', modify_id = '" + regist_id + "', use_yn = '" + use_yn + "', modify_date = now() WHERE popup_id =" +pop_id
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})

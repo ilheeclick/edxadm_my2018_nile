@@ -91,6 +91,7 @@ urlpatterns = [
     url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
     url(r'^manage/new_popup/', views.new_popup, name='new_popup'),
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
+    url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
 
 
     #history

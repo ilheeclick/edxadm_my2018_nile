@@ -2,8 +2,8 @@ jQuery.ajaxSettings.traditional = true;
 $(document).ready(function(){
     var value_list;
     var id = '{{id}}';
-    if (id == undefined) {
-        alert('ddd');
+    if (id != 99999) {
+        document.getElementById('DelBtn').style.display = '';
     }
         $.ajax({
             url: '/manage/modi_popup/' + id,
@@ -61,14 +61,24 @@ $(document).ready(function(){
                 $("#template").val("중간템플릿").prop("selected", true);
             }
 
-            if (data[0][13] == "1일") {
+            $('#width').val(data[0][13]);
+            $('#height').val(data[0][14]);
+
+            if (data[0][15] == "1일") {
                 $("#hidden_day").val("1일").prop("selected", true);
             }
-            else if (data[0][13] == "7일") {
+            else if (data[0][15] == "7일") {
                 $("#hidden_day").val("7일").prop("selected", true);
             }
-            else if (data[0][13] == "그만보기") {
+            else if (data[0][15] == "그만보기") {
                 $("#hidden_day").val("그만보기").prop("selected", true);
+            }
+
+            if (data[0][16] == "Y") {
+                $("#use_yn").val("사용함").prop("selected", true);
+            }
+            else if (data[0][16] == "N") {
+                $("#use_yn").val("사용안함").prop("selected", true);
             }
         })
 
