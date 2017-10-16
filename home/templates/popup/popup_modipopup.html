@@ -18,12 +18,21 @@
         float:left;
         padding:3px;
     }
-{#    #Popup_1{#}
-{#        position: absolute;#}
-{#        z-index: 1;#}
-{#        top: 300px;#}
-{#        left: 900px;#}
-{#    }#}
+    #Popup_0{
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+    }
+    #Popup_1{
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+    }
+    #Popup_2{
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+    }
 
 </style>
 <script>
@@ -162,31 +171,23 @@
         }
     }
 
+    jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+    return this;
+    }
+
     function preview() {
-            var popup_type = $("input[type=radio][name=radio]:checked").val();
-            if (popup_type == "image") {
-                popup_type = "I";
-            }
-            else if (popup_type == "text") {
-                popup_type = "H";
-            }
 
             var link_type = document.getElementById("link_type");
-            if (link_type.options[link_type.selectedIndex].text == "없음") {
-                link_type = "0"
-            }
-            else if (link_type.options[link_type.selectedIndex].text == "전체링크") {
-                link_type = "1"
-            }
-            else if (link_type.options[link_type.selectedIndex].text == "이미지맵") {
-                link_type = "2"
-            }
-
-            var image_map = $('#image_map').val();
             var title = $('#title').val();
             var image_url = $('#image_URL').val();
-            var link_url = $('#link_URL').val();
             var link_target = document.getElementById("link_target");
+            var width = $('#width').val();
+            var height = $('#height').val();
+            var contents = $('.summernote').summernote('code');
+
             if (link_target.options[link_target.selectedIndex].text == "blank") {
                 link_target = "B"
             }
@@ -194,46 +195,40 @@
                 link_target = "S"
             }
 
-            var start_date = $('#start_date').val();
-            var start_time = $('#start_time').val();
-            var end_date = $('#end_date').val();
-            var end_time = $('#end_time').val();
-            var template = document.getElementById("template");
+
             if (template.options[template.selectedIndex].text == "없음") {
-                template = "0"
+                $('#Popup_0').css("display","");
+                $('#TITLE_0').text(title);
+                $('#Popup_0').css("width",width);
+                $('#Popup_0').css("height",height);
+                $('#Popup_0').center();
+                $('#pop_0').attr("href", $('#link_URL').val());
+                $('#IMG').attr('src',image_url);
+
             }
             else if (template.options[template.selectedIndex].text == "기본") {
-                template = "1"
+                var link_target = document.getElementById("link_target");
+                $('#Popup_1').css("display","");
+                $('#TITLE_1').text(title);
+                $('#CONTENTS_1').text(contents);
+                $('#Popup_1').css("width",width);
+                $('#Popup_1').css("height",height);
+                $('#pop_1').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);;
+                $('#Popup_1').center();
             }
             else if (template.options[template.selectedIndex].text == "중간템플릿") {
-                template = "2"
+                var link_target = document.getElementById("link_target");
+                $('#Popup_2').css("display","");
+                $('#TITLE_2').text(title);
+                $('#CONTENTS_2').text(contents);
+                $('#Popup_2').css("width",width);
+                $('#Popup_2').css("height",height);
+                $('#pop_2').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);
+                $('#Popup_2').center();
             }
-
-            var width = $('#width').val();
-            var height = $('#height').val();
-
-            var hidden_day = document.getElementById("hidden_day");
-            if (hidden_day.options[hidden_day.selectedIndex].text == "그만보기") {
-                hidden_day = "0"
-            }
-            else if (hidden_day.options[hidden_day.selectedIndex].text == "1일") {
-                hidden_day = "1"
-            }
-            else if (hidden_day.options[hidden_day.selectedIndex].text == "7일") {
-                hidden_day = "7"
-            }
-
-            var regist_id = {{ user.id }};
-            var contents = $('.summernote').summernote('code');
-            var pop_id = {{ id }}
-
-            $('#TITLE').text(title);
-            $('#CONTENTS').text(contents);
     }
 
-    var popDiv = '${info.popupDiv}';
-    var boxWid = '';
-    var boxHei = '';
+    var link_url = $('#link_URL').val();
 
     $().ready(function(){
             var imgWid = $('#img').outerWidth();
@@ -246,36 +241,17 @@
     });
 
     function fn_move(moveGbn){
-        if(moveGbn == 'close')			window.open('', '_self').close();
-        else if(moveGbn == 'move')		location.href = $('#openUrl').val();
+        if(moveGbn == 'close'){
+            $('#Popup_1').css("display","none");
+            $('#Popup_2').css("display","none");
+            $('#Popup_0').css("display","none");
+        }
+        else if(moveGbn == 'move') {
+            window.open = ($('#link_URL').val());
+
+
+        }
     }
-
-    var win;
-    function resizeWindow(win)    {
-         var winBody = win.document.body;
-
-          //
-          // 새창의 사이즈에 더해줄 marginWidth와 marginHeight
-          //
-          var marginHeight = parseInt(winBody.topMargin)+parseInt(winBody.bottomMargin);
-          var marginWidth = parseInt(winBody.leftMargin)+parseInt(winBody.rightMargin);
-          //
-          // 새창의 사이즈 설정
-          //
-          var wid = winBody.scrollWidth + (winBody.offsetWidth - winBody.clientWidth) + marginWidth-5;
-          var hei = winBody.scrollHeight + (winBody.offsetHeight - winBody.clientHeight) + marginHeight+17;
-          //
-          // 사이즈 재조정
-          //
-          win.resizeTo(800, 1000);
-
-    }
-
-
-    window.onload = function(){
-
-        resizeWindow(this);
-    };
 
 
 
@@ -292,21 +268,36 @@
         </header>
 {#        ================================================================#}
         <body>
-            <div class="popup templet small" id="Popup_1" style="display: inline" >
+            <div class="popup templet" id="Popup_0" style="display: none">
+     			<p style="text-align: center" >
+		            <a id="pop_0" target="_blank" href="http://www.kmooc.kr">
+		                <img src="" alt="팝업 이미지" id="IMG">
+		            </a>
+		        </p>
+		        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
+	                    <span class="fleft">
+	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
+                    	</span>
+                    	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
+	                </div>
+    		</div>
+
+
+            <div class="popup templet small" id="Popup_1" style="display: none" >
 			    <div class="pop-header">
 			        <h1>공지사항</h1>
 			        <a href="#" class="img-ico close" onclick="fn_move('close')">창닫기</a>
 			    </div>
 			    <div class="pop-body">
 			        <div class="templet-top cs2">
-			            <h1 style="font-size: 20px; color: #3c6674; padding: 5px" id="TITLE" > title </h1>
+			            <h1 style="font-size: 20px; color: #3c6674; padding: 5px" id="TITLE_1" > title </h1>
 			        </div>
-			        <div class="templet-con">
-			            <p id = "CONTENTS"> contents </p>
+			        <div class="templet-con" style="background-color: white">
+			            <p id = "CONTENTS_1"> contents </p>
 			        </div>
 			    </div>
-			    <div class="pop-btn">
-			        <button type="button" class="button orange" onclick="fn_move('move')">자세히 보기 ></button>
+			    <div class="pop-btn" style="background-color: white">
+			        <a id="pop_1"><button type="button" class="button orange" onclick="fn_move('move')">자세히 보기 ></button></a>
 			    </div>
 			    <div class="closechk btn-align" style="text-align: left">
 	                    <span class="fleft">
@@ -315,6 +306,35 @@
                     	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
 	                </div>
             </div>
+
+
+
+            <div class="popup templet big" id="Popup_2" style="display: none">
+		        <div class="pop-header">
+		            <h1 id="TITLE_2" >title</h1>
+		            <a href="#" class="img-ico close" onclick="fn_move('close')">창닫기</a>
+		        </div>
+		        <div class="pop-body">
+		            <div class="templet-top cs1">
+		                <img src="http://www.lifelongedu.go.kr/images/pop_img_top01.png">
+		                <h2 style="top: -55px;position: relative;">여러분의 소중한 의견을 통해<br><strong>늘배움의 발전된 모습</strong>을 보여드리겠습니다.</h2>
+		            </div>
+		            <div class="templet-con">
+		                <p id = "CONTENTS_2">
+		                    contents
+		                </p>
+		            </div>
+		        </div>
+		        <div class="pop-btn">
+		            <a id = "pop_2"><button type="button" class="button orange" onclick="fn_move('move')">만족도 조사 참여하기 ></button></a>
+		        </div>
+		        <div class="closechk btn-align" style="text-align: left">
+	                    <span class="fleft">
+	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
+                    	</span>
+                    	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
+	                </div>
+		    </div>
         </body>
 
         <div class="panel-body">
