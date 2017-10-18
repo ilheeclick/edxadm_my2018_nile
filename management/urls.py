@@ -19,6 +19,7 @@ from django.contrib import admin
 
 from home.statistics import statistics_excel
 from home import views
+import tracking_control.views as tracking_view
 from django.contrib.auth import views as auth_views
 
 
@@ -91,6 +92,10 @@ urlpatterns = [
 
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
     url(r'^manage/file_download/(?P<file_name>.*?)/$', views.file_download, name='file_download'),
+
+    url(r'^manage/tracking_log/', tracking_view.log_download, name='tracking_log'),
+    url(r'^manage/log_download/(?P<date>.*?)/$', tracking_view.logfile_download, name='log_download')
+
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

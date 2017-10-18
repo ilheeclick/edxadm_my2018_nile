@@ -1,0 +1,220 @@
+# -*- coding: utf-8 -*-
+
+from django.shortcuts import render
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, COMPRESS_DIR, HOST_NAME
+import functools
+import paramiko
+import re
+import gzip
+import io
+import os
+import zipfile
+import glob
+import datetime
+import shutil
+
+
+def log_download(request):
+
+    return render(request, 'trackingLog.html')
+
+
+def logfile_download(request, date):
+    print str(date)
+    split_str = date.find("/")
+    start_date = date[:split_str]
+    end_date = date[split_str+1:]
+    logFileDownload(start_date, end_date, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
+
+
+    return render(request, 'trackingLog.html')
+
+
+class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+    def missing_host_key(self, client, hostname, key):
+        return
+
+
+def my_callback(filename, bytes_so_far, bytes_total):
+        print 'Transfer of %r is at %d/%d bytes (%.1f%%)' % (
+            filename, bytes_so_far, bytes_total, 100. * bytes_so_far / bytes_total)
+
+
+# web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
+def logFileDownload(start_date, end_date, host, log_dir, local_dir):
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy())
+    client.connect(host, username=HOST_NAME)
+
+    sftp = client.open_sftp()
+    sftp.chdir(log_dir)
+    print type(sftp.listdir())
+    fileList = sftp.listdir()
+    searchName = []
+    date_list = []
+    cnt = 0
+
+    if host == WEB1_HOST:
+        web_server = 1
+    elif host == WEB2_HOST:
+        web_server = 2
+
+    start = datetime.datetime.strptime(start_date, "%y%m%d")
+    end = datetime.datetime.strptime(end_date, "%y%m%d")
+    date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days)]
+
+    for date in date_generated:
+        date_list.append(date.strftime("%y%m%d"))
+
+
+    sDate = re.compile(r'20(\d{6})')
+    for searchDate in date_list:
+        print type(searchDate)
+        for i in sorted(fileList):
+            if re.search(sDate, i) != None:
+                splitDate = i.find('-20')
+
+                sFile = str(i)
+                searchFile = sFile[splitDate+3:splitDate+9]
+
+                if searchFile == searchDate:
+                    searchName.append(i)
+                    callback_for_filename = functools.partial(my_callback, i)
+                    sftp.get(i, local_dir+sFile, callback=callback_for_filename)
+
+        cnt += 1
+        log_change(local_dir, CHANGE_DIR, searchDate, web_server)
+
+        print "\n\n\n\n"
+    print 'end'
+
+    if cnt >= len(date_list):
+        log_compress('999999', None)
+    client.close()
+
+
+
+def log_change(path_dir, change_local, searchDate, web_server):
+    file_list = os.listdir(path_dir)
+
+    file_pattern = re.compile(r'.gz$')
+
+    for log in file_list:
+        if re.search(file_pattern, log) != None:
+            readFile = gzip.open(path_dir + log, 'rb')
+
+            if web_server == 1:
+                outfilename = log[:-3] + "_1.gz"
+            elif web_server == 2:
+                outfilename = log[:-3] + "_2.gz"
+
+            output = gzip.open(change_local + outfilename, 'wb')
+            f = io.BufferedReader(readFile)
+            for test in f.readlines():
+                username_index = test.find('\"username\":')
+                ip_index = test.find('\"ip\":')
+                id_index = test.find('\"user_id\":')
+                email_index = test.find('\"email\\\":')
+                pwd2_index = test.find('\"password2\\\":')
+
+                if username_index != -1:
+                    name_idx = test[username_index + 12:]
+                    ip_idx = test[ip_index + 6:]
+                    id_idx = test[id_index:]
+                    email_idx = test[email_index + 13:]
+
+                    username_change = name_idx.find(',')
+                    ip_change = ip_idx.find(',')
+                    id_change = id_idx.find(',')
+                    email_change = email_idx.find(',')
+
+                    name_pattern = name_idx[0:username_change]
+                    ip_pattern = ip_idx[0:ip_change]
+                    id_pattern = id_idx[0:id_change]
+                    email_pattern = email_idx[0:email_change - 2]
+
+                    r1 = re.compile(name_pattern)
+                    r2 = re.compile(ip_pattern)
+                    r3 = re.compile(id_pattern)
+
+                    data = test
+
+                    if name_pattern != '""':
+                        data = re.sub(r1, '"******"', test, count=1)
+
+                    if ip_pattern != '""':
+                        data = re.sub(r2, '"***.***.***.***"', data, count=1)
+
+                    if id_pattern != '"user_id": null':
+                        data = re.sub(r3, '"user_id": ******', data, count=1)
+
+                    if email_index != -1 and email_pattern != '\\':
+                        if email_idx[email_change - 1] == "}":
+                            data = data.replace(email_pattern, '******@****.**\\\"')
+                        data = data.replace(email_pattern, '******@****.**\\')
+
+                    # 회원 가입시에 들어가는 개인정보를 처리
+
+                    if pwd2_index != -1:
+                        joinName_index = test.find('\"username\\\":')
+                        joinName_idx = test[joinName_index + 16:]
+                        joinName_change = joinName_idx.find(',')
+                        joinName_pattern = joinName_idx[0:joinName_change - 3]
+                        r6 = re.compile(joinName_pattern)
+
+                        uniName_index = test.find('\"name\\\":')
+                        uniName_idx = test[uniName_index + 11:]
+                        uniName_change = uniName_idx.find(',')
+                        uniName_pattern = uniName_idx[:uniName_change - 1]
+
+                        pwd2_idx = test[pwd2_index + 17:]
+                        pwd2_change = pwd2_idx.find(',')
+                        pwd2_pattern = pwd2_idx[0:pwd2_change - 3]
+
+                        if pwd2_pattern != "":
+                            data = data.replace(pwd2_pattern, '********')
+                        data = re.sub(r6, '******', data, count=1)
+                        data = data.replace(uniName_pattern, "\"******\\\"")
+
+                    output.write(data)
+
+            f.close()
+
+            output.close()
+            readFile.close()
+
+    oldLog_remove(path_dir, 1)
+    log_compress(searchDate, change_local)
+
+
+
+def log_compress(search_date, dir_path):
+    if search_date != '999999':
+        zipName = search_date + "_tracking_log.zip"
+        fantasy_zip = zipfile.ZipFile('/Users/kotech/workspace/scpTest/zip_tracking/'+zipName, 'w')
+
+        for folder, subfolders, files in os.walk(dir_path):
+
+            for file in files:
+                if file.endswith('.gz'):
+                    fantasy_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder, file), dir_path), compress_type = zipfile.ZIP_DEFLATED)
+
+        fantasy_zip.close()
+        oldLog_remove(dir_path, 1)
+    else:
+        shutil.make_archive('/Users/kotech/workspace/scpTest/tracking_log', 'zip', '/Users/kotech/workspace/scpTest/zip_tracking/')
+        oldLog_remove('/Users/kotech/workspace/scpTest/zip_tracking/', 2)
+
+
+# fileType 1: .gz 2: .zip
+def oldLog_remove(dir_path, fileType):
+    if fileType == 1:
+        rm_fileList = glob.glob(dir_path+'*.gz')
+    elif fileType == 2:
+        rm_fileList = glob.glob(dir_path+'*.zip')
+    for rm_file in rm_fileList:
+        try:
+            os.remove(rm_file)
+        except:
+            print "remove error"
+

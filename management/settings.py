@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'tracking_control',
 
 )
 
@@ -80,7 +81,7 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD': 'password',
-        'HOST': '192.168.33.10',
+        'HOST': '192.168.33.11',
         'PORT': '3306',
     }
 }
@@ -123,6 +124,15 @@ database_id = '192.168.44.10'
 
 EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
 UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+WEB1_HOST = '192.168.33.11'
+WEB2_HOST = '192.168.33.11'
+WEB1_LOG = '/edx/var/log/tracking/tracking_w1/tracking/'
+WEB2_LOG = '/edx/var/log/tracking/tracking_w2/tracking/'
+LOCAL1_DIR = '/Users/kotech/workspace/scpTest/tracking_w1/'
+LOCAL2_DIR = '/Users/kotech/workspace/scpTest/tracking_w2/'
+CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
+COMPRESS_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
+HOST_NAME = 'vagrant'
 
 debug = True
 
