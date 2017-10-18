@@ -80,6 +80,7 @@ $(document).ready(function(){
             else if (data[0][16] == "N") {
                 $("#use_yn").val("사용안함").prop("selected", true);
             }
+
         })
 
 });

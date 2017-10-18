@@ -87,6 +87,20 @@ def modi_popup(request, id):
             cur.close()
             for p in row:
                 mod_pop.append(p)
+            cur = connection.cursor()
+            query = """
+                    select count(use_yn) from popup where use_yn = 'Y';
+                    """
+            cur.execute(query)
+            print ('=====================================')
+            print query
+            row = cur.fetchall()
+            cur.close()
+            print row
+            for p in row:
+                mod_pop.append(p)
+
+            print mod_pop
             data = json.dumps(list(mod_pop), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -108,13 +122,27 @@ def popup_db(request):
             cur = connection.cursor()
             query = """
                 SELECT popup_id,
+                       CASE
+                          WHEN popup_type = 'H' THEN 'HTML'
+                          WHEN popup_type = 'I' THEN 'Image'
+                       END
                        popup_type,
                        title,
                        regist_id,
                        start_date,
                        end_date,
+                       CASE
+                          WHEN link_type = '0' THEN '없음'
+                          WHEN link_type = '1' THEN '전체링크'
+                          WHEN link_type = '2' THEN '이미지맵'
+                       END
                        link_type,
-                       link_url
+                       link_url,
+                       CASE
+                          WHEN use_yn = 'Y' THEN '사용함'
+                          WHEN use_yn = 'N' THEN '사용안함'
+                       END
+                       use_yn
                   FROM popup
 			"""
             cur.execute(query)
@@ -130,6 +158,7 @@ def popup_db(request):
                 value_list.append(pop[5])
                 value_list.append(pop[6])
                 value_list.append(pop[7])
+                value_list.append(pop[8])
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)

@@ -40,6 +40,21 @@
     {% include "community/script/notice.js" %}
 	{% include "popup/script/modipopup.js" %}
 
+
+    $(document).ready(function(){
+       $.ajax({
+            url: '/manage/modi_popup/' + '77777',
+            data: {
+                method: 'modi'
+            }
+        }).done(function (data) {
+            if ( data >= 3 ) {
+                alert('경고 : 현재 사용중인 팝업창' + data +'개 입니다.');
+            }
+        })
+
+    });
+
     function save() {
         try {
             var method = '';
@@ -198,20 +213,20 @@
 
             if (template.options[template.selectedIndex].text == "없음") {
                 $('#Popup_0').css("display","");
-                $('#TITLE_0').text(title);
+                $('#TITLE_0').html(title);
                 $('#Popup_0').css("width",width);
                 $('#Popup_0').css("height",height);
                 $('#Popup_0').center();
                 $('#pop_0').attr("href", $('#link_URL').val());
                 $('#IMG').attr('src',image_url);
-                $('#CONTENTS_0').text(contents);
+                $('#CONTENTS_0').html(contents);
 
             }
             else if (template.options[template.selectedIndex].text == "기본") {
                 var link_target = document.getElementById("link_target");
                 $('#Popup_1').css("display","");
-                $('#TITLE_1').text(title);
-                $('#CONTENTS_1').text(contents);
+                $('#TITLE_1').html(title);
+                $('#CONTENTS_1').html(contents);
                 $('#Popup_1').css("width",width);
                 $('#Popup_1').css("height",height);
                 $('#pop_1').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);;
@@ -220,8 +235,8 @@
             else if (template.options[template.selectedIndex].text == "중간템플릿") {
                 var link_target = document.getElementById("link_target");
                 $('#Popup_2').css("display","");
-                $('#TITLE_2').text(title);
-                $('#CONTENTS_2').text(contents);
+                $('#TITLE_2').html(title);
+                $('#CONTENTS_2').html(contents);
                 $('#Popup_2').css("width",width);
                 $('#Popup_2').css("height",height);
                 $('#pop_2').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);
