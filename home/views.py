@@ -2,31 +2,31 @@
 from django.shortcuts import render, render_to_response, redirect
 from django.template import Context, RequestContext
 from django.http import Http404, HttpResponse, FileResponse, JsonResponse
-import json
 from django.db import connection
-from management.settings import UPLOAD_DIR
 from django.core.serializers.json import DjangoJSONEncoder
-from management.settings import dic_univ, database_id, debug
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-import os
 from django.views.decorators.csrf import csrf_exempt
-import subprocess
-import commands
-import sys
-from models import GeneratedCertificate
-import pprint
 from django.db import connections
-import ast
-import urllib
-import csv
-import datetime
 from django.views.generic import View
-from .forms import UserForm, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from management.settings import UPLOAD_DIR
+from management.settings import dic_univ, database_id, debug
+from models import GeneratedCertificate
+from .forms import UserForm, LoginForm
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+import json
+import os
+import subprocess
+import commands
+import sys
+import pprint
+import ast
+import urllib
+import csv
+import datetime
 import logging
 
 reload(sys)
