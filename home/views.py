@@ -27,10 +27,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+import logging
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+def get_file_ext(filename):
+    filename_split = filename.split('.')
+    file_ext_index = len(filename_split)
+    file_ext = filename_split[file_ext_index-1] 
+    return file_ext
 
 @login_required
 def stastic_index(request):
@@ -944,7 +950,7 @@ def new_notice(request):
         file_size = ''
         print 'file:', file
         filename = file._name
-        file_ext = filename.split('.')[1]
+        file_ext = get_file_ext(filename)
 
         fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
         for chunk in file.chunks():
@@ -1218,7 +1224,7 @@ def new_knews(request):
         file_size = ''
         # print file
         filename = file._name
-        file_ext = filename.split('.')[1]
+        file_ext = get_file_ext(filename)
 
         fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
         for chunk in file.chunks():
@@ -1706,7 +1712,7 @@ def new_refer(request):
         value_list = []
         file = request.FILES['file']
         filename = file._name
-        file_ext = filename.split('.')[1]
+        file_ext = get_file_ext(filename)
 
         fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
         for chunk in file.chunks():
@@ -2424,71 +2430,6 @@ auth_dict = {
     'profile_image_uploaded_at': u'프로필 이미지 업로드 일시',
 }
 
-
-# class CommunityMobile(View):
-#     def __init__(self):
-#         print 'community_mobile init called'
-#
-#     def get(self, request):
-#         if not request.is_ajax():
-#             return render(request, 'community/comm_mobile.html')
-#         else:
-#             with connections['default'].cursor() as cur:
-#                 query = """
-#                     SELECT board_id, subject, content
-#                         FROM tb_board
-#                        WHERE section = 'N' AND use_yn = 'Y'
-#                     ORDER BY odby;
-#                 """
-#                 cur.execute(query)
-#                 rows = cur.fetchall()
-#
-#
-#                 # data = json.dumps(list(mod_refer), cls=DjangoJSONEncoder, ensure_ascii=False)
-#
-#             return HttpResponse(json.dumps([list(row) for row in rows], cls=DjangoJSONEncoder, ensure_ascii=False), 'applications/json')
-#
-#     def put(self, request):
-#         with connections['default'].cursor() as cur:
-#             query = """
-#                 INSERT INTO tb_board(subject,
-#                                      content,
-#                                      section,
-#                                      head_title)
-#                      VALUES (%s,
-#                              %s,
-#                              %s,
-#                              %s);
-#             """
-#             cur.execute(query, [])
-#             rows = cur.fetchall()
-#
-#         result_dict = dict()
-#         return HttpResponse(result_dict, 'applications/json')
-#
-#         self.get()
-#
-#     def post(self, request):
-#         with connections['default'].cursor() as cur:
-#             query = """
-#             """
-#             cur.execute(query)
-#             rows = cur.fetchall()
-#
-#         result_dict = dict()
-#         return HttpResponse(result_dict, 'applications/json')
-#         self.get()
-#
-#     def delete(self, request):
-#         with connections['default'].cursor() as cur:
-#             query = """
-#             """
-#             cur.execute(query)
-#             rows = cur.fetchall()
-#
-#         result_dict = dict()
-#         return HttpResponse(result_dict, 'applications/json')
-
 # community view
 def comm_mobile(request):
     if request.is_ajax():
@@ -2549,8 +2490,6 @@ def comm_mobile(request):
 @csrf_exempt
 def new_mobile(request):
     if 'file' in request.FILES:
-        print 'file process start .'
-
         value_list = []
         file = request.FILES['file']
         filename = ''
@@ -2558,7 +2497,7 @@ def new_mobile(request):
         file_size = ''
         print 'file:', file
         filename = file._name
-        file_ext = filename.split('.')[1]
+        file_ext = get_file_ext(filename)
 
         fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
         for chunk in file.chunks():
