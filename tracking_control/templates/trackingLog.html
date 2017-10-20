@@ -54,41 +54,6 @@
             yearSuffix: '년'
         });
 
-{#        $("#datepicker_week").datepicker({#}
-{#            minDate: new Date(2015, 10 - 1, 14),#}
-{#            maxDate: "+0m +0w -1d",#}
-{#            dateFormat: 'yymmdd',#}
-{#            prevText: '이전 달',#}
-{#            nextText: '다음 달',#}
-{#            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],#}
-{#            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],#}
-{#            dayNames: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            showMonthAfterYear: true,#}
-{#            yearSuffix: '년',#}
-{#            beforeShowDay: function (date) {#}
-{#                return [date.getDay() == 6, ''];#}
-{#            }#}
-{#        });#}
-{##}
-{#        $("#datepicker_month").datepicker({#}
-{#            minDate: new Date(2015, 10 - 1, 14),#}
-{#            maxDate: "+0m +0w -1d",#}
-{#            dateFormat: 'yymmdd',#}
-{#            prevText: '이전 달',#}
-{#            nextText: '다음 달',#}
-{#            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],#}
-{#            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],#}
-{#            dayNames: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],#}
-{#            showMonthAfterYear: true,#}
-{#            yearSuffix: '년',#}
-{#            beforeShowDay: function (date) {#}
-{#                return [date.getDate() == LastDayOfMonth(date.getFullYear(), date.getMonth()), ''];#}
-{#            }#}
-{#        });#}
     });
 
     var idx = 0;
@@ -109,35 +74,15 @@
         } else {
             $("#download").find("img").show();
             $.ajax({
-                url: "/manage/log_download/" + $("#datepicker").val() + "/" + $("#datepicker2").val()
+                url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
+                dataType: "json",
             }).done(function (data) {
-                alert($("#datepicker").val());
-                alert($("#datepicker2").val());
                 alert('파일 생성 완료!');
-                $("#download").prop("href", data);
-                $("#downloadBtn").click();
+                location.href = "/manage/tracking_log/down/"+data.filename;
                 $("#download").find("img").hide();
             });
         }
     });
-
-
-{#    $(document).on('click', '#month_down', function () {#}
-{#        if ($("#datepicker_month").val() == "") {#}
-{#            alert('날짜를 선택하세요.');#}
-{#            return;#}
-{#        }#}
-{#        $("#download_month").find("img").show();#}
-{#        $.ajax({#}
-{#                    url: "/manage/excel_download_month/" + $("#datepicker_month").val() + $("#datepicker_month2").val()#}
-{#                })#}
-{#                .done(function (data) {#}
-{#                    alert('파일 생성 완료!');#}
-{#                    $("#download_month").prop("href", data);#}
-{#                    $("#downloadBtn_month").click();#}
-{#                    $("#download_month").find("img").hide();#}
-{#                });#}
-{#    });#}
 
 
 </script>
@@ -167,7 +112,6 @@
             <a class="btn btn-primary" id="day_down">다운로드</a>
             <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
                 vertical-align: middle;"/></a>
-
         </form>
     </div>
 

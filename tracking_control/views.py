@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, COMPRESS_DIR, HOST_NAME
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, COMPRESS_DIR, HOST_NAME, UPLOAD_DIR, STATIC_URL
 import functools
 import paramiko
 import re
@@ -12,10 +12,12 @@ import zipfile
 import glob
 import datetime
 import shutil
+from django.http import HttpResponse, Http404
+from django.http import JsonResponse
+
 
 
 def log_download(request):
-
     return render(request, 'trackingLog.html')
 
 
@@ -24,10 +26,33 @@ def logfile_download(request, date):
     split_str = date.find("/")
     start_date = date[:split_str]
     end_date = date[split_str+1:]
-    logFileDownload(start_date, end_date, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
 
+    date_list = []
+    cnt = 0
 
-    return render(request, 'trackingLog.html')
+    start = datetime.datetime.strptime(start_date, "%y%m%d")
+    end = datetime.datetime.strptime(end_date, "%y%m%d")
+    print re
+
+    print end
+    date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days+1)]
+
+    for date in date_generated:
+        print date
+        date_list.append(date.strftime("%y%m%d"))
+
+    for searchDate in date_list:
+        print type(searchDate)
+        logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
+        logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
+        cnt += 1
+    cnt = len(date_list)
+    if cnt >= len(date_list):
+        log_compress('999999', None)
+        print "dddddddd"
+        zip_file = 'tracking_log.zip'
+        return JsonResponse({'filename': zip_file})
+    raise Http404
 
 
 class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
@@ -41,55 +66,47 @@ def my_callback(filename, bytes_so_far, bytes_total):
 
 
 # web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
-def logFileDownload(start_date, end_date, host, log_dir, local_dir):
+def logFileDownload(searchDate, host, log_dir, local_dir):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(AllowAnythingPolicy())
     client.connect(host, username=HOST_NAME)
 
     sftp = client.open_sftp()
     sftp.chdir(log_dir)
-    print type(sftp.listdir())
+
     fileList = sftp.listdir()
     searchName = []
-    date_list = []
-    cnt = 0
 
-    if host == WEB1_HOST:
+
+    web_server = 1
+
+    # 원래는 host로 하여야하나 테스트 위해서 log_dir로 조건 줌
+    if log_dir == WEB1_LOG:
         web_server = 1
-    elif host == WEB2_HOST:
+    elif log_dir == WEB2_LOG:
         web_server = 2
 
-    start = datetime.datetime.strptime(start_date, "%y%m%d")
-    end = datetime.datetime.strptime(end_date, "%y%m%d")
-    date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days)]
-
-    for date in date_generated:
-        date_list.append(date.strftime("%y%m%d"))
-
-
     sDate = re.compile(r'20(\d{6})')
-    for searchDate in date_list:
-        print type(searchDate)
-        for i in sorted(fileList):
-            if re.search(sDate, i) != None:
-                splitDate = i.find('-20')
 
-                sFile = str(i)
-                searchFile = sFile[splitDate+3:splitDate+9]
+    for i in sorted(fileList):
+        if re.search(sDate, i) != None:
+            splitDate = i.find('-20')
 
-                if searchFile == searchDate:
-                    searchName.append(i)
-                    callback_for_filename = functools.partial(my_callback, i)
-                    sftp.get(i, local_dir+sFile, callback=callback_for_filename)
+            sFile = str(i)
+            searchFile = sFile[splitDate+3:splitDate+9]
 
-        cnt += 1
-        log_change(local_dir, CHANGE_DIR, searchDate, web_server)
+            if searchFile == searchDate:
+                searchName.append(i)
+                # callback_for_filename = functools.partial(my_callback, i)
+                sftp.get(i, local_dir+sFile)
+                # sftp.get(i, local_dir+sFile, callback=callback_for_filename)
 
-        print "\n\n\n\n"
+
+    log_change(local_dir, CHANGE_DIR, searchDate, web_server)
+
+    print "\n\n\n\n"
     print 'end'
 
-    if cnt >= len(date_list):
-        log_compress('999999', None)
     client.close()
 
 
@@ -184,7 +201,8 @@ def log_change(path_dir, change_local, searchDate, web_server):
             readFile.close()
 
     oldLog_remove(path_dir, 1)
-    log_compress(searchDate, change_local)
+    if web_server == 2:
+        log_compress(searchDate, change_local)
 
 
 
@@ -202,16 +220,19 @@ def log_compress(search_date, dir_path):
         fantasy_zip.close()
         oldLog_remove(dir_path, 1)
     else:
-        shutil.make_archive('/Users/kotech/workspace/scpTest/tracking_log', 'zip', '/Users/kotech/workspace/scpTest/zip_tracking/')
+        shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', '/Users/kotech/workspace/scpTest/zip_tracking/')
         oldLog_remove('/Users/kotech/workspace/scpTest/zip_tracking/', 2)
 
 
-# fileType 1: .gz 2: .zip
+
+# fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
 def oldLog_remove(dir_path, fileType):
     if fileType == 1:
         rm_fileList = glob.glob(dir_path+'*.gz')
     elif fileType == 2:
         rm_fileList = glob.glob(dir_path+'*.zip')
+    elif fileType == 3:
+        rm_fileList = glob.glob(dir_path)
     for rm_file in rm_fileList:
         try:
             os.remove(rm_file)

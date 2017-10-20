@@ -93,13 +93,13 @@ urlpatterns = [
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
     url(r'^manage/file_download/(?P<file_name>.*?)/$', views.file_download, name='file_download'),
 
-    url(r'^manage/tracking_log/', tracking_view.log_download, name='tracking_log'),
-    url(r'^manage/log_download/(?P<date>.*?)/$', tracking_view.logfile_download, name='log_download')
-
+    url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
+    url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
+    url(r'^manage/tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
+    # url(r'^manage/filed/$', tracking_view.send_file)
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
     # url(r'^manage/history_cert/', views.history_cert, name='history_cert'),
-
 ]

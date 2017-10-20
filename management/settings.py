@@ -103,7 +103,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/manage/home/static/'
+STATIC_URL = '/Users/kotech/workspace/management2/management/static/uploads/'
 
 STATICFILES_DIRS = (
     ("css", os.path.join(BASE_DIR, 'static1/css')),
@@ -122,8 +122,8 @@ STATICFILES_DIRS = (
 database_id = '192.168.44.10'
 # database_id = '192.168.33.13'
 
-EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+EXCEL_PATH = '/Users/kotech/workspace/scpTest/'
+UPLOAD_DIR = '/Users/kotech/workspace/management2/management/static/uploads/'
 WEB1_HOST = '192.168.33.11'
 WEB2_HOST = '192.168.33.11'
 WEB1_LOG = '/edx/var/log/tracking/tracking_w1/tracking/'
@@ -131,7 +131,7 @@ WEB2_LOG = '/edx/var/log/tracking/tracking_w2/tracking/'
 LOCAL1_DIR = '/Users/kotech/workspace/scpTest/tracking_w1/'
 LOCAL2_DIR = '/Users/kotech/workspace/scpTest/tracking_w2/'
 CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
-COMPRESS_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
+COMPRESS_DIR = '/Users/kotech/workspace/scpTest/'
 HOST_NAME = 'vagrant'
 
 debug = True
