@@ -971,6 +971,7 @@ def new_notice(request):
         data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
         if request.POST['method'] == 'add':
 
+            odby = request.POST.get('odby')
             title = request.POST.get('nt_title')
             title = title.replace("'", "''")
             content = request.POST.get('nt_cont')
@@ -981,18 +982,29 @@ def new_notice(request):
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
-            print file_name, '/', file_ext, '/', file_size
 
+            # ------ 공지사항 쓰기 query ------ #
             cur = connection.cursor()
-            query = "insert into edxapp.tb_board(subject, content, head_title, section)"
-            query += " VALUES ('" + title + "', '" + content + "', '" + head_title + "', '" + section + "') "
+            query = '''
+                INSERT INTO edxapp.tb_board 
+                            (subject, 
+                             content, 
+                             head_title, 
+                             section,
+                             odby) 
+                VALUES      ('{0}', 
+                             '{1}', 
+                             '{2}', 
+                             '{3}',
+                             '{4}') 
+            '''.format(title, content, head_title, section, odby)
             cur.execute(query)
+            # ------ 공지사항 쓰기 query ------ #
 
             query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
             cur.execute(query2)
             board_id = cur.fetchall()
             cur.close()
-            # print board_id[0][0]
             if upload_file != '':
                 cur = connection.cursor()
                 query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
@@ -1230,7 +1242,6 @@ def new_knews(request):
         filename = ''
         file_ext = ''
         file_size = ''
-        # print file
         filename = file._name
         file_ext = get_file_ext(filename)
 
@@ -1261,14 +1272,25 @@ def new_knews(request):
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
-            # print file_name,'/',file_ext,'/',file_size
-            # print 'head_title == ',head_title
-            print 'content == ', content
+            odby = request.POST.get('odby')
 
+            # ------ K-MOOC 소식 쓰기 query ------ #
             cur = connection.cursor()
-            query = "insert into edxapp.tb_board(subject, content, section, head_title)"
-            query += " VALUES ('" + title + "', '" + content + "', '" + section + "', '" + head_title + "') "
+            query = '''
+                INSERT INTO edxapp.tb_board 
+                            (subject, 
+                             content, 
+                             head_title, 
+                             section,
+                             odby) 
+                VALUES      ('{0}', 
+                             '{1}', 
+                             '{2}', 
+                             '{3}',
+                             '{4}') 
+            '''.format(title, content, head_title, section, odby)
             cur.execute(query)
+            # ------ K-MOOC 소식 쓰기 query ------ #
 
             query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
             cur.execute(query2)
@@ -1335,7 +1357,6 @@ def modi_knews(request, id, use_yn):
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
             cur = connection.cursor()
-            # query = "SELECT subject, content, odby from tb_board WHERE section = 'K' and board_id = "+id
             query = """
 					SELECT subject,
 						   content,
@@ -1355,7 +1376,6 @@ def modi_knews(request, id, use_yn):
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
-            # print 'query', query
 
             cur = connection.cursor()
 
@@ -1367,9 +1387,6 @@ def modi_knews(request, id, use_yn):
             cur.execute(query, [id, ])
             files = cur.fetchall()
             cur.close()
-            # print id
-            # print 'files == ',files
-            # print row
             mod_knews.append(row[0][0])
             mod_knews.append(row[0][1])
             mod_knews.append(row[0][2])
@@ -1379,7 +1396,6 @@ def modi_knews(request, id, use_yn):
             data = json.dumps(list(mod_knews), cls=DjangoJSONEncoder, ensure_ascii=False)
         elif request.GET['method'] == 'file_download':
             file_name = request.GET['file_name']
-            # print 'file_name == ',file_name
             data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
         return HttpResponse(data, 'applications/json')
@@ -1735,11 +1751,25 @@ def new_refer(request):
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
+            odby = request.POST.get('odby')
 
+            # ------ 자료실 쓰기 query ------ #
             cur = connection.cursor()
-            query = "insert into edxapp.tb_board(subject, content, section, head_title)"
-            query += " VALUES ('" + title + "', '" + content + "', '" + section + "', '" + head_title + "') "
+            query = '''
+                INSERT INTO edxapp.tb_board 
+                            (subject, 
+                             content, 
+                             head_title, 
+                             section,
+                             odby) 
+                VALUES      ('{0}', 
+                             '{1}', 
+                             '{2}', 
+                             '{3}',
+                             '{4}') 
+            '''.format(title, content, head_title, section, odby)
             cur.execute(query)
+            # ------ 자료실 쓰기 query ------ #
 
             query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
             cur.execute(query2)

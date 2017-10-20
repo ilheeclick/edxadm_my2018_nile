@@ -5,7 +5,6 @@ jQuery.ajaxSettings.traditional = true;
 //신규 등록
 $('#knews_save').on('click', function(e){
     try{
-        //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
         var knews_title, knews_content, uploadfile;
         uploadfile = $('#uploadfile').val().substr(12);
@@ -13,8 +12,7 @@ $('#knews_save').on('click', function(e){
         knews_content = $('.summernote').summernote('code');
         action_mode = 'add';
         var head_title = $('#head_title').find('option:selected').attr('id');
-        //noticecontent = $('#noticecontent').val();
-        //alert(noticetitle + ' / '  + noticecontent);
+        odby = $('#odby').val();
 
         if(head_title == 'null'){
             head_title = ''
@@ -30,7 +28,8 @@ $('#knews_save').on('click', function(e){
             file_ext: file_ext,
             file_size: file_size,
             k_news: 'K',
-            method: action_mode
+            method: action_mode,
+            odby: odby
         }).done(function(data){
             location.href='/manage/comm_k_news';
         }).fail(function(error) {

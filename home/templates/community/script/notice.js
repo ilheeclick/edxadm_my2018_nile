@@ -36,17 +36,15 @@ function sendFile(file, modules, editable) {
 //신규 등록
 $('#notice_save').on('click', function(e){
     try{
-        //alert(file_name+'/'+file_ext+'/'+file_size);
         var action_mode;
         var noticetitle, noticecontent, notice, uploadfile;
         var head_title =  $('#head_title').find('option:selected').attr('id');
         uploadfile = $('#uploadfile').val().substr(12);
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
-        //alert(noticetitle + ' / '  + noticecontent + ' / '  + uploadfile);
-        //alert(file_name + ' / '  + file_ext + ' / '  + file_size);
         action_mode = 'add';
-
+        odby = $('#odby').val();
+        
         if(head_title == 'null'){
             head_title = ''
         }
@@ -61,7 +59,8 @@ $('#notice_save').on('click', function(e){
             file_ext: file_ext,
             file_size: file_size,
             notice: 'N',
-            method: action_mode
+            method: action_mode,
+            odby: odby
         }).done(function(data){
             location.href='/manage/comm_notice';
         }).fail(function(error) {
