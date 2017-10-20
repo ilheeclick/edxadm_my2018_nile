@@ -1011,17 +1011,25 @@ def new_notice(request):
             noti_id = request.POST.get('noti_id')
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
-
             upload_file = request.POST.get('uploadfile')
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
 
+            # ------ 공지사항 수정 query ------ #
             cur = connection.cursor()
-            # query = "update edxapp.tb_board set subject = '"+title+"', content = '"+content+"', odby = '"+odby+"' where board_id = '"+noti_id+"'"
-            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', head_title = '" + head_title + "', mod_date = now() where board_id = '" + noti_id + "'"
+            query = '''
+                UPDATE edxapp.tb_board 
+                SET    subject = '{0}', 
+                       content = '{1}', 
+                       head_title = '{2}', 
+                       mod_date = Now(),
+                       odby = {3}
+                WHERE  board_id = '{4}' 
+            '''.format(title, content, head_title, odby, noti_id)
             cur.execute(query)
             cur.close()
+            # ------ 공지사항 수정 query ------ #
 
             if upload_file != '':
                 cur = connection.cursor()
@@ -1266,7 +1274,6 @@ def new_knews(request):
             cur.execute(query2)
             board_id = cur.fetchall()
             cur.close()
-            # print board_id[0][0]
             if upload_file != '':
                 cur = connection.cursor()
                 query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
@@ -1288,16 +1295,8 @@ def new_knews(request):
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
 
+            # ------ K-MOOC 소식 수정 query ------ #
             cur = connection.cursor()
-
-            print 'param check s --------------------------'
-            print 'title:', title
-            print 'content:', content
-            print 'odby:', odby
-            print 'head_title:', head_title
-            print 'noti_id:', noti_id
-            print 'param check e --------------------------'
-
             query = '''
                 UPDATE edxapp.tb_board
                    SET subject = '{title}',
@@ -1306,7 +1305,6 @@ def new_knews(request):
                        mod_date = now(),
                        head_title = '{head_title}'
                  WHERE board_id = '{noti_id}'
-
             '''.format(
                 title=title,
                 content=content,
@@ -1314,16 +1312,10 @@ def new_knews(request):
                 head_title=head_title,
                 noti_id=noti_id
             )
-
-            print 'query:', query
-
             cur.execute(query)
-
             cur.close()
+            # ------ K-MOOC 소식 수정 query ------ #
 
-            print query
-
-            print 'str(file_ext) == ', str(file_ext)
             if upload_file != '':
                 cur = connection.cursor()
                 query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
@@ -1776,11 +1768,21 @@ def new_refer(request):
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
 
+            # ------ 자료실 수정 query ------ #
             cur = connection.cursor()
-            query = "update edxapp.tb_board set subject = '" + title + "', content = '" + content + "', mod_date = now(), head_title = '" + head_title + "' where board_id = '" + refer_id + "'"
+            query = '''
+                UPDATE edxapp.tb_board 
+                SET    subject = '{0}', 
+                       content = '{1}', 
+                       mod_date = Now(), 
+                       head_title = '{2}',
+                       odby = '{3}'
+                WHERE  board_id = '{4}' 
+            '''.format(title, content, head_title, odby, refer_id)
             cur.execute(query)
             cur.close()
-
+            # ------ 자료실 수정 query ------ #
+  
             if upload_file != '':
                 cur = connection.cursor()
                 query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
