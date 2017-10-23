@@ -992,6 +992,7 @@ def new_notice(request):
             head_title = request.POST.get('head_title')
             section = request.POST.get('notice')
             odby = request.POST.get('odby')
+            upload_file = request.POST.get('uploadfile')
 
             # attach var
             upload_file = request.POST.get('uploadfile')
@@ -1020,7 +1021,7 @@ def new_notice(request):
             # ------ 공지사항 쓰기 query ------ #
             cur = connection.cursor()
             query = '''
-                INSERT INTO ATTACHMENT edxapp.tb_board 
+                INSERT INTO edxapp.tb_board 
                             (subject, 
                              content, 
                              head_title, 
