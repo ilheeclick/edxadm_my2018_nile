@@ -90,9 +90,6 @@ $('#notice_mod').on('click', function(e){
             file_list += '+';
         }
         
-        alert(file_cnt);
-        alert(file_list);
-
         // get file
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
