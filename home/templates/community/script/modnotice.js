@@ -66,40 +66,46 @@ $(document).ready(function(){
 
 
 
-//수정 처리
+// modify board
 $('#notice_mod').on('click', function(e){
     try{
         var action_mode;
         var noticetitle, noticecontent, notice, noti_id, odby;
-        var uploadfile = $('#uploadfile').val().substr(12);
         var head_title =  $('#head_title').find('option:selected').attr('id');
-
         noticetitle = $('#noticetitle').val();
         noticecontent = $('.summernote').summernote('code');
-        odby = $('#odby').val();
         action_mode = 'modi';
-        noti_id = '{{id}}';
-
+        odby = $('#odby').val();
+        noti_id = '{{id}}'; // between
         if(head_title == 'null'){
             head_title = ''
         }
-        /* insert to database */
+
+        // get file
+        var file_list = "";
+        file_cnt = $('#file_cnt').text();
+        for(i=0; i<file_cnt; i++){
+            item = '#file_'+i;
+            file_list += ($(item).text());
+            file_list += '+';
+        }
+        
+        alert(file_cnt);
+        alert(file_list);
+
+        // get file
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: noticetitle,
             nt_cont: noticecontent,
-            noti_id : noti_id,
+            noti_id : noti_id, // between
             head_title : head_title,
-            uploadfile : uploadfile,
-            file_name : file_name,
-            file_ext : file_ext,
-            file_size : file_size,
+            uploadfile : file_list,
             notice: 'N',
-            odby: odby,
-            method: action_mode
+            method: action_mode,
+            odby: odby
         }).done(function(data){
             location.href='/manage/comm_notice';
-
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });

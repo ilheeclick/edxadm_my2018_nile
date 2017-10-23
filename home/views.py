@@ -938,6 +938,7 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
+# ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
 def new_notice(request):
     if request.FILES:
@@ -1068,6 +1069,8 @@ def new_notice(request):
             data = json.dumps({'status': "success"})
 
         elif request.POST['method'] == 'modi':
+
+            # board var
             title = request.POST.get('nt_title')
             title = title.replace("'", "''")
             content = request.POST.get('nt_cont')
@@ -1076,9 +1079,30 @@ def new_notice(request):
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
+
+            # attach var
+            upload_file = request.POST.get('uploadfile')
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
+
+            # file 
+            file_ext_list = []
+            file_name_list = []
+            file_size_list = []
+
+            # make file name, size, ext
+            upload_file = unicode(upload_file)
+            upload_split = upload_file.split('+')
+            for item in upload_split:
+                index = item.find('   ')
+                file_name_list.append( item[:index] )
+                file_size_list.append( item[index+3:] )
+            file_name_list.pop()
+            file_size_list.pop()
+            for item in file_name_list:
+                file_ext_list.append( get_file_ext(item) )
+            file_cnt = len(file_name_list)
 
             # ------ 공지사항 수정 query ------ #
             cur = connection.cursor()
@@ -1095,18 +1119,29 @@ def new_notice(request):
             cur.close()
             # ------ 공지사항 수정 query ------ #
 
+            # ------ 공지사항 파일첨부 query ------ #
             if upload_file != '':
-                cur = connection.cursor()
-                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-                        "VALUES ('" + str(noti_id) + "','" + str(file_name) + "','" + str(file_ext) + "','" + str(
-                    file_size) + "')"
-                cur.execute(query)
-                cur.close()
+                for i in range(0, file_cnt):
+                    cur = connection.cursor()
+                    query = '''
+                    INSERT INTO edxapp.tb_board_attach 
+                                (board_id, 
+                                 attatch_file_name, 
+                                 attatch_file_ext, 
+                                 attatch_file_size) 
+                     VALUES      ('{0}', 
+                                  '{1}', 
+                                  '{2}', 
+                                  '{3}') 
+                    '''.format(str(noti_id), file_name_list[i], file_ext_list[i], file_size_list[i])
+                    cur.execute(query)
+                    cur.close()
+            # ------ 공지사항 파일첨부 query ------ #
+
             data = json.dumps({'status': "success"})
-
         return HttpResponse(data, 'applications/json')
-
     return render(request, 'community/comm_newnotice.html')
+# ---------- 2017.10.23 ahn jin yong ---------- #
 
 
 @csrf_exempt
