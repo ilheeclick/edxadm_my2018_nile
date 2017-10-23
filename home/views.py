@@ -2742,12 +2742,9 @@ def file_download(request, file_name):
     # 실제 있는 파일로 지정
     file_path = '%s%s' % (STATIC_URL, file_name)
     # file_path = '/Users/kotech/workspace/scpTest/tracking_log.zip'
-    print STATIC_URL
     print 'file_path:', file_path
-    print file_name
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
-            print "ffffffff"
             if file_name == 'tracking_log.zip':
                 response = HttpResponse(fh.read(), content_type="application/x-zip-compressed")
             else:

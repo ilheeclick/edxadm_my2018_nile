@@ -12,8 +12,12 @@ import zipfile
 import glob
 import datetime
 import shutil
+import json
 from django.http import HttpResponse, Http404
 from django.http import JsonResponse
+from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 
@@ -22,7 +26,6 @@ def log_download(request):
 
 
 def logfile_download(request, date):
-    print str(date)
     split_str = date.find("/")
     start_date = date[:split_str]
     end_date = date[split_str+1:]
@@ -32,24 +35,19 @@ def logfile_download(request, date):
 
     start = datetime.datetime.strptime(start_date, "%y%m%d")
     end = datetime.datetime.strptime(end_date, "%y%m%d")
-    print re
 
-    print end
     date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days+1)]
 
     for date in date_generated:
-        print date
         date_list.append(date.strftime("%y%m%d"))
 
     for searchDate in date_list:
-        print type(searchDate)
         logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
         logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
         cnt += 1
     cnt = len(date_list)
     if cnt >= len(date_list):
         log_compress('999999', None)
-        print "dddddddd"
         zip_file = 'tracking_log.zip'
         return JsonResponse({'filename': zip_file})
     raise Http404
@@ -77,7 +75,6 @@ def logFileDownload(searchDate, host, log_dir, local_dir):
     fileList = sftp.listdir()
     searchName = []
 
-
     web_server = 1
 
     # 원래는 host로 하여야하나 테스트 위해서 log_dir로 조건 줌
@@ -97,15 +94,11 @@ def logFileDownload(searchDate, host, log_dir, local_dir):
 
             if searchFile == searchDate:
                 searchName.append(i)
-                # callback_for_filename = functools.partial(my_callback, i)
+                callback_for_filename = functools.partial(my_callback, i)
                 sftp.get(i, local_dir+sFile)
-                # sftp.get(i, local_dir+sFile, callback=callback_for_filename)
-
+                sftp.get(i, local_dir+sFile, callback=callback_for_filename)
 
     log_change(local_dir, CHANGE_DIR, searchDate, web_server)
-
-    print "\n\n\n\n"
-    print 'end'
 
     client.close()
 
@@ -127,18 +120,18 @@ def log_change(path_dir, change_local, searchDate, web_server):
 
             output = gzip.open(change_local + outfilename, 'wb')
             f = io.BufferedReader(readFile)
-            for test in f.readlines():
-                username_index = test.find('\"username\":')
-                ip_index = test.find('\"ip\":')
-                id_index = test.find('\"user_id\":')
-                email_index = test.find('\"email\\\":')
-                pwd2_index = test.find('\"password2\\\":')
+            for text in f.readlines():
+                username_index = text.find('\"username\":')
+                ip_index = text.find('\"ip\":')
+                id_index = text.find('\"user_id\":')
+                email_index = text.find('\"email\\\":')
+                pwd2_index = text.find('\"password2\\\":')
 
                 if username_index != -1:
-                    name_idx = test[username_index + 12:]
-                    ip_idx = test[ip_index + 6:]
-                    id_idx = test[id_index:]
-                    email_idx = test[email_index + 13:]
+                    name_idx = text[username_index + 12:]
+                    ip_idx = text[ip_index + 6:]
+                    id_idx = text[id_index:]
+                    email_idx = text[email_index + 13:]
 
                     username_change = name_idx.find(',')
                     ip_change = ip_idx.find(',')
@@ -154,10 +147,10 @@ def log_change(path_dir, change_local, searchDate, web_server):
                     r2 = re.compile(ip_pattern)
                     r3 = re.compile(id_pattern)
 
-                    data = test
+                    data = text
 
                     if name_pattern != '""':
-                        data = re.sub(r1, '"******"', test, count=1)
+                        data = re.sub(r1, '"******"', text, count=1)
 
                     if ip_pattern != '""':
                         data = re.sub(r2, '"***.***.***.***"', data, count=1)
@@ -173,18 +166,18 @@ def log_change(path_dir, change_local, searchDate, web_server):
                     # 회원 가입시에 들어가는 개인정보를 처리
 
                     if pwd2_index != -1:
-                        joinName_index = test.find('\"username\\\":')
-                        joinName_idx = test[joinName_index + 16:]
+                        joinName_index = text.find('\"username\\\":')
+                        joinName_idx = text[joinName_index + 16:]
                         joinName_change = joinName_idx.find(',')
                         joinName_pattern = joinName_idx[0:joinName_change - 3]
                         r6 = re.compile(joinName_pattern)
 
-                        uniName_index = test.find('\"name\\\":')
-                        uniName_idx = test[uniName_index + 11:]
+                        uniName_index = text.find('\"name\\\":')
+                        uniName_idx = text[uniName_index + 11:]
                         uniName_change = uniName_idx.find(',')
                         uniName_pattern = uniName_idx[:uniName_change - 1]
 
-                        pwd2_idx = test[pwd2_index + 17:]
+                        pwd2_idx = text[pwd2_index + 17:]
                         pwd2_change = pwd2_idx.find(',')
                         pwd2_pattern = pwd2_idx[0:pwd2_change - 3]
 
@@ -225,6 +218,7 @@ def log_compress(search_date, dir_path):
 
 
 
+
 # fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
 def oldLog_remove(dir_path, fileType):
     if fileType == 1:
@@ -239,3 +233,71 @@ def oldLog_remove(dir_path, fileType):
         except:
             print "remove error"
 
+@csrf_exempt
+def data_insert(request):
+    if request.method == 'POST':
+        prodate = request.POST.get('processingdate')
+        client = request.POST.get('client')
+        startDate = request.POST.get('startDate')
+        endDate = request.POST.get('endDate')
+        success = request.POST.get('success')
+
+        query = """
+            INSERT INTO edxapp.trackinglog_download(processingdate,
+                                        client,
+                                        startDate,
+                                        endDate,
+                                        success)
+             VALUES (%s,
+                     '%s',
+                     %s,
+                     %s,
+                     '%s');
+        """ % (prodate, client, startDate, endDate, success)
+
+        cur = connection.cursor()
+        cur.execute(query)
+        cur.close()
+        data = json.dumps({"status": "success"})
+
+        return HttpResponse(data, 'applications/json')
+
+def log_board(request):
+    log_list = []
+    if request.is_ajax():
+        logData = {}
+        if request.GET['method'] == 'logDown_list':
+            cur = connection.cursor()
+            query = """
+                 SELECT no,
+                       DATE_ADD((DATE_FORMAT(processingdate, "%Y-%c-%d %r")), INTERVAL +9 HOUR ),
+                       client,
+                       DATE_FORMAT(startdate, "%Y/%c/%d"),
+                       DATE_FORMAT(enddate, "%Y/%c/%d"),
+                       success
+                  FROM edxapp.trackinglog_download
+                 WHERE success = 'Y';
+            """
+
+        cur.execute(query)
+
+        row = cur.fetchall()
+        cur.close()
+
+        idx = 1
+
+        for log in row:
+            log_value = []
+
+            log_value.append(log[0])
+            log_value.append(log[1])
+            log_value.append(log[2])
+            log_value.append(log[3])
+            log_value.append(log[4])
+
+            log_list.append(log_value)
+            idx += 1
+
+        aaData = json.dumps(list(log_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+    return HttpResponse(aaData, 'application/json')

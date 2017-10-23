@@ -97,6 +97,8 @@ urlpatterns = [
     url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
     url(r'^manage/tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
     # url(r'^manage/filed/$', tracking_view.send_file)
+    url(r'^manage/tracking_log/logdata_add/', tracking_view.data_insert),
+    url(r'^manage/tracking_log/downlist/', tracking_view.log_board, name='log_board')
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

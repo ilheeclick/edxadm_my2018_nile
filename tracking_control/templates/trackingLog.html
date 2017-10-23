@@ -4,7 +4,33 @@
 {% block script %}{% endblock %}
 
 {% block script_down %}
+
 <script>
+$(document).ready(function(){
+   datalist();
+});
+
+
+function datalist() {
+    var $table = $('#datatable-ajax');
+
+    var dataTb = $table.dataTable({
+        bProcessing: true,
+        rowReorder: true,
+        iDisplayLength: 10,
+        bLengthChange: false,
+        searching: false,
+        "bDestroy": true,
+        sAjaxSource: $table.data('url'),
+        "order": [[1, "desc"]],
+        "fnReloadAjax": false,
+        "fnServerParams": function (aoData) {
+            aoData.push({"name": 'method', "value": 'logDown_list'});
+        },
+        "paginate": true,
+    });
+
+}
     var dateObj = new Date();
     var year = dateObj.getFullYear();
     var month = dateObj.getMonth() + 1;
@@ -59,6 +85,7 @@
     var idx = 0;
     var lastDate = 0;
 
+
     function LastDayOfMonth(Year, Month) {
         return (new Date((new Date(Year, Month + 1, 1)) - 1)).getDate();
     }
@@ -68,7 +95,14 @@
     }
 
     $(document).on('click', '#day_down', function () {
-        if ($("#datepicker").val() == "") {
+
+        processingdate = "now()";
+        client = "staff";
+        startDate = $("#datepicker").val();
+        endDate = $("#datepicker2").val();
+        success = "Y";
+
+        if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
             alert('날짜를 선택하세요.');
             return;
         } else {
@@ -77,9 +111,26 @@
                 url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
                 dataType: "json",
             }).done(function (data) {
-                alert('파일 생성 완료!');
                 location.href = "/manage/tracking_log/down/"+data.filename;
                 $("#download").find("img").hide();
+
+                $.ajax({
+                    url: "/manage/tracking_log/logdata_add/",
+                    data: {
+                        'processingdate':processingdate,
+                        'client':client,
+                        'startDate':startDate,
+                        'endDate':endDate,
+                        'success':success
+                    },
+                    dataType: "json",
+                    type: "POST"
+                }).done(function(data){
+                    alert('파일 생성 완료!');
+                    datalist();
+                    $("#datepicker").val("");
+                    $("#datepicker2").val("");
+                });
             });
         }
     });
@@ -103,16 +154,31 @@
         <div><h2 class="panel-title">기간별 조회</h2></div>
     </header>
     <div class="panel-body">
-        <form class="form-inline">
+        <form class="form-inline" style="text-align: center;">
             <div class="form-group">
                 <label>날짜 선택</label>
-                <input type="text" class="form-control" id="datepicker" placeholder="시작일을 선택하세요">
+                <input type="text" class="form-control" id="datepicker" style="margin: " placeholder="시작일을 선택하세요">
                 <input type="text" class="form-control" id="datepicker2" placeholder="종료일을 선택하세요">
             </div>
             <a class="btn btn-primary" id="day_down">다운로드</a>
             <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
                 vertical-align: middle;"/></a>
         </form>
+        <div>
+        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/tracking_log/downlist/" style="width: 100%; margin-top: 30px;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+            <thead>
+                <tr>
+                    <th width="10%">No</th>
+                    <th width="25%">처리일시</th>
+                    <th width="15%">요청자</th>
+                    <th width="25%">조회시작일</th>
+                    <th width="25%">조회종료일</th>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+            </div>
     </div>
 
 </section>
