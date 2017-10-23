@@ -940,48 +940,81 @@ def comm_notice(request):
 
 @csrf_exempt
 def new_notice(request):
-    if 'file' in request.FILES:
-        print 'file process start .'
+    if request.FILES:
+        #init list
+        file_name_list = []
+        file_dir_list = []
+        file_size_raw_list = []
+        file_size_list = []
+        file_ext_list = []
+        file_list = request.FILES.getlist('file')
+        file_list_cnt = len(request.FILES.getlist('file'))
 
-        value_list = []
-        file = request.FILES['file']
-        filename = ''
-        file_ext = ''
-        file_size = ''
-        print 'file:', file
-        filename = file._name
-        file_ext = get_file_ext(filename)
+        #make name, dir
+        for item in file_list:
+            file_name_list.append( str(item) )
+            file_dir_list.append( UPLOAD_DIR+str(item) )
 
-        fp = open('%s/%s' % (UPLOAD_DIR, filename), 'wb')
-        for chunk in file.chunks():
-            fp.write(chunk)
-        fp.close()
-        data = '성공'
+        #make ext
+        for item in file_name_list:
+            file_ext = get_file_ext(item)
+            file_ext_list.append(file_ext)
 
-        n = os.path.getsize(UPLOAD_DIR + filename)
-        file_size = str(n / 1024) + "KB"  # 킬로바이트 단위로
+        #crete file
+        cnt = 0
+        for item in file_list:
+            fp = open(file_dir_list[cnt], 'wb')
+            for chunk in item.chunks():
+                fp.write(chunk)
+            fp.close()
+            cnt += 1
 
-        value_list.append(filename)
-        value_list.append(file_ext)
-        value_list.append(file_size)
-        data = json.dumps(list(value_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-        return HttpResponse(data, 'applications/json')
+        #make raw_size
+        for item in file_dir_list:
+            file_size_raw_list.append( os.path.getsize(item) )
+
+        #make size (KB)
+        for item in file_size_raw_list:
+            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
+
+        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
 
     elif request.method == 'POST':
         data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
         if request.POST['method'] == 'add':
 
-            odby = request.POST.get('odby')
+            # board var
             title = request.POST.get('nt_title')
             title = title.replace("'", "''")
             content = request.POST.get('nt_cont')
             content = content.replace("'", "''")
-            section = request.POST.get('notice')
             head_title = request.POST.get('head_title')
+            section = request.POST.get('notice')
+            odby = request.POST.get('odby')
+
+            # attach var
             upload_file = request.POST.get('uploadfile')
             file_name = request.POST.get('file_name')
             file_ext = request.POST.get('file_ext')
             file_size = request.POST.get('file_size')
+
+            # file 
+            file_ext_list = []
+            file_name_list = []
+            file_size_list = []
+
+            # make file name, size, ext
+            upload_file = unicode(upload_file)
+            upload_split = upload_file.split('+')
+            for item in upload_split:
+                index = item.find('   ')
+                file_name_list.append( item[:index] )
+                file_size_list.append( item[index+3:] )
+            file_name_list.pop()
+            file_size_list.pop()
+            for item in file_name_list:
+                file_ext_list.append( get_file_ext(item) )
+            file_cnt = len(file_name_list)
 
             # ------ 공지사항 쓰기 query ------ #
             cur = connection.cursor()
@@ -1001,18 +1034,37 @@ def new_notice(request):
             cur.execute(query)
             # ------ 공지사항 쓰기 query ------ #
 
-            query2 = "select board_id from tb_board where subject ='" + title + "' and content='" + content + "'"
+            # ------ 공지사항 게시판 아이디 조회 query ------ #
+            query2 = '''
+                SELECT board_id 
+                FROM   tb_board 
+                WHERE  subject = '{0}' 
+                       AND content = '{1}' 
+            '''.format(title, content)
             cur.execute(query2)
-            board_id = cur.fetchall()
+            board_list = cur.fetchall()
+            board_id = board_list[0][0]
             cur.close()
-            if upload_file != '':
-                cur = connection.cursor()
-                query = "insert into edxapp.tb_board_attach(board_id, attatch_file_name, attatch_file_ext, attatch_file_size) " \
-                        "VALUES ('" + str(board_id[0][0]) + "','" + str(file_name) + "','" + str(
-                    file_ext) + "','" + str(file_size) + "')"
-                cur.execute(query)
-                cur.close()
+            # ------ 공지사항 게시판 아이디 조회 query ------ #
 
+            # ------ 공지사항 파일첨부 query ------ #
+            if upload_file != '':
+                for i in range(0, file_cnt):
+                    cur = connection.cursor()
+                    query = '''
+                    INSERT INTO edxapp.tb_board_attach 
+                                (board_id, 
+                                 attatch_file_name, 
+                                 attatch_file_ext, 
+                                 attatch_file_size) 
+                     VALUES      ('{0}', 
+                                  '{1}', 
+                                  '{2}', 
+                                  '{3}') 
+                    '''.format(board_id, file_name_list[i], file_ext_list[i], file_size_list[i])
+                    cur.execute(query)
+                    cur.close()
+            # ------ 공지사항 파일첨부 query ------ #
             data = json.dumps({'status': "success"})
 
         elif request.POST['method'] == 'modi':
