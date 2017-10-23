@@ -1019,7 +1019,7 @@ def new_notice(request):
             # ------ 공지사항 쓰기 query ------ #
             cur = connection.cursor()
             query = '''
-                INSERT INTO edxapp.tb_board 
+                INSERT INTO ATTACHMENT edxapp.tb_board 
                             (subject, 
                              content, 
                              head_title, 
@@ -1111,13 +1111,13 @@ def new_notice(request):
 
 @csrf_exempt
 def modi_notice(request, id, use_yn):
-    mod_notice = []
-
+    print "#################### - s"
+    # ---------- ajax ---------- #
     if request.is_ajax():
+        print "ajax ##########"
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
             cur = connection.cursor()
-            # query = "SELECT subject, content, odby, head_title from tb_board WHERE section = 'N' and board_id = "+id
             query = """
                 SELECT subject,
                        content,
@@ -1137,11 +1137,6 @@ def modi_notice(request, id, use_yn):
             cur.execute(query, [id, ])
             row = cur.fetchall()
             cur.close()
-            # print 'query', query
-            # print 'row[0] == ',row[0][0]
-            # print 'row[1] == ',row[0][1]
-            # print 'row[2] == ',row[0][2]
-            # print 'row[3] == ',row[0][3]
 
             cur = connection.cursor()
             query = """
@@ -1153,31 +1148,49 @@ def modi_notice(request, id, use_yn):
             files = cur.fetchall()
             cur.close()
 
+            mod_notice = []
             mod_notice.append(row[0][0])
             mod_notice.append(row[0][1])
             mod_notice.append(row[0][2])
             mod_notice.append(row[0][3])
 
             if files:
-                print 'files:', files
-
                 mod_notice.append(files)
-            # print 'mod_notice == ',mod_notice
-
             data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
-        elif request.GET['method'] == 'file_download':
-            pass
 
-            print 'file_download with ajax is not working'
+        elif request.GET['method'] == 'file_download':
+            pass # 'file_download with ajax is not working'
 
         return HttpResponse(data, 'applications/json')
+    # ---------- ajax ---------- #
 
+    """
     variables = RequestContext(request, {
         'id': id,
         'use_yn': use_yn
     })
+    """
+    
+    cur = connection.cursor()
+    query = '''
+        SELECT attatch_file_name, 
+               attatch_file_ext, 
+               attatch_file_size 
+        FROM   edxapp.tb_board_attach 
+        WHERE  board_id = '{0}'; 
+    '''.format(id)
+    cur.execute(query)
+    file_list = cur.fetchall()
+    cur.close()
 
-    return render_to_response('community/comm_modinotice.html', variables)
+    context = {
+        'id': id,
+        'use_yn': use_yn,
+        'file_list':file_list
+    } 
+
+    print "#################### - e"
+    return render_to_response('community/comm_modinotice.html', context)
 
 @login_required
 def test_index(request):

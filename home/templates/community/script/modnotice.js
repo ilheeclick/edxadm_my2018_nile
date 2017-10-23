@@ -176,3 +176,4 @@ $('#notice_delete').on('click', function(){
         location.href='/manage/comm_notice'
     });
 });
+
