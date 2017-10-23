@@ -107,39 +107,32 @@ $('#notice_mod').on('click', function(e){
         alert(e);
     }
 });
-//파일 업로드
+
+// file upload
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
         url:'/manage/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
-
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
-
-                //if($.inArray(ext, ['xls','xlsx']) == -1) {
-                //    alert('xls,xlsx 파일만 업로드 할수 있습니다.');
-                //    return false;
-                //}
             }else{
-                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                swal("업로드 경고", "파일을 선택한 후 업로드 버튼을 눌러 주십시오", "warning");
                 return false;
             }
         },
-        success: function(adata){
-            //성공후 서버에서 받은 데이터 처리
-            //alert("업로드에 성공했습니다.");
-            file_name.push(adata[0]);
-            file_ext.push(adata[1]);
-            file_size.push(adata[2]);
-            $('#file_array').append('<input type="file" name="file" id = "uploadfile" />');
+        success: function(data){
+            for(i=0; i<data.len; i++){
+                $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+            }
+            $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
         },
         error: function() {
-            alert("업로드에 실패했습니다.");
+            swal("업로드 실패", "다시 시도해주세요", "error");
         }
     })
 });
-
 
 //숨김 처리
 $('#notice_del').on('click', function(){
