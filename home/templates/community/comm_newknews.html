@@ -9,7 +9,8 @@
 {% endblock %}
 {% block containor %}
 
-    <!-- start: page -->
+<!-- sweat alert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <div class="row">
     <section class="panel panel-featured ">
@@ -60,16 +61,17 @@
                 <label class="col-sm-2 control-label">
                     파     일
                 </label>
-                    <div class="col-md-3">
-                        <form id="uploadform" enctype="multipart/form-data" method="post">
-                            {% csrf_token %}
-                            <span id="file_array">
-                                <input type="file" name="file" id = "uploadfile" />
-                            </span>
-                            <button type="submit" id="fileupload">upload</button>
-                        </form>
-                    </div>
-
+                <div class="col-md-3">
+                    <!-- file upload -->
+                    <form id="uploadform" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <span id="file_array">
+                            <input type="file" name="file" id ="uploadfile" multiple/>
+                        </span>
+                        <button type="submit" id="fileupload">upload</button>
+                    </form>
+                    <!-- file upload -->
+                </div>
             </div>
         </div>
         <footer class="panel-footer">
@@ -86,10 +88,5 @@
         </footer>
     </section>
 </div>
-
-
-
-
-
 
 {% endblock %}

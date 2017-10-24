@@ -9,7 +9,8 @@
 {% endblock %}
 {% block containor %}
 
-    <!-- start: page -->
+<!-- sweat alert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <div class="row">
     <section class="panel panel-featured ">
@@ -59,15 +60,18 @@
                     파     일
                 </label>
                 <div class="col-md-10">
+                    <!-- file upload -->
                     <form id="uploadform" enctype="multipart/form-data" method="post">
-                        <ol id="saved_file">
-                        </ol>
                         {% csrf_token %}
                         <span id="file_array">
-                            <input type="file" name="file" id = "uploadfile" />
+                            <input type="file" name="file" id = "uploadfile" multiple/>
+                            {% for item in file_list %}
+                                <div>{{item.0}}&nbsp; &nbsp;{{item.2}}</div>
+                            {% endfor %}
                         </span>
                         <button type="submit" id="fileupload">upload</button>
                     </form>
+                    <!-- file upload -->
                 </div>
             </div>
         </div>
