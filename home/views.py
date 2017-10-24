@@ -1134,7 +1134,7 @@ def new_notice(request):
                                   '{1}', 
                                   '{2}', 
                                   '{3}') 
-                    '''.format(str(noti_id), file_name_list[i], file_ext_list[i], file_size_list[i])
+                    '''.format(noti_id, file_name_list[i], file_ext_list[i], file_size_list[i])
                     cur.execute(query)
                     cur.close()
             # ------ 공지사항 파일첨부 query ------ #
@@ -1422,7 +1422,7 @@ def new_knews(request):
             cur.execute(query)
             # ------ K-MOOC 소식 쓰기 query ------ #
 
-           # ------ 공지사항 게시판 아이디 조회 query ------ #
+           # ------ K-MOOC 소식 아이디 조회 query ------ #
             query2 = '''
                 SELECT board_id 
                 FROM   tb_board 
@@ -1433,9 +1433,9 @@ def new_knews(request):
             board_list = cur.fetchall()
             board_id = board_list[0][0]
             cur.close()
-            # ------ 공지사항 게시판 아이디 조회 query ------ #
+           # ------ K-MOOC 소식 아이디 조회 query ------ #
 
-            # ------ 공지사항 파일첨부 query ------ #
+            # ------ K-MOOC 소식 파일첨부 query ------ #
             if upload_file != '':
                 for i in range(0, file_cnt):
                     cur = connection.cursor()
@@ -1452,7 +1452,7 @@ def new_knews(request):
                     '''.format(board_id, file_name_list[i], file_ext_list[i], file_size_list[i])
                     cur.execute(query)
                     cur.close()
-            # ------ 공지사항 파일첨부 query ------ #
+            # ------ K-MOOC 소식 파일첨부 query ------ #
             data = json.dumps({'status': "success"})
 
         elif request.POST['method'] == 'modi':
@@ -1506,7 +1506,7 @@ def new_knews(request):
             cur.close()
             # ------ K-MOOC 소식 수정 query ------ #
 
-            # ------ 공지사항 파일첨부 query ------ #
+            # ------ K-MOOC 파일첨부 query ------ #
             if upload_file != '':
                 for i in range(0, file_cnt):
                     cur = connection.cursor()
@@ -1523,7 +1523,7 @@ def new_knews(request):
                     '''.format(str(noti_id), file_name_list[i], file_ext_list[i], file_size_list[i])
                     cur.execute(query)
                     cur.close()
-            # ------ 공지사항 파일첨부 query ------ #
+            # ------ K-MOOC 파일첨부 query ------ #
 
             data = json.dumps({'status': "success"})
         return HttpResponse(data, 'applications/json')
@@ -2105,7 +2105,7 @@ def new_refer(request):
                                   '{1}', 
                                   '{2}', 
                                   '{3}') 
-                    '''.format(str(noti_id), file_name_list[i], file_ext_list[i], file_size_list[i])
+                    '''.format(str(refer_id), file_name_list[i], file_ext_list[i], file_size_list[i])
                     cur.execute(query)
                     cur.close()
             # ------ 자료실 파일첨부 query ------ #

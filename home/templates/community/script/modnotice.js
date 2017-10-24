@@ -64,8 +64,6 @@ $(document).ready(function(){
     })
 });
 
-
-
 // modify board
 $('#notice_mod').on('click', function(e){
     try{
@@ -90,7 +88,7 @@ $('#notice_mod').on('click', function(e){
             file_list += '+';
         }
         
-        // get file
+        // ajax
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: noticetitle,

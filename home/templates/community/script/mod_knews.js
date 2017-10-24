@@ -13,7 +13,6 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        //console.log(data);
         if(data[4] != null) {
             value_list = data[4];
             for (var i = 0; i < value_list.length; i++) {
@@ -30,7 +29,6 @@ $(document).ready(function(){
             $('#head_title').val(data[3]);
         }
     });
-    //alert('d');
     $('.summernote').summernote({
         lang : 'ko-KR',
         height : 400,
@@ -62,52 +60,78 @@ $(document).ready(function(){
     }
 });
 
-
-//수정 처리
+// modify board
 $('#knews_mod').on('click', function(e){
     try{
         var action_mode;
         var knews_title, knews_content, knews_id, odby;
-        var uploadfile = $('#uploadfile').val().substr(12);
         var head_title =  $('#head_title').find('option:selected').attr('id');
-
         knews_title = $('#knews_title').val();
         knews_content = $('.summernote').summernote('code');
-        odby = $('#odby').val();
         action_mode = 'modi';
+        odby = $('#odby').val();
         knews_id = '{{id}}';
-        //alert(uploadfile+'/'+file_name+'/'+file_ext+'/'+file_size)
-
         if(head_title == 'null'){
             head_title = ''
         }
-        /* insert to database */
+
+        // get file
+        var file_list = "";
+        file_cnt = $('#file_cnt').text();
+        for(i=0; i<file_cnt; i++){
+            item = '#file_'+i;
+            file_list += ($(item).text());
+            file_list += '+';
+        }
+
+        // ajax
         $.post("/manage/new_knews/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             k_news_title: knews_title,
             k_news_cont: knews_content,
-            k_news_id : knews_id,
+            k_news_id : knews_id, // between
             head_title : head_title,
-            uploadfile : uploadfile,
-            file_name : file_name,
-            file_ext : file_ext,
-            file_size : file_size,
+            uploadfile : file_list,
             notice: 'K',
-            odby: odby,
-            method: action_mode
+            method: action_mode,
+            odby: odby
         }).done(function(data){
             location.href='/manage/comm_k_news';
-
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
-            alert('파일명이 잘못되었습니다.');
         });
     }catch(e){
         alert(e);
     }
 });
 
-//파일 업로드
+// file upload
+$(document).on('click', '#fileupload', function(){
+    $('#uploadform').ajaxForm({
+        type: "POST",
+        url:'/manage/new_notice/',
+        beforeSubmit: function (data,form,option) {
+            if( $("#uploadfile").val() != "" ){
+                var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
+            }else{
+                swal("업로드 경고", "파일을 선택한 후 업로드 버튼을 눌러 주십시오", "warning");
+                return false;
+            }
+        },
+        success: function(data){
+            for(i=0; i<data.len; i++){
+                $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+            }
+            $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
+        },
+        error: function() {
+            swal("업로드 실패", "다시 시도해주세요", "error");
+        }
+    })
+});
+
+/*
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
@@ -141,6 +165,7 @@ $(document).on('click', '#fileupload', function(){
         }
     })
 });
+*/
 
 //파일 삭제 처리
 $(document).on('click', '#delete', function(){

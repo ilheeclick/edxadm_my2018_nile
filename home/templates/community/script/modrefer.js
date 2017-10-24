@@ -63,43 +63,43 @@ $(document).ready(function(){
     })
 });
 
-
-//수정 처리
+// modify board
 $('#refer_mod').on('click', function(e){
     try{
         var action_mode;
         var refertitle, refercontent, refer, refer_id, odby;
-        var uploadfile = $('#uploadfile').val().substr(12);
+        var head_title = $('#head_title').find('option:selected').attr('id');
         refertitle = $('#refertitle').val();
         refercontent = $('.summernote').summernote('code');
-        odby = $('#odby').val();
         action_mode = 'modi';
-        refer_id = '{{id}}';
-        var head_title = $('#head_title').find('option:selected').attr('id');
-        //alert('file_name =='+file_name);
-        //alert('file_ext =='+file_ext);
-        //alert('file_size =='+file_size);
-
+        odby = $('#odby').val();
+        refer_id = '{{id}}'; // between
         if(head_title == 'null'){
             head_title = ''
         }
-        /* insert to database */
+
+        // get file
+        var file_list = "";
+        file_cnt = $('#file_cnt').text();
+        for(i=0; i<file_cnt; i++){
+            item = '#file_'+i;
+            file_list += ($(item).text());
+            file_list += '+';
+        }
+
+        // ajax
         $.post("/manage/new_refer/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             refer_title: refertitle,
             refer_cont: refercontent,
-            refer_id : refer_id,
+            refer_id : refer_id, // between
             head_title : head_title,
-            uploadfile : uploadfile,
-            file_name : file_name,
-            file_ext : file_ext,
-            file_size : file_size,
+            uploadfile : file_list,
             refer: 'R',
-            odby: odby,
-            method: action_mode
+            method: action_mode,
+            odby: odby
         }).done(function(data){
             location.href='/manage/comm_reference_room';
-
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -108,38 +108,28 @@ $('#refer_mod').on('click', function(e){
     }
 });
 
-
-//파일 업로드
+// file upload
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_refer/',
+        url:'/manage/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
-
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
-
-                //if($.inArray(ext, ['xls','xlsx', 'txt', 'hwp', 'pptx', 'jpg']) == -1) {
-                //    //alert('xls,xlsx 파일만 업로드 할수 있습니다.');
-                //    alert('정해진 파일 형식만 업로드 할수 있습니다.');
-                //    return false;
-                //}
             }else{
-                alert('파일을 선택한 후 업로드 버튼을 눌러 주십시오.');
+                swal("업로드 경고", "파일을 선택한 후 업로드 버튼을 눌러 주십시오", "warning");
                 return false;
             }
         },
-        success: function(adata){
-            //성공후 서버에서 받은 데이터 처리
-            //alert("업로드에 성공했습니다.");
-            file_name.push(adata[0]);
-            file_ext.push(adata[1]);
-            file_size.push(adata[2]);
-            $('#file_array').append('<input type="file" name="file" id = "uploadfile" />');
-            //console.log('file_name', file_name, 'file_ext', file_ext, 'file_size', file_size)
+        success: function(data){
+            for(i=0; i<data.len; i++){
+                $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+            }
+            $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
         },
         error: function() {
-            alert("업로드에 실패했습니다.");
+            swal("업로드 실패", "다시 시도해주세요", "error");
         }
     })
 });
