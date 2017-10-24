@@ -57,25 +57,30 @@ urlpatterns = [
     url(r'^manage/certificate/', views.certificate, name='certificate'),
     url(r'^manage/per_certificate/', views.per_certificate, name='per_certificate'),
     url(r'^manage/uni_certificate/', views.uni_certificate, name='uni_certificate'),
-    # community url
+
+    # ---------- board common ---------- #
     # notice
     url(r'^manage/comm_notice/', views.comm_notice, name='comm_notice'),
     url(r'^manage/new_notice/', views.new_notice, name='new_notice'),
     url(r'^manage/modi_notice/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_notice, name='modi_notice'),
+
     # k_news
     url(r'^manage/comm_k_news/', views.comm_k_news, name='comm_k_news'),
-    url(r'^manage/new_knews/', views.new_knews, name='new_knews'),
     url(r'^manage/modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
     url(r'^manage/summer_upload/', views.summer_upload, name='summer_upload'),
+    url(r'^manage/new_knews/', views.new_knews, name='new_knews'), # -> new_notice (module)
+
+    # reference_room
+    url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
+    url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
+    url(r'^manage/new_refer/', views.new_refer, name='new_refer'), # -> new_notice (module)
+    # ---------- board common ---------- #
+
     # faq
     url(r'^manage/comm_faq/', views.comm_faq, name='comm_faq'),
     url(r'^manage/new_faq/', views.new_faq, name='new_faq'),
     url(r'^manage/comm_faqrequest/', views.comm_faqrequest, name='comm_faqrequest'),
     url(r'^manage/modi_faq/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_faq, name='modi_faq'),
-    # reference_room
-    url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
-    url(r'^manage/new_refer/', views.new_refer, name='new_refer'),
-    url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
 
     # mobile
     url(r'^manage/comm_mobile/', views.comm_mobile, name='comm_mobile'),
