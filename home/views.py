@@ -256,6 +256,7 @@ def new_popup(request):
     return render(request, 'popup/popup_add.html')
 
 
+@login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
