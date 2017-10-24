@@ -43,7 +43,6 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        //console.log(value_list);
         console.log(data);
         if (data[4] != null) {
             value_list = data[4];
@@ -91,12 +90,12 @@ $('#notice_mod').on('click', function(e){
         // ajax
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: noticetitle,
-            nt_cont: noticecontent,
-            noti_id : noti_id, // between
+            title: noticetitle,
+            content: noticecontent,
+            board_id : noti_id, // between
             head_title : head_title,
             uploadfile : file_list,
-            notice: 'N',
+            section: 'N',
             method: action_mode,
             odby: odby
         }).done(function(data){

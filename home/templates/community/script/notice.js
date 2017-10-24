@@ -57,11 +57,11 @@ $('#notice_save').on('click', function(e){
         // ajax new board
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: noticetitle,
-            nt_cont: noticecontent,
+            title: noticetitle,
+            content: noticecontent,
             head_title: head_title,
             uploadfile: file_list,
-            notice: 'N',
+            section: 'N',
             method: action_mode,
             odby: odby
         }).done(function(data){

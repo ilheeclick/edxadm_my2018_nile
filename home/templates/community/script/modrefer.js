@@ -29,7 +29,6 @@ $(document).ready(function(){
             contentType: false,
             processData: false,
             success: function(data){
-                //console.log(data);
                 $("#summernote").summernote("insertImage", data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -88,14 +87,14 @@ $('#refer_mod').on('click', function(e){
         }
 
         // ajax
-        $.post("/manage/new_refer/", {
+        $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            refer_title: refertitle,
-            refer_cont: refercontent,
-            refer_id : refer_id, // between
+            title: refertitle,
+            content: refercontent,
+            board_id : refer_id, // between
             head_title : head_title,
             uploadfile : file_list,
-            refer: 'R',
+            section: 'R',
             method: action_mode,
             odby: odby
         }).done(function(data){
