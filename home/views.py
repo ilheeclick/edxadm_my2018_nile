@@ -535,6 +535,28 @@ def mana_state(request):
 def dev_state(request):
     return render(request, 'state/dev_state.html')
 
+#help
+@login_required
+def delete_file(request):
+
+    attach_id =  request.POST['attach_id']
+
+    # ------ file delete query ------ #
+    cur = connection.cursor()
+    query = '''
+        UPDATE edxapp.tb_board_attach 
+        SET    del_yn = 'Y' 
+        WHERE  attatch_id = '{0}'; 
+    '''.format(attach_id)
+    cur.execute(query)
+    cur.close()
+    # ------ file delete query ------ #
+
+    print "#################"
+    print "attach_id = {}".format(attach_id)
+    print "#################"
+
+    return JsonResponse({'return':'ok'})
 
 # certificate view
 @login_required
@@ -1193,9 +1215,11 @@ def modi_notice(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}' 
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()
