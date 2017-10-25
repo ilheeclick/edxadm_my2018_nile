@@ -1056,15 +1056,12 @@ def new_notice(request):
             # ------ 공지사항 쓰기 query ------ #
 
             # ------ 공지사항 게시판 아이디 조회 query ------ #
-            query2 = '''
-                SELECT board_id 
-                FROM   tb_board 
-                WHERE  subject = '{0}' 
-                       AND content = '{1}' 
-            '''.format(title, content)
-            cur.execute(query2)
+            query3 = '''
+                SELECT LAST_INSERT_ID()
+            '''
+            cur.execute(query3)
             board_list = cur.fetchall()
-            board_id = board_list[0][0]
+            board_id = board_list[0][0] 
             cur.close()
             # ------ 공지사항 게시판 아이디 조회 query ------ #
 
