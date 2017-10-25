@@ -535,29 +535,6 @@ def mana_state(request):
 def dev_state(request):
     return render(request, 'state/dev_state.html')
 
-#help
-@login_required
-def delete_file(request):
-
-    attach_id =  request.POST['attach_id']
-
-    # ------ file delete query ------ #
-    cur = connection.cursor()
-    query = '''
-        UPDATE edxapp.tb_board_attach 
-        SET    del_yn = 'Y' 
-        WHERE  attatch_id = '{0}'; 
-    '''.format(attach_id)
-    cur.execute(query)
-    cur.close()
-    # ------ file delete query ------ #
-
-    print "#################"
-    print "attach_id = {}".format(attach_id)
-    print "#################"
-
-    return JsonResponse({'return':'ok'})
-
 # certificate view
 @login_required
 def certificate(request):
@@ -1098,6 +1075,23 @@ def new_notice(request):
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
+            delete_list = request.POST.get('delete_list')
+
+            # make delete list
+            delete_list = delete_list.split('+')
+            delete_list.pop()
+
+            # ------ file delete query ------ #
+            for item in delete_list:
+                cur = connection.cursor()
+                query = '''
+                    UPDATE edxapp.tb_board_attach 
+                    SET    del_yn = 'Y' 
+                    WHERE  attatch_id = '{0}'; 
+                '''.format(item)
+                cur.execute(query)
+                cur.close()
+            # ------ file delete query ------ #
 
             # file 
             file_ext_list = []

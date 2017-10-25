@@ -59,7 +59,6 @@ $(document).ready(function(){
         }else{
             $('#head_title').val(data[3]);
         }
-
     })
 });
 
@@ -68,21 +67,10 @@ function delete_file(attach_id){
     var hide_element = "#file_" + attach_id
     var hide_element2 = "#file_delete_" + attach_id;
 
-    console.log(attach_id); //DEBUG
-    console.log(hide_element); //DEBUG
-    console.log(hide_element2); //DEBUG
-
     $(hide_element).hide();
     $(hide_element2).hide();
-    // ajax
-    $.post("/manage/delete_file/", {
-        csrfmiddlewaretoken:$.cookie('csrftoken'),
-        attach_id:attach_id 
-    }).done(function(data){
-        //alert("success");
-    }).fail(function(error) {
-        alert("fail");
-    });
+
+    $("#delete_list").append(attach_id+"+");
 }
 
 // modify board
@@ -99,6 +87,10 @@ $('#notice_mod').on('click', function(e){
         if(head_title == 'null'){
             head_title = ''
         }
+
+        // delete file
+        var delete_list;
+        delete_list = $("#delete_list").text() 
 
         // get file
         var file_list = "";
@@ -119,7 +111,8 @@ $('#notice_mod').on('click', function(e){
             uploadfile : file_list,
             section: 'N',
             method: action_mode,
-            odby: odby
+            odby: odby,
+            delete_list: delete_list
         }).done(function(data){
             location.href='/manage/comm_notice';
         }).fail(function(error) {
