@@ -63,8 +63,8 @@ $(document).ready(function(){
     })
 });
 
-// modify board
-function helloworld(attach_id){
+// delete file
+function delete_file(attach_id){
     var hide_element = "#file_" + attach_id
     var hide_element2 = "#file_delete_" + attach_id;
 
@@ -79,7 +79,7 @@ function helloworld(attach_id){
         csrfmiddlewaretoken:$.cookie('csrftoken'),
         attach_id:attach_id 
     }).done(function(data){
-        alert("success");
+        //alert("success");
     }).fail(function(error) {
         alert("fail");
     });

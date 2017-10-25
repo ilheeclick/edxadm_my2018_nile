@@ -1410,9 +1410,11 @@ def modi_knews(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}'
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()
@@ -1782,9 +1784,11 @@ def modi_refer(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}'
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()

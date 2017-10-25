@@ -62,6 +62,28 @@ $(document).ready(function(){
     })
 });
 
+// delete file
+function delete_file(attach_id){
+    var hide_element = "#file_" + attach_id
+    var hide_element2 = "#file_delete_" + attach_id;
+
+    console.log(attach_id); //DEBUG
+    console.log(hide_element); //DEBUG
+    console.log(hide_element2); //DEBUG
+
+    $(hide_element).hide();
+    $(hide_element2).hide();
+    // ajax
+    $.post("/manage/delete_file/", {
+        csrfmiddlewaretoken:$.cookie('csrftoken'),
+        attach_id:attach_id
+    }).done(function(data){
+        //alert("success");
+    }).fail(function(error) {
+        alert("fail");
+    });
+}
+
 // modify board
 $('#refer_mod').on('click', function(e){
     try{
