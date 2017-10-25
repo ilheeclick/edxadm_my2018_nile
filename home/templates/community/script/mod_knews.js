@@ -85,6 +85,10 @@ $('#knews_mod').on('click', function(e){
             head_title = ''
         }
 
+        // delete file
+        var delete_list;
+        delete_list = $("#delete_list").text()
+
         // get file
         var file_list = "";
         file_cnt = $('#file_cnt').text();
@@ -104,7 +108,8 @@ $('#knews_mod').on('click', function(e){
             uploadfile : file_list,
             section: 'K',
             method: action_mode,
-            odby: odby
+            odby: odby,
+            delete_list: delete_list
         }).done(function(data){
             location.href='/manage/comm_k_news';
         }).fail(function(error) {
