@@ -182,13 +182,14 @@ def manager_list(request):
     with connections['default'].cursor() as cur:
 
         query = '''
-               SELECT email, username, id
+               SELECT au.email, up.name, au.username
                  FROM edxapp.auth_user AS au
+                 JOIN edxapp.auth_userprofile as up
+                   ON au.id = up.user_id
                  JOIN edxapp.multisite_user as mu
-                WHERE mu.user_id = au.id;
-        '''
-
-        print query
+                   ON up.user_id = mu.user_id
+                WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
+        '''.format(id)
 
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -211,7 +212,7 @@ def manager_db(request):
 
 
             cur = connection.cursor()
-            query = '''SELECT email, username, id
+            query = '''SELECT id
                          FROM edxapp.auth_user
                         WHERE email = '{0}';
                     '''.format(input_email)
@@ -219,16 +220,32 @@ def manager_db(request):
             row = cur.fetchall()
             cur.close()
 
-            cur = connection.cursor()
 
-            print (row[0][0])
-            print (row[0][1])
-            print (row[0][2])
-            query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
-                       VALUES ('{0}','{1}','{2}','{3}')
-                    '''.format(id, str(row[0][2]), regist_id, regist_id)
+            cur = connection.cursor()
+            query = '''SELECT count(site_id)
+                         FROM edxapp.multisite_user
+                        WHERE user_id = '{0}' and site_id = '{1}' and delete_yn = 'Y' ;
+                    '''.format(str(row[0][0]), id)
             cur.execute(query)
+            cnt = cur.fetchall()
             cur.close()
+            print ('*******************')
+            print cnt[0][0]
+            if(cnt[0][0] == 1) :
+                cur = connection.cursor()
+                query = '''update edxapp.multisite_user
+                              SET delete_yn = 'N'
+                            WHERE site_id = '{0}' and user_id = '{1}';
+                        '''.format(id, str(row[0][0]))
+                cur.execute(query)
+                cur.close()
+            elif(cnt[0][0] == 0):
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
+                           VALUES ('{0}','{1}','{2}','{3}')
+                        '''.format(id, str(row[0][0]), regist_id, regist_id)
+                cur.execute(query)
+                cur.close()
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
@@ -253,16 +270,30 @@ def manager_db(request):
             return HttpResponse(data, 'applications/json')
 
         elif request.POST.get('method') == 'delete':
-            multi_no = request.POST.get('multi_no')
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            regist_id = request.POST.get('regist_id')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT id
+                      FROM auth_user
+                     WHERE auth_user.username = '{0}';
+                    '''.format(user_id)
+            cur.execute(query)
+            new_id = cur.fetchall()
+            cur.close()
 
             cur = connection.cursor()
             query = '''
-                    update edxapp.multisite
-                    SET delete_yn = 'Y'
-                    WHERE site_id = '{0}'
-                    '''.format(multi_no)
+                    update edxapp.multisite_user
+                    SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
+                    WHERE site_id = '{1}' and user_id = '{2}'
+                    '''.format(regist_id, site_id, new_id[0][0])
             cur.execute(query)
             cur.close()
+
 
             data = json.dumps({'status': "success"})
 

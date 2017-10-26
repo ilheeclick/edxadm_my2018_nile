@@ -3,9 +3,7 @@
 {% block pagetitlename_header %}멀티사이트 추가{% endblock %}
 {% block script %}{% endblock %}
 {% block script_down %}
-<style>
 
-</style>
 <script>
     {% include "community/script/test.js" %}
     {% include "community/script/notice.js" %}
@@ -115,12 +113,12 @@
                 columns: [
                     {data: "pk", name: "pk"},
                     {data: "email", name: "email"},
+                    {data: "name"},
                     {data: "username"},
-                    {data: "id"},
                 ],
                 columnDefs: [
                     {
-                        targets: 0, visible: true, name: "pk", render: function (data, type, full, meta) {
+                        targets: 0, visible: true, name: "pk", render: function (data, type) {
                         return '<input type="checkbox" name="' + data + '" value="' + data + '">';
                     }
                     },
@@ -161,9 +159,32 @@
         }
 
         function del_row() {
-            
+            $("#notice_body input[type=checkbox]:checked").each(function(){
+                var user_id = $(this).parent().next().next().next().text();
+                var regist_id = {{ user.id }};
+                try {
+                    var method = 'delete';
+                    $.post("/manage/manager_db/", {
+                        csrfmiddlewaretoken: $.cookie('csrftoken'),
+                        user_id: user_id,
+                        site_id: {{ id }},
+                        regist_id:regist_id,
+                        method: method,
+                    }).done(function (data) {
+                        update();
+                        cnt = 0;
+                    }).fail(function (error) {
+                        alert('error = ' + error.responseJSON);
+                    });
+                } catch (e) {
+                    alert(e);
+                }
+            });
         }
+
         var cnt = 0;
+        var up_date = 0;
+
         function add_row() {
             if(cnt == 0) {
                 var tr_html = $("#notice_body tr:eq(0)").html();
@@ -176,10 +197,12 @@
             }
             cnt = cnt + 1;
         }
+
         var cntt = 0;
         var is_verify = 0;
+
         function verify() {
-            alert("검증");
+
             var input_email = $('#input_email').val();
             try {
                 var method = 'verify';
@@ -192,9 +215,11 @@
                 }).done(function (data) {
                     if (data == 0) {
                         is_verify = 0;
+                        alert('정확한 Email 을 입력하세요.')
                     }
                     else if (data == 1) {
                         is_verify = 1;
+                        alert('정확한 Email 입니다.')
                     }
                 }).fail(function (error) {
                     alert('error = ' + error.responseJSON);
@@ -206,9 +231,9 @@
         }
 
         function save_info() {
-            alert("저장");
+
             if( cntt == 0 || is_verify == 0) {
-                alert("검증부터해라 ");
+                alert("정확한 Email 을 입력하세요.");
             }
             else {
                 try {
@@ -224,16 +249,39 @@
                         regist_id: regist_id,
                         method: method,
                     }).done(function (data) {
-
+                        update();
+                        cnt = 0;
                     }).fail(function (error) {
-                        alert('error = ' + error.responseJSON);
+                        alert('입력한 Email 이 이미 존재합니다');
                     });
                 } catch (e) {
                     alert(e);
                 }
             }
         }
+        function update() {
+            var table = $('#datatable1').DataTable();
+            table.ajax.reload();
+            up_date = up_date + 1;
+        }
+        $(function(){
+            $('#btn-upload').click(function(e){
+                e.preventDefault();
+                $("input:file").click();
+                var ext = $("input:file").val().split(".").pop().toLowerCase();
+                if(ext.length > 0){
+                    if($.inArray(ext, ["gif","png","jpg","jpeg"]) == -1) {
+                        alert("gif,png,jpg 파일만 업로드 할수 있습니다.");
+                        return false;
+                    }
+                }
+                $("input:file").val().toLowerCase();
+            });
+        });
 
+        function file_upload() {
+            alert('업업업');
+        }
 
 
 </script>
@@ -284,6 +332,10 @@
                 <div class="col-sm-4">
                     <div>
                         <input type="text" class="form-control" id="logi_img">
+                        <input type='file' id='file' name='file' style="width:0; height:0;"/>
+                        <a href="javascript:file_upload();">
+                            <button onclick="file_upload()" style="float: right" id='btn-upload' class="button1 white selected" onfocus="this.blur();">File</button>
+                        </a>
                     </div>
                 </div>
             </div>
