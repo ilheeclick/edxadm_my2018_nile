@@ -1,0 +1,39 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}멀티사이트 관리{% endblock %}
+{% block pagetitlename_header %}멀티사이트 관리{% endblock %}
+{% block script_down %}
+<script>
+    {% include "multi_site/script/multi_site_datatables.js" %}
+</script>
+{% endblock %}
+{% block containor %}
+	<!-- start: page -->
+<section class="panel panel-featured ">
+    <header class="panel-heading">
+        <div><h2 class="panel-title">멀티사이트 관리</h2></div>
+    </header>
+
+    <div class="panel-body" style="padding-top: 0;"> 
+        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+            <a class="btn btn-default" id="add_multi_site" href="/manage/add_multi_site/99999">신규등록</a>
+        </div>
+
+        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td>No</td>
+                    <td>기관명</td>
+                    <td>기관코드</td>
+                    <td>접속URL</td>
+                    <td>등록자</td>
+                    <td>등록일</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+{% endblock %}

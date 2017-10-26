@@ -273,6 +273,21 @@
 
                             </li>
 
+                            <li class="nav nav-parent" id="multi_site">
+
+                                <a>
+                                    <i class="fa fa-bell-o" aria-hidden="true"></i>
+                                    <span>멀티사이트</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="multi_site_add">
+                                        <a href="/manage/multi_site">
+                                            멀티사이트 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </nav>
                     <script>
@@ -526,6 +541,17 @@
                     $('#popup').addClass('nav-active');
                     $('#popup_add').addClass('nav-active');
                     break;
+                case '멀티사이트 관리':
+                    if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
+                    $('#multi_site').addClass('nav-active');
+                    $('#multi_site_add').addClass('nav-active');
+                    break;
+                case '멀티사이트 추가':
+                    if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
+                    $('#multi_site').addClass('nav-active');
+                    $('#multi_site_add').addClass('nav-active');
+                    break;
+
             }
         }
 

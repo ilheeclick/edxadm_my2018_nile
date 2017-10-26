@@ -39,6 +39,141 @@ def get_file_ext(filename):
     return file_ext
 
 @login_required
+def multi_site(request):
+    return render(request, 'multi_site/multi_site.html')
+
+@csrf_exempt
+def multi_site_db(request):
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        multi_site_list = []
+
+        if request.GET['method'] == 'multi_site_list':
+            cur = connection.cursor()
+            query = """
+                SELECT multi_id,
+                       agency_name,
+                       agency_code,
+                       connect_url,
+                       regist_id,
+                       created
+                  FROM multi_site
+                  WHERE delete_yn = 'N'
+			"""
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for multi in row:
+                value_list = []
+                value_list.append(multi[0])
+                value_list.append(multi[1])
+                value_list.append(multi[2])
+                value_list.append(multi[3])
+                value_list.append(multi[4])
+                value_list.append(multi[5])
+                multi_site_list.append(value_list)
+
+            data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+            print ('::::::::::::::::::::::::::::::::::')
+            print data
+        return HttpResponse(data, 'applications/json')
+    return render(request, 'multi_site/multi_site.html')
+
+@csrf_exempt
+def add_multi_site(request, id):
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('multi_site/modi_multi_site.html', variables)
+
+def modi_multi_site(request, id):
+    mod_multi = []
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi':
+            cur = connection.cursor()
+            query = """
+					SELECT agency_name,
+                           agency_code,
+                           connect_url
+					  FROM multi_site
+                     WHERE multi_id =
+			""" + id
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_multi.append(p)
+            print mod_multi
+            data = json.dumps(list(mod_multi), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('multi_site/modi_multi_site.html', variables)
+
+@csrf_exempt
+def modi_multi_site_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            agency_name = request.POST.get('agency_name')
+            agency_code = request.POST.get('agency_code')
+            connect_url = request.POST.get('connect_url')
+            regist_id = request.POST.get('regist_id')
+
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.multi_site(agency_name, agency_code, connect_url, regist_id, modify_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}')
+                    '''.format(agency_name, agency_code, connect_url, regist_id, regist_id)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'modi':
+            agency_name = request.POST.get('agency_name')
+            agency_code = request.POST.get('agency_code')
+            connect_url = request.POST.get('connect_url')
+            multi_no = request.POST.get('multi_no')
+            regist_id = request.POST.get('regist_id')
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multi_site
+                    SET agency_name = '{0}', agency_code = '{1}', connect_url = '{2}', modify_id = '{3}', modifid = now()
+                    WHERE multi_id = '{4}'
+                    '''.format(agency_name, agency_code, connect_url,regist_id, multi_no)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            multi_no = request.POST.get('multi_no')
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multi_site
+                    SET delete_yn = 'Y'
+                    WHERE multi_id = '{0}'
+                    '''.format(multi_no)
+            cur.execute(query)
+            cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
+
+@login_required
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 

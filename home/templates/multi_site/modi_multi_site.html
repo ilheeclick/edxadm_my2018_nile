@@ -1,0 +1,177 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}멀티사이트 추가{% endblock %}
+{% block pagetitlename_header %}멀티사이트 추가{% endblock %}
+{% block script %}{% endblock %}
+{% block script_down %}
+<style>
+
+</style>
+<script>
+    {% include "community/script/test.js" %}
+    {% include "community/script/notice.js" %}
+    jQuery.ajaxSettings.traditional = true;
+    $(document).ready(function(){
+        var value_list;
+        var id = '{{id}}';
+        if (id != 99999) {
+            document.getElementById('DelBtn').style.display = '';
+        }
+           $.ajax({
+                url: '/manage/modi_multi_site/' + id,
+                data: {
+                    method: 'modi'
+                }
+            }).done(function (data) {
+               value_list = data[0].toString().split(',');
+                $('#agency_name').val(data[0][0]);
+                $('#agency_code').val(data[0][1]);
+                $('#connect_url').val(data[0][2]);
+            })
+    });
+
+    function save() {
+        try {
+            var method = '';
+            if ('{{ id }}' == 99999) {
+                method = 'add';
+            }
+            else {
+                method = 'modi';
+            }
+            var agency_name = $('#agency_name').val();
+            var agency_code = $('#agency_code').val();
+            var connect_url = $('#connect_url').val();
+            var regist_id = {{ user.id }};
+            var multi_no = {{ id }};
+
+            $.post("/manage/modi_multi_site_db/", {
+                csrfmiddlewaretoken: $.cookie('csrftoken'),
+                agency_name : agency_name,
+                agency_code: agency_code,
+                connect_url: connect_url,
+                regist_id: regist_id,
+                multi_no: multi_no,
+                method: method,
+            }).done(function (data) {
+                location.href = '/manage/multi_site';
+            }).fail(function (error) {
+                alert('error = ' + error.responseJSON);
+            });
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    function del() {
+        try {
+            var multi_no = {{ id }}
+            $.post("/manage/modi_multi_site_db/", {
+                csrfmiddlewaretoken: $.cookie('csrftoken'),
+                multi_no: multi_no,
+                method: 'delete',
+            }).done(function (data) {
+                location.href = '/manage/multi_site';
+            }).fail(function (error) {
+                alert('error = ' + error.responseJSON);
+            });
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+</script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+{#{{ user.id }}#}
+<div class="row">
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">멀티사이트 추가</h2></div>
+        </header>
+{#        ================================================================#}
+
+        <div class="panel-body">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    기 관 명
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <div>
+                        <input type="text" class="form-control" id="agency_name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    기 관 코 드
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-4">
+                    <div>
+                        <input type="text" class="form-control" id="agency_code">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    접 속 URL
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-10">
+                    <div>
+                        <input type="text" class="form-control" id="connect_url">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <footer class="panel-footer">
+            <div class="row" style="padding: 10px;">
+                <div class="col-sm-15" align="right" style="padding: 10px;">
+                    <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" style="display:none;" value="삭     제"></a>
+                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
+                </div>
+
+                <header class="panel-heading">
+                    <div><h2 class="panel-title">담당자 정보</h2></div>
+                </header>
+
+                <div class="col-sm-15" align="right" style="padding: 10px;">
+                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="행추가"></a>
+                    <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" value="삭     제"></a>
+                </div>
+            </div>
+        </footer>
+
+        <div>
+            <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db22/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td>No</td>
+                    <td>Email</td>
+                    <td>이름</td>
+                    <td>id</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+            </table>
+        </div>
+
+        <div class="col-sm-3" align="left">
+                    <a class="btn btn-default" href="/manage/multi_site_db">목록으로</a>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
