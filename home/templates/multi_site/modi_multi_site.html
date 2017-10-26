@@ -11,6 +11,7 @@
     {% include "community/script/notice.js" %}
     jQuery.ajaxSettings.traditional = true;
     $(document).ready(function(){
+        setDataTable1();
         var value_list;
         var id = '{{id}}';
         if (id != 99999) {
@@ -23,9 +24,10 @@
                 }
             }).done(function (data) {
                value_list = data[0].toString().split(',');
-                $('#agency_name').val(data[0][0]);
-                $('#agency_code').val(data[0][1]);
-                $('#connect_url').val(data[0][2]);
+                $('#site_name').val(data[0][0]);
+                $('#site_code').val(data[0][1]);
+                $('#site_url').val(data[0][2]);
+                $('#logi_img').val(data[0][3]);
             })
     });
 
@@ -38,17 +40,19 @@
             else {
                 method = 'modi';
             }
-            var agency_name = $('#agency_name').val();
-            var agency_code = $('#agency_code').val();
-            var connect_url = $('#connect_url').val();
+            var site_name = $('#site_name').val();
+            var site_code = $('#site_code').val();
+            var site_url = $('#site_url').val();
+            var logi_img = $('#logi_img').val();
             var regist_id = {{ user.id }};
             var multi_no = {{ id }};
 
             $.post("/manage/modi_multi_site_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
-                agency_name : agency_name,
-                agency_code: agency_code,
-                connect_url: connect_url,
+                site_name : site_name,
+                site_code: site_code,
+                site_url: site_url,
+                logi_img: logi_img,
                 regist_id: regist_id,
                 multi_no: multi_no,
                 method: method,
@@ -78,6 +82,159 @@
             alert(e);
         }
     }
+    function setDataTable1() {
+            var $table = $('#datatable1');
+
+            $table.dataTable({
+                dom: '<"clear">lfrtip',
+                bProcessing: true,
+                ordering: false,
+                serverSide: false,
+                searching: false,
+                buttons: [
+                    {
+                        text: 'Row selected data',
+                        action: function (e, dt, node, config) {
+                            alert(
+                                    'Row data: ' +
+                                    JSON.stringify(dt.row({selected: true}).data())
+                            );
+                        },
+                        enabled: false
+                    }
+                ],
+                ajax: {
+                    url: "/manage/manager_list",
+                    type: "GET",
+                    dataType: "json",
+                    data: buildSearchData1,
+                    dataSrc: function (json) {
+                        return json.data;
+                    }
+                },
+                columns: [
+                    {data: "pk", name: "pk"},
+                    {data: "email", name: "email"},
+                    {data: "username"},
+                    {data: "id"},
+                ],
+                columnDefs: [
+                    {
+                        targets: 0, visible: true, name: "pk", render: function (data, type, full, meta) {
+                        return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                    }
+                    },
+                    {targets: 1, visible: true},
+                    {targets: 2, visible: true},
+                    {targets: 3, visible: true},
+                ],
+                rowsGroup: [
+                    0,
+                    5
+                ],
+                paginate: false,
+                initComplete: function () {
+
+                }
+            })
+            ;
+
+        }
+
+        function buildSearchData1() {
+            var id = '{{id}}';
+            var obj = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                id: id,
+            }
+            return obj
+        }
+
+        function checked_all() {
+            console.log($("#check_all").is(":checked"));
+
+            if ($("#check_all").is(":checked")) {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", true);
+            } else {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", false);
+            }
+        }
+
+        function del_row() {
+            
+        }
+        var cnt = 0;
+        function add_row() {
+            if(cnt == 0) {
+                var tr_html = $("#notice_body tr:eq(0)").html();
+                $("#notice_body").append("<tr>");
+                $("#notice_body").append("<td></td>");
+                $("#notice_body").append("<td><div class='col-sm-15'><input type='test' class='form-control' style='width:100%' id='input_email'></div></td>");
+                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='검     증'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:save_info();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='저     장'></a></td>");
+                $("#notice_body").append("</tr>");
+            }
+            cnt = cnt + 1;
+        }
+        var cntt = 0;
+        var is_verify = 0;
+        function verify() {
+            alert("검증");
+            var input_email = $('#input_email').val();
+            try {
+                var method = 'verify';
+                var input_email = $('#input_email').val();
+
+                $.post("/manage/manager_db/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    input_email: input_email,
+                    method: method,
+                }).done(function (data) {
+                    if (data == 0) {
+                        is_verify = 0;
+                    }
+                    else if (data == 1) {
+                        is_verify = 1;
+                    }
+                }).fail(function (error) {
+                    alert('error = ' + error.responseJSON);
+                });
+            } catch (e) {
+                alert(e);
+            }
+            cntt = cntt + 1;
+        }
+
+        function save_info() {
+            alert("저장");
+            if( cntt == 0 || is_verify == 0) {
+                alert("검증부터해라 ");
+            }
+            else {
+                try {
+                    var method = 'add';
+                    var id = '{{id}}';
+                    var input_email = $('#input_email').val();
+                    var regist_id = {{ user.id }};
+
+                    $.post("/manage/manager_db/", {
+                        csrfmiddlewaretoken: $.cookie('csrftoken'),
+                        id: id,
+                        input_email: input_email,
+                        regist_id: regist_id,
+                        method: method,
+                    }).done(function (data) {
+
+                    }).fail(function (error) {
+                        alert('error = ' + error.responseJSON);
+                    });
+                } catch (e) {
+                    alert(e);
+                }
+            }
+        }
+
+
 
 </script>
 {% endblock %}
@@ -97,36 +254,48 @@
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    기 관 명
+                    기관명
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
                     <div>
-                        <input type="text" class="form-control" id="agency_name">
+                        <input type="text" class="form-control" id="site_name">
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    기 관 코 드
+                    기관코드
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-4">
                     <div>
-                        <input type="text" class="form-control" id="agency_code">
+                        <input type="text" class="form-control" id="site_code">
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    접 속 URL
+                    기관이미지
+                    <span class="required">*</span>
+                </label>
+                <div class="col-sm-4">
+                    <div>
+                        <input type="text" class="form-control" id="logi_img">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    접속 url
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
                     <div>
-                        <input type="text" class="form-control" id="connect_url">
+                        <input type="text" class="form-control" id="site_url">
                     </div>
                 </div>
             </div>
@@ -147,21 +316,22 @@
                 </header>
 
                 <div class="col-sm-15" align="right" style="padding: 10px;">
-                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="행추가"></a>
-                    <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" value="삭     제"></a>
+                    <a href="javascript:add_row();"><input class="btn btn-primary" type="button" id="SaveBtn" value="행추가"></a>
+                    <a href="javascript:del_row();"><input class="btn btn-default" type="button" id="DelBtn" value="삭     제"></a>
                 </div>
             </div>
         </footer>
 
         <div>
-            <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db22/" style="width: 100%;" >
+            <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/multi_site_db22/" style="width: 100%;" >
             <thead>
                 <tr>
-                    <td>No</td>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
                     <td>Email</td>
                     <td>이름</td>
                     <td>id</td>
                 </tr>
+
             </thead>
             <tbody id="notice_body">
             </tbody>

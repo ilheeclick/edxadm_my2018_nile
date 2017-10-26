@@ -101,11 +101,13 @@ urlpatterns = [
     url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
 
     # multi_site url /manage/multi_site
-    url(r'^manage/multi_site/', views.multi_site, name='multi_site'),
-    url(r'^manage/multi_site_db/', views.multi_site_db, name='multi_site'),
+    url(r'^manage/multi_site/$', views.multi_site, name='multi_site'),
+    url(r'^manage/multi_site_db/$', views.multi_site_db, name='multi_site'),
     url(r'^manage/add_multi_site/(?P<id>.*?)/$', views.add_multi_site, name='add_multi_site'),
-    url(r'^manage/modi_multi_site_db/', views.modi_multi_site_db, name='modi_multi_site_db'),
+    url(r'^manage/modi_multi_site_db/$', views.modi_multi_site_db, name='modi_multi_site_db'),
     url(r'^manage/modi_multi_site/(?P<id>.*?)/$', views.modi_multi_site, name='modi_multi_site'),
+    url(r'^manage/manager_list/$', views.manager_list, name='manager_list'),
+    url(r'^manage/manager_db/$', views.manager_db, name='manager_db'),
 
 
     #history

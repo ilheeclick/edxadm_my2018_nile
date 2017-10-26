@@ -51,13 +51,13 @@ def multi_site_db(request):
         if request.GET['method'] == 'multi_site_list':
             cur = connection.cursor()
             query = """
-                SELECT multi_id,
-                       agency_name,
-                       agency_code,
-                       connect_url,
+                SELECT site_id,
+                       site_name,
+                       site_code,
+                       site_url,
                        regist_id,
-                       created
-                  FROM multi_site
+                       regist_date
+                  FROM multisite
                   WHERE delete_yn = 'N'
 			"""
             cur.execute(query)
@@ -94,11 +94,12 @@ def modi_multi_site(request, id):
         if request.GET['method'] == 'modi':
             cur = connection.cursor()
             query = """
-					SELECT agency_name,
-                           agency_code,
-                           connect_url
-					  FROM multi_site
-                     WHERE multi_id =
+					SELECT site_name,
+                           site_code,
+                           site_url,
+                           logi_img
+					  FROM multisite
+                     WHERE site_id =
 			""" + id
 
             cur.execute(query)
@@ -120,16 +121,16 @@ def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
         if request.POST.get('method') == 'add':
-            agency_name = request.POST.get('agency_name')
-            agency_code = request.POST.get('agency_code')
-            connect_url = request.POST.get('connect_url')
+            site_name = request.POST.get('site_name')
+            site_code = request.POST.get('site_code')
+            site_url = request.POST.get('site_url')
             regist_id = request.POST.get('regist_id')
-
+            logi_img = request.POST.get('logi_img')
 
             cur = connection.cursor()
-            query = '''insert into edxapp.multi_site(agency_name, agency_code, connect_url, regist_id, modify_id)
-                       VALUES ('{0}','{1}','{2}','{3}','{4}')
-                    '''.format(agency_name, agency_code, connect_url, regist_id, regist_id)
+            query = '''insert into edxapp.multisite(site_name, site_code, logi_img, site_url, regist_id, modify_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
+                    '''.format(site_name, site_code, logi_img, site_url, regist_id, regist_id)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -137,18 +138,19 @@ def modi_multi_site_db(request):
             return HttpResponse(data, 'applications/json')
 
         elif request.POST['method'] == 'modi':
-            agency_name = request.POST.get('agency_name')
-            agency_code = request.POST.get('agency_code')
-            connect_url = request.POST.get('connect_url')
+            site_name = request.POST.get('site_name')
+            site_code = request.POST.get('site_code')
+            site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
+            logi_img = request.POST.get('logi_img')
 
             cur = connection.cursor()
             query = '''
-                    update edxapp.multi_site
-                    SET agency_name = '{0}', agency_code = '{1}', connect_url = '{2}', modify_id = '{3}', modifid = now()
-                    WHERE multi_id = '{4}'
-                    '''.format(agency_name, agency_code, connect_url,regist_id, multi_no)
+                    update edxapp.multisite
+                    SET site_name = '{0}', site_code = '{1}', logi_img= '{2}', site_url = '{3}', modify_id = '{4}', modify_date = now()
+                    WHERE site_id = '{5}'
+                    '''.format(site_name, site_code, logi_img, site_url, regist_id, multi_no)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -160,9 +162,104 @@ def modi_multi_site_db(request):
 
             cur = connection.cursor()
             query = '''
-                    update edxapp.multi_site
+                    update edxapp.multisite
                     SET delete_yn = 'Y'
-                    WHERE multi_id = '{0}'
+                    WHERE site_id = '{0}'
+                    '''.format(multi_no)
+            cur.execute(query)
+            cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
+
+def manager_list(request):
+    result = dict()
+    id = request.GET.get('id')
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+               SELECT email, username, id
+                 FROM edxapp.auth_user AS au
+                 JOIN edxapp.multisite_user as mu
+                WHERE mu.user_id = au.id;
+        '''
+
+        print query
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+def manager_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            id = request.POST.get('id')
+            input_email = request.POST.get('input_email')
+            regist_id = request.POST.get('regist_id')
+
+
+            cur = connection.cursor()
+            query = '''SELECT email, username, id
+                         FROM edxapp.auth_user
+                        WHERE email = '{0}';
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+
+            print (row[0][0])
+            print (row[0][1])
+            print (row[0][2])
+            query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
+                       VALUES ('{0}','{1}','{2}','{3}')
+                    '''.format(id, str(row[0][2]), regist_id, regist_id)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'verify':
+            input_email = request.POST.get('input_email')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT COUNT(id)
+                    FROM edxapp.auth_user
+                    WHERE email = '{0}';
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            print row[0][0]
+
+            data = json.dumps(row[0][0], cls=DjangoJSONEncoder, ensure_ascii=False)
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            multi_no = request.POST.get('multi_no')
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multisite
+                    SET delete_yn = 'Y'
+                    WHERE site_id = '{0}'
                     '''.format(multi_no)
             cur.execute(query)
             cur.close()
