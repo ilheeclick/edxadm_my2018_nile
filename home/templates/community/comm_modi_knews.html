@@ -66,9 +66,17 @@
                         <span id="file_array">
                             <input type="file" name="file" id = "uploadfile" multiple/>
                             {% for item in file_list %}
-                                <div>{{item.0}}&nbsp; &nbsp;{{item.2}}</div>
+                            <table>
+                              <tr>
+                                <th><div id = "file_{{ item.3 }}" style="width:280px;">{{item.0}}&nbsp; &nbsp;{{item.2}}</div></th>
+                                <th><div id = "file_delete_{{ item.3 }}" style="margin-left:50px;"><a href="javascript:delete_file({{ item.3 }})" style = "color: #333333">삭제</a></div></th>
+                              </tr>
+                            </table>
+                                <!--<div id ="{{ forloop.counter }}">{{item.0}}&nbsp; &nbsp;{{item.2}}</div>-->
+                                <!--<div>삭제</div>-->
                             {% endfor %}
                         </span>
+                        <div style ="display:none;" id ="delete_list"></div>
                         <button type="submit" id="fileupload">upload</button>
                     </form>
                     <!-- file upload -->
@@ -91,10 +99,5 @@
         </footer>
     </section>
 </div>
-
-
-
-
-
 
 {% endblock %}
