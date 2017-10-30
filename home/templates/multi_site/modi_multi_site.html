@@ -4,6 +4,8 @@
 {% block script %}{% endblock %}
 {% block script_down %}
 
+<!-- sweat alert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     {% include "community/script/test.js" %}
     {% include "community/script/notice.js" %}
@@ -13,7 +15,14 @@
         var value_list;
         var id = '{{id}}';
         if (id != 99999) {
+
             document.getElementById('DelBtn').style.display = '';
+            document.getElementById('row_DelBtn').style.display = '';
+            document.getElementById('row_SaveBtn').style.display = '';
+            document.getElementById('add_row_DelBtn').style.display = 'none';
+            document.getElementById('add_row_SaveBtn').style.display = 'none';
+
+
         }
            $.ajax({
                 url: '/manage/modi_multi_site/' + id,
@@ -21,19 +30,33 @@
                     method: 'modi'
                 }
             }).done(function (data) {
-               value_list = data[0].toString().split(',');
-                $('#site_name').val(data[0][0]);
-                $('#site_code').val(data[0][1]);
-                $('#site_url').val(data[0][2]);
-                $('#logi_img').val(data[0][3]);
+               if(data != '') {
+                   value_list = data[0].toString().split(',');
+                   $('#site_name').val(data[0][0]);
+                   $('#site_code').val(data[0][1]);
+                   $('#site_url').val(data[0][2]);
+                   $('#logo_img').val(data[0][3]);
+               }
             })
     });
 
     function save() {
+
         try {
             var method = '';
+            var site_index ='';
             if ('{{ id }}' == 99999) {
+                $.post("/manage/modi_multi_site_db/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    method: 'index',
+                }).done(function (data) {
+                    site_index = data;
+                    location.href = '/manage/multi_site';
+                }).fail(function (error) {
+                    alert('error = ' + error.responseJSON);
+                });
                 method = 'add';
+
             }
             else {
                 method = 'modi';
@@ -41,18 +64,26 @@
             var site_name = $('#site_name').val();
             var site_code = $('#site_code').val();
             var site_url = $('#site_url').val();
-            var logi_img = $('#logi_img').val();
+            var logo_img = $('#logo_img').val();
             var regist_id = {{ user.id }};
             var multi_no = {{ id }};
+            var email_list = "";
+            $(".email").each(function(){
+                if($(this).text() != '') {
+                    email_list += $(this).text() + "+";
+                }
+            });
 
             $.post("/manage/modi_multi_site_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 site_name : site_name,
                 site_code: site_code,
                 site_url: site_url,
-                logi_img: logi_img,
+                logo_img: logo_img,
                 regist_id: regist_id,
                 multi_no: multi_no,
+                site_index: site_index,
+                email_list: email_list,
                 method: method,
             }).done(function (data) {
                 location.href = '/manage/multi_site';
@@ -89,6 +120,9 @@
                 ordering: false,
                 serverSide: false,
                 searching: false,
+                "language": {
+                  "emptyTable": " "
+                },
                 buttons: [
                     {
                         text: 'Row selected data',
@@ -120,11 +154,11 @@
                     {
                         targets: 0, visible: true, name: "pk", render: function (data, type) {
                         return '<input type="checkbox" name="' + data + '" value="' + data + '">';
-                    }
+                    }, width:'8%'
                     },
                     {targets: 1, visible: true},
-                    {targets: 2, visible: true},
-                    {targets: 3, visible: true},
+                    {targets: 2, visible: true, width: '20%'},
+                    {targets: 3, visible: true, width: '20%'},
                 ],
                 rowsGroup: [
                     0,
@@ -182,6 +216,16 @@
             });
         }
 
+        function new_del_row() {
+
+            $("#notice_body input[type=checkbox]:checked").each(function(){
+                $(this).parent().parent().css("display","none");
+                alert($(this).parent().next().text());
+                $(this).parent().next().html('');
+                alert($(this).parent().next().text());
+            });
+        }
+
         var cnt = 0;
         var up_date = 0;
 
@@ -194,6 +238,20 @@
                 $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='검     증'></a></td>");
                 $("#notice_body").append("<td><a href='javascript:save_info();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='저     장'></a></td>");
                 $("#notice_body").append("</tr>");
+            }
+            cnt = cnt + 1;
+        }
+
+        function new_add_row() {
+            if(cnt == 0) {
+                var tr_html = $("#notice_body tr:eq(0)").html();
+                $("#notice_body").append("<tr>");
+                $("#notice_body").append("<td></td>");
+                $("#notice_body").append("<td><div class='col-sm-15'><input type='text' class='form-control' style='width:100%' id='input_email'></div></td>");
+                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='검     증'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:new_save_info();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='저     장'></a></td>");
+                $("#notice_body").append("</tr>");
+
             }
             cnt = cnt + 1;
         }
@@ -215,11 +273,12 @@
                 }).done(function (data) {
                     if (data == 0) {
                         is_verify = 0;
-                        alert('정확한 Email 을 입력하세요.')
+                        swal("경고", "정확한 Email 을 입력하세요.", "warning");
+                        $("#input_email").val('');
                     }
                     else if (data == 1) {
                         is_verify = 1;
-                        alert('정확한 Email 입니다.')
+                        swal("성공", "정확한 Email 입니다.", "success");
                     }
                 }).fail(function (error) {
                     alert('error = ' + error.responseJSON);
@@ -233,7 +292,7 @@
         function save_info() {
 
             if( cntt == 0 || is_verify == 0) {
-                alert("정확한 Email 을 입력하세요.");
+                swal("경고", "정확한 Email 을 입력하세요.", "warning");
             }
             else {
                 try {
@@ -252,13 +311,54 @@
                         update();
                         cnt = 0;
                     }).fail(function (error) {
-                        alert('입력한 Email 이 이미 존재합니다');
+                        swal("경고", "입력한 Email 이 이미 존재합니다", "warning");
                     });
                 } catch (e) {
                     alert(e);
                 }
             }
         }
+
+        function new_save_info() {
+            if( cntt == 0 || is_verify == 0) {
+                swal("경고", "정확한 Email 을 입력하세요.", "warning");
+            }
+            else {
+                try {
+                    var method = 'temporary';
+                    var input_email = $('#input_email').val();
+
+                    $.post("/manage/manager_db/", {
+                        csrfmiddlewaretoken: $.cookie('csrftoken'),
+                        input_email: input_email,
+                        method: method,
+                    }).done(function (data) {
+                        var flag = 0;
+                        $(".email").each(function(){
+                            if($(this).text() == input_email) {
+                                swal("경고", "입력한 Email 이 이미 존재합니다", "warning");
+                                $("#input_email").val('');
+                                flag = 1;
+                            }
+                        });
+                        if(flag == 0) {
+                                $("#notice_body").prepend("<tr role='row' class='odd'><td><input type='checkbox' name='undefined' value='undefined'></td><td class = 'email'>" + data[0][0] + "</td><td>" + data[0][1] + "</td><td>" + data[0][2] + "</td></tr>");
+                                $("#input_email").val('');
+                            }
+                        if($(".email").text() == ""){
+                            $("#notice_body").prepend("<tr role='row' class='odd'><td><input type='checkbox' name='undefined' value='undefined'></td><td class = 'email'>" + data[0][0] + "</td><td>" + data[0][1] + "</td><td>" + data[0][2] + "</td></tr>");
+                            $("#input_email").val('');
+                        }
+                        flag = 0;
+                    }).fail(function (error) {
+                        alert('error = ' + error.responseJSON);
+                    });
+                } catch (e) {
+                    alert(e);
+                }
+            }
+        }
+
         function update() {
             var table = $('#datatable1').DataTable();
             table.ajax.reload();
@@ -280,9 +380,36 @@
         });
 
         function file_upload() {
-            alert('업업업');
         }
 
+        function file_save() {
+            var test = $('#uploadfile').val();
+            var text = test.split('\\');
+            $('#logo_img').val(text[2]);
+            $('#uploadform').ajaxForm({
+                type: "POST",
+                url:'/manage/new_notice/',
+                beforeSubmit: function (data,form,option) {
+                    if( $("#uploadfile").val() != "" ){
+                        var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
+                    }else{
+                        swal("업로드 경고", "파일을 선택한 후 업로드 버튼을 눌러 주십시오", "warning");
+                        return false;
+                    }
+                },
+                success: function(data){
+                    for(i=0; i<data.len; i++){
+                        $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+                    }
+                    $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+                    swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
+                    $('#logo_img').val(text[2]);
+                },
+                error: function() {
+                    swal("업로드 실패", "다시 시도해주세요", "error");
+                }
+            })
+        }
 
 </script>
 {% endblock %}
@@ -331,11 +458,12 @@
                 </label>
                 <div class="col-sm-4">
                     <div>
-                        <input type="text" class="form-control" id="logi_img">
-                        <input type='file' id='file' name='file' style="width:0; height:0;"/>
-                        <a href="javascript:file_upload();">
+                        <input type="text" class="form-control" id="logo_img">
+                        <form id="uploadform" enctype="multipart/form-data" method="post">
+                            <input type="file" name="file" id = "uploadfile" style="display: none"/>
                             <button onclick="file_upload()" style="float: right" id='btn-upload' class="button1 white selected" onfocus="this.blur();">File</button>
-                        </a>
+                            <button onclick="file_save()" type="submit" style="float: right" id='fileupload' class="button1 white selected">등록</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -368,14 +496,16 @@
                 </header>
 
                 <div class="col-sm-15" align="right" style="padding: 10px;">
-                    <a href="javascript:add_row();"><input class="btn btn-primary" type="button" id="SaveBtn" value="행추가"></a>
-                    <a href="javascript:del_row();"><input class="btn btn-default" type="button" id="DelBtn" value="삭     제"></a>
+                    <a href="javascript:add_row();"><input class="btn btn-primary" type="button" id="row_SaveBtn" style="display:none;" value="행추가"></a>
+                    <a href="javascript:del_row();"><input class="btn btn-default" type="button" id="row_DelBtn" style="display:none;" value="삭     제"></a>
+                    <a href="javascript:new_add_row();"><input class="btn btn-primary" type="button" id="add_row_SaveBtn" value="행추가"></a>
+                    <a href="javascript:new_del_row();"><input class="btn btn-default" type="button" id="add_row_DelBtn" value="삭     제"></a>
                 </div>
             </div>
         </footer>
 
         <div>
-            <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/multi_site_db22/" style="width: 100%;" >
+            <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/multi_site_db/" style="width: 100%;" >
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>

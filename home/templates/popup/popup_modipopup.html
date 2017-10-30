@@ -216,10 +216,16 @@
                 $('#TITLE_0').html(title);
                 $('#Popup_0').css("width",width);
                 $('#Popup_0').css("height",height);
-                $('#Popup_0').center();
                 $('#pop_0').attr("href", $('#link_URL').val());
                 $('#IMG').attr('src',image_url);
+                var max_width = width;
+                var max_height = height;
+                max_width = max_width - 10;
+                max_height = max_height - 55;
+                $('#IMG').css('width', max_width);
+                $('#IMG').css('height', max_height);
                 $('#CONTENTS_0').html(contents);
+                $('#Popup_0').center();
 
             }
             else if (template.options[template.selectedIndex].text == "기본") {
@@ -246,16 +252,6 @@
 
     var link_url = $('#link_URL').val();
 
-    $().ready(function(){
-            var imgWid = $('#img').outerWidth();
-            $('#imgbox').css('width', imgWid);
-
-            boxWid = $('#imgbox').outerWidth() + (window.outerWidth - window.innerWidth);
-            boxHei = $('#imgbox').outerHeight() + (window.outerHeight - window.innerHeight);
-            window.resizeTo(boxWid, boxHei);
-
-    });
-
     function fn_move(moveGbn){
         if(moveGbn == 'close'){
             $('#Popup_1').css("display","none");
@@ -264,12 +260,8 @@
         }
         else if(moveGbn == 'move') {
             window.open = ($('#link_URL').val());
-
-
         }
     }
-
-
 
 </script>
 {% endblock %}
@@ -299,7 +291,7 @@
 	                    <span class="fleft">
 	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
                     	</span>
-                    	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
+                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
                 </div>
     		</div>
 
@@ -307,7 +299,7 @@
             <div class="popup templet small" id="Popup_1" style="display: none" >
 			    <div class="pop-header">
 			        <h1>공지사항</h1>
-			        <a href="#" class="img-ico close" onclick="fn_move('close')">창닫기</a>
+			        <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
 			    </div>
 			    <div class="pop-body">
 			        <div class="templet-top cs2">
@@ -324,7 +316,7 @@
 	                    <span class="fleft">
 	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
                     	</span>
-                    	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
+                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
 	                </div>
             </div>
 
@@ -333,7 +325,7 @@
             <div class="popup templet big" id="Popup_2" style="display: none">
 		        <div class="pop-header">
 		            <h1 id="TITLE_2" >title</h1>
-		            <a href="#" class="img-ico close" onclick="fn_move('close')">창닫기</a>
+		            <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
 		        </div>
 		        <div class="pop-body">
 		            <div class="templet-top cs1">
@@ -353,7 +345,7 @@
 	                    <span class="fleft">
 	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
                     	</span>
-                    	<a href="#" class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
+                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
 	                </div>
 		    </div>
         </body>
@@ -392,9 +384,9 @@
                 <label class="col-sm-2 control-label">
                     이미지맵 좌표
                 </label>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <div>
-                        <input type="text" class="form-control" id="image_map" placeholder="0.0.100.100">
+                        <input type="text" class="form-control" id="image_map" placeholder="0.0.100.100/100,0,200,200/...">
                     </div>
                 </div>
             </div>
@@ -441,7 +433,7 @@
                     Image URL
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="image_URL" class="form-control" required/>
+                    <input type="text" id="image_URL" class="form-control" placeholder="https://" required/>
                 </div>
             </div>
             <div class="form-group" id="linkurl" style="display:none;">
@@ -449,7 +441,7 @@
                     Link URL
                 </label>
                 <div class="col-sm-10">
-                    <input type="text" id="link_URL" class="form-control" required/>
+                    <input type="text" id="link_URL" class="form-control" placeholder="https://" required/>
                 </div>
             </div>
             <div class="form-group">

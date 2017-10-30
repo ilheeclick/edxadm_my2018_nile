@@ -122,7 +122,7 @@ database_id = '192.168.33.10'
 # database_id = '192.168.33.13'
 
 EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+UPLOAD_DIR = '/Users/kotech_cha/test_upload/'
 
 debug = True
 

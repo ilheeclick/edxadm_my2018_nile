@@ -51,15 +51,20 @@ def multi_site_db(request):
         if request.GET['method'] == 'multi_site_list':
             cur = connection.cursor()
             query = """
-                SELECT site_id,
+                SELECT @rn := @rn - 1 rn,
+                       site_id,
                        site_name,
                        site_code,
                        site_url,
-                       regist_id,
+                       username,
                        regist_date
-                  FROM multisite
-                  WHERE delete_yn = 'N'
+                  FROM multisite a JOIN auth_user b on a.regist_id= b.id,
+                       (SELECT @rn := count(*) + 1
+                          FROM multisite) b
+                 WHERE delete_yn = 'N'
+              ORDER BY regist_date DESC;
 			"""
+
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
@@ -71,6 +76,7 @@ def multi_site_db(request):
                 value_list.append(multi[3])
                 value_list.append(multi[4])
                 value_list.append(multi[5])
+                value_list.append(multi[6])
                 multi_site_list.append(value_list)
 
             data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -97,7 +103,7 @@ def modi_multi_site(request, id):
 					SELECT site_name,
                            site_code,
                            site_url,
-                           logi_img
+                           logo_img
 					  FROM multisite
                      WHERE site_id =
 			""" + id
@@ -125,12 +131,41 @@ def modi_multi_site_db(request):
             site_code = request.POST.get('site_code')
             site_url = request.POST.get('site_url')
             regist_id = request.POST.get('regist_id')
-            logi_img = request.POST.get('logi_img')
+            logo_img = request.POST.get('logo_img')
+            email_list = request.POST.get('email_list')
+            email_list = email_list.split('+')
+            email_list.pop()
+
+
+            for item in email_list:
+                cur = connection.cursor()
+                query = '''SELECT id
+                             FROM edxapp.auth_user
+                            WHERE email = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = "select count(site_id) + 1 from multisite"
+                cur.execute(query)
+                cnt = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
+                           VALUES ('{0}','{1}','{2}','{3}')
+                        '''.format(str(cnt[0][0]), str(row[0][0]), regist_id, regist_id)
+                cur.execute(query)
+                cur.close()
+
+
 
             cur = connection.cursor()
-            query = '''insert into edxapp.multisite(site_name, site_code, logi_img, site_url, regist_id, modify_id)
+            query = '''insert into edxapp.multisite(site_name, site_code, logo_img, site_url, regist_id, modify_id)
                        VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
-                    '''.format(site_name, site_code, logi_img, site_url, regist_id, regist_id)
+                    '''.format(site_name, site_code, logo_img, site_url, regist_id, regist_id)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -143,14 +178,14 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
-            logi_img = request.POST.get('logi_img')
+            logo_img = request.POST.get('logo_img')
 
             cur = connection.cursor()
             query = '''
                     update edxapp.multisite
-                    SET site_name = '{0}', site_code = '{1}', logi_img= '{2}', site_url = '{3}', modify_id = '{4}', modify_date = now()
+                    SET site_name = '{0}', site_code = '{1}', logo_img= '{2}', site_url = '{3}', modify_id = '{4}', modify_date = now()
                     WHERE site_id = '{5}'
-                    '''.format(site_name, site_code, logi_img, site_url, regist_id, multi_no)
+                    '''.format(site_name, site_code, logo_img, site_url, regist_id, multi_no)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -190,6 +225,7 @@ def manager_list(request):
                    ON up.user_id = mu.user_id
                 WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
         '''.format(id)
+        print query
 
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -229,7 +265,6 @@ def manager_db(request):
             cur.execute(query)
             cnt = cur.fetchall()
             cur.close()
-            print ('*******************')
             print cnt[0][0]
             if(cnt[0][0] == 1) :
                 cur = connection.cursor()
@@ -247,6 +282,27 @@ def manager_db(request):
                 cur.execute(query)
                 cur.close()
             data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'temporary':
+            input_email = request.POST.get('input_email')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT au.email, up.name, au.username
+                      FROM edxapp.auth_user AS au
+                      JOIN edxapp.auth_userprofile as up
+                        ON au.id = up.user_id
+                     WHERE au.email = '{0}'
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            print row
+
+            data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)
 
             return HttpResponse(data, 'applications/json')
 

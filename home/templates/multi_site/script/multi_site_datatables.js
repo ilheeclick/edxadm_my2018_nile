@@ -27,6 +27,12 @@ Theme Version: 	1.5.2
 			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
 
 			"paginate": true,
+			"columnDefs":[
+				{
+					"targets": [1],
+					"visible": false,
+				}
+			],
 			"initComplete": function(settings, json){
 				$('input[type="search"]').attr('placeholder', '검색하세요');
 				$('input[type="search"]').attr('class', 'form-control');
@@ -69,7 +75,7 @@ Theme Version: 	1.5.2
 			var t = $('#datatable33').DataTable();
 			$row = $(this).closest('tr');
 			data = t.row($row.get(0)).data();
-			location.href='/manage/modi_multi_site/'+data[0]
+			location.href='/manage/modi_multi_site/'+data[1]
 		});
 	};
 
