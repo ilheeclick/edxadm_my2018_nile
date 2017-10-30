@@ -97,7 +97,7 @@ function datalist() {
     $(document).on('click', '#day_down', function () {
 
         processingdate = "now()";
-        client = "staff";
+        client = {{ user.username }};
         startDate = $("#datepicker").val();
         endDate = $("#datepicker2").val();
 
