@@ -240,20 +240,17 @@ def data_insert(request):
         client = request.POST.get('client')
         startDate = request.POST.get('startDate')
         endDate = request.POST.get('endDate')
-        success = request.POST.get('success')
 
         query = """
             INSERT INTO edxapp.trackinglog_download(processingdate,
                                         client,
                                         startDate,
-                                        endDate,
-                                        success)
+                                        endDate)
              VALUES (%s,
                      '%s',
                      %s,
-                     %s,
-                     '%s');
-        """ % (prodate, client, startDate, endDate, success)
+                     %s);
+        """ % (prodate, client, startDate, endDate)
 
         cur = connection.cursor()
         cur.execute(query)
@@ -273,10 +270,8 @@ def log_board(request):
                        DATE_ADD((DATE_FORMAT(processingdate, "%Y-%c-%d %r")), INTERVAL +9 HOUR ),
                        client,
                        DATE_FORMAT(startdate, "%Y/%c/%d"),
-                       DATE_FORMAT(enddate, "%Y/%c/%d"),
-                       success
-                  FROM edxapp.trackinglog_download
-                 WHERE success = 'Y';
+                       DATE_FORMAT(enddate, "%Y/%c/%d")
+                  FROM edxapp.trackinglog_download;
             """
 
         cur.execute(query)

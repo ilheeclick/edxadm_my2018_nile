@@ -22,7 +22,7 @@ function datalist() {
         searching: false,
         "bDestroy": true,
         sAjaxSource: $table.data('url'),
-        "order": [[1, "desc"]],
+        "order": [[0, "desc"]],
         "fnReloadAjax": false,
         "fnServerParams": function (aoData) {
             aoData.push({"name": 'method', "value": 'logDown_list'});
@@ -100,7 +100,6 @@ function datalist() {
         client = "staff";
         startDate = $("#datepicker").val();
         endDate = $("#datepicker2").val();
-        success = "Y";
 
         if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
             alert('날짜를 선택하세요.');
@@ -120,8 +119,7 @@ function datalist() {
                         'processingdate':processingdate,
                         'client':client,
                         'startDate':startDate,
-                        'endDate':endDate,
-                        'success':success
+                        'endDate':endDate
                     },
                     dataType: "json",
                     type: "POST"
