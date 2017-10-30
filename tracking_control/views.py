@@ -18,9 +18,10 @@ from django.http import JsonResponse
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required
 def log_download(request):
     return render(request, 'trackingLog.html')
 
