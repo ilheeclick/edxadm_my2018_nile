@@ -1,0 +1,58 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}연계강좌 지정{% endblock %}
+{% block pagetitlename_header %}연계강좌 지정{% endblock %}
+{% block script_down %}
+<script>
+</script>
+{% endblock %}
+{% block containor %}
+	<!-- start: page -->
+<section class="panel panel-featured ">
+    <header class="panel-heading">
+        <div><h2 class="panel-title">연계강좌 지정</h2></div>
+    </header>
+
+    <div class="panel-body" style="padding-top: 0;"> 
+        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+            <a class="btn btn-default" id="add_multi_site" href="/manage/add_multi_site/99999">신규등록</a>
+        </div>
+
+        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>강좌명</td>
+                    <td>신청기간</td>
+                    <td>교육기간</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-body" style="padding-top: 0;"> 
+        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+            <a class="btn btn-default" id="add_multi_site" href="/manage/add_multi_site/99999">신규등록</a>
+        </div>
+
+        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>강좌명</td>
+                    <td>개강일</td>
+                    <td>등록자</td>
+                    <td>등록일</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+{% endblock %}

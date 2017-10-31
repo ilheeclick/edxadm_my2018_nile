@@ -31,8 +31,12 @@ Theme Version: 	1.5.2
 				{
 					"targets": [1],
 					"visible": false,
-				}
+				},
+				{targets: 0, visible: true, width: '6%'},
+				{targets: 7, visible: true, width: '8%'},
+
 			],
+
 			"initComplete": function(settings, json){
 				$('input[type="search"]').attr('placeholder', '검색하세요');
 				$('input[type="search"]').attr('class', 'form-control');

@@ -108,6 +108,8 @@ urlpatterns = [
     url(r'^manage/modi_multi_site/(?P<id>.*?)/$', views.modi_multi_site, name='modi_multi_site'),
     url(r'^manage/manager_list/$', views.manager_list, name='manager_list'),
     url(r'^manage/manager_db/$', views.manager_db, name='manager_db'),
+    url(r'^manage/course_list/(?P<site_id>.*?)/$', views.course_list, name='course_list'),
+    # url(r'^manage/course_db/$', views.course_db, name='course_db'),
 
 
     #history

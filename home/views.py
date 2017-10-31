@@ -42,6 +42,13 @@ def get_file_ext(filename):
 def multi_site(request):
     return render(request, 'multi_site/multi_site.html')
 
+@login_required
+def course_list(request, site_id):
+    variables = RequestContext(request, {
+        'site_id': site_id
+    })
+    return render_to_response('multi_site/course_list.html', variables)
+
 @csrf_exempt
 def multi_site_db(request):
     if request.is_ajax():
@@ -77,6 +84,7 @@ def multi_site_db(request):
                 value_list.append(multi[4])
                 value_list.append(multi[5])
                 value_list.append(multi[6])
+                value_list.append('<a href="/manage/course_list/'+ str(multi[1]) +'"><input type="button" value="관  리" class="btn btn-default"></a>')
                 multi_site_list.append(value_list)
 
             data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
