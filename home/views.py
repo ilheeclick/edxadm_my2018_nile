@@ -452,29 +452,35 @@ def popup_db(request):
         if request.GET['method'] == 'popup_list':
             cur = connection.cursor()
             query = """
-                SELECT popup_id,
-                       CASE
-                          WHEN popup_type = 'H' THEN 'HTML'
-                          WHEN popup_type = 'I' THEN 'Image'
-                       END
-                       popup_type,
-                       title,
-                       regist_id,
-                       start_date,
-                       end_date,
-                       CASE
-                          WHEN link_type = '0' THEN '없음'
-                          WHEN link_type = '1' THEN '전체링크'
-                          WHEN link_type = '2' THEN '이미지맵'
-                       END
-                       link_type,
-                       link_url,
-                       CASE
-                          WHEN use_yn = 'Y' THEN '사용함'
-                          WHEN use_yn = 'N' THEN '사용안함'
-                       END
-                       use_yn
-                  FROM popup
+                   SELECT @rn := @rn - 1 rn,
+                         popup_id,
+                         CASE
+                            WHEN popup_type = 'H' THEN 'HTML'
+                            WHEN popup_type = 'I' THEN 'Image'
+                         END
+                            popup_type,
+                         title,
+                         username,
+                         start_date,
+                         end_date,
+                         CASE
+                            WHEN link_type = '0' THEN '없음'
+                            WHEN link_type = '1' THEN '전체링크'
+                            WHEN link_type = '2' THEN '이미지맵'
+                         END
+                            link_type,
+                         link_url,
+                         CASE
+                            WHEN use_yn = 'Y' THEN '사용함'
+                            WHEN use_yn = 'N' THEN '사용안함'
+                         END
+                            use_yn
+                    FROM popup pu
+                         JOIN auth_user au ON au.id = pu.regist_id,
+                         (SELECT @rn := count(*) + 1
+                            FROM popup) x
+                            WHERE pu.delete_yn = 'N'
+                ORDER BY regist_date DESC;
 			"""
             cur.execute(query)
             row = cur.fetchall()
@@ -490,6 +496,7 @@ def popup_db(request):
                 value_list.append(pop[6])
                 value_list.append(pop[7])
                 value_list.append(pop[8])
+                value_list.append(pop[9])
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -564,7 +571,7 @@ def new_popup(request):
             pop_id = request.POST.get('pop_id')
 
             cur = connection.cursor()
-            query = "delete from popup where popup_id = " + pop_id
+            query = "update edxapp.popup set delete_yn = 'Y' where popup_id = " + pop_id
             cur.execute(query)
             cur.close()
 
