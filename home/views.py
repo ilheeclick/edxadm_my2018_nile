@@ -40,14 +40,162 @@ def get_file_ext(filename):
 
 @login_required
 def multi_site(request):
-    return render(request, 'multi_site/multi_site.html')
+    return render(request, 'multi_site/multi_site.html')\
 
 @login_required
-def course_list(request, site_id):
+def course_manage(request):
+    return render(request, 'course_manage/course_manage.html')
+
+@login_required
+def course_list(request, site_id, org_name):
+
     variables = RequestContext(request, {
-        'site_id': site_id
+        'site_id': site_id,
+        'org_name': org_name
     })
     return render_to_response('multi_site/course_list.html', variables)
+
+def course_list_db(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+              SELECT replace(@rn := @rn - 1, .0, '') rn,
+                     id,
+                     display_name,
+                     CAST(
+                        CONCAT(date_format(`enrollment_start`, '%Y/%m/%d'),
+                               ' ~ ',
+                               date_format(`enrollment_end`, '%Y/%m/%d')) AS CHAR)
+                        AS r_period,
+                     CAST(
+                        CONCAT(date_format(`start`, '%Y/%m/%d'),
+                               ' ~ ',
+                               date_format(`end`, '%Y/%m/%d')) AS CHAR)
+                        AS t_period
+                FROM course_overviews_courseoverview,
+                     (SELECT @rn := count(*) + 1
+                        FROM course_overviews_courseoverview) b
+            ORDER BY start DESC;
+        '''
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        print rows
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+@csrf_exempt
+def multisite_course(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                           VALUES ('{0}','{1}','{2}')
+                        '''.format(site_id, item, user_id)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'input_add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        SELECT count(id)
+                          FROM course_overviews_courseoverview
+                         WHERE id = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                count = cur.fetchall()
+                cur.close()
+
+                print ('********************************')
+                print count[0][0]
+                print ('********************************')
+                if (count[0][0] == 1) :
+                    cur = connection.cursor()
+                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                               VALUES ('{0}','{1}','{2}')
+                            '''.format(site_id, item, user_id)
+                    cur.execute(query)
+                    cur.close()
+                    data = json.dumps({'status': "success"})
+                else :
+                    data = json.dumps({'status': "fail"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            site_id = request.POST.get('site_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
+                        '''.format(site_id, item)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
+
+def select_list_db(request):
+    site_id = request.GET.get('site_id')
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+            SELECT replace(@rn := @rn - 1, .0, '') rn,
+                   id,
+                   display_name,
+                   start,
+                   regist_id,
+                   regist_date
+              FROM multisite_course mc
+                   JOIN course_overviews_courseoverview co ON co.id = mc.course_id,
+                   (SELECT @rn := count(*) + 1
+                      FROM multisite_course
+                     WHERE site_id = '{0}') b
+             WHERE mc.site_id = '{1}';
+        '''.format(site_id, site_id)
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        print rows
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
 
 @csrf_exempt
 def multi_site_db(request):
@@ -84,7 +232,7 @@ def multi_site_db(request):
                 value_list.append(multi[4])
                 value_list.append(multi[5])
                 value_list.append(multi[6])
-                value_list.append('<a href="/manage/course_list/'+ str(multi[1]) +'"><input type="button" value="관  리" class="btn btn-default"></a>')
+                value_list.append('<a href="/manage/course_list/'+ str(multi[1]) + '/' + str(multi[2]) + '"><input type="button" value="관  리" class="btn btn-default"></a>')
                 multi_site_list.append(value_list)
 
             data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -486,7 +634,7 @@ def popup_db(request):
                     FROM popup pu
                          JOIN auth_user au ON au.id = pu.regist_id,
                          (SELECT @rn := count(*) + 1
-                            FROM popup) x
+                            FROM popup WHERE delete_yn = 'N') x
                             WHERE pu.delete_yn = 'N'
                 ORDER BY regist_date DESC;
 			"""

@@ -2,45 +2,346 @@
 {% block pagetitlename %}연계강좌 지정{% endblock %}
 {% block pagetitlename_header %}연계강좌 지정{% endblock %}
 {% block script_down %}
+<style>
+    #batch_input{
+        position: absolute;
+        z-index: 1;
+        background-color: #F2F2F2;
+        width: 500px;
+        height: 300px;
+    }
+</style>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
+
+    jQuery.ajaxSettings.traditional = true;
+        $(document).ready(function() {
+            setDataTable1();
+            setDataTable2();
+
+        });
+
+    function setDataTable1() {
+                var $table = $('#datatable1');
+
+                $table.dataTable({
+                    dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                    bProcessing: true,
+                    ordering: false,
+                    serverSide: false,
+                    searching: true,
+                    "language": {
+                      "emptyTable": "조회된 데이터가 없습니다."
+                    },
+                    "scrollY": "400px",
+                    "scrollCollapse": true,
+                    buttons: [
+                        {
+                            text: 'Row selected data',
+                            action: function (e, dt, node, config) {
+                                alert(
+                                        'Row data: ' +
+                                        JSON.stringify(dt.row({selected: true}).data())
+                                );
+                            },
+                            enabled: false
+                        }
+                    ],
+                    ajax: {
+                        url: "/manage/course_list_db",
+                        type: "GET",
+                        dataType: "json",
+                        data: buildSearchData1,
+                        dataSrc: function (json) {
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        {data: "pk", name: "pk"},
+                        {data: "id", name: "id"},
+                        {data: "rn"},
+                        {data: "display_name", class:"course_name"},
+                        {data: "r_period"},
+                        {data: "t_period"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 0, visible: true, name: "pk", render: function (data, type) {
+                            return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                        }, width:'8%'
+                        },
+                        {
+                            targets: 1, visible: false,
+                        },
+                    ],
+                    rowsGroup: [
+                        0,
+                        5
+                    ],
+                    paginate: false,
+                    "info":false,
+                    initComplete: function () {
+                    }
+                })
+                ;
+
+            }
+
+    function setDataTable2() {
+                var $table = $('#datatable2');
+
+                $table.dataTable({
+                    dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                    bProcessing: true,
+                    ordering: false,
+                    serverSide: false,
+                    searching: true,
+                    "language": {
+                      "emptyTable": "조회된 데이터가 없습니다."
+                    },
+                    "scrollY": "400px",
+                    "scrollCollapse": true,
+                    buttons: [
+                        {
+                            text: 'Row selected data',
+                            action: function (e, dt, node, config) {
+                                alert(
+                                        'Row data: ' +
+                                        JSON.stringify(dt.row({selected: true}).data())
+                                );
+                            },
+                            enabled: false
+                        }
+                    ],
+                    ajax: {
+                        url: "/manage/select_list_db",
+                        type: "GET",
+                        dataType: "json",
+                        data: buildSearchData2,
+                        dataSrc: function (json) {
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        {data: "pk", name: "pk"},
+                        {data: "id", name: "id"},
+                        {data: "rn"},
+                        {data: "display_name"},
+                        {data: "start"},
+                        {data: "regist_id"},
+                        {data: "regist_date"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 0, visible: true, name: "pk", render: function (data, type) {
+                            return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                        }, width:'8%'
+                        },
+                        {
+                            targets: 1, visible: false,
+                        },
+                    ],
+                    rowsGroup: [
+                        0,
+                        5
+                    ],
+                    paginate: false,
+                    "info":false,
+                    initComplete: function () {
+                    }
+                })
+                ;
+
+            }
+
+
+    function buildSearchData1() {
+        var id = '{{id}}';
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            id: id,
+        }
+        return obj
+    }
+
+    function buildSearchData2() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            site_id: '{{ site_id }}',
+            user_id: '{{ user_id }}',
+        }
+        return obj
+    }
+
+    function checked_all1() {
+            console.log($("#check_all1").is(":checked"));
+
+            if ($("#check_all1").is(":checked")) {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", true);
+            } else {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", false);
+            }
+        }
+
+    function checked_all2() {
+            console.log($("#check_all2").is(":checked"));
+
+            if ($("#check_all2").is(":checked")) {
+                $("#datatable2 tbody input[type=checkbox]:visible").prop("checked", true);
+            } else {
+                $("#datatable2 tbody input[type=checkbox]:visible").prop("checked", false);
+            }
+        }
+
+    function update() {
+            var table = $('#datatable2').DataTable();
+            table.ajax.reload();
+        }
+    function Save() {
+
+        var $row;
+        var data;
+        var t = $('#datatable1').DataTable();
+        var course_list = '';
+        $("#notice_body1 input[type=checkbox]:checked").each(function() {
+
+            $row = $(this).closest('tr');
+            data = t.row($row.get(0)).data();
+            course_list += data.id + "$";
+        });
+        $.post("/manage/multisite_course/", {
+            csrfmiddlewaretoken: $.cookie('csrftoken'),
+            user_id: '{{ user.id }}',
+            site_id: '{{ site_id }}',
+            course_list: course_list,
+            method: 'add',
+        }).done(function (data) {
+            update();
+        }).fail(function (error) {
+            swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
+        });
+
+    }
+
+    function Del() {
+
+        var $row;
+        var data;
+        var t = $('#datatable2').DataTable();
+        var course_list = '';
+        $("#notice_body2 input[type=checkbox]:checked").each(function() {
+
+            $row = $(this).closest('tr');
+            data = t.row($row.get(0)).data();
+            course_list += data.id + "$";
+        });
+        $.post("/manage/multisite_course/", {
+            csrfmiddlewaretoken: $.cookie('csrftoken'),
+            site_id: '{{ site_id }}',
+            course_list: course_list,
+            method: 'delete',
+        }).done(function (data) {
+            update();
+        }).fail(function (error) {
+            alert(error);
+        });
+
+    }
+    jQuery.fn.center = function () {
+        this.css("position","absolute");
+        this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+        this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+        return this;
+    }
+    function Hide(index){
+        if(index == 'hide'){
+            $('#batch_input').css("display","none");
+            $('#input_course').val('');
+        }
+    }
+    function batch_input() {
+        $('#batch_input').center();
+        $('#batch_input').css("display","");
+    }
+    function input_Save() {
+
+        var course_list = $('#input_course').val();
+
+        $.post("/manage/multisite_course/", {
+            csrfmiddlewaretoken: $.cookie('csrftoken'),
+            user_id: '{{ user.id }}',
+            site_id: '{{ site_id }}',
+            course_list: course_list,
+            method: 'input_add',
+        }).done(function (data) {
+            $('#batch_input').css("display","none");
+            $('#input_course').val('');
+            update();
+        }).fail(function (error) {
+            swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
+        });
+
+
+    }
 </script>
+
 {% endblock %}
 {% block containor %}
 	<!-- start: page -->
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="popup templet" id="batch_input" style="display: none">
+        <h5 style="text-align: center" >강좌ID 입력</h5>
+        <div class="templet-con">
+            <p></p>
+            <textarea id="input_course" style="height: 227px; width: 500px" placeholder="course_id1&#13;&#10;course_id2&#13;&#10;course_id3&#13;&#10;..."></textarea>
+        </div>
+        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
+            <a class="fright" onclick="input_Save()" style="float: right;"><input class="btn btn-primary" type="button" id="input_Save" value="저장"></a>
+            <a class="fright" onclick="Hide('hide')" style="float: right;"><input class="btn btn-default" type="button" id="cancel" value="취소"></a>
+        </div>
+    </div>
+</body>
 <section class="panel panel-featured ">
     <header class="panel-heading">
-        <div><h2 class="panel-title">연계강좌 지정</h2></div>
+        <div><h2 class="panel-title"><b>{{ org_name }}</b> 연계강좌 지정</h2></div>
+
     </header>
-
-    <div class="panel-body" style="padding-top: 0;"> 
-        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-            <a class="btn btn-default" id="add_multi_site" href="/manage/add_multi_site/99999">신규등록</a>
-        </div>
-
-        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db/" style="width: 100%;" >
+    <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
+        <h3>kmooc 등록강좌</h3>
+        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/course_list_db/" style="width: 100%;" >
             <thead>
                 <tr>
-                    <td>No</td>
+                    <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
+                    <td>ID</td>
                     <td>No</td>
                     <td>강좌명</td>
                     <td>신청기간</td>
                     <td>교육기간</td>
                 </tr>
             </thead>
-            <tbody id="notice_body">
+            <tbody id="notice_body1">
             </tbody>
         </table>
+        <div><a href="javascript:batch_input();"><input class="btn btn-default" type="button" value="일괄등록"></a></div>
     </div>
 
-    <div class="panel-body" style="padding-top: 0;"> 
-        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-            <a class="btn btn-default" id="add_multi_site" href="/manage/add_multi_site/99999">신규등록</a>
-        </div>
-
-        <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/multi_site_db/" style="width: 100%;" >
+    <div style="float: left; padding: 20px">
+        <div><a href="javascript:Save();"><span class="fa fa-chevron-circle-right" style="font-size: 30px; padding-top: 250px"></span></a></div>
+        <div><a href="javascript:Del();"><span class="fa fa-chevron-circle-left" style="font-size: 30px; padding-top: 30px"></span></a></div>
+    </div>
+    <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
+        <h3>기관 선택 강좌</h3>
+        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/course_list/" style="width: 100%;" >
             <thead>
                 <tr>
-                    <td>No</td>
+                    <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
+                    <td>ID</td>
                     <td>No</td>
                     <td>강좌명</td>
                     <td>개강일</td>
@@ -48,10 +349,12 @@
                     <td>등록일</td>
                 </tr>
             </thead>
-            <tbody id="notice_body">
+            <tbody id="notice_body2">
             </tbody>
         </table>
     </div>
+
+
 </section>
 
 

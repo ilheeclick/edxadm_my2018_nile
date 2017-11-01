@@ -100,7 +100,7 @@ urlpatterns = [
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
     url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
 
-    # multi_site url /manage/multi_site
+    # multi_site url
     url(r'^manage/multi_site/$', views.multi_site, name='multi_site'),
     url(r'^manage/multi_site_db/$', views.multi_site_db, name='multi_site'),
     url(r'^manage/add_multi_site/(?P<id>.*?)/$', views.add_multi_site, name='add_multi_site'),
@@ -108,7 +108,13 @@ urlpatterns = [
     url(r'^manage/modi_multi_site/(?P<id>.*?)/$', views.modi_multi_site, name='modi_multi_site'),
     url(r'^manage/manager_list/$', views.manager_list, name='manager_list'),
     url(r'^manage/manager_db/$', views.manager_db, name='manager_db'),
-    url(r'^manage/course_list/(?P<site_id>.*?)/$', views.course_list, name='course_list'),
+    url(r'^manage/course_list/(?P<site_id>.*?)/(?P<org_name>.*?)/$', views.course_list, name='course_list'),
+    url(r'^manage/course_list_db/$', views.course_list_db, name='course_list_db'),
+    url(r'^manage/select_list_db/$', views.select_list_db, name='select_list_db'),
+    url(r'^manage/multisite_course/$', views.multisite_course, name='multisite_course'),
+
+    # course_manage url
+    url(r'^manage/course_manage/$', views.course_manage, name='course_manage'),
     # url(r'^manage/course_db/$', views.course_db, name='course_db'),
 
 
