@@ -174,17 +174,18 @@ def select_list_db(request):
 
         query = '''
             SELECT replace(@rn := @rn - 1, .0, '') rn,
-                   id,
-                   display_name,
-                   start,
-                   regist_id,
-                   regist_date
-              FROM multisite_course mc
-                   JOIN course_overviews_courseoverview co ON co.id = mc.course_id,
+                   co.id,
+                   co.display_name,
+                   co.start,
+                   au.username,
+                   mc.regist_date
+                  FROM course_overviews_courseoverview co
+                   JOIN multisite_course mc ON co.id = mc.course_id
+                   JOIN auth_user au ON mc.regist_id = au.id,
                    (SELECT @rn := count(*) + 1
-                      FROM multisite_course
-                     WHERE site_id = '{0}') b
-             WHERE mc.site_id = '{1}';
+                  FROM multisite_course
+                 WHERE site_id = '{0}') b
+                 WHERE mc.site_id = '{1}';
         '''.format(site_id, site_id)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
