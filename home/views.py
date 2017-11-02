@@ -1236,7 +1236,6 @@ def mana_state(request):
 def dev_state(request):
     return render(request, 'state/dev_state.html')
 
-
 # certificate view
 @login_required
 def certificate(request):
@@ -1639,9 +1638,11 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
-# ---------- 2017.10.23 ahn jin yong ---------- #
+
+# ---------- 2017.11.02 ahn jin yong ---------- #
 @csrf_exempt
-def new_notice(request):
+def file_upload(request):
+
     if request.FILES:
         #init list
         file_name_list = []
@@ -1680,26 +1681,66 @@ def new_notice(request):
             file_size_list.append( str(item / 1024) + "KB" ) #invert KB
 
         return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
+# ---------- 2017.11.02 ahn jin yong ---------- #
+
+# ---------- 2017.10.23 ahn jin yong ---------- #
+@csrf_exempt
+def new_notice(request):
+    # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
+    if request.FILES:
+        #init list
+        file_name_list = []
+        file_dir_list = []
+        file_size_raw_list = []
+        file_size_list = []
+        file_ext_list = []
+        file_list = request.FILES.getlist('file')
+        file_list_cnt = len(request.FILES.getlist('file'))
+
+        #make name, dir
+        for item in file_list:
+            file_name_list.append( str(item) )
+            file_dir_list.append( UPLOAD_DIR+str(item) )
+
+        #make ext
+        for item in file_name_list:
+            file_ext = get_file_ext(item)
+            file_ext_list.append(file_ext)
+
+        #crete file
+        cnt = 0
+        for item in file_list:
+            fp = open(file_dir_list[cnt], 'wb')
+            for chunk in item.chunks():
+                fp.write(chunk)
+            fp.close()
+            cnt += 1
+
+        #make raw_size
+        for item in file_dir_list:
+            file_size_raw_list.append( os.path.getsize(item) )
+
+        #make size (KB)
+        for item in file_size_raw_list:
+            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
+
+        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
+    # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
 
     elif request.method == 'POST':
         data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
+        # ---------- 공통 글 쓰기(공지사항, K-MOOC소식, 자료실) ---------- #
         if request.POST['method'] == 'add':
 
             # board var
-            title = request.POST.get('nt_title')
+            title = request.POST.get('title')
             title = title.replace("'", "''")
-            content = request.POST.get('nt_cont')
+            content = request.POST.get('content')
             content = content.replace("'", "''")
             head_title = request.POST.get('head_title')
-            section = request.POST.get('notice')
+            section = request.POST.get('section')
             odby = request.POST.get('odby')
             upload_file = request.POST.get('uploadfile')
-
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
 
             # file 
             file_ext_list = []
@@ -1738,15 +1779,12 @@ def new_notice(request):
             # ------ 공지사항 쓰기 query ------ #
 
             # ------ 공지사항 게시판 아이디 조회 query ------ #
-            query2 = '''
-                SELECT board_id 
-                FROM   tb_board 
-                WHERE  subject = '{0}' 
-                       AND content = '{1}' 
-            '''.format(title, content)
-            cur.execute(query2)
+            query3 = '''
+                SELECT LAST_INSERT_ID()
+            '''
+            cur.execute(query3)
             board_list = cur.fetchall()
-            board_id = board_list[0][0]
+            board_id = board_list[0][0] 
             cur.close()
             # ------ 공지사항 게시판 아이디 조회 query ------ #
 
@@ -1769,24 +1807,37 @@ def new_notice(request):
                     cur.close()
             # ------ 공지사항 파일첨부 query ------ #
             data = json.dumps({'status': "success"})
+        # ---------- 공통 글 쓰기(공지사항, K-MOOC소식, 자료실) ---------- #
 
+        # ---------- 공통 글 편집(공지사항, K-MOOC소식, 자료실) ---------- #
         elif request.POST['method'] == 'modi':
 
             # board var
-            title = request.POST.get('nt_title')
+            title = request.POST.get('title')
             title = title.replace("'", "''")
-            content = request.POST.get('nt_cont')
+            content = request.POST.get('content')
             content = content.replace("'", "''")
-            noti_id = request.POST.get('noti_id')
+            noti_id = request.POST.get('board_id')
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
             upload_file = request.POST.get('uploadfile')
+            delete_list = request.POST.get('delete_list')
 
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
+            # make delete list
+            delete_list = delete_list.split('+')
+            delete_list.pop()
+
+            # ------ file delete query ------ #
+            for item in delete_list:
+                cur = connection.cursor()
+                query = '''
+                    UPDATE edxapp.tb_board_attach 
+                    SET    del_yn = 'Y' 
+                    WHERE  attatch_id = '{0}'; 
+                '''.format(item)
+                cur.execute(query)
+                cur.close()
+            # ------ file delete query ------ #
 
             # file 
             file_ext_list = []
@@ -1839,9 +1890,9 @@ def new_notice(request):
                     cur.execute(query)
                     cur.close()
             # ------ 공지사항 파일첨부 query ------ #
-
             data = json.dumps({'status': "success"})
         return HttpResponse(data, 'applications/json')
+        # ---------- 공통 글 편집(공지사항, K-MOOC소식, 자료실) ---------- #
     return render(request, 'community/comm_newnotice.html')
 # ---------- 2017.10.23 ahn jin yong ---------- #
 
@@ -1901,9 +1952,11 @@ def modi_notice(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}' 
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()
@@ -2029,204 +2082,12 @@ def comm_k_news(request):
 @login_required
 def new_knews(request):
     if request.FILES:
-        #init list
-        file_name_list = []
-        file_dir_list = []
-        file_size_raw_list = []
-        file_size_list = []
-        file_ext_list = []
-        file_list = request.FILES.getlist('file')
-        file_list_cnt = len(request.FILES.getlist('file'))
-
-        #make name, dir
-        for item in file_list:
-            file_name_list.append( str(item) )
-            file_dir_list.append( UPLOAD_DIR+str(item) )
-
-        #make ext
-        for item in file_name_list:
-            file_ext = get_file_ext(item)
-            file_ext_list.append(file_ext)
-
-        #crete file
-        cnt = 0
-        for item in file_list:
-            fp = open(file_dir_list[cnt], 'wb')
-            for chunk in item.chunks():
-                fp.write(chunk)
-            fp.close()
-            cnt += 1
-
-        #make raw_size
-        for item in file_dir_list:
-            file_size_raw_list.append( os.path.getsize(item) )
-
-        #make size (KB)
-        for item in file_size_raw_list:
-            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
-
-        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
-
+        pass # 모듈화 new_notice OK
     elif request.method == 'POST':
-        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
         if request.POST['method'] == 'add':
-
-            # board var
-            title = request.POST.get('knews_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('knews_content')
-            content = content.replace("'", "''")
-            head_title = request.POST.get('head_title')
-            section = request.POST.get('k_news')
-            odby = request.POST.get('odby')
-            upload_file = request.POST.get('uploadfile')
-
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            # file 
-            file_ext_list = []
-            file_name_list = []
-            file_size_list = []
-
-            # make file name, size, ext
-            upload_file = unicode(upload_file)
-            upload_split = upload_file.split('+')
-            for item in upload_split:
-                index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
-            file_name_list.pop()
-            file_size_list.pop()
-            for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
-            file_cnt = len(file_name_list)
-
-            # ------ K-MOOC 소식 쓰기 query ------ #
-            cur = connection.cursor()
-            query = '''
-                INSERT INTO edxapp.tb_board 
-                            (subject, 
-                             content, 
-                             head_title, 
-                             section,
-                             odby) 
-                VALUES      ('{0}', 
-                             '{1}', 
-                             '{2}', 
-                             '{3}',
-                             '{4}') 
-            '''.format(title, content, head_title, section, odby)
-            cur.execute(query)
-            # ------ K-MOOC 소식 쓰기 query ------ #
-
-           # ------ K-MOOC 소식 아이디 조회 query ------ #
-            query2 = '''
-                SELECT board_id 
-                FROM   tb_board 
-                WHERE  subject = '{0}' 
-                       AND content = '{1}' 
-            '''.format(title, content)
-            cur.execute(query2)
-            board_list = cur.fetchall()
-            board_id = board_list[0][0]
-            cur.close()
-           # ------ K-MOOC 소식 아이디 조회 query ------ #
-
-            # ------ K-MOOC 소식 파일첨부 query ------ #
-            if upload_file != '':
-                for i in range(0, file_cnt):
-                    cur = connection.cursor()
-                    query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
-                    '''.format(board_id, file_name_list[i], file_ext_list[i], file_size_list[i])
-                    cur.execute(query)
-                    cur.close()
-            # ------ K-MOOC 소식 파일첨부 query ------ #
-            data = json.dumps({'status': "success"})
-
+            pass # 모듈화 new_notice OK 
         elif request.POST['method'] == 'modi':
-
-            # board var
-            title = request.POST.get('k_news_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('k_news_cont')
-            content = content.replace("'", "''")
-            noti_id = request.POST.get('k_news_id')
-            odby = request.POST.get('odby')
-            head_title = request.POST.get('head_title')
-            upload_file = request.POST.get('uploadfile')
- 
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            # file 
-            file_ext_list = []
-            file_name_list = []
-            file_size_list = []
-
-            # make file name, size, ext
-            upload_file = unicode(upload_file)
-            upload_split = upload_file.split('+')
-            for item in upload_split:
-                index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
-            file_name_list.pop()
-            file_size_list.pop()
-            for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
-            file_cnt = len(file_name_list)
-
-            # ------ K-MOOC 소식 수정 query ------ #
-            cur = connection.cursor()
-            query = '''
-                UPDATE edxapp.tb_board 
-                SET    subject = '{0}', 
-                       content = '{1}', 
-                       head_title = '{2}', 
-                       mod_date = Now(),
-                       odby = {3}
-                WHERE  board_id = '{4}' 
-            '''.format(title, content, head_title, odby, noti_id)
-            cur.execute(query)
-            cur.close()
-            # ------ K-MOOC 소식 수정 query ------ #
-
-            # ------ K-MOOC 파일첨부 query ------ #
-            if upload_file != '':
-                for i in range(0, file_cnt):
-                    cur = connection.cursor()
-                    query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
-                    '''.format(str(noti_id), file_name_list[i], file_ext_list[i], file_size_list[i])
-                    cur.execute(query)
-                    cur.close()
-            # ------ K-MOOC 파일첨부 query ------ #
-
-            data = json.dumps({'status': "success"})
+            pass # 모듈화 new_notice OK 
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newknews.html')
 # ---------- 2017.10.24 ahn jin yong ---------- #
@@ -2286,9 +2147,11 @@ def modi_knews(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}'
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()
@@ -2395,27 +2258,7 @@ def comm_faq(request):
             cur.close()
             aaData = json.dumps('success')
             return HttpResponse(aaData, 'applications/json')
-
-        # elif request.GET['method'] == 'total_page':
-        # 	if 'search_con' in request.GET:
-        # 		subject = request.GET['search_con']
-        # 		search = request.GET['search_search']
-        # 		cur = connection.cursor()
-        # 		cur.execute('''
-        # 		select ceil(count(board_id)/10) from tb_board where section="F" and '''+subject+''' like "%'''+search+'''%"
-        # 		''')
-        # 		row = cur.fetchall()
-        # 		cur.close()
-        # 	else:
-        # 		cur =connection.cursor()
-        # 		cur.execute('''
-        # 		select ceil(count(board_id)/10) from tb_board where section="F"
-        # 		''')
-        # 		row =cur.fetchall()
-        # 		cur.close()
-        # 	data = json.dumps(list(row), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
-
     return render(request, 'community/comm_faq.html')
 
 @login_required
@@ -2614,204 +2457,12 @@ def comm_reference_room(request):
 @login_required
 def new_refer(request):
     if request.FILES:
-        #init list
-        file_name_list = []
-        file_dir_list = []
-        file_size_raw_list = []
-        file_size_list = []
-        file_ext_list = []
-        file_list = request.FILES.getlist('file')
-        file_list_cnt = len(request.FILES.getlist('file'))
-
-        #make name, dir
-        for item in file_list:
-            file_name_list.append( str(item) )
-            file_dir_list.append( UPLOAD_DIR+str(item) )
-
-        #make ext
-        for item in file_name_list:
-            file_ext = get_file_ext(item)
-            file_ext_list.append(file_ext)
-
-        #crete file
-        cnt = 0
-        for item in file_list:
-            fp = open(file_dir_list[cnt], 'wb')
-            for chunk in item.chunks():
-                fp.write(chunk)
-            fp.close()
-            cnt += 1
-
-        #make raw_size
-        for item in file_dir_list:
-            file_size_raw_list.append( os.path.getsize(item) )
-
-        #make size (KB)
-        for item in file_size_raw_list:
-            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
-
-        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
-
+        pass # 모듈화 new_notice OK
     elif request.method == 'POST':
-        data = json.dumps({'status': "fail", 'msg': "오류가 발생했습니다"})
         if request.POST['method'] == 'add':
-
-            # board var
-            title = request.POST.get('refer_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('refer_cont')
-            content = content.replace("'", "''")
-            head_title = request.POST.get('head_title')
-            section = request.POST.get('refer')
-            odby = request.POST.get('odby')
-            upload_file = request.POST.get('uploadfile')
-
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            # file 
-            file_ext_list = []
-            file_name_list = []
-            file_size_list = []
-
-            # make file name, size, ext
-            upload_file = unicode(upload_file)
-            upload_split = upload_file.split('+')
-            for item in upload_split:
-                index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
-            file_name_list.pop()
-            file_size_list.pop()
-            for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
-            file_cnt = len(file_name_list)
-
-            # ------ 자료실 쓰기 query ------ #
-            cur = connection.cursor()
-            query = '''
-                INSERT INTO edxapp.tb_board 
-                            (subject, 
-                             content, 
-                             head_title, 
-                             section,
-                             odby) 
-                VALUES      ('{0}', 
-                             '{1}', 
-                             '{2}', 
-                             '{3}',
-                             '{4}') 
-            '''.format(title, content, head_title, section, odby)
-            cur.execute(query)
-            # ------ 자료실 쓰기 query ------ #
-
-            # ------ 자료실 게시판 아이디 조회 query ------ #
-            query2 = '''
-                SELECT board_id 
-                FROM   tb_board 
-                WHERE  subject = '{0}' 
-                       AND content = '{1}' 
-            '''.format(title, content)
-            cur.execute(query2)
-            board_list = cur.fetchall()
-            board_id = board_list[0][0]
-            cur.close()
-            # ------ 자료실 게시판 아이디 조회 query ------ #
-
-            # ------ 자료실 파일첨부 query ------ #
-            if upload_file != '':
-                for i in range(0, file_cnt):
-                    cur = connection.cursor()
-                    query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
-                    '''.format(board_id, file_name_list[i], file_ext_list[i], file_size_list[i])
-                    cur.execute(query)
-                    cur.close()
-            # ------ 자료실 파일첨부 query ------ #
-            data = json.dumps({'status': "success"})
-
+            pass # 모듈화 new_notice OK
         elif request.POST['method'] == 'modi':
-
-            # board var
-            title = request.POST.get('refer_title')
-            title = title.replace("'", "''")
-            content = request.POST.get('refer_cont')
-            content = content.replace("'", "''")
-            refer_id = request.POST.get('refer_id')
-            odby = request.POST.get('odby')
-            head_title = request.POST.get('head_title')
-            upload_file = request.POST.get('uploadfile')
-
-            # attach var
-            upload_file = request.POST.get('uploadfile')
-            file_name = request.POST.get('file_name')
-            file_ext = request.POST.get('file_ext')
-            file_size = request.POST.get('file_size')
-
-            # file 
-            file_ext_list = []
-            file_name_list = []
-            file_size_list = []
-
-            # make file name, size, ext
-            upload_file = unicode(upload_file)
-            upload_split = upload_file.split('+')
-            for item in upload_split:
-                index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
-            file_name_list.pop()
-            file_size_list.pop()
-            for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
-            file_cnt = len(file_name_list)
-
-            # ------ 자료실 수정 query ------ #
-            cur = connection.cursor()
-            query = '''
-                UPDATE edxapp.tb_board 
-                SET    subject = '{0}', 
-                       content = '{1}', 
-                       mod_date = Now(), 
-                       head_title = '{2}',
-                       odby = '{3}'
-                WHERE  board_id = '{4}' 
-            '''.format(title, content, head_title, odby, refer_id)
-            cur.execute(query)
-            cur.close()
-            # ------ 자료실 수정 query ------ #
-  
-            # ------ 자료실 파일첨부 query ------ #
-            if upload_file != '':
-                for i in range(0, file_cnt):
-                    cur = connection.cursor()
-                    query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
-                    '''.format(str(refer_id), file_name_list[i], file_ext_list[i], file_size_list[i])
-                    cur.execute(query)
-                    cur.close()
-            # ------ 자료실 파일첨부 query ------ #
-
-            data = json.dumps({'status': "success"})
+            pass # 모듈화 new_notice OK
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newrefer.html')
 # ---------- 2017.10.24 ahn jin yong ---------- #
@@ -2870,9 +2521,11 @@ def modi_refer(request, id, use_yn):
     query = '''
         SELECT attatch_file_name, 
                attatch_file_ext, 
-               attatch_file_size 
+               attatch_file_size,
+               attatch_id
         FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}'; 
+        WHERE  board_id = '{0}'
+               AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
     file_list = cur.fetchall()

@@ -43,7 +43,6 @@ $(document).ready(function(){
                 method : 'modi'
             }
     }).done(function(data){
-        //console.log(value_list);
         console.log(data);
         if (data[4] != null) {
             value_list = data[4];
@@ -60,9 +59,19 @@ $(document).ready(function(){
         }else{
             $('#head_title').val(data[3]);
         }
-
     })
 });
+
+// delete file
+function delete_file(attach_id){
+    var hide_element = "#file_" + attach_id
+    var hide_element2 = "#file_delete_" + attach_id;
+
+    $(hide_element).hide();
+    $(hide_element2).hide();
+
+    $("#delete_list").append(attach_id+"+");
+}
 
 // modify board
 $('#notice_mod').on('click', function(e){
@@ -79,6 +88,10 @@ $('#notice_mod').on('click', function(e){
             head_title = ''
         }
 
+        // delete file
+        var delete_list;
+        delete_list = $("#delete_list").text() 
+
         // get file
         var file_list = "";
         file_cnt = $('#file_cnt').text();
@@ -91,14 +104,15 @@ $('#notice_mod').on('click', function(e){
         // ajax
         $.post("/manage/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
-            nt_title: noticetitle,
-            nt_cont: noticecontent,
-            noti_id : noti_id, // between
+            title: noticetitle,
+            content: noticecontent,
+            board_id : noti_id, // between
             head_title : head_title,
             uploadfile : file_list,
-            notice: 'N',
+            section: 'N',
             method: action_mode,
-            odby: odby
+            odby: odby,
+            delete_list: delete_list
         }).done(function(data){
             location.href='/manage/comm_notice';
         }).fail(function(error) {
@@ -123,10 +137,23 @@ $(document).on('click', '#fileupload', function(){
             }
         },
         success: function(data){
-            for(i=0; i<data.len; i++){
-                $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+            if ($("#file_cnt").text() != ""){
+                var start = $("#file_cnt").text();
+                var end = Number(start) + Number(data.len);
+                var file_index = 0;
+                for(i = start; i < end; i++){
+                    $( "#file_array" ).append("<div style='width: 500px;' id = 'file_" + i + "'>"+ data.name[file_index] + "&nbsp; &nbsp;" + data.size[file_index] +"</div>");
+                    file_index += 1;
+                }
+                $("#file_cnt").remove();
+                $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ end +"</h5>");
             }
-            $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            else{
+                for(i=0; i<data.len; i++){
+                    $( "#file_array" ).append("<div style='width: 500px;' id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+                }
+                $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            }
             swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
         },
         error: function() {

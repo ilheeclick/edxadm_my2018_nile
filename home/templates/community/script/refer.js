@@ -33,7 +33,7 @@ $(document).ready(function(){
     }
 });
 
-// create new refer
+// create new board
 $('#refer_save').on('click', function(e){
     try{
         var action_mode;
@@ -43,6 +43,9 @@ $('#refer_save').on('click', function(e){
         refercontent = $('.summernote').summernote('code');
         action_mode = 'add';
         odby = $('#odby').val();
+        if(head_title == 'null'){
+            head_title = ''
+        }
 
         // get file
         var file_list = "";
@@ -53,29 +56,21 @@ $('#refer_save').on('click', function(e){
             file_list += '+';
         }
 
-        if(refertitle != '' && refercontent != ''){
-            if(head_title == 'null'){
-                head_title = ''
-            }
-
-            // ajax new refer
-            $.post("/manage/new_refer/", {
-                csrfmiddlewaretoken:$.cookie('csrftoken'),
-                refer_title: refertitle,
-                refer_cont: refercontent,
-                head_title : head_title,
-                uploadfile: file_list,
-                refer: 'R',
-                method: action_mode,
-                odby: odby
-            }).done(function(data){
-                location.href='/manage/comm_reference_room';
-            }).fail(function(error) {
-                alert('error = ' + error.responseJSON);
-            });
-        }else{
-            alert('필수정보를 입력해주세요.');
-        }
+        // ajax new refer
+        $.post("/manage/new_notice/", {
+            csrfmiddlewaretoken:$.cookie('csrftoken'),
+            title: refertitle,
+            content: refercontent,
+            head_title : head_title,
+            uploadfile: file_list,
+            section: 'R',
+            method: action_mode,
+            odby: odby
+        }).done(function(data){
+            location.href='/manage/comm_reference_room';
+        }).fail(function(error) {
+            alert('error = ' + error.responseJSON);
+        });
     }catch(e){
         alert(e);
     }
@@ -85,7 +80,7 @@ $('#refer_save').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_refer/',
+        url:'/manage/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
@@ -95,10 +90,23 @@ $(document).on('click', '#fileupload', function(){
             }
         },
         success: function(data){
-            for(i=0; i<data.len; i++){
-                $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+            if ($("#file_cnt").text() != ""){
+                var start = $("#file_cnt").text();
+                var end = Number(start) + Number(data.len);
+                var file_index = 0;
+                for(i = start; i < end; i++){
+                    $( "#file_array" ).append("<div style='width: 500px;' id = 'file_" + i + "'>"+ data.name[file_index] + "&nbsp; &nbsp;" + data.size[file_index] +"</div>");
+                    file_index += 1;
+                }
+                $("#file_cnt").remove();
+                $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ end +"</h5>");
             }
-            $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            else{
+                for(i=0; i<data.len; i++){
+                    $( "#file_array" ).append("<div style='width: 500px;' id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
+                }
+                $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
+            }
             swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
         },
         error: function() {
