@@ -32,11 +32,36 @@ import logging
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+# ---------- common module ---------- #
 def get_file_ext(filename):
     filename_split = filename.split('.')
     file_ext_index = len(filename_split)
     file_ext = filename_split[file_ext_index-1] 
     return file_ext
+
+# example -> mysql_file_upload('test.txt', '64KB', '/hello/world/upload', 'naver', 'multisite', '1')
+def mysql_file_upload(file_name, file_size, file_dir, org_name, gubun, user_id):
+
+    file_ext = get_file_ext(file_name)
+ 
+    # DEBUG
+    print "###################"
+    print file_name
+    print file_ext
+    print file_size
+    print file_dir
+    print org_name
+    print gubun
+    print user_id
+    print "###################"
+
+    with connections['default'].cursor() as cur:
+        query = """
+        insert into edxapp.tb_board_attach (attatch_file_name, attatch_file_ext, attatch_file_size, attach_file_path, attach_org_name, attach_gubun, regist_id)
+        values ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});
+        """.format(file_name, file_ext, file_size, file_dir, org_name, gubun, user_id)
+        cur.execute(query)
+# ---------- common module ---------- #
 
 @login_required
 def multi_site(request):
@@ -742,7 +767,6 @@ def new_popup(request):
 @login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
-
 
 def test(request):
     if request.is_ajax():
@@ -1642,7 +1666,6 @@ def comm_notice(request):
 # ---------- 2017.11.02 ahn jin yong ---------- #
 @csrf_exempt
 def file_upload(request):
-
     if request.FILES:
         #init list
         file_name_list = []
