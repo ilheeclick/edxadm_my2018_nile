@@ -937,6 +937,51 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
+
+# ---------- 2017.11.02 ahn jin yong ---------- #
+@csrf_exempt
+def file_upload(request):
+
+    if request.FILES:
+        #init list
+        file_name_list = []
+        file_dir_list = []
+        file_size_raw_list = []
+        file_size_list = []
+        file_ext_list = []
+        file_list = request.FILES.getlist('file')
+        file_list_cnt = len(request.FILES.getlist('file'))
+
+        #make name, dir
+        for item in file_list:
+            file_name_list.append( str(item) )
+            file_dir_list.append( UPLOAD_DIR+str(item) )
+
+        #make ext
+        for item in file_name_list:
+            file_ext = get_file_ext(item)
+            file_ext_list.append(file_ext)
+
+        #crete file
+        cnt = 0
+        for item in file_list:
+            fp = open(file_dir_list[cnt], 'wb')
+            for chunk in item.chunks():
+                fp.write(chunk)
+            fp.close()
+            cnt += 1
+
+        #make raw_size
+        for item in file_dir_list:
+            file_size_raw_list.append( os.path.getsize(item) )
+
+        #make size (KB)
+        for item in file_size_raw_list:
+            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
+
+        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
+# ---------- 2017.11.02 ahn jin yong ---------- #
+
 # ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
 def new_notice(request):

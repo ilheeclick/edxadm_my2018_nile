@@ -74,6 +74,9 @@ urlpatterns = [
     url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
     url(r'^manage/new_refer/', views.new_refer, name='new_refer'), # -> new_notice (module)
+
+    # common file upload module
+    url(r'^manage/file_upload/', views.file_upload, name='file_upload'),
     # ---------- board common ---------- #
 
     # faq
