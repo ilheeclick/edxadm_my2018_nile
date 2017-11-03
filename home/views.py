@@ -28,6 +28,7 @@ import urllib
 import csv
 import datetime
 import logging
+import uuid
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -39,27 +40,54 @@ def get_file_ext(filename):
     file_ext = filename_split[file_ext_index-1] 
     return file_ext
 
-# example -> mysql_file_upload('test.txt', '64KB', '/hello/world/upload', 'naver', 'multisite', '1')
-def mysql_file_upload(file_name, file_size, file_dir, org_name, gubun, user_id):
+def common_single_file_upload(file_object, gubun, user_id):
 
-    file_ext = get_file_ext(file_name)
- 
+    file_name = str(file_object).strip()
+    file_name_enc = str(uuid.uuid4()).replace('-','')
+    file_ext = get_file_ext(file_name).strip()
+    file_byte_size = file_object.size
+    file_size = str(file_byte_size/1024) + "KB"
+    file_dir = UPLOAD_DIR + file_name_enc
+    file_path = UPLOAD_DIR
+    if file_path[len(file_path)-1] == '/':
+        file_path = file_path[0:(len(file_path)-1)]
+
+    fp = open(file_dir, 'wb')
+    for chunk in file_object.chunks():
+        fp.write(chunk)
+    fp.close()
+
     # DEBUG
-    print "###################"
+    """
+    print "@@@@@@@@@@@@@@@@@@@@@"
     print file_name
+    print file_name_enc 
     print file_ext
     print file_size
     print file_dir
-    print org_name
-    print gubun
-    print user_id
-    print "###################"
+    print UPLOAD_DIR
+    print file_path
+    print "@@@@@@@@@@@@@@@@@@@@@"
+    """
 
     with connections['default'].cursor() as cur:
         query = """
-        insert into edxapp.tb_board_attach (attatch_file_name, attatch_file_ext, attatch_file_size, attach_file_path, attach_org_name, attach_gubun, regist_id)
-        values ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6});
-        """.format(file_name, file_ext, file_size, file_dir, org_name, gubun, user_id)
+        INSERT INTO edxapp.tb_board_attach 
+                    (attatch_file_name, 
+                     attatch_file_ext, 
+                     attatch_file_size, 
+                     attach_file_path, 
+                     attach_org_name, 
+                     attach_gubun, 
+                     regist_id) 
+        VALUES      ('{0}', 
+                     '{1}', 
+                     '{2}', 
+                     '{3}', 
+                     '{4}', 
+                     '{5}', 
+                      {6}) 
+        """.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
         cur.execute(query)
 # ---------- common module ---------- #
 
@@ -1664,49 +1692,18 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
-
-# ---------- 2017.11.02 ahn jin yong ---------- #
+# ---------- 2017.11.03 ahn jin yong ---------- #
 @csrf_exempt
 def file_upload(request):
     if request.FILES:
-        #init list
-        file_name_list = []
-        file_dir_list = []
-        file_size_raw_list = []
-        file_size_list = []
-        file_ext_list = []
-        file_list = request.FILES.getlist('file')
-        file_list_cnt = len(request.FILES.getlist('file'))
 
-        #make name, dir
-        for item in file_list:
-            file_name_list.append( str(item) )
-            file_dir_list.append( UPLOAD_DIR+str(item) )
+        file_object_list = request.FILES.getlist('file')
+        file_object = file_object_list[0]
 
-        #make ext
-        for item in file_name_list:
-            file_ext = get_file_ext(item)
-            file_ext_list.append(file_ext)
+        common_single_file_upload(file_object, 'multisite', '1')
 
-        #crete file
-        cnt = 0
-        for item in file_list:
-            fp = open(file_dir_list[cnt], 'wb')
-            for chunk in item.chunks():
-                fp.write(chunk)
-            fp.close()
-            cnt += 1
-
-        #make raw_size
-        for item in file_dir_list:
-            file_size_raw_list.append( os.path.getsize(item) )
-
-        #make size (KB)
-        for item in file_size_raw_list:
-            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
-
-        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
-# ---------- 2017.11.02 ahn jin yong ---------- #
+        return JsonResponse({'hello':'world'})
+# ---------- 2017.11.03 ahn jin yong ---------- #
 
 # ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
