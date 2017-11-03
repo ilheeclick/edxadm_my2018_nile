@@ -241,7 +241,7 @@ def multi_site_db(request):
                        regist_date
                   FROM multisite a JOIN auth_user b on a.regist_id= b.id,
                        (SELECT @rn := count(*) + 1
-                          FROM multisite) b
+                          FROM multisite where delete_yn = 'N') b
                  WHERE delete_yn = 'N'
               ORDER BY regist_date DESC;
 			"""
