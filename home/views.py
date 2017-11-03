@@ -318,6 +318,7 @@ def modi_multi_site_db(request):
             email_list = email_list.split('+')
             email_list.pop()
 
+            mysql_file_upload(logo_img, '00KB', '/Users/kotech_cha/test_upload', site_code, 'multisite', regist_id)
 
             for item in email_list:
                 cur = connection.cursor()
@@ -351,6 +352,7 @@ def modi_multi_site_db(request):
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
+
 
             return HttpResponse(data, 'applications/json')
 
