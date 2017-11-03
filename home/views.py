@@ -51,14 +51,12 @@ def common_single_file_upload(file_object, gubun, user_id):
     file_path = UPLOAD_DIR
     if file_path[len(file_path)-1] == '/':
         file_path = file_path[0:(len(file_path)-1)]
-
     fp = open(file_dir, 'wb')
     for chunk in file_object.chunks():
         fp.write(chunk)
     fp.close()
 
     # DEBUG
-    """
     print "@@@@@@@@@@@@@@@@@@@@@"
     print file_name
     print file_name_enc 
@@ -68,7 +66,6 @@ def common_single_file_upload(file_object, gubun, user_id):
     print UPLOAD_DIR
     print file_path
     print "@@@@@@@@@@@@@@@@@@@@@"
-    """
 
     with connections['default'].cursor() as cur:
         query = """
@@ -312,8 +309,7 @@ def modi_multi_site(request, id):
             query = """
 					SELECT site_name,
                            site_code,
-                           site_url,
-                           logo_img
+                           site_url
 					  FROM multisite
                      WHERE site_id =
 			""" + id
@@ -336,18 +332,32 @@ def modi_multi_site(request, id):
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
+
+        try:
+            upload_file = request.FILES['uploadfile']
+            uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        except BaseException:
+            upload_file = None
+            uploadfile_user_id = None
+
+        if upload_file:
+            print ('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            uploadfile = request.FILES['uploadfile']
+            print type(uploadfile)
+            print uploadfile
+
+            common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
+
+            return render(request, 'multi_site/modi_multi_site.html')
+
         if request.POST.get('method') == 'add':
             site_name = request.POST.get('site_name')
             site_code = request.POST.get('site_code')
             site_url = request.POST.get('site_url')
             regist_id = request.POST.get('regist_id')
-            logo_img = request.POST.get('logo_img')
             email_list = request.POST.get('email_list')
             email_list = email_list.split('+')
             email_list.pop()
-
-            mysql_file_upload(logo_img, '00KB', '/Users/kotech_cha/test_upload', site_code, 'multisite', regist_id)
-
             for item in email_list:
                 cur = connection.cursor()
                 query = '''SELECT id
@@ -371,16 +381,20 @@ def modi_multi_site_db(request):
                 cur.execute(query)
                 cur.close()
 
-
+            cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
 
             cur = connection.cursor()
-            query = '''insert into edxapp.multisite(site_name, site_code, logo_img, site_url, regist_id, modify_id)
+            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, logo_img)
                        VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
-                    '''.format(site_name, site_code, logo_img, site_url, regist_id, regist_id)
+                    '''.format(site_name, site_code, site_url, regist_id, regist_id, attatch_id[0][0])
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
-
 
             return HttpResponse(data, 'applications/json')
 
@@ -390,14 +404,22 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
-            logo_img = request.POST.get('logo_img')
+
+
+            cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
 
             cur = connection.cursor()
             query = '''
                     update edxapp.multisite
-                    SET site_name = '{0}', site_code = '{1}', logo_img= '{2}', site_url = '{3}', modify_id = '{4}', modify_date = now()
-                    WHERE site_id = '{5}'
-                    '''.format(site_name, site_code, logo_img, site_url, regist_id, multi_no)
+                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now(), logo_img = '{5}'
+                    WHERE site_id = '{4}'
+                    '''.format(site_name, site_code, site_url, regist_id, multi_no, attatch_id[0][0])
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -1699,7 +1721,7 @@ def file_upload(request):
 
         file_object_list = request.FILES.getlist('file')
         file_object = file_object_list[0]
-
+        # 파일객체 고정 userid
         common_single_file_upload(file_object, 'multisite', '1')
 
         return JsonResponse({'hello':'world'})

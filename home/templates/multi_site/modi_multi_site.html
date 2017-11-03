@@ -8,7 +8,6 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     {% include "community/script/test.js" %}
-    {% include "community/script/notice.js" %}
     jQuery.ajaxSettings.traditional = true;
     $(document).ready(function(){
         setDataTable1();
@@ -35,28 +34,17 @@
                    $('#site_name').val(data[0][0]);
                    $('#site_code').val(data[0][1]);
                    $('#site_url').val(data[0][2]);
-                   $('#logo_img').val(data[0][3]);
                }
             })
     });
 
     function save() {
-
+        document.getElementById("uploadform").submit();
         try {
             var method = '';
             var site_index ='';
             if ('{{ id }}' == 99999) {
-                $.post("/manage/modi_multi_site_db/", {
-                    csrfmiddlewaretoken: $.cookie('csrftoken'),
-                    method: 'index',
-                }).done(function (data) {
-                    site_index = data;
-                    location.href = '/manage/multi_site';
-                }).fail(function (error) {
-                    alert('error = ' + error.responseJSON);
-                });
                 method = 'add';
-
             }
             else {
                 method = 'modi';
@@ -64,7 +52,6 @@
             var site_name = $('#site_name').val();
             var site_code = $('#site_code').val();
             var site_url = $('#site_url').val();
-            var logo_img = $('#logo_img').val();
             var regist_id = {{ user.id }};
             var multi_no = {{ id }};
             var email_list = "";
@@ -79,7 +66,6 @@
                 site_name : site_name,
                 site_code: site_code,
                 site_url: site_url,
-                logo_img: logo_img,
                 regist_id: regist_id,
                 multi_no: multi_no,
                 site_index: site_index,
@@ -88,7 +74,7 @@
             }).done(function (data) {
                 location.href = '/manage/multi_site';
             }).fail(function (error) {
-                alert('error = ' + error.responseJSON);
+                alert('errorasdfasf = ' + error.responseJSON);
             });
         } catch (e) {
             alert(e);
@@ -217,7 +203,6 @@
         }
 
         function new_del_row() {
-
             $("#notice_body input[type=checkbox]:checked").each(function(){
                 $(this).parent().parent().css("display","none");
                 alert($(this).parent().next().text());
@@ -379,37 +364,6 @@
             });
         });
 
-        function file_upload() {
-        }
-
-        function file_save() {
-            var test = $('#uploadfile').val();
-            var text = test.split('\\');
-            $('#logo_img').val(text[2]);
-            $('#uploadform').ajaxForm({
-                type: "POST",
-                url:'/manage/file_upload/',
-                beforeSubmit: function (data,form,option) {
-                    if( $("#uploadfile").val() != "" ){
-                        var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
-                    }else{
-                        swal("업로드 경고", "파일을 선택한 후 업로드 버튼을 눌러 주십시오", "warning");
-                        return false;
-                    }
-                },
-                success: function(data){
-                    for(i=0; i<data.len; i++){
-                        $( "#file_array" ).append("<div id = 'file_" + i + "'>"+ data.name[i] + "&nbsp; &nbsp;" + data.size[i] +"</div>");
-                    }
-                    $( "#file_array" ).append("<div id = 'file_cnt' style = 'display:none'>"+ data.len +"</h5>");
-                    swal("업로드 완료", "OK 버튼을 눌러주세요", "success");
-                    $('#logo_img').val(text[2]);
-                },
-                error: function() {
-                    swal("업로드 실패", "다시 시도해주세요", "error");
-                }
-            })
-        }
 
 </script>
 {% endblock %}
@@ -458,11 +412,9 @@
                 </label>
                 <div class="col-sm-4">
                     <div>
-                        <input type="text" class="form-control" id="logo_img">
-                        <form id="uploadform" enctype="multipart/form-data" method="post">
-                            <input type="file" name="file" id = "uploadfile" style="display: none"/>
-                            <button onclick="file_upload()" style="float: right" id='btn-upload' class="button1 white selected" onfocus="this.blur();">File</button>
-                            <button onclick="file_save()" type="submit" style="float: right" class="button1 white selected">등록</button>
+                        <form action="/manage/modi_multi_site_db/" id="uploadform" method="post" enctype="multipart/form-data">
+                            <input name='uploadfile' type="file" id="uploadfile"/>
+                            <input name='uploadfile_user_id' type="text" value="{{ user.id }}" style="display: none"/>
                         </form>
                     </div>
                 </div>
