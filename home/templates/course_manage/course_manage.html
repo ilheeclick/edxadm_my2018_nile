@@ -3,9 +3,48 @@
 {% block pagetitlename_header %}강좌 관리{% endblock %}
 {% block script_down %}
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="//code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
 <script>
+
+jQuery.ajaxSettings.traditional = true;
+    $(document).ready(function() {
+        setDataTable1();
+    });
+
+
+    function setDataTable1() {
+        var $table = $('#datatable1');
+
+        $table.dataTable({
+            "scrollY": "400px",
+            "scrollX": "400px",
+			bProcessing: true,
+			rowReorder: true,
+            "searching": false,
+			sAjaxSource: $table.data('url'),
+			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+			//sDom: 'T<"clear">lfrtip',
+			"fnReloadAjax": true,
+			"fnServerParams": function ( data ) {
+				 data.push({ "name": 'method', "value": 'course_list'});
+			},
+
+
+			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+
+			"paginate": false,
+			"columnDefs":[
+                {
+                    targets: 0, visible: true, name: "pk", render: function (data, type) {
+                    return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                }, width:'8%'
+                },
+			],
+
+			"initComplete": function(settings, json){
+			}
+		});
+    }
+
     $.datepicker.setDefaults({
     dateFormat: 'yy-mm-dd',
     prevText: '이전 달',
@@ -88,8 +127,9 @@
                 </div>
             </div>
         </div>
+        <br>
 
-        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/multi_site_db/" style="width: 100%;" >
+        <table class="table table-hover table-striped  table-bordered" data-url="/manage/course_db/" id="datatable1" style="width: 100%;" >
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>

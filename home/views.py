@@ -88,6 +88,93 @@ def common_single_file_upload(file_object, gubun, user_id):
         cur.execute(query)
 # ---------- common module ---------- #
 
+
+@login_required
+def course_db(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        course_list = []
+        query = '''
+                SELECT @rn := @rn - 1 rn,
+                         d.create_type,
+                         d.create_year,
+                         d.course_no,
+                         a.org,
+                         a.display_name,
+                         a.id,
+                         a.created,
+                         a.enrollment_start,
+                         a.enrollment_end,
+                         a.end,
+                         c.cert_date,
+                         d.teacher_name,
+                         a.effort
+                    FROM course_overviews_courseoverview a
+                         LEFT OUTER JOIN student_courseaccessrole b
+                            ON a.id = b.course_id AND b.role = 'instructor'
+                         LEFT OUTER JOIN course_overview_addinfo d ON a.id = d.course_id
+                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                              FROM certificates_generatedcertificate
+                                          GROUP BY course_id) c
+                            ON a.id = c.course_id,
+                         (SELECT @rn := count(*) + 1
+                            FROM course_overviews_courseoverview) rn
+                GROUP BY a.id;
+        '''
+        cur.execute(query)
+        row = cur.fetchall()
+        cur.close()
+        for multi in row:
+            value_list = []
+            value_list.append('<p></p>')
+            value_list.append(multi[0])
+            value_list.append(multi[1])
+            value_list.append(multi[2])
+            value_list.append(multi[3])
+            value_list.append(multi[4])
+            value_list.append('<p></p>')
+            value_list.append('<p></p>')
+            value_list.append(multi[5])
+            multi_num = multi[6].split('+')
+            value_list.append(multi_num[0])
+            value_list.append(multi_num[1])
+            value_list.append(multi_num[2])
+            value_list.append('<p></p>')
+            value_list.append(multi[7])
+            value_list.append(multi[8])
+            value_list.append(multi[9])
+            value_list.append(multi[10])
+            value_list.append(multi[11])
+            value_list.append(multi[12])
+            if multi[13] != None :
+                multi_time = multi[13].replace('@', '+').replace('#', '+')
+            multi_time_num = multi_time.split('+')
+            if(len(multi_time_num) == 3):
+                value_list.append(multi_time_num[2])
+                value_list.append(multi_time_num[0])
+                value_list.append(multi_time_num[1])
+                all_hour = multi_time_num[0].split(':')
+                value_list.append(all_hour)
+            else:
+                value_list.append('<p></p>')
+                value_list.append('<p></p>')
+                value_list.append('<p></p>')
+                value_list.append('<p></p>')
+            value_list.append('<p></p>')
+
+            course_list.append(value_list)
+
+        data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+
 @login_required
 def multi_site(request):
     return render(request, 'multi_site/multi_site.html')\
