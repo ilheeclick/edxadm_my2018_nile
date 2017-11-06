@@ -2857,7 +2857,33 @@ def file_download(request, file_name):
 def multiple_email(request):
     #if request.is_ajax():
     #request.GET['method'] == 'notice_list':
-    return render(request, 'multiple_email/multiple_email.html')
+    with connections['default'].cursor() as cur:
+        query = """
+        SELECT mail_id, 
+               CASE recipient_type 
+                 WHEN 'E' THEN '수강신청경험자' 
+                 WHEN 'T' THEN '교수자 권한' 
+                 WHEN 'A' THEN '운영자 권한' 
+               end, 
+               au.username, 
+               title, 
+               DATE_FORMAT(regist_date,'%Y/%m/%d %h:%m'),
+               send_count, 
+               success_count 
+        FROM   edxapp.group_email AS ge 
+               JOIN edxapp.auth_user AS au 
+                 ON ge.regist_id = au.id
+        """
+        cur.execute(query)
+        print query
+        good = cur.fetchall()
+
+    context = {
+        'good' : good,
+        'hello' : 'world'
+    } 
+  
+    return render(request, 'multiple_email/multiple_email.html', context)
 
 @login_required
 def multiple_email_new(request):

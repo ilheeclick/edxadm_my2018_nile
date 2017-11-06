@@ -42,7 +42,9 @@ $(function(){
 });
 
 $(document).ready(function(){
-    $('#example').DataTable();
+    $('#example').DataTable({
+    "order": [ 0, 'desc' ]
+    });
 });
 </script>
 <!-- js -->
@@ -77,19 +79,17 @@ $(document).ready(function(){
     </tr>
   </thead>
   <tbody>
-  {% with ''|center:50 as range %}
-  {% for _ in range %}
+  {% for item in good %}
     <tr>
-      <td>1</td>
-      <td>수강신청경험자</td>
-      <td>안진용</td>
-      <td>abdfaefwa</td>
-      <td>2017/11/06</td>
-      <td>32</td>
-      <td>32</td>
+      <td>{{ item.0 }}</td>
+      <td>{{ item.1 }}</td>
+      <td>{{ item.2 }}</td>
+      <td>{{ item.3 }}</td>
+      <td>{{ item.4 }}</td>
+      <td>{{ item.5 }}</td>
+      <td>{{ item.6 }}</td>
     </tr>
   {% endfor %}
-  {% endwith %}
   </tbody>
 </table>
 <!-- data tables -->
