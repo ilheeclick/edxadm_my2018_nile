@@ -358,6 +358,21 @@ def modi_multi_site_db(request):
             email_list = request.POST.get('email_list')
             email_list = email_list.split('+')
             email_list.pop()
+
+            cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, logo_img)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
+                    '''.format(site_name, site_code, site_url, regist_id, regist_id, attatch_id[0][0])
+            cur.execute(query)
+            cur.close()
+
             for item in email_list:
                 cur = connection.cursor()
                 query = '''SELECT id
@@ -381,19 +396,7 @@ def modi_multi_site_db(request):
                 cur.execute(query)
                 cur.close()
 
-            cur = connection.cursor()
-            query = '''select max(attatch_id)+1 from tb_board_attach
-                    '''
-            cur.execute(query)
-            attatch_id = cur.fetchall()
-            cur.close()
 
-            cur = connection.cursor()
-            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, logo_img)
-                       VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
-                    '''.format(site_name, site_code, site_url, regist_id, regist_id, attatch_id[0][0])
-            cur.execute(query)
-            cur.close()
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')

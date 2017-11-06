@@ -39,45 +39,52 @@
     });
 
     function save() {
-        document.getElementById("uploadform").submit();
-        try {
-            var method = '';
-            var site_index ='';
-            if ('{{ id }}' == 99999) {
-                method = 'add';
-            }
-            else {
-                method = 'modi';
-            }
-            var site_name = $('#site_name').val();
-            var site_code = $('#site_code').val();
-            var site_url = $('#site_url').val();
-            var regist_id = {{ user.id }};
-            var multi_no = {{ id }};
-            var email_list = "";
-            $(".email").each(function(){
-                if($(this).text() != '') {
-                    email_list += $(this).text() + "+";
-                }
-            });
+        var Test = $('#uploadfile').val();
+        if(Test == '') {
+            swal("경고", "기관이미지를 선택해주세요.", "warning");
+        }
+        else {
+            document.getElementById("uploadform").submit();
 
-            $.post("/manage/modi_multi_site_db/", {
-                csrfmiddlewaretoken: $.cookie('csrftoken'),
-                site_name : site_name,
-                site_code: site_code,
-                site_url: site_url,
-                regist_id: regist_id,
-                multi_no: multi_no,
-                site_index: site_index,
-                email_list: email_list,
-                method: method,
-            }).done(function (data) {
-                location.href = '/manage/multi_site';
-            }).fail(function (error) {
-                alert('errorasdfasf = ' + error.responseJSON);
-            });
-        } catch (e) {
-            alert(e);
+            try {
+                var method = '';
+                var site_index = '';
+                if ('{{ id }}' == 99999) {
+                    method = 'add';
+                }
+                else {
+                    method = 'modi';
+                }
+                var site_name = $('#site_name').val();
+                var site_code = $('#site_code').val();
+                var site_url = $('#site_url').val();
+                var regist_id = {{ user.id }};
+                var multi_no = {{ id }};
+                var email_list = "";
+                $(".email").each(function () {
+                    if ($(this).text() != '') {
+                        email_list += $(this).text() + "+";
+                    }
+                });
+
+                $.post("/manage/modi_multi_site_db/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    site_name: site_name,
+                    site_code: site_code,
+                    site_url: site_url,
+                    regist_id: regist_id,
+                    multi_no: multi_no,
+                    site_index: site_index,
+                    email_list: email_list,
+                    method: method,
+                }).done(function (data) {
+                    location.href = '/manage/multi_site';
+                }).fail(function (error) {
+                    alert('errorasdfasf = ' + error.responseJSON);
+                });
+            } catch (e) {
+                alert(e);
+            }
         }
     }
 
@@ -364,6 +371,11 @@
             });
         });
 
+    function Test() {
+
+
+    }
+
 
 </script>
 {% endblock %}
@@ -434,6 +446,8 @@
 
 
         </div>
+        <a href="javascript:Test();"><input class="btn btn-default" type="button" id="DelBtn" value="Test"></a>
+
 
 
         <footer class="panel-footer">
