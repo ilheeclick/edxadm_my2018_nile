@@ -257,15 +257,15 @@
                             </li>
 
                             <!-- multiple mail sending -->
-                            <li class="nav nav-parent" id="stastic">
+                            <li class="nav nav-parent" id="email">
                                 <a>
                                     <i class="fa fa-inbox" aria-hidden="true"></i>
                                     <span>단체메일</span>
                                 </a>
                                 <ul class="nav nav-children">
-                                    <li id="day_stastic">
-                                        <a href="/manage">
-                                            단체메일
+                                    <li id="multiple_email">
+                                        <a href="/manage/multiple_email">
+                                            단체메일 관리
                                         </a>
                                     </li>
                                 </ul>
@@ -449,22 +449,17 @@
 <script>
     // Toggle
     (function ($) {
-        /*  */
         $('ul.nav.nav-main li').mouseover(function (e) {
-            //alert($(this).find('span').text());
             $(this).addClass('nav-active');
         });
         $('ul.nav.nav-main li').mouseleave(function (e) {
-            //alert($(this).find('span').text());
             $(this).removeClass('nav-active');
             setactivesidebar('none');
         });
-        //alert($('#pagetitlename').text());
 
         function setactivesidebar(is_expanded) {
             var pagetitlename = $('#pagetitlename').text();
             console.log('pagetitlename: ' + pagetitlename);
-
 
             switch (pagetitlename) {
                 case '일일 / 주간 / 월별 통계':
@@ -517,11 +512,6 @@
                     $('#community').addClass('nav-active');
                     $('#comm_faqrequest').addClass('nav-active');
                     break;
-                case '자료실':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
-                    $('#comm_reference_room').addClass('nav-active');
-                    break;
                 case '모바일':
                     if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                     $('#community').addClass('nav-active');
@@ -542,12 +532,16 @@
                     $('#popup').addClass('nav-active');
                     $('#popup_add').addClass('nav-active');
                     break;
+                case '단체메일':
+                    if (is_expanded != 'none') $('#email').addClass('nav-expanded');
+                    $('#email').addClass('nav-active');
+                    $('#multiple_email').addClass('nav-active');
+                    break;
             }
         }
 
         setactivesidebar('');
     }).apply(this, [jQuery]);
-
 
     //파일 다운로드 처리
     function file_download(attach_id) {
@@ -559,7 +553,6 @@
         }, "json");
     }
     ;
-
 
     //파일 삭제 처리
     function file_delete(attach_id) {

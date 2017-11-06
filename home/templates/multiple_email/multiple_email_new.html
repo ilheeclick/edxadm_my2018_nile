@@ -1,0 +1,156 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}단체메일{% endblock %}
+{% block pagetitlename_header %}단체메일{% endblock %}
+{% block script_down %}
+{% endblock %}
+{% block containor %}
+
+<!-- css -->
+<style>
+.email_title{background-color: #f6f6f6;padding-top: 20px;padding-bottom: 20px;padding-left: 20px;border-bottom: solid black 1px;}
+#m_title{}
+#m_content{height: 300px;}
+td{padding-left:20px;}
+.title_margin{margin-top: 10px; padding-left:20px;}
+.content_margin{margin-top: 10px; margin-bottom: 20px; padding-left:20px;}
+#goto_home{margin-left: 20px; z-index: 3}
+#after_view{float: right; margin-right: 10px;}
+#mail_submit{float: right;}
+.content_foot{}
+.m_main{background-color: #FFFFFF; padding: 15px; margin-top: -18px;}
+</style>
+<!-- css -->
+
+<!-- library -->
+<!-- library -->
+
+<!-- js -->
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+<script>
+
+$(document).ready(function(){
+    $("#goto_home").click(function(){
+        location.href='/manage/multiple_email/'
+    });
+});
+</script>
+<!-- js -->
+
+
+<section class="panel panel-featured ">
+<div class="email_title"><h2 class="panel-title">메일발송</h2></div>
+</section>
+
+<div class = "m_main">
+<table>
+<tr>
+  <td>
+    <div class="send">
+    발송구분
+    </div>
+  </td>
+  <td>
+    <div class="send">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">Email
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="send">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">쪽지
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="send_end">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">App push
+    </label>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td>
+    <div class="account">
+    계정구분
+    </div>
+  </td>
+  <td>
+    <div class="account">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">활성계정
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="account">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">비활성계정
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="account_end">
+    <label class="form-check-label">
+      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">전체
+    </label>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td>
+    <div class="whois form-check-inline">
+    대상자
+    </div>
+  </td>
+  <td>
+    <div class="whois form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"> 수강신청경험자
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="whois form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"> 교수자 권한
+    </label>
+    </div>
+  </td>
+  <td>
+    <div class="whois_end form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option2"> 운영자 권한
+    </label>
+    </div>
+  </td>
+</tr>
+</table>
+
+<div class="title_margin">
+제목 
+  <div class="m_title_div">
+    <input type="email" class="form-control" id="m_title">
+  </div>
+</div>
+
+<div class="content_margin">
+내용
+  <div class="m_content_div">
+    <textarea class="form-control" id="m_content" rows="3"></textarea>
+  </div>
+</div>
+
+<div class="content_foot">
+  <button type="button" class="btn btn-primary" id="goto_home">목록으로</button>
+  <button type="button" class="btn btn-primary" id="mail_submit">발송</button>
+  <button type="button" class="btn btn-primary" id="after_view">미리보기</button>
+</div>
+
+</div>
+{% endblock %}

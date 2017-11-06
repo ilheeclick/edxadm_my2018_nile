@@ -75,6 +75,10 @@ urlpatterns = [
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
     url(r'^manage/new_refer/', views.new_refer, name='new_refer'), # -> new_notice (module)
     # ---------- board common ---------- #
+    # ---------- multiple email ---------- #
+    url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
+    url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
+    # ---------- multiple email ---------- #
 
     # faq
     url(r'^manage/comm_faq/', views.comm_faq, name='comm_faq'),

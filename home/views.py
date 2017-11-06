@@ -1366,7 +1366,7 @@ def new_notice(request):
         return HttpResponse(data, 'applications/json')
         # ---------- 공통 글 편집(공지사항, K-MOOC소식, 자료실) ---------- #
     return render(request, 'community/comm_newnotice.html')
-# ---------- 2017.10.23 ahn jin yong ---------- #
+
 
 @csrf_exempt
 def modi_notice(request, id, use_yn):
@@ -2850,3 +2850,18 @@ def file_download(request, file_name):
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
+
+# ---------- 2017.11.03 ahn jin yong ---------- #
+@login_required
+def multiple_email(request):
+    #if request.is_ajax():
+    #request.GET['method'] == 'notice_list':
+    return render(request, 'multiple_email/multiple_email.html')
+
+@login_required
+def multiple_email_new(request):
+    #if request.is_ajax():
+    #request.GET['method'] == 'notice_list':
+    return render(request, 'multiple_email/multiple_email_new.html')
+# ---------- 2017.11.03 ahn jin yong ---------- #
