@@ -16,16 +16,15 @@ jQuery.ajaxSettings.traditional = true;
 
         $table.dataTable({
             "scrollY": "400px",
-            "scrollX": "400px",
+            "scrollX": "4000px",
 			bProcessing: true,
 			rowReorder: true,
             "searching": false,
 			sAjaxSource: $table.data('url'),
-			//sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-			//sDom: 'T<"clear">lfrtip',
 			"fnReloadAjax": true,
 			"fnServerParams": function ( data ) {
-				 data.push({ "name": 'method', "value": 'course_list'});
+                data.push({ "name": 'method', "value": 'course_list'});
+
 			},
 
 
@@ -37,6 +36,21 @@ jQuery.ajaxSettings.traditional = true;
                     targets: 0, visible: true, name: "pk", render: function (data, type) {
                     return '<input type="checkbox" name="' + data + '" value="' + data + '">';
                 }, width:'8%'
+                },
+                {
+                    targets: 2, visible: true, render: function (data, type) {
+                    return '<select style="width:90px" id="choice_1" class="form-control"><option value="">개발유형1</option><option value="2">개발유형2</option></select>';
+                },
+                },
+                {
+                    targets: 3, visible: true, render: function (data, type) {
+                    return '<select style="width:90px" id="choice_2" class="form-control"><option value="">개발유형1</option><option value="2">개발유형2</option></select>';
+                },
+                },
+                {
+                    targets: 4, visible: true, render: function (data, type) {
+                    return '<input style="width:90px" type="text" id="input_num" class="form-control"/>';
+                },
                 },
 			],
 

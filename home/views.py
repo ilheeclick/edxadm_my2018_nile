@@ -91,36 +91,39 @@ def common_single_file_upload(file_object, gubun, user_id):
 
 @login_required
 def course_db(request):
+    client = MongoClient(database_id, 27017)
+    db = client.edxapp
     result = dict()
 
     with connections['default'].cursor() as cur:
         course_list = []
         query = '''
-                SELECT @rn := @rn - 1 rn,
-                         d.create_type,
-                         d.create_year,
-                         d.course_no,
-                         a.org,
-                         a.display_name,
-                         a.id,
-                         a.created,
-                         a.enrollment_start,
-                         a.enrollment_end,
-                         a.end,
-                         c.cert_date,
-                         d.teacher_name,
-                         a.effort
-                    FROM course_overviews_courseoverview a
-                         LEFT OUTER JOIN student_courseaccessrole b
-                            ON a.id = b.course_id AND b.role = 'instructor'
-                         LEFT OUTER JOIN course_overview_addinfo d ON a.id = d.course_id
-                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
-                                              FROM certificates_generatedcertificate
-                                          GROUP BY course_id) c
-                            ON a.id = c.course_id,
-                         (SELECT @rn := count(*) + 1
-                            FROM course_overviews_courseoverview) rn
-                GROUP BY a.id;
+                SELECT @rn := @rn - 1 rn, a.*
+                  FROM (  SELECT d.create_type,
+                                 d.create_year,
+                                 d.course_no,
+                                 a.org,
+                                 a.display_name,
+                                 a.id,
+                                 a.created,
+                                 a.enrollment_start,
+                                 a.enrollment_end,
+                                 a.end,
+                                 c.cert_date,
+                                 d.teacher_name,
+                                 a.effort
+                            FROM course_overviews_courseoverview a
+                                 LEFT OUTER JOIN student_courseaccessrole b
+                                    ON a.id = b.course_id AND b.role = 'instructor'
+                                 LEFT OUTER JOIN course_overview_addinfo d
+                                    ON a.id = d.course_id
+                                 LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                      FROM certificates_generatedcertificate
+                                                  GROUP BY course_id) c
+                                    ON a.id = c.course_id
+                        GROUP BY a.id) a,
+                       (SELECT @rn := count(*) + 1
+                          FROM course_overviews_courseoverview) b;
         '''
         cur.execute(query)
         row = cur.fetchall()
@@ -133,11 +136,39 @@ def course_db(request):
             value_list.append(multi[2])
             value_list.append(multi[3])
             value_list.append(multi[4])
-            value_list.append('<p></p>')
-            value_list.append('<p></p>')
-            value_list.append(multi[5])
             multi_num = multi[6].split('+')
-            value_list.append(multi_num[0])
+            multi_org = multi_num[0].split(':')
+
+            cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+            pb = cursor.get('versions').get('published-branch')
+            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
+            cursor_text = str(cursor)
+
+            index = cursor_text.find('classfy')
+            cl = cursor_text[index:index+50]
+
+            index = cursor_text.find('middle_classfy')
+            m_cl = cursor_text[index:index+50]
+
+            index_cl = cl.find("': u'")
+            index_mcl = m_cl.find("': u'")
+
+            cls = cl[index_cl+5:index_cl+15]
+            m_cls = m_cl[index_mcl+5:index_mcl+15]
+
+            ha = cls.find("',")
+            hb = m_cls.find("',")
+            if m_cls.find("'},") != -1:
+                hb = m_cls.find("'},")
+
+            clsf = cls[:ha]
+            m_clsf = m_cls[:hb]
+
+            value_list.append(clsf)
+            value_list.append(m_clsf)
+            value_list.append(multi[5])
+
+            value_list.append(multi_org[1])
             value_list.append(multi_num[1])
             value_list.append(multi_num[2])
             value_list.append('<p></p>')
@@ -155,7 +186,10 @@ def course_db(request):
                 value_list.append(multi_time_num[0])
                 value_list.append(multi_time_num[1])
                 all_hour = multi_time_num[0].split(':')
-                value_list.append(all_hour)
+                hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
+                minut = int(all_hour[1]) * int(multi_time_num[1])
+                time = hour + minut
+                value_list.append(str(time // 60) + ':' + str(time % 60))
             else:
                 value_list.append('<p></p>')
                 value_list.append('<p></p>')
