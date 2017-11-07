@@ -177,7 +177,7 @@ def course_db(request):
 
 @login_required
 def multi_site(request):
-    return render(request, 'multi_site/multi_site.html')\
+    return render(request, 'multi_site/multi_site.html')
 
 @login_required
 def course_manage(request):
@@ -192,11 +192,35 @@ def course_list(request, site_id, org_name):
     })
     return render_to_response('multi_site/course_list.html', variables)
 
+def multisite_org(request):
+    org_list = []
+
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'org':
+            cur = connection.cursor()
+
+            query = "SELECT detail_code, detail_name FROM code_detail"
+            cur.execute(query)
+            org = cur.fetchall()
+            cur.close()
+
+            data = json.dumps(list(org), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+
+    return HttpResponse(data, 'applications/json')
+
+
 def course_list_db(request):
     result = dict()
 
     with connections['default'].cursor() as cur:
+        org = request.GET.get('org')
+        print org
+        if (org == 'None'):
+            org = '%'
 
+        print org
         query = '''
               SELECT replace(@rn := @rn - 1, .0, '') rn,
                      id,
@@ -214,12 +238,12 @@ def course_list_db(request):
                 FROM course_overviews_courseoverview,
                      (SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview) b
+                        where org LIKE '{0}'
             ORDER BY start DESC;
-        '''
+        '''.format(org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
-        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list
@@ -267,9 +291,6 @@ def multisite_course(request):
                 count = cur.fetchall()
                 cur.close()
 
-                print ('********************************')
-                print count[0][0]
-                print ('********************************')
                 if (count[0][0] == 1) :
                     cur = connection.cursor()
                     query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
@@ -305,6 +326,11 @@ def multisite_course(request):
 
 def select_list_db(request):
     site_id = request.GET.get('site_id')
+    org = request.GET.get('org')
+    print org
+    if (org == 'None'):
+        org = '%'
+    print org
     result = dict()
 
     with connections['default'].cursor() as cur:
@@ -322,12 +348,11 @@ def select_list_db(request):
                    (SELECT @rn := count(*) + 1
                   FROM multisite_course
                  WHERE site_id = '{0}') b
-                 WHERE mc.site_id = '{1}';
-        '''.format(site_id, site_id)
+                 WHERE mc.site_id = '{1}' and co.org like '{2}';
+        '''.format(site_id, site_id, org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
-        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list
@@ -374,8 +399,6 @@ def multi_site_db(request):
                 multi_site_list.append(value_list)
 
             data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-            print ('::::::::::::::::::::::::::::::::::')
-            print data
         return HttpResponse(data, 'applications/json')
     return render(request, 'multi_site/multi_site.html')
 

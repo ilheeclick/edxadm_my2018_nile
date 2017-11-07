@@ -16,8 +16,24 @@
 
     jQuery.ajaxSettings.traditional = true;
         $(document).ready(function() {
+
             setDataTable1();
             setDataTable2();
+
+            $.ajax({
+                url : '/manage/multisite_org/',
+                data :{
+                    method : 'org'
+                }
+            }).done(function(data){
+                var html="<option value='None'>선택하세요.</option>";
+                for(var i=0; i<data.length; i++){
+                //alert(data[key]);
+                html+="<option value="+data[i][0]+">"+data[i][1]+"</option>"
+            }
+                $('#org1').html(html);
+                $('#org2').html(html);
+            });
 
         });
 
@@ -25,7 +41,7 @@
                 var $table = $('#datatable1');
 
                 $table.dataTable({
-                    dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                    dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -33,7 +49,7 @@
                     "language": {
                       "emptyTable": "조회된 데이터가 없습니다."
                     },
-                    "scrollY": "400px",
+                    "scrollY": "300px",
                     "scrollCollapse": true,
                     buttons: [
                         {
@@ -81,9 +97,16 @@
                     paginate: false,
                     "info":false,
                     initComplete: function () {
+                        $('input[type="search"]').attr('class', 'form-control col-sm-10');
+				        $('input[type="search"]').css("float","right");
                     }
                 })
                 ;
+                $('#search_input1').on( 'keyup', function () {
+                    $table.api()
+                        .search( this.value )
+                        .draw();
+                });
 
             }
 
@@ -91,7 +114,7 @@
                 var $table = $('#datatable2');
 
                 $table.dataTable({
-                    dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+                    dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -99,7 +122,7 @@
                     "language": {
                       "emptyTable": "조회된 데이터가 없습니다."
                     },
-                    "scrollY": "400px",
+                    "scrollY": "300px",
                     "scrollCollapse": true,
                     buttons: [
                         {
@@ -148,27 +171,38 @@
                     paginate: false,
                     "info":false,
                     initComplete: function () {
+                        $('input[type="search"]').attr('class', 'form-control col-sm-10');
+				        $('input[type="search"]').css("float","right");
                     }
                 })
                 ;
+                $('#search_input2').on( 'keyup', function () {
+                    $table.api()
+                        .search( this.value )
+                        .draw();
+                });
 
             }
 
 
     function buildSearchData1() {
         var id = '{{id}}';
+        var org = $('#org1').val();
         var obj = {
             csrfmiddlewaretoken: '{{ csrf_token }}',
             id: id,
+            org: org,
         }
         return obj
     }
 
     function buildSearchData2() {
+        var org = $('#org2').val();
         var obj = {
             csrfmiddlewaretoken: '{{ csrf_token }}',
             site_id: '{{ site_id }}',
             user_id: '{{ user_id }}',
+            org: org,
         }
         return obj
     }
@@ -193,7 +227,12 @@
             }
         }
 
-    function update() {
+    function update1() {
+            var table = $('#datatable1').DataTable();
+            table.ajax.reload();
+        }
+
+    function update2() {
             var table = $('#datatable2').DataTable();
             table.ajax.reload();
         }
@@ -216,7 +255,7 @@
             course_list: course_list,
             method: 'add',
         }).done(function (data) {
-            update();
+            update2();
         }).fail(function (error) {
             swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
         });
@@ -241,7 +280,7 @@
             course_list: course_list,
             method: 'delete',
         }).done(function (data) {
-            update();
+            update2();
         }).fail(function (error) {
             alert(error);
         });
@@ -280,9 +319,9 @@
         }).fail(function (error) {
             swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
         });
-
-
     }
+
+
 </script>
 
 {% endblock %}
@@ -295,25 +334,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="popup templet" id="batch_input" style="display: none">
-        <h5 style="text-align: center" >강좌ID 입력</h5>
-        <div class="templet-con">
-            <p></p>
-            <textarea id="input_course" style="height: 227px; width: 500px" placeholder="course_id1&#13;&#10;course_id2&#13;&#10;course_id3&#13;&#10;..."></textarea>
-        </div>
-        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
-            <a class="fright" onclick="input_Save()" style="float: right;"><input class="btn btn-primary" type="button" id="input_Save" value="저장"></a>
-            <a class="fright" onclick="Hide('hide')" style="float: right;"><input class="btn btn-default" type="button" id="cancel" value="취소"></a>
-        </div>
-    </div>
+
 </body>
 <section class="panel panel-featured ">
     <header class="panel-heading">
         <div><h2 class="panel-title"><b>{{ org_name }}</b> 연계강좌 지정</h2></div>
 
     </header>
+
     <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
         <h3>kmooc 등록강좌</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <b id="org_name1" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
+                <select id="org1" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class = "form-control" onchange="update1()">
+                    <option value="None">선택하세요.</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input1">
+            </div>
+        </div>
         <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/course_list_db/" style="width: 100%;" >
             <thead>
                 <tr>
@@ -337,6 +378,17 @@
     </div>
     <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
         <h3>기관 선택 강좌</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <b id="org_name2" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
+                <select id="org2" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class = "form-control" onchange="update2()">
+                    <option value="None">선택하세요.</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input2">
+            </div>
+        </div>
         <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/course_list/" style="width: 100%;" >
             <thead>
                 <tr>

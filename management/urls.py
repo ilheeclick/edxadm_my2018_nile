@@ -120,6 +120,7 @@ urlpatterns = [
     url(r'^manage/course_list_db/$', views.course_list_db, name='course_list_db'),
     url(r'^manage/select_list_db/$', views.select_list_db, name='select_list_db'),
     url(r'^manage/multisite_course/$', views.multisite_course, name='multisite_course'),
+    url(r'^manage/multisite_org/$', views.multisite_org, name='multisite_org'),
 
     # course_manage url
     url(r'^manage/course_manage/$', views.course_manage, name='course_manage'),
