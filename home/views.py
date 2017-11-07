@@ -2855,15 +2855,54 @@ def file_download(request, file_name):
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @login_required
 def multiple_email(request):
-    #if request.is_ajax():
+    if request.is_ajax():
+
+        search_mod = request.GET.get('search_mod')
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+
+        start = start.replace('/','-')
+        end = end.replace('/','-')
+
+        with connections['default'].cursor() as cur:
+            query = """
+            SELECT mail_id, 
+            CASE 
+            WHEN target1 = '1' and  target2 = '0' and target3 = '0' THEN '수강신청경험자' 
+            WHEN target1 = '0' and  target2 = '1' and target3 = '0' THEN '교수자 권한' 
+            WHEN target1 = '0' and  target2 = '0' and target3 = '1' THEN '운영자 권한' 
+            WHEN target1 = '1' and  target2 = '1' and target3 = '0' THEN '수강신청경험자, 교수자권한' 
+            WHEN target1 = '1' and  target2 = '0' and target3 = '1' THEN '수강신청경험자한, 운영자권한' 
+            WHEN target1 = '0' and  target2 = '1' and target3 = '1' THEN '교수자권한, 운영자 권한' 
+            WHEN target1 = '1' and  target2 = '1' and target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한' 
+            end, 
+            au.username, 
+            title, 
+            DATE_FORMAT(regist_date,'%Y/%m/%d %h:%m'),
+            send_count, 
+            success_count 
+            FROM   edxapp.group_email AS ge 
+            JOIN edxapp.auth_user AS au 
+            ON ge.regist_id = au.id
+            WHERE regist_date BETWEEN '{0}' AND '{1}'
+            """.format(start, end)
+            cur.execute(query)
+            good = cur.fetchall()
+
+        return JsonResponse({'good':good})
+
     #request.GET['method'] == 'notice_list':
     with connections['default'].cursor() as cur:
         query = """
         SELECT mail_id, 
-               CASE recipient_type 
-                 WHEN 'E' THEN '수강신청경험자' 
-                 WHEN 'T' THEN '교수자 권한' 
-                 WHEN 'A' THEN '운영자 권한' 
+               CASE 
+                 WHEN target1 = '1' and  target2 = '0' and target3 = '0' THEN '수강신청경험자' 
+                 WHEN target1 = '0' and  target2 = '1' and target3 = '0' THEN '교수자 권한' 
+                 WHEN target1 = '0' and  target2 = '0' and target3 = '1' THEN '운영자 권한' 
+                 WHEN target1 = '1' and  target2 = '1' and target3 = '0' THEN '수강신청경험자, 교수자권한' 
+                 WHEN target1 = '1' and  target2 = '0' and target3 = '1' THEN '수강신청경험자한, 운영자권한' 
+                 WHEN target1 = '0' and  target2 = '1' and target3 = '1' THEN '교수자권한, 운영자 권한' 
+                 WHEN target1 = '1' and  target2 = '1' and target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한' 
                end, 
                au.username, 
                title, 
