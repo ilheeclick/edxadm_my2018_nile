@@ -2894,91 +2894,159 @@ def file_download(request, file_name):
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @login_required
 def multiple_email(request):
-    print 'def multiple_email call'
 
     if request.is_ajax():
+
+        # what is mode?
         search_mod = request.GET.get('search_mod')
-        startDt = request.GET.get('startDt')
-        endDt = request.GET.get('endDt')
 
-        startDt = startDt.replace('/', '')
-        endDt = endDt.replace('/', '')
+        # search name
+        if search_mod == '2' :
+            name_search = request.GET.get('name_search')
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '0' THEN '수강신청경험자'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '교수자 권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '수강신청경험자, 교수자권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '교수자권한, 운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한'
+                           end gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                    JOIN   edxapp.auth_user   AS au
+                    ON     ge.regist_id = au.id
+                    WHERE   title like '%{0}%'
+                '''.format(name_search)
+                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
 
-        print startDt
-        print endDt
+        # search date
+        if search_mod == '1' :
+            startDt = request.GET.get('startDt')
+            endDt = request.GET.get('endDt')
+            startDt = startDt.replace('/', '-')
+            endDt = endDt.replace('/', '-')
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '0' THEN '수강신청경험자'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '교수자 권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '수강신청경험자, 교수자권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '교수자권한, 운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한'
+                           end gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                    JOIN   edxapp.auth_user   AS au
+                    ON     ge.regist_id = au.id
+                    WHERE   regist_date BETWEEN '{0}' AND '{1}'
+                '''.format(startDt, endDt)
+                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
 
-        with connections['default'].cursor() as cur:
-            query = """
-                SELECT
-                    mail_id,
-                    CASE
-                        WHEN
-                            target1 = '1' AND target2 = '0'
-                                AND target3 = '0'
-                        THEN
-                            '수강신청경험자'
-                        WHEN
-                            target1 = '0' AND target2 = '1'
-                                AND target3 = '0'
-                        THEN
-                            '교수자 권한'
-                        WHEN
-                            target1 = '0' AND target2 = '0'
-                                AND target3 = '1'
-                        THEN
-                            '운영자 권한'
-                        WHEN
-                            target1 = '1' AND target2 = '1'
-                                AND target3 = '0'
-                        THEN
-                            '수강신청경험자, 교수자권한'
-                        WHEN
-                            target1 = '1' AND target2 = '0'
-                                AND target3 = '1'
-                        THEN
-                            '수강신청경험자한, 운영자권한'
-                        WHEN
-                            target1 = '0' AND target2 = '1'
-                                AND target3 = '1'
-                        THEN
-                            '교수자권한, 운영자 권한'
-                        WHEN
-                            target1 = '1' AND target2 = '1'
-                                AND target3 = '1'
-                        THEN
-                            '수강신청경험자, 교수자권한, 운영자권한'
-                    END gubn,
-                    au.username,
-                    title,
-                    DATE_FORMAT(regist_date, '%Y/%m/%d %h:%m') regist_date,
-                    send_count,
-                    success_count
-                FROM
-                    edxapp.group_email AS ge
-                        JOIN
-                    edxapp.auth_user AS au ON ge.regist_id = au.id
-                WHERE
-                    date_format(regist_date, '%Y%m%d') BETWEEN '{0}' AND '{1}'
-            """.format(startDt, endDt)
-
-            cur.execute(query)
-            rows = cur.fetchall()
-
-            columns = [col[0] for col in cur.description]
-            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
-
-        result = dict()
-        result['data'] = result_list
-
-        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
-
-
-        print 'view context s --------------'
-        print context
-        print 'view context e --------------'
-
-        return HttpResponse(context, 'applications/json')
-
+        # search base
+        if search_mod == '0' :
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                             WHEN target1 = '1'
+                                  AND target2 = '0'
+                                  AND target3 = '0' THEN '수강신청경험자'
+                             WHEN target1 = '0'
+                                  AND target2 = '1'
+                                  AND target3 = '0' THEN '교수자 권한'
+                             WHEN target1 = '0'
+                                  AND target2 = '0'
+                                  AND target3 = '1' THEN '운영자 권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '1'
+                                  AND target3 = '0' THEN '수강신청경험자, 교수자권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '0'
+                                  AND target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                             WHEN target1 = '0'
+                                  AND target2 = '1'
+                                  AND target3 = '1' THEN '교수자권한, 운영자 권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '1'
+                                  AND target3 = '1' THEN
+                             '수강신청경험자, 교수자권한, 운영자권한'
+                           end                                        gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                           JOIN edxapp.auth_user AS au
+                             ON ge.regist_id = au.id
+                '''
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
     return render(request, 'multiple_email/multiple_email.html')
 
 

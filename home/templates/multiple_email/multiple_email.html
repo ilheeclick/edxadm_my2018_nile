@@ -53,13 +53,13 @@
             height: 50px;
         }
 
-        #from {
+        #startDt {
             float: left;
             width: 150px;
             margin-right: 10px;
         }
 
-        #to {
+        #endDt {
             float: left;
             width: 150px;
             margin-right: 50px;
@@ -540,18 +540,7 @@
         });
 
         $(document).ready(function () {
-            setDataTable();
-            $("#m_submit").click(function () {
-                var table = $('#example1').DataTable();
-                table.ajax.reload();
-            });
-            $('#example').DataTable({
-                "order": [0, 'desc']
-            });
-        });
-
-        $(document).ready(function () {
-            $("#select_search").change(function () {
+            $("#search_mod").change(function () {
                 if ($(this).val() === '0') {
                     $(".search_b").css("display", "none");
                     $(".search_a").css("display", "none");
@@ -565,7 +554,31 @@
                     $(".search_b").css("display", "block");
                 }
             });
+
+            setDataTable();
+
+            $("#m_submit").click(function () {
+                var table = $('#example1').DataTable();
+                table.ajax.reload();
+            });
         });
+            /*
+            $('#example').DataTable({
+                "order": [0, 'desc']
+            });
+            */
+
+        /*
+        function buildSearchData() {
+            var obj = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                search_mod: $("#search_mod").val(),
+                startDt: $("#startDt").val(),
+                endDt: $("#endDt").val(),
+            }
+            return obj
+        }
+        */
 
         function buildSearchData() {
             var obj = {
@@ -573,6 +586,7 @@
                 search_mod: $("#search_mod").val(),
                 startDt: $("#startDt").val(),
                 endDt: $("#endDt").val(),
+                name_search: $("#name_search").val(),
             }
             return obj
         }
@@ -659,7 +673,6 @@
                     $("table").css({'table-layout': 'fixed'});
                     $("table td").css({'text-overflow': 'ellipsis', 'overflow': 'hidden'});
                     $("select[name=datatable-ajax_length]").css({"height": "30px", "margin-top": "5px"});
-
                     $('input[type="search"]').attr('placeholder', '검색하세요');
                     $('input[type="search"]').attr('class', 'form-control');
                     $('input[type="search"]').css('width', '200px');
@@ -731,7 +744,7 @@
 
             </div>
 
-            <div class="search_a" style='display:block'>
+            <div class="search_a" style='display:none'>
                 <div class="send_day"> 발송일자</div>
                 <input type="text" id="startDt" placeholder="날짜검색(시작)" class="form-control"/>
                 <input type="text" id="endDt" placeholder="날짜검색(종료)" class="form-control"/>
