@@ -34,13 +34,13 @@ def logfile_download(request, date):
     date_list = []
     cnt = 0
 
-    start = datetime.datetime.strptime(start_date, "%y%m%d")
-    end = datetime.datetime.strptime(end_date, "%y%m%d")
+    start = datetime.datetime.strptime(start_date, "%Y%m%d")
+    end = datetime.datetime.strptime(end_date, "%Y%m%d")
 
     date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days+1)]
 
     for date in date_generated:
-        date_list.append(date.strftime("%y%m%d"))
+        date_list.append(date.strftime("%Y%m%d"))
 
     for searchDate in date_list:
         logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
@@ -91,7 +91,7 @@ def logFileDownload(searchDate, host, log_dir, local_dir):
             splitDate = i.find('-20')
 
             sFile = str(i)
-            searchFile = sFile[splitDate+3:splitDate+9]
+            searchFile = sFile[splitDate+1:splitDate+9]
 
             if searchFile == searchDate:
                 searchName.append(i)
@@ -237,21 +237,25 @@ def oldLog_remove(dir_path, fileType):
 @csrf_exempt
 def data_insert(request):
     if request.method == 'POST':
-        prodate = request.POST.get('processingdate')
+        print 'data insert s ==================='
         client = request.POST.get('client')
         startDate = request.POST.get('startDate')
         endDate = request.POST.get('endDate')
+        log_note = request.POST.get('log_note')
 
         query = """
             INSERT INTO edxapp.trackinglog_download(processingdate,
                                         client,
                                         startDate,
-                                        endDate)
-             VALUES (%s,
-                     '%s',
-                     %s,
-                     %s);
-        """ % (prodate, client, startDate, endDate)
+                                        endDate,
+                                        note)
+             VALUES (now(),
+                     {client},
+                     '{startDate}',
+                     '{endDate}',
+                     '{log_note}'
+                     );
+        """ .format(client=client, startDate=startDate, endDate=endDate, log_note=log_note)
 
         cur = connection.cursor()
         cur.execute(query)
@@ -261,19 +265,34 @@ def data_insert(request):
         return HttpResponse(data, 'applications/json')
 
 def log_board(request):
+    print 'log_board s -------------------'
     log_list = []
     if request.is_ajax():
         logData = {}
-        if request.GET['method'] == 'logDown_list':
-            cur = connection.cursor()
-            query = """
-                 SELECT no,
-                       DATE_ADD((DATE_FORMAT(processingdate, "%Y-%c-%d %r")), INTERVAL +9 HOUR ),
-                       client,
-                       DATE_FORMAT(startdate, "%Y/%c/%d"),
-                       DATE_FORMAT(enddate, "%Y/%c/%d")
-                  FROM edxapp.trackinglog_download;
-            """
+
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        cur = connection.cursor()
+        query = """
+            SELECT no,
+                   date_format(date_add(processingdate, INTERVAL 9 HOUR),
+                               '%Y-%m-%d %H:%i:%s'),
+                   username,
+                   DATE_FORMAT(startdate, "%Y/%c/%d"),
+                   DATE_FORMAT(enddate, "%Y/%c/%d"),
+                   a.note
+              FROM edxapp.trackinglog_download a
+                   JOIN edxapp.auth_user b ON a.client = b.id
+        """
+
+        if start_date != "" and end_date != "":
+            query += """
+                WHERE DATE_FORMAT(startdate, '%Y%m%d') >= '{start_date}'
+                    AND DATE_FORMAT(enddate, '%Y%m%d') <= '{end_date}'
+            """.format(start_date=start_date, end_date=end_date)
+
+        print 'query ------------- ', query
 
         cur.execute(query)
 
@@ -290,6 +309,7 @@ def log_board(request):
             log_value.append(log[2])
             log_value.append(log[3])
             log_value.append(log[4])
+            log_value.append(log[5])
 
             log_list.append(log_value)
             idx += 1

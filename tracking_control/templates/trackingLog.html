@@ -5,181 +5,285 @@
 
 {% block script_down %}
 
-<script>
-$(document).ready(function(){
-   datalist();
-});
+    <script>
+        $(document).ready(function(){
+            datalist();
 
-
-function datalist() {
-    var $table = $('#datatable-ajax');
-
-    var dataTb = $table.dataTable({
-        bProcessing: true,
-        rowReorder: true,
-        iDisplayLength: 10,
-        bLengthChange: false,
-        searching: false,
-        "bDestroy": true,
-        sAjaxSource: $table.data('url'),
-        "order": [[0, "desc"]],
-        "fnReloadAjax": false,
-        "fnServerParams": function (aoData) {
-            aoData.push({"name": 'method', "value": 'logDown_list'});
-        },
-        "paginate": true,
-    });
-
-}
-    var dateObj = new Date();
-    var year = dateObj.getFullYear();
-    var month = dateObj.getMonth() + 1;
-    var day = dateObj.getDate();
-
-    if (month < 10) {
-        month = '0' + month
-    }
-    if (day < 10) {
-        day = '0' + day
-    }
-    var today = year + "" + month + "" + day;
-
-    function getLastDayOfYearAndMonth(year, month) {
-        return (new Date((new Date(year, month + 1, 1)) - 1)).getDate();
-    }
-
-    $(document).ready(function () {
-        // calendar setting
-        $("#datepicker").datepicker({
-            minDate: new Date(2015, 10 - 1, 14),
-            maxDate: "+0m +0w -1d",
-            dateFormat: 'ymmdd',
-            prevText: '이전 달',
-            nextText: '다음 달',
-            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-            showMonthAfterYear: true,
-            yearSuffix: '년'
-        });
-
-        $("#datepicker2").datepicker({
-            minDate: new Date(2015, 10 - 1, 14),
-            maxDate: "+0m +0w -1d",
-            dateFormat: 'ymmdd',
-            prevText: '이전 달',
-            nextText: '다음 달',
-            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-            showMonthAfterYear: true,
-            yearSuffix: '년'
-        });
-
-    });
-
-    var idx = 0;
-    var lastDate = 0;
-
-
-    function LastDayOfMonth(Year, Month) {
-        return (new Date((new Date(Year, Month + 1, 1)) - 1)).getDate();
-    }
-
-    function FirstDayOfMonth(Year, Month) {
-        return ((new Date(Year, Month, 1))).getDate();
-    }
-
-    $(document).on('click', '#day_down', function () {
-
-        processingdate = "now()";
-        client = {{ user.username }};
-        startDate = $("#datepicker").val();
-        endDate = $("#datepicker2").val();
-
-        if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
-            alert('날짜를 선택하세요.');
-            return;
-        } else {
-            $("#download").find("img").show();
-            $.ajax({
-                url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
-                dataType: "json",
-            }).done(function (data) {
-                location.href = "/manage/tracking_log/down/"+data.filename;
-                $("#download").find("img").hide();
-
-                $.ajax({
-                    url: "/manage/tracking_log/logdata_add/",
-                    data: {
-                        'processingdate':processingdate,
-                        'client':client,
-                        'startDate':startDate,
-                        'endDate':endDate
-                    },
-                    dataType: "json",
-                    type: "POST"
-                }).done(function(data){
-                    alert('파일 생성 완료!');
+            $("#menu_select").change(function(){
+                var menu_sel = $("#menu_select").val();
+                if (menu_sel == '0') {
+                    $("#down_date").hide();
+                    $("#down_div").hide();
+                    $("#search_div").hide();
                     datalist();
-                    $("#datepicker").val("");
-                    $("#datepicker2").val("");
-                });
+                } else if (menu_sel == '1') {
+                    $("#down_date").show();
+                    $("#down_div").show();
+                    $("#search_div").hide();
+                } else {
+                    $("#search_div").show();
+                    $("#down_date").hide();
+                    $("#down_div").hide();
+                }
             });
+        });
+
+
+        function buildSearchData() {
+            var table = $("#datatable-ajax").DataTable();
+            var obj = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                start_date: $("#datepicker3").val(),
+                end_date: $("#datepicker4").val(),
+            }
+            console.log(obj);
+            return obj
         }
-    });
+
+        function search() {
+            var table = $('#datatable-ajax').DataTable();
+            table.ajax.reload();
+            console.log(table);
+        }
+
+        function datalist() {
+            var $table = $('#datatable-ajax');
+
+            var dataTb = $table.dataTable({
+                bProcessing: true,
+                rowReorder: true,
+                iDisplayLength: 10,
+                bLengthChange: false,
+                searching: false,
+                "bDestroy": true,
+                {#                sAjaxSource: $table.data('url'),#}
+                'ajax':{
+                    url: "/manage/tracking_log/downlist/",
+                    data: buildSearchData,
+                    dataType: "json",
+                    type: "POST",
+                },
+                "order": [[0, "desc"]],
+                "fnReloadAjax": false,
+                "fnServerParams": function (aoData) {
+                    aoData.push({"name": 'method', "value": 'logDown_list'});
+                },
+                "paginate": true,
+            });
 
 
-</script>
+            $(document).on('click', '#search_btn', function () {
+                if ($("#datepicker3").val() == "" || $("#datepicker4").val() == "") {
+                    alert('날짜를 선택하세요.');
+                    return;
+                } else {
+                    search();
+                    $("#datepicker3").val("");
+                    $("#datepicker4").val("");
+                }
+            });
+
+        }
+        var dateObj = new Date();
+        var year = dateObj.getFullYear();
+        var month = dateObj.getMonth() + 1;
+        var day = dateObj.getDate();
+
+        if (month < 10) {
+            month = '0' + month
+        }
+        if (day < 10) {
+            day = '0' + day
+        }
+        var today = year + "" + month + "" + day;
+
+        function getLastDayOfYearAndMonth(year, month) {
+            return (new Date((new Date(year, month + 1, 1)) - 1)).getDate();
+        }
+
+        $(document).ready(function () {
+            // calendar setting
+            $("#datepicker").datepicker({
+                minDate: new Date(2015, 10 - 1, 14),
+                maxDate: "+0m +0w -1d",
+                dateFormat: 'yymmdd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });
+
+            $("#datepicker2").datepicker({
+                minDate: new Date(2015, 10 - 1, 14),
+                maxDate: "+0m +0w -1d",
+                dateFormat: 'yymmdd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });
+
+            $("#datepicker3").datepicker({
+                minDate: new Date(2015, 10 - 1, 14),
+                maxDate: "+0m +0w -1d",
+                dateFormat: 'yymmdd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });
+
+            $("#datepicker4").datepicker({
+                minDate: new Date(2015, 10 - 1, 14),
+                maxDate: "+0m +0w -1d",
+                dateFormat: 'yymmdd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년'
+            });
+
+        });
+
+        var idx = 0;
+        var lastDate = 0;
+
+
+        function LastDayOfMonth(Year, Month) {
+            return (new Date((new Date(Year, Month + 1, 1)) - 1)).getDate();
+        }
+
+        function FirstDayOfMonth(Year, Month) {
+            return ((new Date(Year, Month, 1))).getDate();
+        }
+
+        $(document).on('click', '#day_down', function () {
+
+            client = {{ user.id }};
+            startDate = $("#datepicker").val();
+            endDate = $("#datepicker2").val();
+            log_note = $("#log_note").val();
+
+            if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
+                alert('날짜를 선택하세요.');
+                return;
+            } else if (log_note == "") {
+                alert('사용 목적을 입력하세요');
+                return;
+            } else {
+                $("#download").find("img").show();
+                $.ajax({
+                    url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
+                    dataType: "json",
+                }).done(function (data) {
+                    location.href = "/manage/tracking_log/down/"+data.filename;
+                    $("#download").find("img").hide();
+
+                    $.ajax({
+                        url: "/manage/tracking_log/logdata_add/",
+                        data: {
+                            'client':client,
+                            'startDate':startDate,
+                            'endDate':endDate,
+                            'log_note':log_note
+                        },
+                        dataType: "json",
+                        type: "POST"
+                    }).done(function(data){
+                        alert('파일 생성 완료!');
+                        datalist();
+                        $("#datepicker").val("");
+                        $("#datepicker2").val("");
+                    });
+                });
+            }
+        });
+
+
+    </script>
 {% endblock %}
 {% block containor %}
-<!-- start: page -->
-{% load staticfiles %}
+    <!-- start: page -->
+    {% load staticfiles %}
 
-<!-- custom css -->
-<style>
-    .form-control {
-        min-width: 185px;
-    }
-</style>
+    <!-- custom css -->
+    <style>
+        .form-control {
+        {#            min-width: 185px;#}
+        }
+    </style>
 
-<section class="panel panel-featured ">
-    <header class="panel-heading">
-        <div><h2 class="panel-title">기간별 조회</h2></div>
-    </header>
-    <div class="panel-body">
-        <form class="form-inline" style="text-align: center;">
-            <div class="form-group">
-                <label>날짜 선택</label>
-                <input type="text" class="form-control" id="datepicker" style="margin: " placeholder="시작일을 선택하세요">
-                <input type="text" class="form-control" id="datepicker2" placeholder="종료일을 선택하세요">
-            </div>
-            <a class="btn btn-primary" id="day_down">다운로드</a>
-            <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">기간별 조회</h2></div>
+        </header>
+        <div class="panel-body">
+            <select class="form-control" id="menu_select" style="width: 100px">
+                <option value="0">기능 선택</option>
+                <option value="1">로그 다운로드</option>
+                <option value="2">처리일자 검색</option>
+            </select>
+            <form class="form-inline">
+                <div class="form-group" id="down_date" style="margin-top: 25px; display: none">
+                    <label>날짜 선택</label>
+                    <input type="text" class="form-control" id="datepicker" style="margin: 0 0 0 20px" placeholder="시작일을 선택하세요">
+                    <input type="text" class="form-control" id="datepicker2" placeholder="종료일을 선택하세요">
+                </div>
+                <div id="down_div" style="display: none">
+                    <label>사용처 선택</label>
+                    <input type="text" class="form-control" id="log_note" placeholder="사용 목적을 입력하세요" style="margin: 5px 0 0 8px; width: 353px" maxlength="100">
+                    <a class="btn btn-primary" id="day_down" style="float: right; margin-top: 5px">다운로드</a>
+                </div>
+                <a href="#" id="download"><span id="downloadBtn" style="display: none;">download</span><img id="img" src="{% static 'image/progress.gif' %}" style="display: none; width:20px;
                 vertical-align: middle;"/></a>
-        </form>
-        <div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/tracking_log/downlist/" style="width: 100%; margin-top: 30px;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
-            <thead>
-                <tr>
-                    <th width="10%">No</th>
-                    <th width="25%">처리일시</th>
-                    <th width="15%">요청자</th>
-                    <th width="25%">조회시작일</th>
-                    <th width="25%">조회종료일</th>
-                </tr>
-            </thead>
-            <tbody id="logtable_body">
-            </tbody>
-        </table>
+            </form>
+            <div>
+                <form class="form-inline">
+                    <div class="form-group" style="margin: 20px 0 0 0; display: none" id="search_div">
+                        <label style="margin-right: 23px">처리일자</label>
+                        <input type="text" class="form-control" id="datepicker3"  placeholder="시작일을 선택하세요">
+                        <input type="text" class="form-control" id="datepicker4" placeholder="종료일을 선택하세요">
+                        <input type="button" class="btn btn-success" value="검색" id="search_btn" style="margin-left: 5px">
+                    </div>
+                </form>
+                <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" style="width: 100%; margin-top: 30px;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+                    <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="20%">처리일시</th>
+                        <th width="15%">요청자</th>
+                        <th width="15%">조회시작일</th>
+                        <th width="15%">조회종료일</th>
+                        <th width="30%">사용목적</th>
+                    </tr>
+                    </thead>
+                    <tbody id="logtable_body">
+                    </tbody>
+                </table>
             </div>
-    </div>
+        </div>
 
-</section>
+    </section>
 
 
 {% endblock %}

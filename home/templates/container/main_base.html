@@ -256,15 +256,15 @@
                                 </ul>
                             </li>
 
-                            <li class="nav nav-parent">
+                            <li class="nav nav-parent" id="tracking_log">
                                 <a>
                                     <i class="fa fa-list-ul" aria-hidden="true"></i>
                                     <span>트래킹 로그 조회</span>
                                 </a>
                                 <ul class="nav nav-children">
-                                    <li id="history_list">
+                                    <li id="tracking_log_list">
                                         <a href="/manage/tracking_log">
-                                            일자별 조회
+                                            기간별 조회
                                         </a>
                                     </li>
                                 </ul>
@@ -518,6 +518,11 @@
                     if (is_expanded != 'none') $('#history').addClass('nav-expanded');
                     $('#history').addClass('nav-active');
                     $('#history_list').addClass('nav-active');
+                    break;
+                case '트래킹 로그 조회':
+                    if (is_expanded != 'none') $('#tracking_log').addClass('nav-expanded');
+                    $('#tracking_log').addClass('nav-active');
+                    $('#tracking_log_list').addClass('nav-active');
                     break;
             }
         }
