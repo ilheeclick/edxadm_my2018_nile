@@ -124,6 +124,7 @@ urlpatterns = [
 
     # course_manage url
     url(r'^manage/course_manage/$', views.course_manage, name='course_manage'),
+    url(r'^manage/course_db_list/$', views.course_db_list, name='course_db_list'),
     url(r'^manage/course_db/$', views.course_db, name='course_db'),
 
 

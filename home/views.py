@@ -89,8 +89,75 @@ def common_single_file_upload(file_object, gubun, user_id):
 # ---------- common module ---------- #
 
 
-@login_required
+@csrf_exempt
 def course_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            user_id = request.POST.get('user_id')
+            course_id = request.POST.get('course_id')
+            course_id = course_id.split('$')
+            course_id.pop()
+            choice1_list = request.POST.get('choice1_list')
+            choice1_list = choice1_list.split('$')
+            choice1_list.pop()
+            choice2_list = request.POST.get('choice2_list')
+            choice2_list = choice2_list.split('$')
+            choice2_list.pop()
+
+            for idx in range(len(course_id)):
+                cur = connection.cursor()
+                query = '''
+                            SELECT count(course_id)
+                              FROM course_overview_addinfo
+                             WHERE course_id = '{0}';
+                        '''.format(course_id[idx])
+                cur.execute(query)
+                cnt = cur.fetchall()
+                cur.close()
+
+                if (cnt[0][0] == 0):
+                    cur = connection.cursor()
+                    query = '''
+                               insert into edxapp.course_overview_addinfo(course_id, create_type, create_year, regist_id, modify_id)
+                               VALUES ('{0}','{1}','{2}','{3}','{4}')
+                            '''.format(course_id[idx], choice1_list[idx], choice2_list[idx], user_id, user_id)
+                    cur.execute(query)
+                    cur.close()
+                elif (cnt[0][0] == 1):
+                    cur = connection.cursor()
+                    query = '''
+                               UPDATE edxapp.course_overview_addinfo
+                               SET delete_yn = 'N', create_type ='{0}', create_year='{1}', modify_id='{2}'
+                               WHERE course_id = '{3}';
+                            '''.format(choice1_list[idx], choice2_list[idx], user_id, course_id[idx])
+                    cur.execute(query)
+                    cur.close()
+
+            data = json.dumps({'status': "success"})
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            user_id = request.POST.get('user_id')
+            course_id = request.POST.get('course_id')
+            course_id = course_id.split('$')
+            course_id.pop()
+
+            for idx in range(len(course_id)):
+                cur = connection.cursor()
+                query = '''
+                            UPDATE edxapp.course_overview_addinfo
+                               SET delete_yn = 'Y'
+                             WHERE course_id = '{0}';
+                        '''.format(course_id[idx])
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+            return HttpResponse(data, 'applications/json')
+
+@login_required
+def course_db_list(request):
     client = MongoClient(database_id, 27017)
     db = client.edxapp
     result = dict()
@@ -109,8 +176,16 @@ def course_db(request):
             if (choice ==''):
                 query = '''
                         SELECT @rn := @rn - 1 rn, a.*
-                          FROM (  SELECT d.create_type,
-                                         d.create_year,
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
                                          d.course_no,
                                          e.detail_name,
                                          a.display_name,
@@ -173,8 +248,16 @@ def course_db(request):
             elif (choice == '1'):
                 query = '''
                         SELECT @rn := @rn - 1 rn, a.*
-                          FROM (  SELECT d.create_type,
-                                         d.create_year,
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
                                          d.course_no,
                                          e.detail_name,
                                          a.display_name,
@@ -226,8 +309,16 @@ def course_db(request):
             elif (choice == '2'):
                 query = '''
                         SELECT @rn := @rn - 1 rn, a.*
-                          FROM (  SELECT d.create_type,
-                                         d.create_year,
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
                                          d.course_no,
                                          e.detail_name,
                                          a.display_name,
@@ -280,11 +371,13 @@ def course_db(request):
             cur.close()
             for multi in row:
                 value_list = []
-                value_list.append('<p></p>')
+                value_list.append(None)
                 value_list.append(multi[0])
+                value_list.append(multi[6])
+                value_list.append(None)
+                value_list.append(None)
                 value_list.append(multi[1])
                 value_list.append(multi[2])
-                value_list.append(multi[3])
                 value_list.append(multi[4])
                 multi_num = multi[6].split('+')
                 multi_org = multi_num[0].split(':')
@@ -341,11 +434,11 @@ def course_db(request):
                     time = hour + minut
                     value_list.append(str(time // 60) + ':' + str(time % 60))
                 else:
-                    value_list.append('<p></p>')
-                    value_list.append('<p></p>')
-                    value_list.append('<p></p>')
-                    value_list.append('<p></p>')
-                value_list.append('<p></p>')
+                    value_list.append(None)
+                    value_list.append(None)
+                    value_list.append(None)
+                    value_list.append(None)
+                value_list.append(None)
 
                 course_list.append(value_list)
 
