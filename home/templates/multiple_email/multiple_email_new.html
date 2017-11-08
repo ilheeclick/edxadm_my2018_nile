@@ -18,6 +18,8 @@ td{padding-left:20px;}
 #mail_submit{float: right;}
 .content_foot{}
 .m_main{background-color: #FFFFFF; padding: 15px; margin-top: -18px;}
+.notauto_div{margin-left:20px;}
+.auto{margin-left:20px; margin-bottom:10px;}
 </style>
 <!-- css -->
 
@@ -35,6 +37,14 @@ $(document).ready(function(){
     $("#goto_home").click(function(){
         location.href='/manage/multiple_email/'
     });
+    $(".notauto").click(function(){
+        $('.mail3').hide();
+        $('.notauto_div').show();
+    });
+    $(".auto").click(function(){
+        $('.mail3').show();
+        $('.notauto_div').hide();
+    });
 });
 </script>
 <!-- js -->
@@ -45,7 +55,9 @@ $(document).ready(function(){
 </section>
 
 <div class = "m_main">
+
 <table>
+<!-- 발송구분 -->
 <tr>
   <td>
     <div class="send">
@@ -74,6 +86,7 @@ $(document).ready(function(){
     </div>
   </td>
 </tr>
+<!-- 계정구분 -->
 <tr>
   <td>
     <div class="account">
@@ -102,7 +115,8 @@ $(document).ready(function(){
     </div>
   </td>
 </tr>
-<tr>
+<!-- 대상자 -->
+<tr class = "mail3">
   <td>
     <div class="whois form-check-inline">
     대상자
@@ -129,8 +143,17 @@ $(document).ready(function(){
     </label>
     </div>
   </td>
+  <td>
+    <button class="notauto">대상자 수동입력</button>
+  </td>
 </tr>
 </table>
+<!-- 대상자 -->
+  <div class="notauto_div" style="display:none">
+    대상자 (수동입력)
+    <button class="auto">대상자 선택 돌아가기</button>
+    <textarea class="form-control" id="notauto" rows="3" placeholder="aaa@example.com, bbb@example.com, ccc@example.com"></textarea>
+  </div>
 
 <div class="title_margin">
 제목 
