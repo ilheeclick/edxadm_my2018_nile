@@ -23,8 +23,12 @@ jQuery.ajaxSettings.traditional = true;
 			sAjaxSource: $table.data('url'),
 			"fnReloadAjax": true,
 			"fnServerParams": function ( data ) {
+                var choice = document.getElementById("choice");
                 data.push({ "name": 'method', "value": 'course_list'});
-
+                data.push({ "name": 'start', "value": $('#datepicker1').val()});
+                data.push({ "name": 'end', "value": $('#datepicker2').val()});
+                data.push({ "name": 'course_name', "value": $('#course_name').val()});
+                data.push({ "name": 'choice', "value": choice.options[choice.selectedIndex].value});
 			},
 
 
@@ -39,19 +43,27 @@ jQuery.ajaxSettings.traditional = true;
                 },
                 {
                     targets: 2, visible: true, render: function (data, type) {
-                    return '<select style="width:90px" id="choice_1" class="form-control"><option value="">개발유형1</option><option value="2">개발유형2</option></select>';
+                    return '<select style="width:90px" id="choice_1" class="form-control"><option value="001">개발유형1</option><option value="002">개발유형2</option><option value="003">개발유형3</option></select>';
                 },
                 },
                 {
                     targets: 3, visible: true, render: function (data, type) {
-                    return '<select style="width:90px" id="choice_2" class="form-control"><option value="">개발유형1</option><option value="2">개발유형2</option></select>';
+                    return '<select style="width:60px" id="choice_2" class="form-control"><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option></select>';
                 },
                 },
                 {
                     targets: 4, visible: true, render: function (data, type) {
-                    return '<input style="width:90px" type="text" id="input_num" class="form-control"/>';
+                    return '<input style="width:50px" type="text" id="input_num" class="form-control"/>';
                 },
                 },
+                { targets: 5, width:'15%'},
+                { targets: 12, width:'10%'},
+                { targets: 18, visible: false},
+                { targets: 19, visible: false},
+                { targets: 20, visible: false},
+                { targets: 21, visible: false},
+                { targets: 22, visible: false},
+                { targets: 23, visible: false},
 			],
 
 			"initComplete": function(settings, json){
@@ -88,14 +100,8 @@ jQuery.ajaxSettings.traditional = true;
     }
 
     function search() {
-        var a = $('#datepicker1').val();
-        var b = $('#datepicker2').val();
-        var c = $('#course_name').val();
-        var choice = document.getElementById("choice");
-        alert(a);
-        alert(b);
-        alert(c);
-        alert(choice.options[choice.selectedIndex].value);
+        var table = $('#datatable1').DataTable();
+        table.ajax.reload();
     }
 </script>
 {% endblock %}

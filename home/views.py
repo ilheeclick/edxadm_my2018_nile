@@ -95,114 +95,264 @@ def course_db(request):
     db = client.edxapp
     result = dict()
 
-    with connections['default'].cursor() as cur:
-        course_list = []
-        query = '''
-                SELECT @rn := @rn - 1 rn, a.*
-                  FROM (  SELECT d.create_type,
-                                 d.create_year,
-                                 d.course_no,
-                                 a.org,
-                                 a.display_name,
-                                 a.id,
-                                 a.created,
-                                 a.enrollment_start,
-                                 a.enrollment_end,
-                                 a.end,
-                                 c.cert_date,
-                                 d.teacher_name,
-                                 a.effort
-                            FROM course_overviews_courseoverview a
-                                 LEFT OUTER JOIN student_courseaccessrole b
-                                    ON a.id = b.course_id AND b.role = 'instructor'
-                                 LEFT OUTER JOIN course_overview_addinfo d
-                                    ON a.id = d.course_id
-                                 LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
-                                                      FROM certificates_generatedcertificate
-                                                  GROUP BY course_id) c
-                                    ON a.id = c.course_id
-                        GROUP BY a.id) a,
-                       (SELECT @rn := count(*) + 1
-                          FROM course_overviews_courseoverview) b;
-        '''
-        cur.execute(query)
-        row = cur.fetchall()
-        cur.close()
-        for multi in row:
-            value_list = []
-            value_list.append('<p></p>')
-            value_list.append(multi[0])
-            value_list.append(multi[1])
-            value_list.append(multi[2])
-            value_list.append(multi[3])
-            value_list.append(multi[4])
-            multi_num = multi[6].split('+')
-            multi_org = multi_num[0].split(':')
+    method = request.GET['method']
+    start = request.GET['start']
+    end = request.GET['end']
+    course_name = request.GET['course_name']
+    choice = request.GET['choice']
+    if (course_name ==''):
+        course_name = '%'
 
-            cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
-            pb = cursor.get('versions').get('published-branch')
-            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
-            cursor_text = str(cursor)
+    if request.GET['method'] == 'course_list':
+        with connections['default'].cursor() as cur:
+            course_list = []
+            if (choice ==''):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT d.create_type,
+                                         d.create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE     start >=
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                                            '%Y-%m-%d')
+                                         AND end <=
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                                            '%Y-%m-%d')
+                                         AND display_name like '{0}'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE     start >=
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                                          '%Y-%m-%d')
+                                       AND end <=
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                                          '%Y-%m-%d')
+                                       AND display_name like '{1}') b;
+                '''.format(course_name, course_name)
+            elif (choice == '1'):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT d.create_type,
+                                         d.create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE enrollment_start >= '{0}' AND enrollment_end <= '{1}' AND display_name like '{4}'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE enrollment_start >= '{2}' AND enrollment_end <= '{3}' AND display_name like '{5}') b;
+                        '''.format(start, end, start, end, course_name, course_name)
 
-            index = cursor_text.find('classfy')
-            cl = cursor_text[index:index+50]
-
-            index = cursor_text.find('middle_classfy')
-            m_cl = cursor_text[index:index+50]
-
-            index_cl = cl.find("': u'")
-            index_mcl = m_cl.find("': u'")
-
-            cls = cl[index_cl+5:index_cl+15]
-            m_cls = m_cl[index_mcl+5:index_mcl+15]
-
-            ha = cls.find("',")
-            hb = m_cls.find("',")
-            if m_cls.find("'},") != -1:
-                hb = m_cls.find("'},")
-
-            clsf = cls[:ha]
-            m_clsf = m_cls[:hb]
-
-            value_list.append(clsf)
-            value_list.append(m_clsf)
-            value_list.append(multi[5])
-
-            value_list.append(multi_org[1])
-            value_list.append(multi_num[1])
-            value_list.append(multi_num[2])
-            value_list.append('<p></p>')
-            value_list.append(multi[7])
-            value_list.append(multi[8])
-            value_list.append(multi[9])
-            value_list.append(multi[10])
-            value_list.append(multi[11])
-            value_list.append(multi[12])
-            if multi[13] != None :
-                multi_time = multi[13].replace('@', '+').replace('#', '+')
-            multi_time_num = multi_time.split('+')
-            if(len(multi_time_num) == 3):
-                value_list.append(multi_time_num[2])
-                value_list.append(multi_time_num[0])
-                value_list.append(multi_time_num[1])
-                all_hour = multi_time_num[0].split(':')
-                hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
-                minut = int(all_hour[1]) * int(multi_time_num[1])
-                time = hour + minut
-                value_list.append(str(time // 60) + ':' + str(time % 60))
-            else:
+            elif (choice == '2'):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT d.create_type,
+                                         d.create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE start >= '{0}' AND end <= '{1}' AND display_name like '{4}'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE start >= '{2}' AND end <= '{3}' AND display_name like '{5}') b;
+                        '''.format(start, end, start, end, course_name, course_name)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for multi in row:
+                value_list = []
                 value_list.append('<p></p>')
-                value_list.append('<p></p>')
-                value_list.append('<p></p>')
-                value_list.append('<p></p>')
-            value_list.append('<p></p>')
+                value_list.append(multi[0])
+                value_list.append(multi[1])
+                value_list.append(multi[2])
+                value_list.append(multi[3])
+                value_list.append(multi[4])
+                multi_num = multi[6].split('+')
+                multi_org = multi_num[0].split(':')
 
-            course_list.append(value_list)
+                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                pb = cursor.get('versions').get('published-branch')
+                cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
+                cursor_text = str(cursor)
 
-        data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
-        return HttpResponse(data, 'applications/json')
+                index = cursor_text.find('classfy')
+                cl = cursor_text[index:index+50]
 
-    result['data'] = result_list
+                index = cursor_text.find('middle_classfy')
+                m_cl = cursor_text[index:index+50]
+
+                index_cl = cl.find("': u'")
+                index_mcl = m_cl.find("': u'")
+
+                cls = cl[index_cl+5:index_cl+15]
+                m_cls = m_cl[index_mcl+5:index_mcl+15]
+
+                ha = cls.find("',")
+                hb = m_cls.find("',")
+                if m_cls.find("'},") != -1:
+                    hb = m_cls.find("'},")
+
+                clsf = cls[:ha]
+                m_clsf = m_cls[:hb]
+
+                value_list.append(clsf)
+                value_list.append(m_clsf)
+                value_list.append(multi[5])
+
+                value_list.append(multi_org[1])
+                value_list.append(multi_num[1])
+                value_list.append(multi_num[2])
+                value_list.append(multi[14])
+                value_list.append(multi[7])
+                value_list.append(multi[8])
+                value_list.append(multi[9])
+                value_list.append(multi[10])
+                value_list.append(multi[11])
+                value_list.append(multi[12])
+                if multi[13] != None :
+                    multi_time = multi[13].replace('@', '+').replace('#', '+')
+                multi_time_num = multi_time.split('+')
+                if(len(multi_time_num) == 3):
+                    value_list.append(multi_time_num[2])
+                    value_list.append(multi_time_num[0])
+                    value_list.append(multi_time_num[1])
+                    all_hour = multi_time_num[0].split(':')
+                    hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
+                    minut = int(all_hour[1]) * int(multi_time_num[1])
+                    time = hour + minut
+                    value_list.append(str(time // 60) + ':' + str(time % 60))
+                else:
+                    value_list.append('<p></p>')
+                    value_list.append('<p></p>')
+                    value_list.append('<p></p>')
+                    value_list.append('<p></p>')
+                value_list.append('<p></p>')
+
+                course_list.append(value_list)
+
+            data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(data, 'applications/json')
+
+        result['data'] = result_list
 
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
