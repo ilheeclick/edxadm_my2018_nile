@@ -10,7 +10,6 @@ jQuery.ajaxSettings.traditional = true;
         setDataTable1();
     });
 
-
     function setDataTable1() {
         var $table = $('#datatable1');
 
@@ -43,12 +42,12 @@ jQuery.ajaxSettings.traditional = true;
                 },
                 {
                     targets: 3, visible: true, render: function (data, type) {
-                    return '<select style="width:90px" id="choice_1" class="form-control"><option value="001">개발유형1</option><option value="002">개발유형2</option><option value="003">개발유형3</option></select>';
+                    return '<select style="width:90px" class="choice_1" class="form-control"></select>';
                 },
                 },
                 {
                     targets: 4, visible: true, render: function (data, type) {
-                    return '<select style="width:60px" id="choice_2" class="form-control"><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option></select>';
+                    return '<select style="width:90px" class="choice_2" class="form-control"></select>';
                 },
                 },
                 { targets: 2, visible: false},
@@ -78,10 +77,7 @@ jQuery.ajaxSettings.traditional = true;
                 }
             ],
 
-			"initComplete": function(settings, json){
-                $('.buttons-html5').attr('class', 'btn btn-primary');
-                $('input[type="checkbox"]').css("float","right");
-			}
+			"initComplete": fnInitComplete
 		});
     }
 
@@ -97,6 +93,59 @@ jQuery.ajaxSettings.traditional = true;
     showMonthAfterYear: true,
     yearSuffix: '년'
   });
+
+    var fnInitComplete = function(){
+
+                console.log("initComplete2");
+
+                var choice1 = [['001','개발유형1'],['002','개발유형2'],['003','개발유형3'],['004','개발유형4'],['005','개발유형5']];
+                var choice2 = [];
+
+                var Year = new Date().getFullYear();
+                for (var i=0; i<=(Year-2015); i++) {
+                    choice2.push(2015+i);
+                }
+                var html1="<option value=''>선택하세요.</option>";
+                var html2="<option value=''>선택하세요.</option>";
+
+                for(var i=0; i<choice1.length; i++) {
+                    html1 += "<option value=" + choice1[i][0] + ">" + choice1[i][1] + "</option>"
+                }
+                $('.choice_1').html(html1);
+
+                for(var i=0; i<choice2.length; i++) {
+                    html2 += "<option value=" + choice2[i] + ">" + choice2[i] + "</option>"
+                }
+                $('.choice_2').html(html2);
+
+
+                $('.buttons-html5').attr('class', 'btn btn-primary');
+                $('input[type="checkbox"]').css("float","right");
+
+                $("#notice_body input[type=checkbox]:unchecked").each(function() {
+                    var $row;
+                    var data;
+                    var choice1;
+                    var choice2;
+                    var t = $('#datatable1').DataTable();
+
+                    $row = $(this).closest('tr');
+                    data = t.row($row.get(0)).data();
+                    choice1 = data[5];
+                    choice2 = data[6];
+
+                    $(this).parent().next().next().find("select").val(choice1).prop("selected", true);
+                    $(this).parent().next().next().next().find("select").val(choice2).prop("selected", true);
+
+                });
+                $('.choice_1').change(function() {
+                    $(this).parent().prev().prev().find('input:checkbox').prop("checked", true);
+                });
+                $('.choice_2').change(function() {
+                    $(this).parent().prev().prev().prev().find('input:checkbox').prop("checked", true);
+                });
+
+			}
 
   $(function() {
     $("#datepicker1, #datepicker2").datepicker();
@@ -115,7 +164,7 @@ jQuery.ajaxSettings.traditional = true;
 
     function search() {
         var table = $('#datatable1').DataTable();
-        table.ajax.reload();
+        table.ajax.reload(fnInitComplete);
     }
 
     function Save() {
@@ -182,6 +231,7 @@ jQuery.ajaxSettings.traditional = true;
             swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
         });
     }
+
 </script>
 {% endblock %}
 {% block containor %}
@@ -243,8 +293,8 @@ jQuery.ajaxSettings.traditional = true;
                     <td>ID</td>
                     <td>개발유형</td>
                     <td>개발년도</td>
-                    <td>_개발유형</td>
-                    <td>_개발년도</td>
+                    <td>개발유형</td>
+                    <td>개발년도</td>
                     <td>대학명</td>
                     <td>대분류</td>
                     <td>중분류</td>

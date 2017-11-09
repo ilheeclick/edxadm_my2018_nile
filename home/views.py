@@ -367,6 +367,9 @@ def course_db_list(request):
                                  WHERE start >= '{2}' AND end <= '{3}' AND display_name like '{5}') b;
                         '''.format(start, end, start, end, course_name, course_name)
             cur.execute(query)
+            print ('query====================')
+            print query
+            print ('query====================')
             row = cur.fetchall()
             cur.close()
             for multi in row:
