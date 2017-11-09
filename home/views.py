@@ -367,9 +367,6 @@ def course_db_list(request):
                                  WHERE start >= '{2}' AND end <= '{3}' AND display_name like '{5}') b;
                         '''.format(start, end, start, end, course_name, course_name)
             cur.execute(query)
-            print ('query====================')
-            print query
-            print ('query====================')
             row = cur.fetchall()
             cur.close()
             for multi in row:
@@ -518,9 +515,9 @@ def course_list_db(request):
                 FROM course_overviews_courseoverview coc
                      JOIN code_detail cd ON coc.org = cd.detail_code,
                      (SELECT @rn := count(*) + 1
-                        FROM course_overviews_courseoverview) b
-               WHERE org LIKE '%'
-            ORDER BY start DESC;
+                        FROM course_overviews_courseoverview
+                        ORDER BY start DESC) b
+               WHERE org LIKE '{0}';
         '''.format(org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -617,19 +614,22 @@ def select_list_db(request):
     with connections['default'].cursor() as cur:
 
         query = '''
-            SELECT replace(@rn := @rn - 1, .0, '') rn,
+            SELECT replace(@rn := @rn - 1, .0, '')        rn,
                    co.id,
+                   cd.detail_name,
                    co.display_name,
-                   co.start,
-                   au.username,
-                   mc.regist_date
-                  FROM course_overviews_courseoverview co
+                   date_format(`start`, '%Y/%m/%d %H:%i') start,
+                   date_format(`end`, '%Y/%m/%d %H:%i')   end,
+                   org,
+                   display_number_with_default            course,
+                   substring_index(id, '+', -1)           run
+              FROM course_overviews_courseoverview co
                    JOIN multisite_course mc ON co.id = mc.course_id
-                   JOIN auth_user au ON mc.regist_id = au.id,
+                   LEFT JOIN code_detail cd ON co.org = cd.detail_code,
                    (SELECT @rn := count(*) + 1
-                  FROM multisite_course
-                 WHERE site_id = '{0}') b
-                 WHERE mc.site_id = '{1}' and co.org like '{2}';
+                      FROM multisite_course
+                     WHERE site_id = '{0}') b
+             WHERE mc.site_id = '{1}' AND co.org LIKE '{2}';
         '''.format(site_id, site_id, org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -1192,6 +1192,64 @@ def new_popup(request):
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'copy':
+            pop_id = request.POST.get('pop_id')
+
+            cur = connection.cursor()
+            query = """
+                  INSERT INTO popup(popup_type,
+                              link_type,
+                              image_map,
+                              title,
+                              contents,
+                              image_url,
+                              link_url,
+                              link_target,
+                              start_date,
+                              start_time,
+                              end_date,
+                              end_time,
+                              template,
+                              width,
+                              height,
+                              hidden_day,
+                              regist_id,
+                              modify_id)
+               SELECT popup_type,
+                      link_type,
+                      image_map,
+                      title,
+                      contents,
+                      image_url,
+                      link_url,
+                      link_target,
+                      end_date,
+                      start_time,
+                      end_date,
+                      end_time,
+                      template,
+                      width,
+                      height,
+                      hidden_day,
+                      regist_id,
+                      modify_id
+                 FROM popup
+                WHERE popup_id = '{0}';
+                    """.format(pop_id)
+
+            cur.execute(query)
+            cur.close()
+
+            cur = connection.cursor()
+            query = "SELECT max(popup_id) FROM popup;"
+            cur.execute(query)
+            maxN = cur.fetchall()
+            cur.close()
+
+            data = maxN[0][0]
 
             return HttpResponse(data, 'applications/json')
 

@@ -55,6 +55,23 @@
 
     });
 
+    function copy() {
+        try {
+            var pop_id = {{ id }}
+                $.post("/manage/new_popup/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    pop_id: pop_id,
+                    method: 'copy',
+                }).done(function (data) {
+                    location.href = '/manage/modi_popup/'+data;
+                }).fail(function (error) {
+                    alert('error = ' + error.responseJSON);
+                });
+        } catch (e) {
+            alert(e);
+        }
+    }
+
     function save() {
         try {
             var method = '';
@@ -522,6 +539,7 @@
                     <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" style="display:none;" value="삭     제"></a>
                     <a href="javascript:preview();"><input class="btn btn-primary" type="button" id="PreviewBtn" value="미리보기"></a>
                     <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
+                    <a href="javascript:copy();"><input class="btn btn-primary" type="button" id="CopyBtn" style="display:none;" value="복     사"></a>
                 </div>
             </div>
         </footer>

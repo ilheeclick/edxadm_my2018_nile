@@ -41,7 +41,7 @@
                 var $table = $('#datatable1');
 
                 $table.dataTable({
-                    dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
+                    dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -51,18 +51,6 @@
                     },
                     "scrollY": "300px",
                     "scrollCollapse": true,
-                    buttons: [
-                        {
-                            text: 'Row selected data',
-                            action: function (e, dt, node, config) {
-                                alert(
-                                        'Row data: ' +
-                                        JSON.stringify(dt.row({selected: true}).data())
-                                );
-                            },
-                            enabled: false
-                        }
-                    ],
                     ajax: {
                         url: "/manage/course_list_db",
                         type: "GET",
@@ -93,6 +81,10 @@
                         {
                             targets: 1, visible: false,
                         },
+                        {
+                            targets: 3, width: '50px',
+                            targets: 4, width: '50px',
+                        },
                     ],
                     rowsGroup: [
                         0,
@@ -118,7 +110,7 @@
                 var $table = $('#datatable2');
 
                 $table.dataTable({
-                    dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
+                    dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -128,18 +120,6 @@
                     },
                     "scrollY": "300px",
                     "scrollCollapse": true,
-                    buttons: [
-                        {
-                            text: 'Row selected data',
-                            action: function (e, dt, node, config) {
-                                alert(
-                                        'Row data: ' +
-                                        JSON.stringify(dt.row({selected: true}).data())
-                                );
-                            },
-                            enabled: false
-                        }
-                    ],
                     ajax: {
                         url: "/manage/select_list_db",
                         type: "GET",
@@ -153,10 +133,13 @@
                         {data: "pk", name: "pk"},
                         {data: "id", name: "id"},
                         {data: "rn"},
-                        {data: "display_name"},
+                        {data: "detail_name"},
+                        {data: "display_name", class:"course_name"},
                         {data: "start"},
-                        {data: "username"},
-                        {data: "regist_date"},
+                        {data: "end"},
+                        {data: "org"},
+                        {data: "course"},
+                        {data: "run"},
                     ],
                     columnDefs: [
                         {
@@ -166,6 +149,10 @@
                         },
                         {
                             targets: 1, visible: false,
+                        },
+                        {
+                            targets: 3, width: '50px',
+                            targets: 4, width: '50px',
                         },
                     ],
                     rowsGroup: [
@@ -251,6 +238,8 @@
             $row = $(this).closest('tr');
             data = t.row($row.get(0)).data();
             course_list += data.id + "$";
+            console.log($(this).closest('tr'))
+            $(this).closest('tr').hide();
         });
         $.post("/manage/multisite_course/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
@@ -403,10 +392,13 @@
                     <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
                     <td>ID</td>
                     <td>No</td>
+                    <td>대학명</td>
                     <td>강좌명</td>
                     <td>개강일</td>
-                    <td>등록자</td>
-                    <td>등록일</td>
+                    <td>종강일</td>
+                    <td>기관코드</td>
+                    <td>강좌번호</td>
+                    <td>운영번호</td>
                 </tr>
             </thead>
             <tbody id="notice_body2">
