@@ -506,23 +506,20 @@ def course_list_db(request):
 
         print org
         query = '''
-              SELECT replace(@rn := @rn - 1, .0, '') rn,
+              SELECT replace(@rn := @rn - 1, .0, '')      rn,
                      id,
                      display_name,
-                     CAST(
-                        CONCAT(date_format(`enrollment_start`, '%Y/%m/%d'),
-                               ' ~ ',
-                               date_format(`enrollment_end`, '%Y/%m/%d')) AS CHAR)
-                        AS r_period,
-                     CAST(
-                        CONCAT(date_format(`start`, '%Y/%m/%d'),
-                               ' ~ ',
-                               date_format(`end`, '%Y/%m/%d')) AS CHAR)
-                        AS t_period
-                FROM course_overviews_courseoverview,
+                     cd.detail_name,
+                     date_format(`start`, '%Y/%m/%d %H:%i') start,
+                     date_format(`end`, '%Y/%m/%d %H:%i') end,
+                     org,
+                     display_number_with_default          course,
+                     substring_index(id, '+', -1)         run
+                FROM course_overviews_courseoverview coc
+                     JOIN code_detail cd ON coc.org = cd.detail_code,
                      (SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview) b
-                        where org LIKE '{0}'
+               WHERE org LIKE '%'
             ORDER BY start DESC;
         '''.format(org)
         cur.execute(query)

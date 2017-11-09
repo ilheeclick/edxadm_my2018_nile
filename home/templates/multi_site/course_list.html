@@ -76,9 +76,13 @@
                         {data: "pk", name: "pk"},
                         {data: "id", name: "id"},
                         {data: "rn"},
+                        {data: "detail_name"},
                         {data: "display_name", class:"course_name"},
-                        {data: "r_period"},
-                        {data: "t_period"},
+                        {data: "start"},
+                        {data: "end"},
+                        {data: "org"},
+                        {data: "course"},
+                        {data: "run"},
                     ],
                     columnDefs: [
                         {
@@ -361,9 +365,13 @@
                     <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
                     <td>ID</td>
                     <td>No</td>
+                    <td>대학명</td>
                     <td>강좌명</td>
-                    <td>신청기간</td>
-                    <td>교육기간</td>
+                    <td>개강일</td>
+                    <td>종강일</td>
+                    <td>기관코드</td>
+                    <td>강좌번호</td>
+                    <td>운영번호</td>
                 </tr>
             </thead>
             <tbody id="notice_body1">
