@@ -65,7 +65,7 @@ def my_callback(filename, bytes_so_far, bytes_total):
 
 
 # web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
-def logFileDownload(searchDate, host, log_dir, local_dir):
+def logFileDownload(search_date, host, log_dir, local_dir):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(AllowAnythingPolicy())
     client.connect(host, username=HOST_NAME)
@@ -73,9 +73,8 @@ def logFileDownload(searchDate, host, log_dir, local_dir):
     sftp = client.open_sftp()
     sftp.chdir(log_dir)
 
-    fileList = sftp.listdir()
-    searchName = []
-
+    file_list = sftp.listdir()
+    search_name = []
     web_server = 1
 
     # 원래는 host로 하여야하나 테스트 위해서 log_dir로 조건 줌
@@ -84,35 +83,30 @@ def logFileDownload(searchDate, host, log_dir, local_dir):
     elif log_dir == WEB2_LOG:
         web_server = 2
 
-    sDate = re.compile(r'20(\d{6})')
-
-    for i in sorted(fileList):
-        if re.search(sDate, i) != None:
-            splitDate = i.find('-20')
+    date_compile = re.compile(r'20(\d{6})')
+    for i in sorted(file_list):
+        if re.search(date_compile, i) is not None:
+            split_date = i.find('-20')
 
             sFile = str(i)
-            searchFile = sFile[splitDate+1:splitDate+9]
-
-            if searchFile == searchDate:
-                searchName.append(i)
+            searchFile = sFile[split_date+1:split_date+9]
+            if searchFile == search_date:
+                search_name.append(i)
                 callback_for_filename = functools.partial(my_callback, i)
                 sftp.get(i, local_dir+sFile)
                 sftp.get(i, local_dir+sFile, callback=callback_for_filename)
-
-    log_change(local_dir, CHANGE_DIR, searchDate, web_server)
-
+    log_change(local_dir, CHANGE_DIR, search_date, web_server)
     client.close()
 
 
-
-def log_change(path_dir, change_local, searchDate, web_server):
+def log_change(path_dir, change_local, search_date, web_server):
     file_list = os.listdir(path_dir)
 
     file_pattern = re.compile(r'.gz$')
 
     for log in file_list:
-        if re.search(file_pattern, log) != None:
-            readFile = gzip.open(path_dir + log, 'rb')
+        if re.search(file_pattern, log) is not None:
+            read_file = gzip.open(path_dir + log, 'rb')
 
             if web_server == 1:
                 outfilename = log[:-3] + "_1.gz"
@@ -120,7 +114,7 @@ def log_change(path_dir, change_local, searchDate, web_server):
                 outfilename = log[:-3] + "_2.gz"
 
             output = gzip.open(change_local + outfilename, 'wb')
-            f = io.BufferedReader(readFile)
+            f = io.BufferedReader(read_file)
             for text in f.readlines():
                 username_index = text.find('\"username\":')
                 ip_index = text.find('\"ip\":')
@@ -192,12 +186,11 @@ def log_change(path_dir, change_local, searchDate, web_server):
             f.close()
 
             output.close()
-            readFile.close()
+            read_file.close()
 
     oldLog_remove(path_dir, 1)
     if web_server == 2:
-        log_compress(searchDate, change_local)
-
+        log_compress(search_date, change_local)
 
 
 def log_compress(search_date, dir_path):
@@ -218,28 +211,27 @@ def log_compress(search_date, dir_path):
         oldLog_remove('/Users/kotech/workspace/scpTest/zip_tracking/', 2)
 
 
-
-
 # fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
 def oldLog_remove(dir_path, fileType):
     if fileType == 1:
-        rm_fileList = glob.glob(dir_path+'*.gz')
+        rm_file_list = glob.glob(dir_path+'*.gz')
     elif fileType == 2:
-        rm_fileList = glob.glob(dir_path+'*.zip')
+        rm_file_list = glob.glob(dir_path+'*.zip')
     elif fileType == 3:
-        rm_fileList = glob.glob(dir_path)
-    for rm_file in rm_fileList:
+        rm_file_list = glob.glob(dir_path)
+    for rm_file in rm_file_list:
         try:
             os.remove(rm_file)
         except:
             print "remove error"
+
 
 @csrf_exempt
 def data_insert(request):
     if request.method == 'POST':
         print 'data insert s ==================='
         client = request.POST.get('client')
-        startDate = request.POST.get('startDate')
+        start_date = request.POST.get('start_date')
         endDate = request.POST.get('endDate')
         log_note = request.POST.get('log_note')
 
@@ -255,7 +247,7 @@ def data_insert(request):
                      '{endDate}',
                      '{log_note}'
                      );
-        """ .format(client=client, startDate=startDate, endDate=endDate, log_note=log_note)
+        """ .format(client=client, startDate=start_date, endDate=endDate, log_note=log_note)
 
         cur = connection.cursor()
         cur.execute(query)
@@ -263,6 +255,7 @@ def data_insert(request):
         data = json.dumps({"status": "success"})
 
         return HttpResponse(data, 'applications/json')
+
 
 def log_board(request):
     print 'log_board s -------------------'
@@ -272,6 +265,7 @@ def log_board(request):
 
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
+        menu_select = request.POST.get('menu_select')
 
         cur = connection.cursor()
         query = """
@@ -286,7 +280,7 @@ def log_board(request):
                    JOIN edxapp.auth_user b ON a.client = b.id
         """
 
-        if start_date != "" and end_date != "":
+        if start_date != "" and end_date != "" and menu_select == '2':
             query += """
                 WHERE DATE_FORMAT(startdate, '%Y%m%d') >= '{start_date}'
                     AND DATE_FORMAT(enddate, '%Y%m%d') <= '{end_date}'
