@@ -477,7 +477,11 @@ def multisite_org(request):
         if request.GET['method'] == 'org':
             cur = connection.cursor()
 
-            query = "SELECT detail_code, detail_name FROM code_detail"
+            query = """
+                    SELECT detail_code, detail_name
+                      FROM code_detail
+                     WHERE detail_desc = '대학코드';
+                    """
             cur.execute(query)
             org = cur.fetchall()
             cur.close()
