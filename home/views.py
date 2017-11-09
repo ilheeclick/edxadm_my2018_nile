@@ -32,6 +32,8 @@ import logging
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
+
 def get_file_ext(filename):
     filename_split = filename.split('.')
     file_ext_index = len(filename_split)
