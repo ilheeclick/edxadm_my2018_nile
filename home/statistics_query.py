@@ -280,12 +280,12 @@ def by_course_demographics(date):
                  org,
                  sum(if(is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
                  sum(if(is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
-                 sum(if(is_active = 1 AND pass_type < 3 AND gender = 'e', 1, 0)) etc,
+                 sum(if(is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc,
                  sum(
                     if(
                            is_active = 1
                        AND pass_type < 3
-                       AND gender NOT IN ('m', 'f', 'e'),
+                       AND gender NOT IN ('m', 'f', 'o'),
                        1,
                        0))
                     no_gender1,
@@ -330,8 +330,8 @@ def by_course_demographics(date):
                  sum(if(pass_type < 2 AND gender = 'm', 1, 0))                  male,
                  sum(if(pass_type < 2 AND gender = 'f', 1, 0))
                     female,
-                 sum(if(pass_type < 2 AND gender = 'e', 1, 0))                  etc,
-                 sum(if(pass_type < 2 AND gender IN ('m', 'f', 'e'), 1, 0))
+                 sum(if(pass_type < 2 AND gender = 'o', 1, 0))                  etc,
+                 sum(if(pass_type < 2 AND gender IN ('m', 'f', 'o'), 1, 0))
                     no_gender2,
                  sum(if(pass_type < 2 AND age < 20, 1, 0))                      age1,
                  sum(if(pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
@@ -365,8 +365,8 @@ def by_course_demographics(date):
                  sum(if(pass_type < 1 AND gender = 'm', 1, 0))                  male,
                  sum(if(pass_type < 1 AND gender = 'f', 1, 0))
                     female,
-                 sum(if(pass_type < 1 AND gender = 'e', 1, 0))                  etc,
-                 sum(if(pass_type < 1 AND gender NOT IN ('m', 'f', 'e'), 1, 0))
+                 sum(if(pass_type < 1 AND gender = 'o', 1, 0))                  etc,
+                 sum(if(pass_type < 1 AND gender NOT IN ('m', 'f', 'o'), 1, 0))
                     no_gender3,
                  sum(if(pass_type < 1 AND age < 20, 1, 0))                      age1,
                  sum(if(pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
@@ -1211,8 +1211,8 @@ def age_gender_join(date):
                             age_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ('{year}' - b.year_of_birth) + 1 age,
                                  ifnull(b.gender, '')         gender
@@ -1251,8 +1251,8 @@ def age_gender_enroll(date):
                             age_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ('{year}' - b.year_of_birth) + 1 age,
                                  ifnull(b.gender, '')         gender
@@ -1301,8 +1301,8 @@ def age_gender_cert_half(date):
                             age_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ('{year}' - b.year_of_birth) + 1 age,
                                  ifnull(b.gender, '') gender
@@ -1352,8 +1352,8 @@ def age_gender_cert(date):
                             age_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ('{year}' - b.year_of_birth) + 1 age,
                                  ifnull(b.gender, '')         gender
@@ -1405,8 +1405,8 @@ def edu_gender_join(date):
                             edu_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
                                  ifnull(b.gender, '')         gender
@@ -1446,8 +1446,8 @@ def edu_gender_enroll(date):
                             edu_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
                                  ('{year}' - b.year_of_birth) + 1 age,
@@ -1498,8 +1498,8 @@ def edu_gender_cert_half(date):
                             edu_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '') level_of_education,
                                  ('{year}' - b.year_of_birth) + 1 age,
@@ -1552,8 +1552,8 @@ def edu_gender_cert(date):
                             edu_group,
                          if(gender = 'm', user_id, NULL)                male,
                          if(gender = 'f', user_id, NULL)                female,
-                         if(gender = 'e', user_id, NULL)                etc,
-                         if(gender NOT IN ('m', 'f', 'e'), user_id, NULL) no_gender
+                         if(gender = 'o', user_id, NULL)                etc,
+                         if(gender NOT IN ('m', 'f', 'o'), user_id, NULL) no_gender
                     FROM (SELECT b.user_id,
                                  ifnull(level_of_education, '')
                                     level_of_education,
