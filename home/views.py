@@ -33,6 +33,13 @@ import uuid
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
+
+
+
+
+
+
 # ---------- common module ---------- #
 def get_file_ext(filename):
     filename_split = filename.split('.')
