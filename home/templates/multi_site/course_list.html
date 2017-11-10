@@ -177,6 +177,7 @@
         var obj = {
             csrfmiddlewaretoken: '{{ csrf_token }}',
             id: id,
+            site_id: '{{ site_id }}',
             org: org,
         }
         return obj
@@ -228,7 +229,7 @@
         var t = $('#datatable1').DataTable();
         var course_list = '';
         $("#notice_body1 input[type=checkbox]:checked").each(function() {
-
+            $(this).prop('checked', false);
             $row = $(this).closest('tr');
             data = t.row($row.get(0)).data();
             course_list += data.id + "$";
@@ -267,6 +268,7 @@
             course_list: course_list,
             method: 'delete',
         }).done(function (data) {
+            update1();
             update2();
         }).fail(function (error) {
             alert(error);

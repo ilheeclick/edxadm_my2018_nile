@@ -523,16 +523,30 @@ def course_list_db(request):
 
     with connections['default'].cursor() as cur:
         org = request.GET.get('org')
+        site_id = request.GET.get('site_id')
         print org
         if (org == 'None'):
             org = '%'
 
-        print org
+        query = '''
+            SELECT co.id
+              FROM course_overviews_courseoverview co
+                   JOIN multisite_course mc ON co.id = mc.course_id
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code
+             WHERE mc.site_id = '{0}';
+            '''.format(site_id)
+        cur.execute(query)
+        select = cur.fetchall()
+        select_course = ""
+
+        for index in select:
+            select_course += (index[0])+ "','"
+
         query = '''
             SELECT replace(@rn := @rn - 1, .0, '')        rn,
                    id,
                    display_name,
-                   IFNULL(cd.detail_name, coc.org) detail_name,
+                   IFNULL(cd.detail_name, coc.org)        detail_name,
                    date_format(`start`, '%Y/%m/%d %H:%i') start,
                    date_format(`end`, '%Y/%m/%d %H:%i')   end,
                    org,
@@ -542,9 +556,14 @@ def course_list_db(request):
                    LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
                    (  SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview
+                       WHERE id NOT IN
+                                ('{0}')
                     ORDER BY start DESC) b
-             WHERE org LIKE '{0}';
-        '''.format(org)
+             WHERE     org LIKE '{1}'
+                   AND id NOT IN
+                          ('{2}');
+        '''.format(select_course, org, select_course)
+
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
