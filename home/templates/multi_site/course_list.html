@@ -10,6 +10,12 @@
         width: 500px;
         height: 300px;
     }
+    .text-wrap{
+    white-space:normal;
+    }
+    .width-80{
+        width:80px;
+    }
 </style>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
@@ -148,6 +154,18 @@
                         },
                         {
                             targets: 1, visible: false,
+                        },
+                        {
+                            render: function (data, type, full, meta) {
+                                return "<div class='text-wrap width-80'>" + data + "</div>";
+                            },
+                            targets: 3
+                        },
+                        {
+                            render: function (data, type, full, meta) {
+                                return "<div class='text-wrap width-80'>" + data + "</div>";
+                            },
+                            targets: 4
                         },
                     ],
                     rowsGroup: [
