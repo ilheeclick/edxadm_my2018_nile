@@ -235,7 +235,7 @@ def course_db_list(request):
                                          AND end <=
                                                 DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
                                                             '%Y-%m-%d')
-                                         AND display_name like '{0}'
+                                         AND display_name like '%{0}%'
                                 GROUP BY a.id) a,
                                (SELECT @rn := count(*) + 1
                                   FROM course_overviews_courseoverview
@@ -245,7 +245,7 @@ def course_db_list(request):
                                        AND end <=
                                               DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
                                                           '%Y-%m-%d')
-                                       AND display_name like '{1}') b;
+                                       AND display_name like '%{1}%') b;
                 '''.format(course_name, course_name)
             elif (choice == '1'):
                 query = '''
@@ -301,11 +301,11 @@ def course_db_list(request):
                                                           GROUP BY course_id) c
                                             ON a.id = c.course_id
                                          LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
-                                   WHERE enrollment_start >= '{0}' AND enrollment_end <= '{1}' AND display_name like '{4}'
+                                   WHERE enrollment_start >= '{0}' AND enrollment_end <= '{1}' AND display_name like '%{4}%'
                                 GROUP BY a.id) a,
                                (SELECT @rn := count(*) + 1
                                   FROM course_overviews_courseoverview
-                                 WHERE enrollment_start >= '{2}' AND enrollment_end <= '{3}' AND display_name like '{5}') b;
+                                 WHERE enrollment_start >= '{2}' AND enrollment_end <= '{3}' AND display_name like '%{5}%') b;
                         '''.format(start, end, start, end, course_name, course_name)
 
             elif (choice == '2'):
@@ -362,11 +362,11 @@ def course_db_list(request):
                                                           GROUP BY course_id) c
                                             ON a.id = c.course_id
                                          LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
-                                   WHERE start >= '{0}' AND end <= '{1}' AND display_name like '{4}'
+                                   WHERE start >= '{0}' AND end <= '{1}' AND display_name like '%{4}%'
                                 GROUP BY a.id) a,
                                (SELECT @rn := count(*) + 1
                                   FROM course_overviews_courseoverview
-                                 WHERE start >= '{2}' AND end <= '{3}' AND display_name like '{5}') b;
+                                 WHERE start >= '{2}' AND end <= '{3}' AND display_name like '%{5}%') b;
                         '''.format(start, end, start, end, course_name, course_name)
             cur.execute(query)
             row = cur.fetchall()
@@ -409,8 +409,31 @@ def course_db_list(request):
                 clsf = cls[:ha]
                 m_clsf = m_cls[:hb]
 
-                value_list.append(clsf)
-                value_list.append(m_clsf)
+
+
+                cur = connection.cursor()
+                query = '''
+                        SELECT detail_name
+                          FROM code_detail
+                         WHERE detail_code = '{0}';
+                        '''.format(clsf)
+                cur.execute(query)
+                clsf_h = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = '''
+                        SELECT detail_name
+                          FROM code_detail
+                         WHERE detail_code = '{0}';
+                        '''.format(m_clsf)
+                cur.execute(query)
+                m_clsf_h = cur.fetchall()
+                cur.close()
+
+
+                value_list.append(clsf_h[0][0])
+                value_list.append(m_clsf_h[0][0])
                 value_list.append(multi[5])
 
                 value_list.append(multi_org[1])
@@ -480,9 +503,10 @@ def multisite_org(request):
             cur = connection.cursor()
 
             query = """
-                    SELECT detail_code, detail_name
-                      FROM code_detail
-                     WHERE detail_desc = '대학코드';
+                      SELECT detail_code, detail_name
+                        FROM code_detail
+                       WHERE group_code = '003' AND use_yn = 'Y' AND delete_yn = 'N'
+                    ORDER BY detail_name;
                     """
             cur.execute(query)
             org = cur.fetchall()
@@ -505,21 +529,21 @@ def course_list_db(request):
 
         print org
         query = '''
-              SELECT replace(@rn := @rn - 1, .0, '')      rn,
-                     id,
-                     display_name,
-                     cd.detail_name,
-                     date_format(`start`, '%Y/%m/%d %H:%i') start,
-                     date_format(`end`, '%Y/%m/%d %H:%i') end,
-                     org,
-                     display_number_with_default          course,
-                     substring_index(id, '+', -1)         run
-                FROM course_overviews_courseoverview coc
-                     JOIN code_detail cd ON coc.org = cd.detail_code,
-                     (SELECT @rn := count(*) + 1
+            SELECT replace(@rn := @rn - 1, .0, '')        rn,
+                   id,
+                   display_name,
+                   IFNULL(cd.detail_name, coc.org) detail_name,
+                   date_format(`start`, '%Y/%m/%d %H:%i') start,
+                   date_format(`end`, '%Y/%m/%d %H:%i')   end,
+                   org,
+                   display_number_with_default            course,
+                   substring_index(id, '+', -1)           run
+              FROM course_overviews_courseoverview coc
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   (  SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview
-                        ORDER BY start DESC) b
-               WHERE org LIKE '{0}';
+                    ORDER BY start DESC) b
+             WHERE org LIKE '{0}';
         '''.format(org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -627,7 +651,7 @@ def select_list_db(request):
                    substring_index(id, '+', -1)           run
               FROM course_overviews_courseoverview co
                    JOIN multisite_course mc ON co.id = mc.course_id
-                   LEFT JOIN code_detail cd ON co.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code,
                    (SELECT @rn := count(*) + 1
                       FROM multisite_course
                      WHERE site_id = '{0}') b
@@ -636,6 +660,8 @@ def select_list_db(request):
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
+        print ('**(*)()(&)&)($)(*)(@)$)(**)(@$*)(')
+        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list

@@ -3,6 +3,7 @@
 {% block pagetitlename_header %}강좌 관리{% endblock %}
 {% block script_down %}
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
 
 jQuery.ajaxSettings.traditional = true;
@@ -21,6 +22,8 @@ jQuery.ajaxSettings.traditional = true;
             "searching": false,
 			sAjaxSource: $table.data('url'),
 			"fnReloadAjax": true,
+            "paging":true,
+            "autoWidth": false,
 			"fnServerParams": function ( data ) {
                 var choice = document.getElementById("choice");
                 data.push({ "name": 'method', "value": 'course_list'});
@@ -38,7 +41,7 @@ jQuery.ajaxSettings.traditional = true;
                 {
                     targets: 0, visible: true, name: "pk", render: function (data, type) {
                     return '<input type="checkbox" name="' + undefined + '" value="' + undefined + '">';
-                }, width: '3%'
+                },
                 },
                 {
                     targets: 3, visible: true, render: function (data, type) {
@@ -59,11 +62,6 @@ jQuery.ajaxSettings.traditional = true;
                 { targets: 23, visible: false},
                 { targets: 24, visible: false},
                 { targets: 25, visible: false},
-
-                { targets: 6, width:'8%'},
-                { targets: 12, width:'10%'},
-                { targets: 17, width:'15%'},
-
 			],
 
             buttons: [
@@ -209,6 +207,7 @@ jQuery.ajaxSettings.traditional = true;
         var choice2;
         var t = $('#datatable1').DataTable();
         var course_id = '';
+        swal("경고", "실제 강좌는 삭제 되지 않고 추가 정보만 삭제됩니다.", "warning");
 
         $("#notice_body input[type=checkbox]:checked").each(function() {
 
@@ -232,6 +231,16 @@ jQuery.ajaxSettings.traditional = true;
         });
     }
 
+    function display_date(value) {
+        if (value != 0) {
+            $('.date').css("display","");
+        }
+        else if (value == 0) {
+            $('.date').css("display","none");
+        }
+
+    }
+
 </script>
 {% endblock %}
 {% block containor %}
@@ -246,7 +255,7 @@ jQuery.ajaxSettings.traditional = true;
             <a href="javascript:search();" align="right"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
             <div class="col-sm-2">
                 <div class="form-group">
-                    <select id="choice" class="form-control">
+                    <select id="choice" class="form-control" onChange = "display_date(this.value)">
                         <option value="">선택하세요.</option>
                         <option value="1">수강신청 시작일, 종료일</option>
                         <option value="2">개강일, 종강일</option>
@@ -255,14 +264,14 @@ jQuery.ajaxSettings.traditional = true;
             </div>
 
             <div class="col-sm-2">
-                <div class="form-group">
-                    <input type="text" id="datepicker1" class="form-control"><span class="fa fa-calendar fa-2x"/>
+                <div class="form-group date" style="display: none">
+                    <input type="text" id="datepicker1"><span class="fa fa-calendar fa-2x"/>
                 </div>
             </div>
 
             <div class="col-sm-2">
-                <div class="form-group">
-                    <input type="text" id="datepicker2" class="form-control"><span class="fa fa-calendar fa-2x"/>
+                <div class="form-group date" style="display: none">
+                    <input type="text" id="datepicker2"><span class="fa fa-calendar fa-2x"/>
                 </div>
             </div>
 

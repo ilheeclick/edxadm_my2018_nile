@@ -42,6 +42,8 @@
 
                 $table.dataTable({
                     dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
+                    "autoWidth": false,
+                    scrollX:true,
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -76,14 +78,10 @@
                         {
                             targets: 0, visible: true, name: "pk", render: function (data, type) {
                             return '<input type="checkbox" name="' + data + '" value="' + data + '">';
-                        }, width:'8%'
+                        },
                         },
                         {
                             targets: 1, visible: false,
-                        },
-                        {
-                            targets: 3, width: '50px',
-                            targets: 4, width: '50px',
                         },
                     ],
                     rowsGroup: [
@@ -111,6 +109,7 @@
 
                 $table.dataTable({
                     dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
+                    scrollX:true,
                     bProcessing: true,
                     ordering: false,
                     serverSide: false,
@@ -145,14 +144,10 @@
                         {
                             targets: 0, visible: true, name: "pk", render: function (data, type) {
                             return '<input type="checkbox" name="' + data + '" value="' + data + '">';
-                        }, width:'8%'
+                        },
                         },
                         {
                             targets: 1, visible: false,
-                        },
-                        {
-                            targets: 3, width: '50px',
-                            targets: 4, width: '50px',
                         },
                     ],
                     rowsGroup: [
@@ -228,7 +223,6 @@
             table.ajax.reload();
         }
     function Save() {
-
         var $row;
         var data;
         var t = $('#datatable1').DataTable();
@@ -296,7 +290,6 @@
         $('#batch_input').css("display","");
     }
     function input_Save() {
-
         var course_list = $('#input_course').val();
 
         $.post("/manage/multisite_course/", {
@@ -308,7 +301,7 @@
         }).done(function (data) {
             $('#batch_input').css("display","none");
             $('#input_course').val('');
-            update();
+            update2();
         }).fail(function (error) {
             swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
         });
@@ -327,7 +320,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+    <div class="popup templet" id="batch_input" style="display: none">
+        <h5 style="text-align: center" >강좌ID 입력</h5>
+        <div class="templet-con">
+            <p></p>
+            <textarea id="input_course" style="height: 227px; width: 500px" placeholder="course_id1&#13;&#10;course_id2&#13;&#10;course_id3&#13;&#10;..."></textarea>
+        </div>
+        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
+            <a class="fright" onclick="input_Save()" style="float: right;"><input class="btn btn-primary" type="button" id="input_Save" value="저장"></a>
+            <a class="fright" onclick="Hide('hide')" style="float: right;"><input class="btn btn-default" type="button" id="cancel" value="취소"></a>
+        </div>
+    </div>
 </body>
 <section class="panel panel-featured ">
     <header class="panel-heading">
@@ -335,7 +338,7 @@
 
     </header>
 
-    <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
+    <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
         <h3>kmooc 등록강좌</h3>
         <div class="row">
             <div class="col-md-6">
@@ -348,7 +351,7 @@
                 <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input1">
             </div>
         </div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/course_list_db/" style="width: 100%;" >
+        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/course_list_db/">
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
@@ -368,12 +371,11 @@
         </table>
         <div><a href="javascript:batch_input();"><input class="btn btn-default" type="button" value="일괄등록"></a></div>
     </div>
-
     <div style="float: left; padding: 20px">
         <div><a href="javascript:Save();"><span class="fa fa-chevron-circle-right" style="font-size: 30px; padding-top: 250px"></span></a></div>
         <div><a href="javascript:Del();"><span class="fa fa-chevron-circle-left" style="font-size: 30px; padding-top: 30px"></span></a></div>
     </div>
-    <div class="panel-body" style="padding-top: 0; width:46%; float: left"> 
+    <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
         <h3>기관 선택 강좌</h3>
         <div class="row">
             <div class="col-md-6">
@@ -386,7 +388,7 @@
                 <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input2">
             </div>
         </div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/course_list/" style="width: 100%;" >
+        <table class="table table-hover table-striped table-bordered" id="datatable2" data-url="/manage/course_list/" >
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>

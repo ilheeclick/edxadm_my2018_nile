@@ -39,9 +39,23 @@
     });
 
     function save() {
-        var Test = $('#uploadfile').val();
-        if(Test == '') {
+        var uploadfile = $('#uploadfile').val();
+        var site_name = $('#site_name').val();
+        var site_code = $('#site_code').val();
+        var site_url = $('#site_url').val();
+
+
+        if(site_name == '') {
+            swal("경고", "기관명 입력해주세요.", "warning");
+        }
+        else if(site_code == '') {
+            swal("경고", "기관코드를 입력해주세요.", "warning");
+        }
+        else if(uploadfile == '') {
             swal("경고", "기관이미지를 선택해주세요.", "warning");
+        }
+        else if(site_url == '') {
+            swal("경고", "접속 url을 입력해주세요.", "warning");
         }
         else {
             document.getElementById("uploadform").submit();
@@ -227,9 +241,10 @@
                 $("#notice_body").append("<tr>");
                 $("#notice_body").append("<td></td>");
                 $("#notice_body").append("<td><div class='col-sm-15'><input type='test' class='form-control' style='width:100%' id='input_email'></div></td>");
-                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='검     증'></a></td>");
-                $("#notice_body").append("<td><a href='javascript:save_info();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='저     장'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='VeriBtn' value='검     증'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:save_info();'><input class='btn btn-default' type='button' style='width:100%' id='Save_Btn' value='저     장'></a></td>");
                 $("#notice_body").append("</tr>");
+                $('#Save_Btn').attr('disabled','disabled');
             }
             cnt = cnt + 1;
         }
@@ -240,16 +255,17 @@
                 $("#notice_body").append("<tr>");
                 $("#notice_body").append("<td></td>");
                 $("#notice_body").append("<td><div class='col-sm-15'><input type='text' class='form-control' style='width:100%' id='input_email'></div></td>");
-                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='검     증'></a></td>");
-                $("#notice_body").append("<td><a href='javascript:new_save_info();'><input class='btn btn-default' type='button' style='width:100%' id='SaveBtn' value='저     장'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:verify();'><input class='btn btn-default' type='button' style='width:100%' id='VeriBtn' value='검     증'></a></td>");
+                $("#notice_body").append("<td><a href='javascript:new_save_info();'><input class='btn btn-default' type='button' style='width:100%' id='Save_Btn' value='저     장'></a></td>");
                 $("#notice_body").append("</tr>");
-
+                $('#Save_Btn').attr('disabled','disabled');
             }
             cnt = cnt + 1;
         }
 
         var cntt = 0;
         var is_verify = 0;
+
 
         function verify() {
 
@@ -270,6 +286,7 @@
                     }
                     else if (data == 1) {
                         is_verify = 1;
+                        $('#Save_Btn').removeAttr('disabled');
                         swal("성공", "정확한 Email 입니다.", "success");
                     }
                 }).fail(function (error) {
@@ -282,7 +299,6 @@
         }
 
         function save_info() {
-
             if( cntt == 0 || is_verify == 0) {
                 swal("경고", "정확한 Email 을 입력하세요.", "warning");
             }
@@ -312,6 +328,7 @@
         }
 
         function new_save_info() {
+            $('#Save_Btn').attr('disabled','disabled');
             if( cntt == 0 || is_verify == 0) {
                 swal("경고", "정확한 Email 을 입력하세요.", "warning");
             }
@@ -370,6 +387,8 @@
                 $("input:file").val().toLowerCase();
             });
         });
+
+
 
 </script>
 {% endblock %}
