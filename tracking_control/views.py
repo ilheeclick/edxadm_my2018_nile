@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, COMPRESS_DIR, HOST_NAME, UPLOAD_DIR, STATIC_URL
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, HOST_NAME, UPLOAD_DIR, LOG_COMPLETE_DIR
 import functools
 import paramiko
 import re
 import gzip
 import io
+import glob
 import os
 import zipfile
-import glob
 import datetime
 import shutil
 import json
@@ -26,7 +26,16 @@ def log_download(request):
     return render(request, 'trackingLog.html')
 
 
+def makedir():
+    dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, UPLOAD_DIR, LOG_COMPLETE_DIR]
+    for dir in dir_list:
+        print 'make dir   ', dir
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+
+
 def logfile_download(request, date):
+    makedir()
     split_str = date.find("/")
     start_date = date[:split_str]
     end_date = date[split_str+1:]
@@ -78,9 +87,9 @@ def logFileDownload(search_date, host, log_dir, local_dir):
     web_server = 1
 
     # 원래는 host로 하여야하나 테스트 위해서 log_dir로 조건 줌
-    if log_dir == WEB1_LOG:
+    if host == WEB1_HOST:
         web_server = 1
-    elif log_dir == WEB2_LOG:
+    elif host == WEB2_HOST:
         web_server = 2
 
     date_compile = re.compile(r'20(\d{6})')
@@ -88,13 +97,13 @@ def logFileDownload(search_date, host, log_dir, local_dir):
         if re.search(date_compile, i) is not None:
             split_date = i.find('-20')
 
-            sFile = str(i)
-            searchFile = sFile[split_date+1:split_date+9]
-            if searchFile == search_date:
+            sfile = str(i)
+            searchfile = sfile[split_date+1:split_date+9]
+            if searchfile == search_date:
                 search_name.append(i)
                 callback_for_filename = functools.partial(my_callback, i)
-                sftp.get(i, local_dir+sFile)
-                sftp.get(i, local_dir+sFile, callback=callback_for_filename)
+                sftp.get(i, local_dir+sfile)
+                sftp.get(i, local_dir+sfile, callback=callback_for_filename)
     log_change(local_dir, CHANGE_DIR, search_date, web_server)
     client.close()
 
@@ -161,16 +170,16 @@ def log_change(path_dir, change_local, search_date, web_server):
                     # 회원 가입시에 들어가는 개인정보를 처리
 
                     if pwd2_index != -1:
-                        joinName_index = text.find('\"username\\\":')
-                        joinName_idx = text[joinName_index + 16:]
-                        joinName_change = joinName_idx.find(',')
-                        joinName_pattern = joinName_idx[0:joinName_change - 3]
-                        r6 = re.compile(joinName_pattern)
+                        joinname_index = text.find('\"username\\\":')
+                        joinname_idx = text[joinname_index + 16:]
+                        joinname_change = joinname_idx.find(',')
+                        joinname_pattern = joinname_idx[0:joinname_change - 3]
+                        r6 = re.compile(joinname_pattern)
 
-                        uniName_index = text.find('\"name\\\":')
-                        uniName_idx = text[uniName_index + 11:]
-                        uniName_change = uniName_idx.find(',')
-                        uniName_pattern = uniName_idx[:uniName_change - 1]
+                        uniname_index = text.find('\"name\\\":')
+                        uniname_idx = text[uniname_index + 11:]
+                        uniname_change = uniname_idx.find(',')
+                        uniname_pattern = uniname_idx[:uniname_change - 1]
 
                         pwd2_idx = text[pwd2_index + 17:]
                         pwd2_change = pwd2_idx.find(',')
@@ -179,7 +188,7 @@ def log_change(path_dir, change_local, search_date, web_server):
                         if pwd2_pattern != "":
                             data = data.replace(pwd2_pattern, '********')
                         data = re.sub(r6, '******', data, count=1)
-                        data = data.replace(uniName_pattern, "\"******\\\"")
+                        data = data.replace(uniname_pattern, "\"******\\\"")
 
                     output.write(data)
 
@@ -195,29 +204,29 @@ def log_change(path_dir, change_local, search_date, web_server):
 
 def log_compress(search_date, dir_path):
     if search_date != '999999':
-        zipName = search_date + "_tracking_log.zip"
-        fantasy_zip = zipfile.ZipFile('/Users/kotech/workspace/scpTest/zip_tracking/'+zipName, 'w')
+        zipname = search_date + "_tracking_log.zip"
+        fantasy_zip = zipfile.ZipFile(LOG_COMPLETE_DIR+zipname, 'w')
 
         for folder, subfolders, files in os.walk(dir_path):
-
             for file in files:
                 if file.endswith('.gz'):
-                    fantasy_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder, file), dir_path), compress_type = zipfile.ZIP_DEFLATED)
+                    fantasy_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder, file), dir_path),
+                                      compress_type=zipfile.ZIP_DEFLATED)
 
         fantasy_zip.close()
         oldLog_remove(dir_path, 1)
     else:
-        shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', '/Users/kotech/workspace/scpTest/zip_tracking/')
-        oldLog_remove('/Users/kotech/workspace/scpTest/zip_tracking/', 2)
+        shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
+        oldLog_remove(LOG_COMPLETE_DIR, 2)
 
 
 # fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
-def oldLog_remove(dir_path, fileType):
-    if fileType == 1:
+def oldLog_remove(dir_path, filetype):
+    if filetype == 1:
         rm_file_list = glob.glob(dir_path+'*.gz')
-    elif fileType == 2:
+    elif filetype == 2:
         rm_file_list = glob.glob(dir_path+'*.zip')
-    elif fileType == 3:
+    elif filetype == 3:
         rm_file_list = glob.glob(dir_path)
     for rm_file in rm_file_list:
         try:
@@ -231,8 +240,8 @@ def data_insert(request):
     if request.method == 'POST':
         print 'data insert s ==================='
         client = request.POST.get('client')
-        start_date = request.POST.get('start_date')
-        endDate = request.POST.get('endDate')
+        startdate = request.POST.get('startdate')
+        enddate = request.POST.get('enddate')
         log_note = request.POST.get('log_note')
 
         query = """
@@ -247,7 +256,9 @@ def data_insert(request):
                      '{endDate}',
                      '{log_note}'
                      );
-        """ .format(client=client, startDate=start_date, endDate=endDate, log_note=log_note)
+        """ .format(client=client, startDate=startdate, endDate=enddate, log_note=log_note)
+
+        print 'query ===========================   ', query
 
         cur = connection.cursor()
         cur.execute(query)
@@ -261,10 +272,9 @@ def log_board(request):
     print 'log_board s -------------------'
     log_list = []
     if request.is_ajax():
-        logData = {}
 
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
+        startdate = request.POST.get('startdate')
+        enddate = request.POST.get('enddate')
         menu_select = request.POST.get('menu_select')
 
         cur = connection.cursor()
@@ -273,18 +283,18 @@ def log_board(request):
                    date_format(date_add(processingdate, INTERVAL 9 HOUR),
                                '%Y-%m-%d %H:%i:%s'),
                    username,
-                   DATE_FORMAT(startdate, "%Y/%c/%d"),
-                   DATE_FORMAT(enddate, "%Y/%c/%d"),
+                   DATE_FORMAT(startdate, "%Y/%m/%d"),
+                   DATE_FORMAT(enddate, "%Y/%m/%d"),
                    a.note
               FROM edxapp.trackinglog_download a
                    JOIN edxapp.auth_user b ON a.client = b.id
         """
 
-        if start_date != "" and end_date != "" and menu_select == '2':
+        if startdate != "" and enddate != "" and menu_select == '2':
             query += """
-                WHERE DATE_FORMAT(startdate, '%Y%m%d') >= '{start_date}'
-                    AND DATE_FORMAT(enddate, '%Y%m%d') <= '{end_date}'
-            """.format(start_date=start_date, end_date=end_date)
+                WHERE DATE_FORMAT(processingdate, '%Y%m%d') >= '{start_date}'
+                    AND DATE_FORMAT(processingdate, '%Y%m%d') <= '{end_date}'
+            """.format(start_date=startdate, end_date=enddate)
 
         print 'query ------------- ', query
 

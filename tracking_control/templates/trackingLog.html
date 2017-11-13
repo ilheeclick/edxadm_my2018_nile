@@ -10,7 +10,7 @@
             // calendar setting
             $("#datepicker").datepicker({
                 minDate: new Date(2015, 10 - 1, 14),
-                maxDate: "+0m +0w -1d",
+                maxDate: "+0m +0w +0d",
                 dateFormat: 'yymmdd',
                 prevText: '이전 달',
                 nextText: '다음 달',
@@ -25,7 +25,7 @@
 
             $("#datepicker2").datepicker({
                 minDate: new Date(2015, 10 - 1, 14),
-                maxDate: "+0m +0w -1d",
+                maxDate: "+0m +0w +0d",
                 dateFormat: 'yymmdd',
                 prevText: '이전 달',
                 nextText: '다음 달',
@@ -63,8 +63,8 @@
             var table = $("#datatable-ajax").DataTable();
             var obj = {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
-                start_date: $("#datepicker").val(),
-                end_date: $("#datepicker2").val(),
+                startdate: $("#datepicker").val(),
+                enddate: $("#datepicker2").val(),
                 menu_select: $("#menu_select").val(),
             }
             console.log(obj);
@@ -145,8 +145,8 @@
         $(document).on('click', '#day_down', function () {
 
             client = {{ user.id }};
-            startDate = $("#datepicker").val();
-            endDate = $("#datepicker2").val();
+            startdate = $("#datepicker").val();
+            enddate = $("#datepicker2").val();
             log_note = $("#log_note").val();
 
             if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
@@ -168,8 +168,8 @@
                         url: "/manage/tracking_log/logdata_add/",
                         data: {
                             'client':client,
-                            'startDate':startDate,
-                            'endDate':endDate,
+                            'startdate':startdate,
+                            'enddate':enddate,
                             'log_note':log_note
                         },
                         dataType: "json",
