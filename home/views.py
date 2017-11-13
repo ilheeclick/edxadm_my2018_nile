@@ -37,8 +37,6 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from tracking_control.views import oldLog_remove
 
->>>>>>> nile/dev_yh_merge
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
