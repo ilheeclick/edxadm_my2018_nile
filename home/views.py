@@ -91,6 +91,11 @@ def common_single_file_upload(file_object, gubun, user_id):
 # ---------- common module ---------- #
 
 
+@login_required
+def code_manage(request):
+    return render(request, 'code_manage/code_manage.html')
+
+
 @csrf_exempt
 def course_db(request):
     if request.method == 'POST':
@@ -387,36 +392,26 @@ def course_db_list(request):
                 cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
                 pb = cursor.get('versions').get('published-branch')
                 cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
-                cursor_text = str(cursor)
+                blocks = cursor.get('blocks')
 
-                index = cursor_text.find('classfy')
-                cl = cursor_text[index:index+50]
+                for block in blocks:
+                    block_type = block.get('block_type')
 
-                index = cursor_text.find('middle_classfy')
-                m_cl = cursor_text[index:index+50]
+                    if block_type == 'course':
+                        classfy = block.get('fields').get('classfy')
+                        middle_classfy = block.get('fields').get('middle_classfy')
 
-                index_cl = cl.find("': u'")
-                index_mcl = m_cl.find("': u'")
-
-                cls = cl[index_cl+5:index_cl+15]
-                m_cls = m_cl[index_mcl+5:index_mcl+15]
-
-                ha = cls.find("',")
-                hb = m_cls.find("',")
-                if m_cls.find("'},") != -1:
-                    hb = m_cls.find("'},")
-
-                clsf = cls[:ha]
-                m_clsf = m_cls[:hb]
-
-
+                        if not classfy:
+                            classfy = ''
+                        elif not middle_classfy:
+                            middle_classfy = ''
 
                 cur = connection.cursor()
                 query = '''
                         SELECT detail_name
                           FROM code_detail
                          WHERE detail_code = '{0}';
-                        '''.format(clsf)
+                        '''.format(classfy)
                 cur.execute(query)
                 clsf_h = cur.fetchall()
                 cur.close()
@@ -426,7 +421,7 @@ def course_db_list(request):
                         SELECT detail_name
                           FROM code_detail
                          WHERE detail_code = '{0}';
-                        '''.format(m_clsf)
+                        '''.format(middle_classfy)
                 cur.execute(query)
                 m_clsf_h = cur.fetchall()
                 cur.close()

@@ -303,6 +303,21 @@
                                 </ul>
                             </li>
 
+                            <li class="nav nav-parent" id="code_manage">
+
+                                <a>
+                                    <i class="fa fa-language" aria-hidden="true"></i>
+                                    <span>코드 관리</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="code_manage_view">
+                                        <a href="/manage/code_manage">
+                                            코드 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </nav>
                     <script>
@@ -577,6 +592,11 @@
                     if (is_expanded != 'none') $('#course_manage').addClass('nav-expanded');
                     $('#course_manage').addClass('nav-active');
                     $('#course_manage_view').addClass('nav-active');
+                    break;
+                case '코드 관리':
+                    if (is_expanded != 'none') $('#code_manage').addClass('nav-expanded');
+                    $('#code_manage').addClass('nav-active');
+                    $('#code_manage_view').addClass('nav-active');
                     break;
 
             }

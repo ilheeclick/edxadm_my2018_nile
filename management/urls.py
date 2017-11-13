@@ -128,6 +128,9 @@ urlpatterns = [
     url(r'^manage/course_db/$', views.course_db, name='course_db'),
 
 
+    url(r'^manage/code_manage/$', views.code_manage, name='code_manage'),
+
+
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),

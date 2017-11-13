@@ -1,0 +1,66 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}코드 관리{% endblock %}
+{% block pagetitlename_header %}코드 관리{% endblock %}
+{% block script_down %}
+<script>
+
+</script>
+{% endblock %}
+{% block containor %}
+	<!-- start: page -->
+<section class="panel panel-featured ">
+    <header class="panel-heading">
+        <div><h2 class="panel-title">공통 코드관리</h2></div>
+    </header>
+
+    <div class="panel-body" style="padding-top: 0;"> 
+        <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+
+            <a class="btn btn-primary" id="add_notice" href="">파일생성</a>
+
+        </div>
+        <h3>그룹코드 관리</h3>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">삭제</a>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">저장</a>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">행추가</a>
+        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/popup_db/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
+                    <td>ID</td>
+                    <td>공통코드</td>
+                    <td>코드명</td>
+                    <td>코드설명</td>
+                    <td>사용여부</td>
+                    <td>등록일시</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+        <h3>상세코드 관리</h3>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">삭제</a>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">저장</a>
+        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">행추가</a>
+        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/popup_db/" style="width: 100%;" >
+            <thead>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
+                    <td>ID</td>
+                    <td>상세코드</td>
+                    <td>코드명</td>
+                    <td>영문코드명</td>
+                    <td>코드설명</td>
+                    <td>정열순서</td>
+                    <td>사용여부</td>
+                    <td>등록일시</td>
+                </tr>
+            </thead>
+            <tbody id="notice_body">
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+{% endblock %}
