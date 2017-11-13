@@ -3,6 +3,7 @@ from django.shortcuts import render, render_to_response, redirect
 from django.template import Context, RequestContext
 from django.http import Http404, HttpResponse, FileResponse, JsonResponse
 from django.db import connection
+from management.settings import UPLOAD_DIR, STATIC_URL
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connections
@@ -28,6 +29,15 @@ import urllib
 import csv
 import datetime
 import logging
+from django.views.generic import View
+from .forms import UserForm, LoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from tracking_control.views import oldLog_remove
+
+>>>>>>> nile/dev_yh_merge
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -2839,14 +2849,18 @@ def file_download(request, file_name):
     print 'called  file_download_test'
 
     # 실제 있는 파일로 지정
-    file_path = '%s/%s' % (UPLOAD_DIR, file_name)
-    # file_path = '/Users/redukyo/workspace/management/home/static/upload/test.jpg'
-
+    file_path = '%s%s' % (STATIC_URL, file_name)
+    # file_path = '/Users/kotech/workspace/scpTest/tracking_log.zip'
     print 'file_path:', file_path
-
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            if file_name == 'tracking_log.zip':
+                response = HttpResponse(fh.read(), content_type="application/x-zip-compressed")
+            else:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+
+            oldLog_remove(file_path, 3)
+
             return response
     raise Http404

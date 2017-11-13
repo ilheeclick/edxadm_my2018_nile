@@ -256,22 +256,12 @@
                                 </ul>
                             </li>
 
-                            <!--
-                            <li class="nav nav-parent" id="popup">
 
-                                <a>
-                                    <i class="fa fa-bell-o" aria-hidden="true"></i>
-                                    <span>팝업추가</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="popup_add">
-                                        <a href="/manage/popup_add">
-                                            팝업추가
                                         </a>
                                     </li>
                                 </ul>
                             </li>
-                            -->
+
 
                         </ul>
                     </nav>
@@ -525,6 +515,10 @@
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
                     $('#popup').addClass('nav-active');
                     $('#popup_add').addClass('nav-active');
+                case '트래킹 로그 조회':
+                    if (is_expanded != 'none') $('#tracking_log').addClass('nav-expanded');
+                    $('#tracking_log').addClass('nav-active');
+                    $('#tracking_log_list').addClass('nav-active');
                     break;
             }
         }

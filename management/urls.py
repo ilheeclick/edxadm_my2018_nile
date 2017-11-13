@@ -19,6 +19,7 @@ from django.contrib import admin
 
 from home.statistics import statistics_excel
 from home import views
+import tracking_control.views as tracking_view
 from django.contrib.auth import views as auth_views
 
 
@@ -97,6 +98,7 @@ urlpatterns = [
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
     url(r'^manage/file_download/(?P<file_name>.*?)/$', views.file_download, name='file_download'),
 
+<<<<<<< HEAD
     # popup url
     url(r'^manage/popup_add/', views.popup_add, name='popup_add'),
     url(r'^manage/create_popup/', views.create_popup, name='create_popup'),
@@ -105,10 +107,17 @@ urlpatterns = [
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
     url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
 
+=======
+    url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
+    url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
+    url(r'^manage/tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
+    # url(r'^manage/filed/$', tracking_view.send_file)
+    url(r'^manage/tracking_log/logdata_add/', tracking_view.data_insert),
+    url(r'^manage/tracking_log/downlist/', tracking_view.log_board, name='log_board')
+>>>>>>> nile/dev_yh_merge
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
     # url(r'^manage/history_cert/', views.history_cert, name='history_cert'),
-
 ]
