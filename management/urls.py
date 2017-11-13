@@ -129,6 +129,9 @@ urlpatterns = [
 
 
     url(r'^manage/code_manage/$', views.code_manage, name='code_manage'),
+    url(r'^manage/group_code/$', views.group_code, name='group_code'),
+    url(r'^manage/detail_code/$', views.detail_code, name='detail_code'),
+    url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
 
 
     #history

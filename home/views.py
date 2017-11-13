@@ -91,6 +91,84 @@ def common_single_file_upload(file_object, gubun, user_id):
 # ---------- common module ---------- #
 
 
+def group_code_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add_row_save':
+            group_code = request.POST.get('group_code')
+            group_name = request.POST.get('group_name')
+            group_desc = request.POST.get('group_desc')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.code_group(group_code, group_name, group_desc, use_yn, regist_id)
+                       VALUES ('{0}','{1}','{2}','{3}',{4})
+                    '''.format(group_code, group_name, group_desc, use_yn, user_id)
+            print query
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+
+
+@csrf_exempt
+def detail_code(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+            SELECT detail_code,
+                   detail_name,
+                   detail_Ename,
+                   detail_desc,
+                   order_no,
+                   use_yn,
+                   regist_date
+              FROM code_detail
+             WHERE delete_yn = 'N' AND use_yn = 'Y' AND group_code like '%';
+        '''
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+@csrf_exempt
+def group_code(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+            SELECT group_code,
+                   group_name,
+                   group_desc,
+                   use_yn,
+                   regist_date
+              FROM code_group
+             WHERE delete_yn = 'N' AND use_yn = 'Y';
+        '''
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
 @login_required
 def code_manage(request):
     return render(request, 'code_manage/code_manage.html')

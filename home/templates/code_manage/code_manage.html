@@ -2,7 +2,286 @@
 {% block pagetitlename %}코드 관리{% endblock %}
 {% block pagetitlename_header %}코드 관리{% endblock %}
 {% block script_down %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
+jQuery.ajaxSettings.traditional = true;
+    $(document).ready(function() {
+        setDataTable1();
+        setDataTable2();
+    });
+
+    function setDataTable1() {
+        var $table = $('#datatable1');
+
+        $table.dataTable({
+            dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
+            "autoWidth": false,
+            scrollX:true,
+            bProcessing: true,
+            ordering: false,
+            serverSide: false,
+            searching: true,
+            "language": {
+              "emptyTable": "조회된 데이터가 없습니다."
+            },
+            "scrollY": "250px",
+            "scrollCollapse": true,
+            ajax: {
+                url: "/manage/group_code",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData1,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "pk", name: "pk"},
+                {data: "group_code"},
+                {data: "group_name"},
+                {data: "group_desc"},
+                {data: "use_yn"},
+                {data: "regist_date"},
+            ],
+            columnDefs: [
+                {
+                    targets: 0, visible: true, name: "pk", render: function (data, type) {
+                    return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 1, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                    {
+                    targets: 2, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                    {
+                    targets: 3, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 4, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+
+            ],
+            rowsGroup: [
+                0,
+                5
+            ],
+            paginate: false,
+            "info":false,
+            initComplete: function () {
+                $('.form-control').change(function() {
+                    $(this).parent().parent().find('input:checkbox').prop("checked", true);
+                });
+            }
+        })
+        ;
+    }
+
+    function buildSearchData1() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        return obj
+    }
+
+    function setDataTable2() {
+        var $table = $('#datatable2');
+
+        $table.dataTable({
+            dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: false,
+            serverSide: false,
+            searching: true,
+            "language": {
+              "emptyTable": "조회된 데이터가 없습니다."
+            },
+            "scrollY": "250px",
+            "scrollCollapse": true,
+            ajax: {
+                url: "/manage/detail_code",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData2,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "pk", name: "pk"},
+                {data: "detail_code"},
+                {data: "detail_name"},
+                {data: "detail_Ename"},
+                {data: "detail_desc"},
+                {data: "order_no"},
+                {data: "use_yn"},
+                {data: "regist_date"},
+            ],
+            columnDefs: [
+                {
+                    targets: 0, visible: true, name: "pk", render: function (data, type) {
+                    return '<input type="checkbox" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 1, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 2, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 3, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 4, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 5, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+                {
+                    targets: 6, visible: true, render: function (data, type) {
+                    return '<input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                },
+                },
+            ],
+            rowsGroup: [
+                0,
+                5
+            ],
+            paginate: false,
+            "info":false,
+            initComplete: function () {
+                $('.form-control').change(function() {
+                    $(this).parent().parent().find('input:checkbox').prop("checked", true);
+                });
+            }
+        })
+        ;
+    }
+
+    function buildSearchData2() {
+        var org = $('#org2').val();
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            site_id: '{{ site_id }}',
+            user_id: '{{ user_id }}',
+            org: org,
+        }
+        return obj
+    }
+
+    function checked_all1() {
+            console.log($("#check_all1").is(":checked"));
+
+            if ($("#check_all1").is(":checked")) {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", true);
+            } else {
+                $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", false);
+            }
+        }
+
+    function checked_all2() {
+            console.log($("#check_all2").is(":checked"));
+
+            if ($("#check_all2").is(":checked")) {
+                $("#datatable2 tbody input[type=checkbox]:visible").prop("checked", true);
+            } else {
+                $("#datatable2 tbody input[type=checkbox]:visible").prop("checked", false);
+            }
+        }
+
+    var cnt1 = 0;
+
+    function add_row1() {
+        if(cnt1 == 0) {
+            $("#notice_body1").append("<tr>");
+            $("#notice_body1").append("<td></td>");
+            $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_code'></td>");
+            $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_name'></td>");
+            $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_desc'></td>");
+            $("#notice_body1").append("<td><input type='test' class='form-control' id ='use_yn'></td>");
+            $("#notice_body1").append("<td></td>");
+            $("#notice_body1").append("</tr>");
+        }
+        cnt1 += 1;
+    }
+    var cnt2 = 0;
+
+    function add_row2() {
+        if(cnt2 == 0) {
+            $("#notice_body2").append("<tr>");
+            $("#notice_body2").append("<td></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td><input type='test' class='form-control'></td>");
+            $("#notice_body2").append("<td></td>");
+            $("#notice_body2").append("</tr>");
+        }
+        cnt2 += 1;
+    }
+    function Save1() {
+        var group_code = $('#group_code').val();
+        var group_name = $('#group_name').val();
+        var group_desc = $('#group_desc').val();
+        var use_yn = $('#use_yn').val();
+
+        if( group_code == '') {
+            swal("경고", "추가된 행의 공통코드 입력필수.", "warning");
+        }
+        else if (use_yn != 'Y' && use_yn != 'N') {
+            swal("경고", "사용여부는 Y나 N만 입력가능.", "warning");
+        }
+        else {
+            try {
+                var method = 'add_row_save';
+
+                $.post("/manage/group_code_db/", {
+                    csrfmiddlewaretoken: $.cookie('csrftoken'),
+                    group_code: group_code,
+                    group_name: group_name,
+                    group_desc: group_desc,
+                    use_yn: use_yn,
+                    user_id: {{ user.id }},
+                    method: method,
+                }).done(function (data) {
+                    update1();
+                }).fail(function (error) {
+                    swal("경고", "공통코드 중복 불가능.", "warning");
+                });
+            } catch (e) {
+                alert(e);
+            }
+        }
+    }
+    function update1() {
+        var table = $('#datatable1').DataTable();
+        table.ajax.reload();
+    }
+    function Test() {
+        alert ({{ user.id }})
+    }
 
 </script>
 {% endblock %}
@@ -20,14 +299,15 @@
 
         </div>
         <h3>그룹코드 관리</h3>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">삭제</a>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">저장</a>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">행추가</a>
-        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/popup_db/" style="width: 100%;" >
+        <div class="col-sm-15" align="right" style="padding: 10px;">
+            <a href="javascript:add_row1()"><input class="btn btn-primary" type="button" value="행추가"></a>
+            <a href="javascript:Save1()"><input class="btn btn-primary" type="button" value="저장"></a>
+            <a href="javascript:Test()"><input class="btn btn-primary" type="button" value="삭제"></a>
+        </div>
+        <table class="table table-hover table-striped  table-bordered" id="datatable1" style="width: 100%;" >
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
-                    <td>ID</td>
                     <td>공통코드</td>
                     <td>코드명</td>
                     <td>코드설명</td>
@@ -35,18 +315,19 @@
                     <td>등록일시</td>
                 </tr>
             </thead>
-            <tbody id="notice_body">
+            <tbody id="notice_body1">
             </tbody>
         </table>
         <h3>상세코드 관리</h3>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">삭제</a>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">저장</a>
-        <a class="btn btn-primary" style="float: right; margin: 0px 0px 0px 2px">행추가</a>
-        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/popup_db/" style="width: 100%;" >
+        <div class="col-sm-15" align="right" style="padding: 10px;">
+            <a href="javascript:add_row2()"><input class="btn btn-primary" type="button" value="행추가"></a>
+            <a href="javascript:add_row2()"><input class="btn btn-primary" type="button" value="저장"></a>
+            <a href="javascript:add_row2()"><input class="btn btn-primary" type="button" value="삭제"></a>
+        </div>
+        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/group_code/" style="width: 100%;" >
             <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
-                    <td>ID</td>
                     <td>상세코드</td>
                     <td>코드명</td>
                     <td>영문코드명</td>
@@ -56,7 +337,7 @@
                     <td>등록일시</td>
                 </tr>
             </thead>
-            <tbody id="notice_body">
+            <tbody id="notice_body2">
             </tbody>
         </table>
     </div>
