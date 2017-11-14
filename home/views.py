@@ -3052,6 +3052,7 @@ def multiple_email(request):
             return HttpResponse(context, 'applications/json')
     return render(request, 'multiple_email/multiple_email.html')
 
+# 메일 전송 공통 모듈
 def common_send_mail(to_user, title, content):
     import smtplib
     from email.mime.multipart import MIMEMultipart
@@ -3060,7 +3061,7 @@ def common_send_mail(to_user, title, content):
     smtp_server = 'smtp.gmail.com'
     smtp_port   = 587
     smtp_id     = 'b930208@gmail.com'
-    smtp_pw     = 'aldzltbfl5842!'
+    smtp_pw     = '####'
     from_user = smtp_id
 
     smtp = smtplib.SMTP(smtp_server, smtp_port)
@@ -3099,20 +3100,15 @@ def multiple_email_new(request):
         print "send_type = {}".format(send_type)       # email, message, apppush / E M P
         print "account_type = {}".format(account_type) # activation, inactive, all / E I A
 
+        # 보내는 타입이 'email'일 때 로직
         if send_type == 'email':
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
             if subject_flag == 'hello':
                 experienced_student = request.POST.get('experienced_student')
                 instructor = request.POST.get('instructor')
                 operator = request.POST.get('operator')
-
-                #DEBUG
-                print experienced_student
-                print instructor
-                print operator
-
+                # 유저 목록 구해오는 로직
                 if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
-                    print "111" #DEBUG
-                    print "011" #DEBUG
                     target1 = '1'
                     target2 = '1'
                     target3 = '1'
@@ -3142,15 +3138,12 @@ def multiple_email_new(request):
                             db_account_type = 'I'
                         cur.execute(query)
                         db_account_type = 'A'
-                        print query #DEBUG
                         rows = cur.fetchall()
                     for item in rows:
                         user_list.append(item[0])
                         user_id_list.append(item[1])
 
                 elif (experienced_student == 'true' and instructor == 'true') or (instructor == 'true'):
-                    print "110" #DEBUG
-                    print "010" #DEBUG
                     target1 = '1'
                     target2 = '1'
                     target3 = '0'
@@ -3172,7 +3165,6 @@ def multiple_email_new(request):
                         elif account_type == 'inactive':
                             query = query + "AND a.is_active = 0"
                             db_account_type = 'I'
-                        print query #DEBUG
                         cur.execute(query)
                         db_account_type = 'A'
                         rows = cur.fetchall()
@@ -3181,8 +3173,6 @@ def multiple_email_new(request):
                         user_id_list.append(item[1])
 
                 elif (experienced_student == 'true' and operator == 'true') or (operator == 'true'):
-                    print "101" #DEBUG
-                    print "001" #DEBUG
                     target1 = '1'
                     target2 = '0'
                     target3 = '1'
@@ -3204,7 +3194,6 @@ def multiple_email_new(request):
                         elif account_type == 'inactive':
                             query = query + "AND a.is_active = 0"
                             db_account_type = 'I'
-                        print query #DEBUG
                         cur.execute(query)
                         db_account_type = 'A'
                         rows = cur.fetchall()
@@ -3213,7 +3202,6 @@ def multiple_email_new(request):
                         user_id_list.append(item[1])
 
                 elif experienced_student == 'true':
-                    print "100" #DEBUG
                     target1 = '1'
                     target2 = '0'
                     target3 = '0'
@@ -3229,7 +3217,6 @@ def multiple_email_new(request):
                         elif account_type == 'inactive':
                             query = query + "AND a.is_active = 0"
                             db_account_type = 'I'
-                        print query #DEBUG
                         cur.execute(query)
                         db_account_type = 'A'
                         rows = cur.fetchall()
@@ -3237,52 +3224,51 @@ def multiple_email_new(request):
                         user_list.append(item[0])
                         user_id_list.append(item[1])
 
-                print '--------------------'
-                print len(user_list)
-                print '--------------------'
-
+            # 보내는 타입이 '수동입력'일 때 로직
             elif subject_flag == 'world':
                 notauto = request.POST.get('notauto')
                 tmp = notauto.split(',')
+                # 유저 목록 구해오는 로직
                 for email in tmp:
                     user_list.append(email.strip())
 
+            # 제목, 내용 공통
             title = request.POST.get('title')
             content = request.POST.get('content')
 
-            # ---------- create data ----------#
+            # ---------- insert data ----------#
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
             if subject_flag == 'hello':
                 with connections['default'].cursor() as cur:
                     query = '''
                         insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
                         values('E', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
                     '''.format(db_account_type, target1, target2, target3, title, content.replace("'","''"), user_id)
-                    print query #DEBUG
                     cur.execute(query)
-
+            # 보내는 타입이 '수동입력'일 때 로직
             elif subject_flag == 'world':
                 with connections['default'].cursor() as cur:
                     query = '''
                         insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
                         values('E', 'N', 0, 0, 0, '{0}', '{1}', {2})
                     '''.format(title, content.replace("'","''"), user_id)
-                    print query #DEBUG
                     cur.execute(query)
-
+            # insert 이후 마지막 글 번호 얻어오기
             with connections['default'].cursor() as cur:
                 query = '''
                     SELECT LAST_INSERT_ID();
                 '''
-                print query #DEBUG
                 cur.execute(query)
                 rows = cur.fetchall()
                 row_id = rows[0][0]
+            # ---------- insert data ----------#
 
             # ---------- sending email ----------#
             for n in range(0, len(user_list)):
+                # 보내는 타입이 '수동입력'이 아닐 때 로직
                 if subject_flag == 'hello':
                     try:
-                        #common_send_mail(user, title, content)
+                        #common_send_mail(user, title, content) # 메일 보내는 함수
                         with connections['default'].cursor() as cur:
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
@@ -3299,9 +3285,10 @@ def multiple_email_new(request):
                             '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
                             print query #DEBUG
                             cur.execute(query)
+                # 보내는 타입이 '수동입력'일 때 로직
                 elif subject_flag == 'world':
                     try:
-                        #common_send_mail(user, title, content)
+                        #common_send_mail(user, title, content) # 메일 보내는 함수
                         with connections['default'].cursor() as cur:
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
@@ -3319,14 +3306,12 @@ def multiple_email_new(request):
                             print query #DEBUG
                             cur.execute(query)
 
+            # making success cnt, fail cnt
             total_user = len(user_list)
             fail_cnt = fail_cnt
             success_cnt =  (len(user_list) - fail_cnt)
 
-            print "total user = {}".format(total_user)
-            print "fail cnt = {}".format(fail_cnt)
-            print "success cnt = {}".format(success_cnt)
-
+            # update success cnt, total cnt
             with connections['default'].cursor() as cur:
                 query = '''
                     UPDATE edxapp.group_email
@@ -3334,7 +3319,6 @@ def multiple_email_new(request):
                            success_count = {1}
                     WHERE  mail_id = {2}
                 '''.format(total_user, success_cnt, row_id)
-                print query #DEBUG
                 cur.execute(query)
 
         return JsonResponse({"return":"success"})
