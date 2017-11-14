@@ -132,6 +132,7 @@ urlpatterns = [
     url(r'^manage/group_code/$', views.group_code, name='group_code'),
     url(r'^manage/detail_code/$', views.detail_code, name='detail_code'),
     url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
+    url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
 
 
     #history

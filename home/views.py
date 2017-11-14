@@ -90,6 +90,81 @@ def common_single_file_upload(file_object, gubun, user_id):
         cur.execute(query)
 # ---------- common module ---------- #
 
+def detail_code_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add_row_save':
+            group_code = request.POST.get('group_code')
+            detail_code = request.POST.get('detail_code')
+            detail_name = request.POST.get('detail_name')
+            detail_Ename = request.POST.get('detail_Ename')
+            detail_desc = request.POST.get('detail_desc')
+            order_no = request.POST.get('order_no')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.code_detail(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, regist_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
+                    '''.format(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id)
+            print query
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            group_code = request.POST.get('group_code')
+            detail_code_list = request.POST.get('detail_code_list')
+            user_id = request.POST.get('user_id')
+
+            detail_code_split = detail_code_list.split("+")
+            detail_code_split.pop()
+
+            for detail_code in detail_code_split:
+                cur = connection.cursor()
+                query = '''
+                        UPDATE code_detail
+                           SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
+                         WHERE group_code = '{1}' AND detail_code = '{2}';
+                        '''.format(user_id, group_code, detail_code)
+                print query
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'update':
+            detail_code = request.POST.get('detail_code')
+            detail_name = request.POST.get('detail_name')
+            detail_Ename = request.POST.get('detail_Ename')
+            detail_desc = request.POST.get('detail_desc')
+            order_no = request.POST.get('order_no')
+            use_yn = request.POST.get('use_yn')
+            group_code_prev = request.POST.get('group_code_prev')
+            detail_code_prev = request.POST.get('detail_code_prev')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''
+                    UPDATE code_detail
+                       SET detail_code = '{0}',
+                           detail_name = '{1}',
+                           detail_Ename = '{2}',
+                           detail_desc = '{3}',
+                           order_no = '{4}',
+                           use_yn = '{5}',
+                           modify_id = '{6}',
+                           modify_date = now()
+                     WHERE group_code = '{7}' AND detail_code = '{8}';
+                    '''.format(detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id, group_code_prev, detail_code_prev)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
 
 def group_code_db(request):
     if request.method == 'POST':
@@ -103,8 +178,48 @@ def group_code_db(request):
 
             cur = connection.cursor()
             query = '''insert into edxapp.code_group(group_code, group_name, group_desc, use_yn, regist_id)
-                       VALUES ('{0}','{1}','{2}','{3}',{4})
+                       VALUES ('{0}','{1}','{2}','{3}','{4}')
                     '''.format(group_code, group_name, group_desc, use_yn, user_id)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            group_code_list = request.POST.get('group_code_list')
+            user_id = request.POST.get('user_id')
+            group_code_split = group_code_list.split("+")
+            group_code_split.pop()
+
+            for group_code in group_code_split:
+                cur = connection.cursor()
+                query = '''
+                        UPDATE code_group
+                           SET delete_yn = 'Y', modify_id ='{0}', modify_date = now()
+                         WHERE group_code = '{1}';
+                        '''.format(user_id, group_code)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'update':
+            group_name = request.POST.get('group_name')
+            group_desc = request.POST.get('group_desc')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+            group_code_prev = request.POST.get('group_code_prev')
+
+
+            cur = connection.cursor()
+            query = '''
+                    UPDATE code_group
+                       SET group_name ='{0}', group_desc = '{1}', use_yn = '{2}', modify_id = '{3}', modify_date = now()
+                     WHERE group_code = '{4}';
+                    '''.format(group_name, group_desc, use_yn, user_id, group_code_prev)
             print query
             cur.execute(query)
             cur.close()
@@ -113,24 +228,29 @@ def group_code_db(request):
             return HttpResponse(data, 'applications/json')
 
 
-
 @csrf_exempt
 def detail_code(request):
     result = dict()
+    group_code = request.GET.get('group_code')
+
+    if (group_code == None):
+        group_code = '%'
 
     with connections['default'].cursor() as cur:
 
         query = '''
-            SELECT detail_code,
-                   detail_name,
-                   detail_Ename,
-                   detail_desc,
-                   order_no,
-                   use_yn,
-                   regist_date
-              FROM code_detail
-             WHERE delete_yn = 'N' AND use_yn = 'Y' AND group_code like '%';
-        '''
+              SELECT group_code,
+                     detail_code,
+                     detail_name,
+                     detail_Ename,
+                     detail_desc,
+                     order_no,
+                     use_yn,
+                     regist_date
+                FROM code_detail
+               WHERE delete_yn = 'N' AND group_code LIKE '{0}'
+            ORDER BY regist_date;
+        '''.format(group_code)
 
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -156,7 +276,8 @@ def group_code(request):
                    use_yn,
                    regist_date
               FROM code_group
-             WHERE delete_yn = 'N' AND use_yn = 'Y';
+             WHERE delete_yn = 'N'
+             ORDER BY regist_date;
         '''
 
         cur.execute(query)
