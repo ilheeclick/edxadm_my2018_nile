@@ -3007,6 +3007,9 @@ def multiple_email(request):
                 query = '''
                     SELECT mail_id,
                            CASE
+                             WHEN target1 = '0'
+                                  AND target2 = '0'
+                                  AND target3 = '0' THEN '수동발송'
                              WHEN target1 = '1'
                                   AND target2 = '0'
                                   AND target3 = '0' THEN '수강신청경험자'
@@ -3049,11 +3052,301 @@ def multiple_email(request):
             return HttpResponse(context, 'applications/json')
     return render(request, 'multiple_email/multiple_email.html')
 
+def common_send_mail(to_user, title, content):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    smtp_server = 'smtp.gmail.com'
+    smtp_port   = 587
+    smtp_id     = 'b930208@gmail.com'
+    smtp_pw     = 'aldzltbfl5842!'
+    from_user = smtp_id
+
+    smtp = smtplib.SMTP(smtp_server, smtp_port)
+    smtp.ehlo()      # say Hello
+    smtp.starttls()  # TLS 사용시 필요
+    smtp.login(smtp_id, smtp_pw)
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = title
+    msg['From'] = from_user
+    msg['To'] = to_user
+
+    html = content
+    part = MIMEText(html, 'html')
+    msg.attach(part)
+    s = smtp
+    s.sendmail(from_user, to_user, msg.as_string())
+    s.quit()
 
 @login_required
 def multiple_email_new(request):
-    # if request.is_ajax():
-    # request.GET['method'] == 'notice_list':
+    if request.is_ajax():
+        # init data
+        user_list = []
+        user_id_list = []
+        fail_cnt = 0
+
+        # get data
+        user_id = request.POST.get('userid')
+        subject_flag = request.POST.get('subject_flag')
+        send_type = request.POST.get('send_type')
+        account_type = request.POST.get('account_type')
+
+        print "user_id = {}".format(user_id)
+        print "subject_flag = {}".format(subject_flag) # experienced_student, instructor, operator / 1 2 3
+        print "send_type = {}".format(send_type)       # email, message, apppush / E M P
+        print "account_type = {}".format(account_type) # activation, inactive, all / E I A
+
+        if send_type == 'email':
+            if subject_flag == 'hello':
+                experienced_student = request.POST.get('experienced_student')
+                instructor = request.POST.get('instructor')
+                operator = request.POST.get('operator')
+
+                #DEBUG
+                print experienced_student
+                print instructor
+                print operator
+
+                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
+                    print "111" #DEBUG
+                    print "011" #DEBUG
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor')
+                                        OR EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        print query #DEBUG
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and instructor == 'true') or (instructor == 'true'):
+                    print "110" #DEBUG
+                    print "010" #DEBUG
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        print query #DEBUG
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and operator == 'true') or (operator == 'true'):
+                    print "101" #DEBUG
+                    print "001" #DEBUG
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        print query #DEBUG
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif experienced_student == 'true':
+                    print "100" #DEBUG
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        print query #DEBUG
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                print '--------------------'
+                print len(user_list)
+                print '--------------------'
+
+            elif subject_flag == 'world':
+                notauto = request.POST.get('notauto')
+                tmp = notauto.split(',')
+                for email in tmp:
+                    user_list.append(email.strip())
+
+            title = request.POST.get('title')
+            content = request.POST.get('content')
+
+            # ---------- create data ----------#
+            if subject_flag == 'hello':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('E', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
+                    '''.format(db_account_type, target1, target2, target3, title, content.replace("'","''"), user_id)
+                    print query #DEBUG
+                    cur.execute(query)
+
+            elif subject_flag == 'world':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('E', 'N', 0, 0, 0, '{0}', '{1}', {2})
+                    '''.format(title, content.replace("'","''"), user_id)
+                    print query #DEBUG
+                    cur.execute(query)
+
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT LAST_INSERT_ID();
+                '''
+                print query #DEBUG
+                cur.execute(query)
+                rows = cur.fetchall()
+                row_id = rows[0][0]
+
+            # ---------- sending email ----------#
+            for n in range(0, len(user_list)):
+                if subject_flag == 'hello':
+                    try:
+                        #common_send_mail(user, title, content)
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
+                                values({0}, {1}, '{2}', 'Y', {3})
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                    except BaseException:
+                        fail_cnt = fail_cnt + 1
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
+                                values({0}, {1}, '{2}', 'N', {3})
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                elif subject_flag == 'world':
+                    try:
+                        #common_send_mail(user, title, content)
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
+                                values({0}, '{1}', 'Y', {2})
+                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                    except BaseException:
+                        fail_cnt = fail_cnt + 1
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
+                                values({0}, '{1}', 'N', {2})
+                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+
+            total_user = len(user_list)
+            fail_cnt = fail_cnt
+            success_cnt =  (len(user_list) - fail_cnt)
+
+            print "total user = {}".format(total_user)
+            print "fail cnt = {}".format(fail_cnt)
+            print "success cnt = {}".format(success_cnt)
+
+            with connections['default'].cursor() as cur:
+                query = '''
+                    UPDATE edxapp.group_email
+                    SET    send_count = {0},
+                           success_count = {1}
+                    WHERE  mail_id = {2}
+                '''.format(total_user, success_cnt, row_id)
+                print query #DEBUG
+                cur.execute(query)
+
+        return JsonResponse({"return":"success"})
+
     return render(request, 'multiple_email/multiple_email_new.html')
 
+#test
+def send_mail(request):
+    html = '''
+    <p>qqq</p><p>aergm<b>keam</b></p><p><b><span style="background-color: rgb(0, 255, 0);">aergmkae
+    '''
+    common_send_mail('b930208@gmail.com', '제목', html)
+
+    return JsonResponse({'foo':'bar'})
 # ---------- 2017.11.03 ahn jin yong ---------- #

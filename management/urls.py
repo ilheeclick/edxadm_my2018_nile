@@ -78,6 +78,7 @@ urlpatterns = [
     # ---------- multiple email ---------- #
     url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
     url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
+    url(r'^manage/send_mail/', views.send_mail, name='multiple_email_new'),
     # ---------- multiple email ---------- #
 
     # faq

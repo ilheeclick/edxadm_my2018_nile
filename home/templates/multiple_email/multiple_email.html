@@ -562,23 +562,6 @@
                 table.ajax.reload();
             });
         });
-            /*
-            $('#example').DataTable({
-                "order": [0, 'desc']
-            });
-            */
-
-        /*
-        function buildSearchData() {
-            var obj = {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                search_mod: $("#search_mod").val(),
-                startDt: $("#startDt").val(),
-                endDt: $("#endDt").val(),
-            }
-            return obj
-        }
-        */
 
         function buildSearchData() {
             var obj = {
@@ -595,9 +578,10 @@
         function setDataTable() {
             var $table = $('#example1');
             $table.dataTable({
+                "order": [[ 0, "desc" ]],
                 dom: 'T<"clear"l><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
                 bProcessing: true,
-                ordering: false,
+                ordering: true,
                 serverSide: false,
                 searching: true,
                 lengthMenu: [

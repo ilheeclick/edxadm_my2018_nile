@@ -24,26 +24,154 @@ td{padding-left:20px;}
 <!-- css -->
 
 <!-- library -->
-<!-- library -->
-
-<!-- js -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script
   src="https://code.jquery.com/jquery-3.2.1.js"
   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-  crossorigin="anonymous"></script>
-<script>
+  crossorigin="anonymous">
+</script>
+<!-- library -->
 
+<!-- js -->
+<script>
 $(document).ready(function(){
     $("#goto_home").click(function(){
         location.href='/manage/multiple_email/'
     });
     $(".notauto").click(function(){
+        $('.mail2').hide();
         $('.mail3').hide();
         $('.notauto_div').show();
+        $(".subject_flag").text('world');
     });
     $(".auto").click(function(){
+        $('.mail2').show();
         $('.mail3').show();
         $('.notauto_div').hide();
+        $(".subject_flag").text('hello');
+    });
+    $('.summernote').summernote({
+        height: 300,                 // set editor height
+        minHeight: null,             // set minimum height of editor
+        maxHeight: null,             // set maximum height of editor
+        focus: false                  // set focus to editable area after initializing summernote
+    });
+    $("#mail_submit").click(function(){
+
+        // csrf token
+        var csrf_token = $.cookie('csrftoken');
+        var userid = $('.userid').text();
+
+        // email, message, apppush
+        var send_type = $('input[name=send_type]:checked').val()
+
+        // activation, inactive, all
+        var account_type = $('input[name=account_type]:checked').val()
+
+        //subject_type
+        var experienced_student = $('#experienced_student').is(":checked")
+        var instructor = $('#instructor').is(":checked")
+        var operator = $('#operator').is(":checked")
+
+        // not auto mode
+        var notauto = $('#notauto').val()
+
+        // subject_flag -> "subject_type" or "not auto mode"
+        var subject_flag = $(".subject_flag").text();
+
+        // title & content
+        var title = $('#m_title').val()
+        var content = $('.summernote').summernote('code');
+
+        // value checked
+        var submit_lock = 0;
+        var send_type_check = 0;
+        var account_type_check = 0;
+        var subject_type_check = 0;
+        var title_check = 0;
+        var content_check = 0;
+
+        if(send_type == null){
+            submit_lock=1;
+            send_type_check=1;
+        }
+        if(account_type == null){
+            submit_lock=1;
+            account_type_check=1;
+        }
+        if(subject_flag == "hello"){
+            if(experienced_student == false && instructor == false && operator == false){
+                submit_lock=1;
+                subject_type_check=1;
+            }
+        }
+        else if(subject_flag == "world") {
+            if(notauto == ''){
+                submit_lock=1;
+                subject_type_check=1;
+            }
+        }
+        if(title == ""){
+            submit_lock=1;
+            title_check=1;
+        }
+        if($('.panel-body').text() == ""){
+            submit_lock=1;
+            content_check=1;
+        }
+
+        if(subject_flag == "hello" && submit_lock == 0) {
+            $.post("/manage/multiple_email_new/",
+                    {
+                        "userid": userid,
+                        "subject_flag": subject_flag,
+                        "send_type": send_type,
+                        "account_type": account_type,
+                        "experienced_student": experienced_student,
+                        "instructor": instructor,
+                        "operator": operator,
+                        "title": title,
+                        "content": content,
+                        "csrfmiddlewaretoken": csrf_token
+                    })
+                    .done(function (data) {
+                        if (data.return == 'success'){
+                            $(location).attr('href', '/manage/multiple_email');
+                        }
+                        else{
+                            alert("error");
+                        }
+                    });
+        }
+        else if(subject_flag == "world" && submit_lock == 0) {
+            $.post("/manage/multiple_email_new/",
+                    {
+                        "userid": userid,
+                        "subject_flag": subject_flag,
+                        "send_type": send_type,
+                        "account_type": account_type,
+                        "notauto": notauto,
+                        "title": title,
+                        "content": content,
+                        "csrfmiddlewaretoken": csrf_token
+                    })
+                    .done(function (data) {
+                        if (data.return == 'success'){
+                            $(location).attr('href', '/manage/multiple_email');
+                        }
+                        else{
+                            alert("error");
+                        }
+                    });
+        }
+        else{
+            if( send_type_check == 1 ){swal("실패", "발송구분을 입력하세요", "warning");}
+            else if( account_type_check == 1 ){swal("실패", "계정구분을 입력하세요", "warning");}
+            else if( subject_type_check == 1 ){swal("실패", "대상자를 입력하세요", "warning");}
+            else if( title_check == 1 ){swal("실패", "제목을 입력하세요", "warning");}
+            else if( content_check == 1 ){swal("실패", "내용을 입력하세요", "warning");}
+            else {swal("실패", "서버 오류", "error");}
+        }
     });
 });
 </script>
@@ -67,27 +195,27 @@ $(document).ready(function(){
   <td>
     <div class="send">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">Email
+      <input class="form-check-input position-static" type="radio" name="send_type" id="send_type" value="email" aria-label="...">Email
     </label>
     </div>
   </td>
   <td>
     <div class="send">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">쪽지
+      <input class="form-check-input position-static" type="radio" name="send_type" id="send_type" value="message" aria-label="...">쪽지
     </label>
     </div>
   </td>
   <td>
     <div class="send_end">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">App push
+      <input class="form-check-input position-static" type="radio" name="send_type" id="send_type" value="apppush" aria-label="...">App push
     </label>
     </div>
   </td>
 </tr>
 <!-- 계정구분 -->
-<tr>
+<tr class = "mail2">
   <td>
     <div class="account">
     계정구분
@@ -96,26 +224,29 @@ $(document).ready(function(){
   <td>
     <div class="account">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">활성계정
+      <input class="form-check-input position-static" type="radio" name="account_type" id="account_type" value="activation" aria-label="...">활성계정
     </label>
     </div>
   </td>
   <td>
     <div class="account">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">비활성계정
+      <input class="form-check-input position-static" type="radio" name="account_type" id="account_type" value="inactive" aria-label="...">비활성계정
     </label>
     </div>
   </td>
   <td>
     <div class="account_end">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="blankRadio1" id="blankRadio1" value="option1" aria-label="...">전체
+      <input class="form-check-input position-static" type="radio" name="account_type" id="account_type" value="all" aria-label="...">전체
     </label>
     </div>
   </td>
 </tr>
+
 <!-- 대상자 -->
+<div class="subject_flag" style="display:none">hello</div>
+
 <tr class = "mail3">
   <td>
     <div class="whois form-check-inline">
@@ -125,21 +256,21 @@ $(document).ready(function(){
   <td>
     <div class="whois form-check-inline">
     <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"> 수강신청경험자
+      <input class="form-check-input" type="checkbox" id="experienced_student" name="subject_type" value="experienced_student"> 수강신청경험자
     </label>
     </div>
   </td>
   <td>
     <div class="whois form-check-inline">
     <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"> 교수자 권한
+      <input class="form-check-input" type="checkbox" id="instructor" name="subject_type" value="instructor"> 교수자 권한
     </label>
     </div>
   </td>
   <td>
     <div class="whois_end form-check-inline">
     <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option2"> 운영자 권한
+      <input class="form-check-input" type="checkbox" id="operator" name="subject_type" value="operator"> 운영자 권한
     </label>
     </div>
   </td>
@@ -149,6 +280,7 @@ $(document).ready(function(){
 </tr>
 </table>
 <!-- 대상자 -->
+
   <div class="notauto_div" style="display:none">
     대상자 (수동입력)
     <button class="auto">대상자 선택 돌아가기</button>
@@ -165,7 +297,7 @@ $(document).ready(function(){
 <div class="content_margin">
 내용
   <div class="m_content_div">
-    <textarea class="form-control" id="m_content" rows="3"></textarea>
+      <div class="summernote"></div>
   </div>
 </div>
 
@@ -174,6 +306,8 @@ $(document).ready(function(){
   <button type="button" class="btn btn-primary" id="mail_submit">발송</button>
   <button type="button" class="btn btn-primary" id="after_view">미리보기</button>
 </div>
+
+<div class="userid">{{ user.id }}</div>
 
 </div>
 {% endblock %}
