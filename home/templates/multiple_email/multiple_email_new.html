@@ -57,12 +57,11 @@ $(document).ready(function(){
         focus: false                  // set focus to editable area after initializing summernote
     });
     $("#mail_submit").click(function(){
-
         // csrf token
         var csrf_token = $.cookie('csrftoken');
         var userid = $('.userid').text();
 
-        // email, message, apppush
+        // email, memo, apppush
         var send_type = $('input[name=send_type]:checked').val()
 
         // activation, inactive, all
@@ -95,7 +94,7 @@ $(document).ready(function(){
             submit_lock=1;
             send_type_check=1;
         }
-        if(account_type == null){
+        if(account_type == null && subject_flag == "hello"){
             submit_lock=1;
             account_type_check=1;
         }
@@ -121,6 +120,9 @@ $(document).ready(function(){
         }
 
         if(subject_flag == "hello" && submit_lock == 0) {
+            $('.loading_back').show();
+            $('.loading').show();
+            $('#mail_submit').hide();
             $.post("/manage/multiple_email_new/",
                     {
                         "userid": userid,
@@ -159,6 +161,9 @@ $(document).ready(function(){
                         if (data.return == 'success'){
                             $(location).attr('href', '/manage/multiple_email');
                         }
+                        else if (data.return == 'fail_no_user'){
+                            alert("no user");
+                        }
                         else{
                             alert("error");
                         }
@@ -176,7 +181,6 @@ $(document).ready(function(){
 });
 </script>
 <!-- js -->
-
 
 <section class="panel panel-featured ">
 <div class="email_title"><h2 class="panel-title">메일발송</h2></div>
@@ -202,7 +206,7 @@ $(document).ready(function(){
   <td>
     <div class="send">
     <label class="form-check-label">
-      <input class="form-check-input position-static" type="radio" name="send_type" id="send_type" value="message" aria-label="...">쪽지
+      <input class="form-check-input position-static" type="radio" name="send_type" id="send_type" value="memo" aria-label="...">쪽지
     </label>
     </div>
   </td>
@@ -309,5 +313,34 @@ $(document).ready(function(){
 
 <div class="userid" style="display:none">{{ user.id }}</div>
 
+</div>
+{% load staticfiles %}
+
+<div class="loading_back" style="z-index:998;
+                                 position:absolute;
+                                 top:0%;
+                                 height: 100%;
+                                 width:110%;
+                                 text-align:center;
+                                 font-size:120%;
+                                 margin-left:-40px;
+                                 display:none;
+                                 background-color:#3333;">
+</div>
+<div class="loading" style="z-index:999;
+                            background-color:#FFFFFF;
+                            position:absolute;
+                            top:25%;
+                            width:50%;
+                            text-align:center;
+                            font-size:120%;
+                            display:none;
+                            margin-left:180px;
+                            padding:15px;">
+
+    <img style="width:100%" src="{% static 'image/Loading_icon.gif' %}"/><br>
+    데이터를 처리하고 있습니다<br>
+    페이지를 닫거나 이동하지 마세요<br>
+    잠시만 기다려주세요
 </div>
 {% endblock %}
