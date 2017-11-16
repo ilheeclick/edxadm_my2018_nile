@@ -40,18 +40,22 @@ from tracking_control.views import oldLog_remove
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 def get_file_ext(filename):
     filename_split = filename.split('.')
     file_ext_index = len(filename_split)
-    file_ext = filename_split[file_ext_index-1] 
+    file_ext = filename_split[file_ext_index - 1]
     return file_ext
+
 
 @login_required
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
+
 def popup_list(request):
     return render(request, 'popup/popup_list.html')
+
 
 def modi_popup(request, id):
     mod_pop = []
@@ -129,8 +133,10 @@ def modi_popup(request, id):
     })
     return render_to_response('popup/popup_modipopup.html', variables)
 
+
 def create_popup(request):
     return render(request, 'popup/popup_modipopup.html')
+
 
 @csrf_exempt
 def popup_db(request):
@@ -184,6 +190,7 @@ def popup_db(request):
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
     return render(request, 'popup/popup_add.html')
+
 
 @csrf_exempt
 def new_popup(request):
@@ -242,7 +249,7 @@ def new_popup(request):
             use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
-            query = "update edxapp.popup SET popup_type = '" + popup_type + "', link_type = '" + link_type + "', image_map = '" + image_map + "', title = '" + title + "', contents = '" + contents + "', image_url = '" + image_url + "', link_url = '" + link_url + "', link_target = '" + link_target + "', start_date = '" + start_date + "', start_time = '" + start_time + "', end_date = '" + end_date + "', end_time = '" + end_time + "', template = '" + template + "', width = '" + width + "', height = '" + height + "', hidden_day = '" + hidden_day + "', modify_id = '" + regist_id + "', use_yn = '" + use_yn + "', modify_date = now() WHERE popup_id =" +pop_id
+            query = "update edxapp.popup SET popup_type = '" + popup_type + "', link_type = '" + link_type + "', image_map = '" + image_map + "', title = '" + title + "', contents = '" + contents + "', image_url = '" + image_url + "', link_url = '" + link_url + "', link_target = '" + link_target + "', start_date = '" + start_date + "', start_time = '" + start_time + "', end_date = '" + end_date + "', end_time = '" + end_time + "', template = '" + template + "', width = '" + width + "', height = '" + height + "', hidden_day = '" + hidden_day + "', modify_id = '" + regist_id + "', use_yn = '" + use_yn + "', modify_date = now() WHERE popup_id =" + pop_id
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -737,6 +744,7 @@ def test(request):
     else:
         return render(request, 'test01.html')
 
+
 def signin(request):
     form = LoginForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -746,6 +754,7 @@ def signin(request):
             login(request, user)
             return render(request, 'stastic/stastic_index.html')
     return render(request, 'registration/login.html', {'form': form})
+
 
 @login_required
 def month_stastic(request):
@@ -757,9 +766,11 @@ def month_stastic(request):
 def mana_state(request):
     return render(request, 'state/mana_state.html')
 
+
 @login_required
 def dev_state(request):
     return render(request, 'state/dev_state.html')
+
 
 # certificate view
 @login_required
@@ -942,6 +953,7 @@ def certificate(request):
 
     return render(request, 'certificate/certificate.html')
 
+
 @login_required
 def per_certificate(request):
     client = MongoClient(database_id, 27017)
@@ -1053,6 +1065,7 @@ def per_certificate(request):
 
     return render(request, 'certificate/per_certificate.html')
 
+
 @login_required
 def uni_certificate(request):
     # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
@@ -1163,12 +1176,13 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
+
 # ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
 def new_notice(request):
     # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
     if request.FILES:
-        #init list
+        # init list
         file_name_list = []
         file_dir_list = []
         file_size_raw_list = []
@@ -1177,17 +1191,17 @@ def new_notice(request):
         file_list = request.FILES.getlist('file')
         file_list_cnt = len(request.FILES.getlist('file'))
 
-        #make name, dir
+        # make name, dir
         for item in file_list:
-            file_name_list.append( str(item) )
-            file_dir_list.append( UPLOAD_DIR+str(item) )
+            file_name_list.append(str(item))
+            file_dir_list.append(UPLOAD_DIR + str(item))
 
-        #make ext
+        # make ext
         for item in file_name_list:
             file_ext = get_file_ext(item)
             file_ext_list.append(file_ext)
 
-        #crete file
+        # crete file
         cnt = 0
         for item in file_list:
             fp = open(file_dir_list[cnt], 'wb')
@@ -1196,15 +1210,15 @@ def new_notice(request):
             fp.close()
             cnt += 1
 
-        #make raw_size
+        # make raw_size
         for item in file_dir_list:
-            file_size_raw_list.append( os.path.getsize(item) )
+            file_size_raw_list.append(os.path.getsize(item))
 
-        #make size (KB)
+        # make size (KB)
         for item in file_size_raw_list:
-            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
+            file_size_list.append(str(item / 1024) + "KB")  # invert KB
 
-        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
+        return JsonResponse({'name': file_name_list, 'size': file_size_list, 'len': file_list_cnt})
     # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
 
     elif request.method == 'POST':
@@ -1232,12 +1246,12 @@ def new_notice(request):
             upload_split = upload_file.split('+')
             for item in upload_split:
                 index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
+                file_name_list.append(item[:index])
+                file_size_list.append(item[index + 3:])
             file_name_list.pop()
             file_size_list.pop()
             for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
+                file_ext_list.append(get_file_ext(item))
             file_cnt = len(file_name_list)
 
             # ------ 공지사항 쓰기 query ------ #
@@ -1264,7 +1278,7 @@ def new_notice(request):
             '''
             cur.execute(query3)
             board_list = cur.fetchall()
-            board_id = board_list[0][0] 
+            board_id = board_list[0][0]
             cur.close()
             # ------ 공지사항 게시판 아이디 조회 query ------ #
 
@@ -1329,12 +1343,12 @@ def new_notice(request):
             upload_split = upload_file.split('+')
             for item in upload_split:
                 index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
+                file_name_list.append(item[:index])
+                file_size_list.append(item[index + 3:])
             file_name_list.pop()
             file_size_list.pop()
             for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
+                file_ext_list.append(get_file_ext(item))
             file_cnt = len(file_name_list)
 
             # ------ 공지사항 수정 query ------ #
@@ -1374,7 +1388,7 @@ def new_notice(request):
         return HttpResponse(data, 'applications/json')
         # ---------- 공통 글 편집(공지사항, K-MOOC소식, 자료실) ---------- #
     return render(request, 'community/comm_newnotice.html')
-# ---------- 2017.10.23 ahn jin yong ---------- #
+
 
 @csrf_exempt
 def modi_notice(request, id, use_yn):
@@ -1423,7 +1437,7 @@ def modi_notice(request, id, use_yn):
             data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
 
         elif request.GET['method'] == 'file_download':
-            pass # 'file_download with ajax is not working'
+            pass  # 'file_download with ajax is not working'
 
         return HttpResponse(data, 'applications/json')
 
@@ -1446,14 +1460,16 @@ def modi_notice(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modinotice.html', context)
+
 
 @login_required
 def test_index(request):
     return render(request, 'test_index.html')
+
 
 @login_required
 def file_download_test(request):
@@ -1468,6 +1484,7 @@ def file_download_test(request):
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
 
 @login_required
 def comm_k_news(request):
@@ -1558,18 +1575,21 @@ def comm_k_news(request):
 
     return render(request, 'community/comm_k_news.html')
 
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 @login_required
 def new_knews(request):
     if request.FILES:
-        pass # 모듈화 new_notice OK
+        pass  # 모듈화 new_notice OK
     elif request.method == 'POST':
         if request.POST['method'] == 'add':
-            pass # 모듈화 new_notice OK 
+            pass  # 모듈화 new_notice OK
         elif request.POST['method'] == 'modi':
-            pass # 모듈화 new_notice OK 
+            pass  # 모듈화 new_notice OK
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newknews.html')
+
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 
 @login_required
@@ -1621,7 +1641,7 @@ def modi_knews(request, id, use_yn):
             data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
         return HttpResponse(data, 'applications/json')
-    
+
     # ------ knews 파일첨부 보여주기 query ------ #
     cur = connection.cursor()
     query = '''
@@ -1641,10 +1661,11 @@ def modi_knews(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modi_knews.html', context)
+
 
 @login_required
 def comm_faq(request):
@@ -1741,6 +1762,7 @@ def comm_faq(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_faq.html')
 
+
 @login_required
 def new_faq(request):
     if request.method == 'POST':
@@ -1776,6 +1798,7 @@ def new_faq(request):
         return HttpResponse(data, 'applications/json')
 
     return render(request, 'community/comm_newfaq.html')
+
 
 @login_required
 def modi_faq(request, id, use_yn):
@@ -1818,6 +1841,7 @@ def modi_faq(request, id, use_yn):
 
     return render_to_response('community/comm_modifaq.html', variables)
 
+
 @login_required
 def comm_faqrequest(request):
     if request.is_ajax():
@@ -1853,6 +1877,7 @@ def comm_faqrequest(request):
             aaData = json.dumps(list(f_request_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(aaData, 'applications/json')
     return render_to_response('community/comm_faqrequest.html')
+
 
 @login_required
 def comm_reference_room(request):
@@ -1933,18 +1958,21 @@ def comm_reference_room(request):
         return HttpResponse(aaData, 'applications/json')
     return render(request, 'community/comm_reference_room.html')
 
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 @login_required
 def new_refer(request):
     if request.FILES:
-        pass # 모듈화 new_notice OK
+        pass  # 모듈화 new_notice OK
     elif request.method == 'POST':
         if request.POST['method'] == 'add':
-            pass # 모듈화 new_notice OK
+            pass  # 모듈화 new_notice OK
         elif request.POST['method'] == 'modi':
-            pass # 모듈화 new_notice OK
+            pass  # 모듈화 new_notice OK
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newrefer.html')
+
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 
 @login_required
@@ -2015,8 +2043,8 @@ def modi_refer(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modirefer.html', context)
 
@@ -2049,6 +2077,7 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
+
 @login_required
 def history(request):
     if request.is_ajax():
@@ -2064,6 +2093,7 @@ def history(request):
 
     else:
         return render(request, 'history/history.html')
+
 
 @login_required
 def history_csv(request):
@@ -2112,6 +2142,7 @@ def history_csv(request):
 
     except Exception as e:
         print e
+
 
 @login_required
 def history_rows(request):
@@ -2381,13 +2412,16 @@ def history_rows(request):
             result_dict['content_type_id'] = content_type_dict[content_type_id]
             result_dict['action_flag'] = action_flag_dict[action_flag]
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
-                                                                                                                                                                                        '304'] else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
+                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
+                '303',
+                '304'] else '-'
 
     # pp = pprint.PrettyPrinter(indent=2)
     # pp.pprint(connection.queries)
 
     return columns, recordsTotal, result_list
+
 
 @login_required
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
@@ -2431,6 +2465,7 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
 
     return ''
 
+
 @login_required
 def get_system_name(content_type_id):
     """
@@ -2449,6 +2484,7 @@ def get_system_name(content_type_id):
     else:
         system = 'k-mooc'
     return system
+
 
 @login_required
 def get_change_message_dict(change_message):
@@ -2474,6 +2510,7 @@ def get_change_message_dict(change_message):
     finally:
         return change_message_dict
 
+
 @login_required
 def get_object_repr_dict(object_repr):
     """
@@ -2495,6 +2532,7 @@ def get_object_repr_dict(object_repr):
             result[list2[0]] = list2[1]
     return result
 
+
 @login_required
 def get_searcy_string(content_type_id, change_message_dict):
     """
@@ -2510,6 +2548,7 @@ def get_searcy_string(content_type_id, change_message_dict):
     else:
         search_query = ''
     return search_query
+
 
 @login_required
 def get_target_id(content_type_id, object_repr_dict):
@@ -2599,6 +2638,7 @@ auth_dict = {
     'bio': u'자기소개',
     'profile_image_uploaded_at': u'프로필 이미지 업로드 일시',
 }
+
 
 # community view
 def comm_mobile(request):
@@ -2760,7 +2800,6 @@ def new_mobile(request):
     return render(request, 'community/comm_newmobile.html')
 
 
-
 @csrf_exempt
 def modi_mobile(request, id, use_yn):
     mod_mobile = []
@@ -2862,3 +2901,448 @@ def file_download(request, file_name):
 
             return response
     raise Http404
+
+
+# ---------- 2017.11.03 ahn jin yong ---------- #
+@login_required
+def multiple_email(request):
+
+    if request.is_ajax():
+
+        # what is mode?
+        search_mod = request.GET.get('search_mod')
+
+        # search name
+        if search_mod == '2' :
+            name_search = request.GET.get('name_search')
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '0' THEN '수강신청경험자'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '교수자 권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '수강신청경험자, 교수자권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '교수자권한, 운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한'
+                           end gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                    JOIN   edxapp.auth_user   AS au
+                    ON     ge.regist_id = au.id
+                    WHERE   title like '%{0}%'
+                '''.format(name_search)
+                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
+
+        # search date
+        if search_mod == '1' :
+            startDt = request.GET.get('startDt')
+            endDt = request.GET.get('endDt')
+            startDt = startDt.replace('/', '-')
+            endDt = endDt.replace('/', '-')
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '0' THEN '수강신청경험자'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '교수자 권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '0' THEN '수강신청경험자, 교수자권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '0'
+                                  AND    target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                                  WHEN target1 = '0'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '교수자권한, 운영자 권한'
+                                  WHEN target1 = '1'
+                                  AND    target2 = '1'
+                                  AND    target3 = '1' THEN '수강신청경험자, 교수자권한, 운영자권한'
+                           end gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                    JOIN   edxapp.auth_user   AS au
+                    ON     ge.regist_id = au.id
+                    WHERE   regist_date BETWEEN '{0}' AND '{1}'
+                '''.format(startDt, endDt)
+                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
+
+        # search base
+        if search_mod == '0' :
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT mail_id,
+                           CASE
+                             WHEN target1 = '0'
+                                  AND target2 = '0'
+                                  AND target3 = '0' THEN '수동발송'
+                             WHEN target1 = '1'
+                                  AND target2 = '0'
+                                  AND target3 = '0' THEN '수강신청경험자'
+                             WHEN target1 = '0'
+                                  AND target2 = '1'
+                                  AND target3 = '0' THEN '교수자 권한'
+                             WHEN target1 = '0'
+                                  AND target2 = '0'
+                                  AND target3 = '1' THEN '운영자 권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '1'
+                                  AND target3 = '0' THEN '수강신청경험자, 교수자권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '0'
+                                  AND target3 = '1' THEN '수강신청경험자한, 운영자권한'
+                             WHEN target1 = '0'
+                                  AND target2 = '1'
+                                  AND target3 = '1' THEN '교수자권한, 운영자 권한'
+                             WHEN target1 = '1'
+                                  AND target2 = '1'
+                                  AND target3 = '1' THEN
+                             '수강신청경험자, 교수자권한, 운영자권한'
+                           end                                        gubn,
+                           au.username,
+                           title,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           send_count,
+                           success_count
+                    FROM   edxapp.group_email AS ge
+                           JOIN edxapp.auth_user AS au
+                             ON ge.regist_id = au.id
+                '''
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
+    return render(request, 'multiple_email/multiple_email.html')
+
+# 메일 전송 공통 모듈
+def common_send_mail(to_user, title, content):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    smtp_server = 'smtp.gmail.com'
+    smtp_port   = 587
+    smtp_id     = 'b930208@gmail.com'
+    smtp_pw     = '####'
+    from_user = smtp_id
+
+    smtp = smtplib.SMTP(smtp_server, smtp_port)
+    smtp.ehlo()      # say Hello
+    smtp.starttls()  # TLS 사용시 필요
+    smtp.login(smtp_id, smtp_pw)
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = title
+    msg['From'] = from_user
+    msg['To'] = to_user
+
+    html = content
+    part = MIMEText(html, 'html')
+    msg.attach(part)
+    s = smtp
+    s.sendmail(from_user, to_user, msg.as_string())
+    s.quit()
+
+@login_required
+def multiple_email_new(request):
+    if request.is_ajax():
+        # init data
+        user_list = []
+        user_id_list = []
+        fail_cnt = 0
+
+        # get data
+        user_id = request.POST.get('userid')
+        subject_flag = request.POST.get('subject_flag')
+        send_type = request.POST.get('send_type')
+        account_type = request.POST.get('account_type')
+
+        print "user_id = {}".format(user_id)
+        print "subject_flag = {}".format(subject_flag) # experienced_student, instructor, operator / 1 2 3
+        print "send_type = {}".format(send_type)       # email, message, apppush / E M P
+        print "account_type = {}".format(account_type) # activation, inactive, all / E I A
+
+        # 보내는 타입이 'email'일 때 로직
+        if send_type == 'email':
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
+            if subject_flag == 'hello':
+                experienced_student = request.POST.get('experienced_student')
+                instructor = request.POST.get('instructor')
+                operator = request.POST.get('operator')
+                # 유저 목록 구해오는 로직
+                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor')
+                                        OR EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and instructor == 'true') or (instructor == 'true'):
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and operator == 'true') or (operator == 'true'):
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif experienced_student == 'true':
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+            # 보내는 타입이 '수동입력'일 때 로직
+            elif subject_flag == 'world':
+                notauto = request.POST.get('notauto')
+                tmp = notauto.split(',')
+                # 유저 목록 구해오는 로직
+                for email in tmp:
+                    user_list.append(email.strip())
+
+            # 제목, 내용 공통
+            title = request.POST.get('title')
+            content = request.POST.get('content')
+
+            # ---------- insert data ----------#
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
+            if subject_flag == 'hello':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('E', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
+                    '''.format(db_account_type, target1, target2, target3, title, content.replace("'","''"), user_id)
+                    cur.execute(query)
+            # 보내는 타입이 '수동입력'일 때 로직
+            elif subject_flag == 'world':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('E', 'N', 0, 0, 0, '{0}', '{1}', {2})
+                    '''.format(title, content.replace("'","''"), user_id)
+                    cur.execute(query)
+            # insert 이후 마지막 글 번호 얻어오기
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT LAST_INSERT_ID();
+                '''
+                cur.execute(query)
+                rows = cur.fetchall()
+                row_id = rows[0][0]
+            # ---------- insert data ----------#
+
+            # ---------- sending email ----------#
+            for n in range(0, len(user_list)):
+                # 보내는 타입이 '수동입력'이 아닐 때 로직
+                if subject_flag == 'hello':
+                    try:
+                        #common_send_mail(user, title, content) # 메일 보내는 함수
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
+                                values({0}, {1}, '{2}', 'Y', {3})
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                    except BaseException:
+                        fail_cnt = fail_cnt + 1
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
+                                values({0}, {1}, '{2}', 'N', {3})
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                # 보내는 타입이 '수동입력'일 때 로직
+                elif subject_flag == 'world':
+                    try:
+                        #common_send_mail(user, title, content) # 메일 보내는 함수
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
+                                values({0}, '{1}', 'Y', {2})
+                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+                    except BaseException:
+                        fail_cnt = fail_cnt + 1
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
+                                values({0}, '{1}', 'N', {2})
+                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
+                            print query #DEBUG
+                            cur.execute(query)
+
+            # making success cnt, fail cnt
+            total_user = len(user_list)
+            fail_cnt = fail_cnt
+            success_cnt =  (len(user_list) - fail_cnt)
+
+            # update success cnt, total cnt
+            with connections['default'].cursor() as cur:
+                query = '''
+                    UPDATE edxapp.group_email
+                    SET    send_count = {0},
+                           success_count = {1}
+                    WHERE  mail_id = {2}
+                '''.format(total_user, success_cnt, row_id)
+                cur.execute(query)
+
+        return JsonResponse({"return":"success"})
+
+    return render(request, 'multiple_email/multiple_email_new.html')
+
+#test
+def send_mail(request):
+    html = '''
+    <p>qqq</p><p>aergm<b>keam</b></p><p><b><span style="background-color: rgb(0, 255, 0);">aergmkae
+    '''
+    common_send_mail('b930208@gmail.com', '제목', html)
+
+    return JsonResponse({'foo':'bar'})
+# ---------- 2017.11.03 ahn jin yong ---------- #
