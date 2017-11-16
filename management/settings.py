@@ -124,13 +124,15 @@ database_id = '192.168.44.10'
 EXCEL_PATH = '/Users/kotech/workspace/scpTest/'
 UPLOAD_DIR = '/Users/kotech/workspace/management2/management/static/uploads/'
 WEB1_HOST = '192.168.33.11'
-WEB2_HOST = '192.168.33.11'
+WEB2_HOST = '192.168.33.10'
 WEB1_LOG = '/edx/var/log/tracking/tracking_w1/tracking/'
-WEB2_LOG = '/edx/var/log/tracking/tracking_w2/tracking/'
+WEB2_LOG = '/edx/var/log/tracking/tracking/'
 LOCAL1_DIR = '/Users/kotech/workspace/scpTest/tracking_w1/'
 LOCAL2_DIR = '/Users/kotech/workspace/scpTest/tracking_w2/'
 CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
 COMPRESS_DIR = '/Users/kotech/workspace/scpTest/'
+LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
+
 HOST_NAME = 'vagrant'
 
 debug = True
