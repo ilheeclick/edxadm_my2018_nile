@@ -36,6 +36,7 @@ from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from tracking_control.views import oldLog_remove
+import uuid
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -46,6 +47,1191 @@ def get_file_ext(filename):
     file_ext_index = len(filename_split)
     file_ext = filename_split[file_ext_index - 1]
     return file_ext
+
+def common_single_file_upload(file_object, gubun, user_id):
+
+    file_name = str(file_object).strip()
+    file_name_enc = str(uuid.uuid4()).replace('-','')
+    file_ext = get_file_ext(file_name).strip()
+    file_byte_size = file_object.size
+    file_size = str(file_byte_size/1024) + "KB"
+    file_dir = UPLOAD_DIR + file_name_enc
+    file_path = UPLOAD_DIR
+    if file_path[len(file_path)-1] == '/':
+        file_path = file_path[0:(len(file_path)-1)]
+    fp = open(file_dir, 'wb')
+    for chunk in file_object.chunks():
+        fp.write(chunk)
+    fp.close()
+
+    # DEBUG
+    print "@@@@@@@@@@@@@@@@@@@@@"
+    print file_name
+    print file_name_enc
+    print file_ext
+    print file_size
+    print file_dir
+    print UPLOAD_DIR
+    print file_path
+    print "@@@@@@@@@@@@@@@@@@@@@"
+
+    with connections['default'].cursor() as cur:
+        query = """
+        INSERT INTO edxapp.tb_board_attach
+                    (attatch_file_name,
+                     attatch_file_ext,
+                     attatch_file_size,
+                     attach_file_path,
+                     attach_org_name,
+                     attach_gubun,
+                     regist_id)
+        VALUES      ('{0}',
+                     '{1}',
+                     '{2}',
+                     '{3}',
+                     '{4}',
+                     '{5}',
+                      {6})
+        """.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
+        cur.execute(query)
+# ---------- common module ---------- #
+
+def detail_code_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add_row_save':
+            group_code = request.POST.get('group_code')
+            detail_code = request.POST.get('detail_code')
+            detail_name = request.POST.get('detail_name')
+            detail_Ename = request.POST.get('detail_Ename')
+            detail_desc = request.POST.get('detail_desc')
+            order_no = request.POST.get('order_no')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.code_detail(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, regist_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
+                    '''.format(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id)
+            print query
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            group_code = request.POST.get('group_code')
+            detail_code_list = request.POST.get('detail_code_list')
+            user_id = request.POST.get('user_id')
+
+            detail_code_split = detail_code_list.split("+")
+            detail_code_split.pop()
+
+            for detail_code in detail_code_split:
+                cur = connection.cursor()
+                query = '''
+                        UPDATE code_detail
+                           SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
+                         WHERE group_code = '{1}' AND detail_code = '{2}';
+                        '''.format(user_id, group_code, detail_code)
+                print query
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'update':
+            detail_code = request.POST.get('detail_code')
+            detail_name = request.POST.get('detail_name')
+            detail_Ename = request.POST.get('detail_Ename')
+            detail_desc = request.POST.get('detail_desc')
+            order_no = request.POST.get('order_no')
+            use_yn = request.POST.get('use_yn')
+            group_code_prev = request.POST.get('group_code_prev')
+            detail_code_prev = request.POST.get('detail_code_prev')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''
+                    UPDATE code_detail
+                       SET detail_code = '{0}',
+                           detail_name = '{1}',
+                           detail_Ename = '{2}',
+                           detail_desc = '{3}',
+                           order_no = '{4}',
+                           use_yn = '{5}',
+                           modify_id = '{6}',
+                           modify_date = now()
+                     WHERE group_code = '{7}' AND detail_code = '{8}';
+                    '''.format(detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id, group_code_prev, detail_code_prev)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+def group_code_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add_row_save':
+            group_code = request.POST.get('group_code')
+            group_name = request.POST.get('group_name')
+            group_desc = request.POST.get('group_desc')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.code_group(group_code, group_name, group_desc, use_yn, regist_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}')
+                    '''.format(group_code, group_name, group_desc, use_yn, user_id)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            group_code_list = request.POST.get('group_code_list')
+            user_id = request.POST.get('user_id')
+            group_code_split = group_code_list.split("+")
+            group_code_split.pop()
+
+            for group_code in group_code_split:
+                cur = connection.cursor()
+                query = '''
+                        UPDATE code_group
+                           SET delete_yn = 'Y', modify_id ='{0}', modify_date = now()
+                         WHERE group_code = '{1}';
+                        '''.format(user_id, group_code)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'update':
+            group_name = request.POST.get('group_name')
+            group_desc = request.POST.get('group_desc')
+            use_yn = request.POST.get('use_yn')
+            user_id = request.POST.get('user_id')
+            group_code_prev = request.POST.get('group_code_prev')
+
+
+            cur = connection.cursor()
+            query = '''
+                    UPDATE code_group
+                       SET group_name ='{0}', group_desc = '{1}', use_yn = '{2}', modify_id = '{3}', modify_date = now()
+                     WHERE group_code = '{4}';
+                    '''.format(group_name, group_desc, use_yn, user_id, group_code_prev)
+            print query
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+
+@csrf_exempt
+def detail_code(request):
+    result = dict()
+    group_code = request.GET.get('group_code')
+
+    if (group_code == None):
+        group_code = '%'
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+              SELECT group_code,
+                     detail_code,
+                     detail_name,
+                     detail_Ename,
+                     detail_desc,
+                     order_no,
+                     use_yn,
+                     regist_date
+                FROM code_detail
+               WHERE delete_yn = 'N' AND group_code LIKE '{0}'
+            ORDER BY regist_date;
+        '''.format(group_code)
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+@csrf_exempt
+def group_code(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+            SELECT group_code,
+                   group_name,
+                   group_desc,
+                   use_yn,
+                   regist_date
+              FROM code_group
+             WHERE delete_yn = 'N'
+             ORDER BY regist_date;
+        '''
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+@login_required
+def code_manage(request):
+    return render(request, 'code_manage/code_manage.html')
+
+
+@csrf_exempt
+def course_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            user_id = request.POST.get('user_id')
+            course_id = request.POST.get('course_id')
+            course_id = course_id.split('$')
+            course_id.pop()
+            choice1_list = request.POST.get('choice1_list')
+            choice1_list = choice1_list.split('$')
+            choice1_list.pop()
+            choice2_list = request.POST.get('choice2_list')
+            choice2_list = choice2_list.split('$')
+            choice2_list.pop()
+
+            for idx in range(len(course_id)):
+                cur = connection.cursor()
+                query = '''
+                            SELECT count(course_id)
+                              FROM course_overview_addinfo
+                             WHERE course_id = '{0}';
+                        '''.format(course_id[idx])
+                cur.execute(query)
+                cnt = cur.fetchall()
+                cur.close()
+
+                if (cnt[0][0] == 0):
+                    cur = connection.cursor()
+                    query = '''
+                               insert into edxapp.course_overview_addinfo(course_id, create_type, create_year, regist_id, modify_id)
+                               VALUES ('{0}','{1}','{2}','{3}','{4}')
+                            '''.format(course_id[idx], choice1_list[idx], choice2_list[idx], user_id, user_id)
+                    cur.execute(query)
+                    cur.close()
+                elif (cnt[0][0] == 1):
+                    cur = connection.cursor()
+                    query = '''
+                               UPDATE edxapp.course_overview_addinfo
+                               SET delete_yn = 'N', create_type ='{0}', create_year='{1}', modify_id='{2}'
+                               WHERE course_id = '{3}';
+                            '''.format(choice1_list[idx], choice2_list[idx], user_id, course_id[idx])
+                    cur.execute(query)
+                    cur.close()
+
+            data = json.dumps({'status': "success"})
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'del':
+            user_id = request.POST.get('user_id')
+            course_id = request.POST.get('course_id')
+            course_id = course_id.split('$')
+            course_id.pop()
+
+            for idx in range(len(course_id)):
+                cur = connection.cursor()
+                query = '''
+                            UPDATE edxapp.course_overview_addinfo
+                               SET delete_yn = 'Y'
+                             WHERE course_id = '{0}';
+                        '''.format(course_id[idx])
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+            return HttpResponse(data, 'applications/json')
+
+@login_required
+def course_db_list(request):
+    client = MongoClient(database_id, 27017)
+    db = client.edxapp
+    result = dict()
+
+    method = request.GET['method']
+    start = request.GET['start']
+    end = request.GET['end']
+    course_name = request.GET['course_name']
+    choice = request.GET['choice']
+    if (course_name ==''):
+        course_name = '%'
+
+    if request.GET['method'] == 'course_list':
+        with connections['default'].cursor() as cur:
+            course_list = []
+            if (choice ==''):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE     start >=
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                                            '%Y-%m-%d')
+                                         AND end <=
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                                            '%Y-%m-%d')
+                                         AND display_name like '%{0}%'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE     start >=
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                                          '%Y-%m-%d')
+                                       AND end <=
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                                          '%Y-%m-%d')
+                                       AND display_name like '%{1}%') b;
+                '''.format(course_name, course_name)
+            elif (choice == '1'):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE enrollment_start >= '{0}' AND enrollment_end <= '{1}' AND display_name like '%{4}%'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE enrollment_start >= '{2}' AND enrollment_end <= '{3}' AND display_name like '%{5}%') b;
+                        '''.format(start, end, start, end, course_name, course_name)
+
+            elif (choice == '2'):
+                query = '''
+                        SELECT @rn := @rn - 1 rn, a.*
+                          FROM (  SELECT CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_type
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_type,
+                                     CASE
+                                        WHEN d.delete_yn = 'N' THEN d.create_year
+                                        WHEN d.delete_yn = 'Y' THEN ''
+                                     END
+                                        create_year,
+                                         d.course_no,
+                                         e.detail_name,
+                                         a.display_name,
+                                         a.id,
+                                         a.created,
+                                         a.enrollment_start,
+                                         a.enrollment_end,
+                                         a.end,
+                                         c.cert_date,
+                                         d.teacher_name,
+                                         a.effort,
+                                         CASE
+                                            WHEN c.cert_date IS NOT NULL
+                                            THEN
+                                               '이수증발급'
+                                            WHEN start > end AND enrollment_start < enrollment_end
+                                            THEN
+                                               '미정'
+                                            WHEN end < now()
+                                            THEN
+                                               '종료'
+                                            WHEN start < now() AND now() < end
+                                            THEN
+                                               '운영중'
+                                            WHEN now() < start
+                                            THEN
+                                               '개강예정'
+                                            ELSE
+                                               '미정'
+                                         END
+                                            AS condi
+                                    FROM course_overviews_courseoverview a
+                                         LEFT OUTER JOIN student_courseaccessrole b
+                                            ON a.id = b.course_id AND b.role = 'instructor'
+                                         LEFT OUTER JOIN course_overview_addinfo d
+                                            ON a.id = d.course_id
+                                         LEFT OUTER JOIN (  SELECT course_id, min(created_date) cert_date
+                                                              FROM certificates_generatedcertificate
+                                                          GROUP BY course_id) c
+                                            ON a.id = c.course_id
+                                         LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
+                                   WHERE start >= '{0}' AND end <= '{1}' AND display_name like '%{4}%'
+                                GROUP BY a.id) a,
+                               (SELECT @rn := count(*) + 1
+                                  FROM course_overviews_courseoverview
+                                 WHERE start >= '{2}' AND end <= '{3}' AND display_name like '%{5}%') b;
+                        '''.format(start, end, start, end, course_name, course_name)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for multi in row:
+                value_list = []
+                value_list.append(None)
+                value_list.append(multi[0])
+                value_list.append(multi[6])
+                value_list.append(None)
+                value_list.append(None)
+                value_list.append(multi[1])
+                value_list.append(multi[2])
+                value_list.append(multi[4])
+                multi_num = multi[6].split('+')
+                multi_org = multi_num[0].split(':')
+
+                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                pb = cursor.get('versions').get('published-branch')
+                cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
+                blocks = cursor.get('blocks')
+
+                for block in blocks:
+                    block_type = block.get('block_type')
+
+                    if block_type == 'course':
+                        classfy = block.get('fields').get('classfy')
+                        middle_classfy = block.get('fields').get('middle_classfy')
+
+                        if not classfy:
+                            classfy = ''
+                        elif not middle_classfy:
+                            middle_classfy = ''
+
+                cur = connection.cursor()
+                query = '''
+                        SELECT detail_name
+                          FROM code_detail
+                         WHERE detail_code = '{0}';
+                        '''.format(classfy)
+                cur.execute(query)
+                clsf_h = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = '''
+                        SELECT detail_name
+                          FROM code_detail
+                         WHERE detail_code = '{0}';
+                        '''.format(middle_classfy)
+                cur.execute(query)
+                m_clsf_h = cur.fetchall()
+                cur.close()
+
+                value_list.append(clsf_h[0][0])
+                value_list.append(m_clsf_h[0][0])
+                value_list.append(multi[5])
+
+                value_list.append(multi_org[1])
+                value_list.append(multi_num[1])
+                value_list.append(multi_num[2])
+                value_list.append(multi[14])
+                value_list.append(multi[7])
+                value_list.append(multi[8])
+                value_list.append(multi[9])
+                value_list.append(multi[10])
+                value_list.append(multi[11])
+                value_list.append(multi[12])
+                if multi[13] != None :
+                    multi_time = multi[13].replace('@', '+').replace('#', '+')
+                multi_time_num = multi_time.split('+')
+                if(len(multi_time_num) == 3):
+                    value_list.append(multi_time_num[2])
+                    value_list.append(multi_time_num[0])
+                    value_list.append(multi_time_num[1])
+                    all_hour = multi_time_num[0].split(':')
+                    hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
+                    minut = int(all_hour[1]) * int(multi_time_num[1])
+                    time = hour + minut
+                    value_list.append(str(time // 60) + ':' + str(time % 60))
+                else:
+                    value_list.append(None)
+                    value_list.append(None)
+                    value_list.append(None)
+                    value_list.append(None)
+                value_list.append(None)
+
+                course_list.append(value_list)
+
+            data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(data, 'applications/json')
+
+        result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+
+@login_required
+def multi_site(request):
+    return render(request, 'multi_site/multi_site.html')
+
+@login_required
+def course_manage(request):
+    return render(request, 'course_manage/course_manage.html')
+
+@login_required
+def course_list(request, site_id, org_name):
+
+    variables = RequestContext(request, {
+        'site_id': site_id,
+        'org_name': org_name
+    })
+    return render_to_response('multi_site/course_list.html', variables)
+
+def multisite_org(request):
+    org_list = []
+
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'org':
+            cur = connection.cursor()
+
+            query = """
+                      SELECT detail_code, detail_name
+                        FROM code_detail
+                       WHERE group_code = '003' AND use_yn = 'Y' AND delete_yn = 'N'
+                    ORDER BY detail_name;
+                    """
+            cur.execute(query)
+            org = cur.fetchall()
+            cur.close()
+
+            data = json.dumps(list(org), cls=DjangoJSONEncoder, ensure_ascii=False)
+
+
+    return HttpResponse(data, 'applications/json')
+
+
+def course_list_db(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        org = request.GET.get('org')
+        site_id = request.GET.get('site_id')
+        print org
+        if (org == 'None'):
+            org = '%'
+
+        query = '''
+            SELECT co.id
+              FROM course_overviews_courseoverview co
+                   JOIN multisite_course mc ON co.id = mc.course_id
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code
+             WHERE mc.site_id = '{0}';
+            '''.format(site_id)
+        cur.execute(query)
+        select = cur.fetchall()
+        select_course = ""
+
+        for index in select:
+            select_course += (index[0])+ "','"
+
+        query = '''
+            SELECT replace(@rn := @rn - 1, .0, '')        rn,
+                   id,
+                   display_name,
+                   IFNULL(cd.detail_name, coc.org)        detail_name,
+                   date_format(`start`, '%Y/%m/%d %H:%i') start,
+                   date_format(`end`, '%Y/%m/%d %H:%i')   end,
+                   org,
+                   display_number_with_default            course,
+                   substring_index(id, '+', -1)           run
+              FROM course_overviews_courseoverview coc
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   (  SELECT @rn := count(*) + 1
+                        FROM course_overviews_courseoverview
+                       WHERE id NOT IN
+                                ('{0}')
+                    ORDER BY start DESC) b
+             WHERE     org LIKE '{1}'
+                   AND id NOT IN
+                          ('{2}');
+        '''.format(select_course, org, select_course)
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+@csrf_exempt
+def multisite_course(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                           VALUES ('{0}','{1}','{2}')
+                        '''.format(site_id, item, user_id)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'input_add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        SELECT count(id)
+                          FROM course_overviews_courseoverview
+                         WHERE id = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                count = cur.fetchall()
+                cur.close()
+
+                if (count[0][0] == 1) :
+                    cur = connection.cursor()
+                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                               VALUES ('{0}','{1}','{2}')
+                            '''.format(site_id, item, user_id)
+                    cur.execute(query)
+                    cur.close()
+                    data = json.dumps({'status': "success"})
+                else :
+                    data = json.dumps({'status': "fail"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            site_id = request.POST.get('site_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
+                        '''.format(site_id, item)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
+
+def select_list_db(request):
+    site_id = request.GET.get('site_id')
+    org = request.GET.get('org')
+    print org
+    if (org == 'None'):
+        org = '%'
+    print org
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+            SELECT replace(@rn := @rn - 1, .0, '')        rn,
+                   co.id,
+                   cd.detail_name,
+                   co.display_name,
+                   date_format(`start`, '%Y/%m/%d %H:%i') start,
+                   date_format(`end`, '%Y/%m/%d %H:%i')   end,
+                   org,
+                   display_number_with_default            course,
+                   substring_index(id, '+', -1)           run
+              FROM course_overviews_courseoverview co
+                   JOIN multisite_course mc ON co.id = mc.course_id
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code,
+                   (SELECT @rn := count(*) + 1
+                      FROM multisite_course
+                     WHERE site_id = '{0}') b
+             WHERE mc.site_id = '{1}' AND co.org LIKE '{2}';
+        '''.format(site_id, site_id, org)
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        print ('**(*)()(&)&)($)(*)(@)$)(**)(@$*)(')
+        print rows
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+@csrf_exempt
+def multi_site_db(request):
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        multi_site_list = []
+
+        if request.GET['method'] == 'multi_site_list':
+            cur = connection.cursor()
+            query = """
+                SELECT @rn := @rn - 1 rn,
+                       site_id,
+                       site_name,
+                       site_code,
+                       site_url,
+                       username,
+                       regist_date
+                  FROM multisite a JOIN auth_user b on a.regist_id= b.id,
+                       (SELECT @rn := count(*) + 1
+                          FROM multisite where delete_yn = 'N') b
+                 WHERE delete_yn = 'N'
+              ORDER BY regist_date DESC;
+			"""
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for multi in row:
+                value_list = []
+                value_list.append(multi[0])
+                value_list.append(multi[1])
+                value_list.append(multi[2])
+                value_list.append(multi[3])
+                value_list.append(multi[4])
+                value_list.append(multi[5])
+                value_list.append(multi[6])
+                value_list.append('<a href="/manage/course_list/'+ str(multi[1]) + '/' + str(multi[2]) + '"><input type="button" value="관  리" class="btn btn-default"></a>')
+                multi_site_list.append(value_list)
+
+            data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+    return render(request, 'multi_site/multi_site.html')
+
+@csrf_exempt
+def add_multi_site(request, id):
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('multi_site/modi_multi_site.html', variables)
+
+
+def modi_multi_site(request, id):
+    mod_multi = []
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi':
+            cur = connection.cursor()
+            query = """
+					SELECT site_name,
+                           site_code,
+                           site_url
+					  FROM multisite
+                     WHERE site_id =
+			""" + id
+
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_multi.append(p)
+            print mod_multi
+            data = json.dumps(list(mod_multi), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('multi_site/modi_multi_site.html', variables)
+
+@csrf_exempt
+def modi_multi_site_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+
+        try:
+            upload_file = request.FILES['uploadfile']
+            uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        except BaseException:
+            upload_file = None
+            uploadfile_user_id = None
+
+        if upload_file:
+            print ('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            uploadfile = request.FILES['uploadfile']
+            print type(uploadfile)
+            print uploadfile
+
+            common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
+
+            return render(request, 'multi_site/modi_multi_site.html')
+
+        if request.POST.get('method') == 'add':
+            site_name = request.POST.get('site_name')
+            site_code = request.POST.get('site_code')
+            site_url = request.POST.get('site_url')
+            regist_id = request.POST.get('regist_id')
+            email_list = request.POST.get('email_list')
+            email_list = email_list.split('+')
+            email_list.pop()
+
+            cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, logo_img)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
+                    '''.format(site_name, site_code, site_url, regist_id, regist_id, attatch_id[0][0])
+            cur.execute(query)
+            cur.close()
+
+            for item in email_list:
+                cur = connection.cursor()
+                query = '''SELECT id
+                             FROM edxapp.auth_user
+                            WHERE email = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = "select count(site_id) + 1 from multisite"
+                cur.execute(query)
+                cnt = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
+                           VALUES ('{0}','{1}','{2}','{3}')
+                        '''.format(str(cnt[0][0]), str(row[0][0]), regist_id, regist_id)
+                cur.execute(query)
+                cur.close()
+
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'modi':
+            site_name = request.POST.get('site_name')
+            site_code = request.POST.get('site_code')
+            site_url = request.POST.get('site_url')
+            multi_no = request.POST.get('multi_no')
+            regist_id = request.POST.get('regist_id')
+
+
+            cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multisite
+                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now(), logo_img = '{5}'
+                    WHERE site_id = '{4}'
+                    '''.format(site_name, site_code, site_url, regist_id, multi_no, attatch_id[0][0])
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            multi_no = request.POST.get('multi_no')
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multisite
+                    SET delete_yn = 'Y'
+                    WHERE site_id = '{0}'
+                    '''.format(multi_no)
+            cur.execute(query)
+            cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
+
+
+def manager_list(request):
+    result = dict()
+    id = request.GET.get('id')
+
+    with connections['default'].cursor() as cur:
+
+        query = '''
+               SELECT au.email, up.name, au.username
+                 FROM edxapp.auth_user AS au
+                 JOIN edxapp.auth_userprofile as up
+                   ON au.id = up.user_id
+                 JOIN edxapp.multisite_user as mu
+                   ON up.user_id = mu.user_id
+                WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
+        '''.format(id)
+        print query
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+def manager_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            id = request.POST.get('id')
+            input_email = request.POST.get('input_email')
+            regist_id = request.POST.get('regist_id')
+
+
+            cur = connection.cursor()
+            query = '''SELECT id
+                         FROM edxapp.auth_user
+                        WHERE email = '{0}';
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+
+
+            cur = connection.cursor()
+            query = '''SELECT count(site_id)
+                         FROM edxapp.multisite_user
+                        WHERE user_id = '{0}' and site_id = '{1}' and delete_yn = 'Y' ;
+                    '''.format(str(row[0][0]), id)
+            cur.execute(query)
+            cnt = cur.fetchall()
+            cur.close()
+            print cnt[0][0]
+            if(cnt[0][0] == 1) :
+                cur = connection.cursor()
+                query = '''update edxapp.multisite_user
+                              SET delete_yn = 'N'
+                            WHERE site_id = '{0}' and user_id = '{1}';
+                        '''.format(id, str(row[0][0]))
+                cur.execute(query)
+                cur.close()
+            elif(cnt[0][0] == 0):
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
+                           VALUES ('{0}','{1}','{2}','{3}')
+                        '''.format(id, str(row[0][0]), regist_id, regist_id)
+                cur.execute(query)
+                cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'temporary':
+            input_email = request.POST.get('input_email')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT au.email, up.name, au.username
+                      FROM edxapp.auth_user AS au
+                      JOIN edxapp.auth_userprofile as up
+                        ON au.id = up.user_id
+                     WHERE au.email = '{0}'
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            print row
+
+            data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'verify':
+            input_email = request.POST.get('input_email')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT COUNT(id)
+                    FROM edxapp.auth_user
+                    WHERE email = '{0}';
+                    '''.format(input_email)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            print row[0][0]
+
+            data = json.dumps(row[0][0], cls=DjangoJSONEncoder, ensure_ascii=False)
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            regist_id = request.POST.get('regist_id')
+
+            cur = connection.cursor()
+
+            query = '''
+                    SELECT id
+                      FROM auth_user
+                     WHERE auth_user.username = '{0}';
+                    '''.format(user_id)
+            cur.execute(query)
+            new_id = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = '''
+                    update edxapp.multisite_user
+                    SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
+                    WHERE site_id = '{1}' and user_id = '{2}'
+                    '''.format(regist_id, site_id, new_id[0][0])
+            cur.execute(query)
+            cur.close()
+
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'multi_site/modi_multi_site.html')
 
 
 @login_required
@@ -147,29 +1333,35 @@ def popup_db(request):
         if request.GET['method'] == 'popup_list':
             cur = connection.cursor()
             query = """
-                SELECT popup_id,
-                       CASE
-                          WHEN popup_type = 'H' THEN 'HTML'
-                          WHEN popup_type = 'I' THEN 'Image'
-                       END
-                       popup_type,
-                       title,
-                       regist_id,
-                       start_date,
-                       end_date,
-                       CASE
-                          WHEN link_type = '0' THEN '없음'
-                          WHEN link_type = '1' THEN '전체링크'
-                          WHEN link_type = '2' THEN '이미지맵'
-                       END
-                       link_type,
-                       link_url,
-                       CASE
-                          WHEN use_yn = 'Y' THEN '사용함'
-                          WHEN use_yn = 'N' THEN '사용안함'
-                       END
-                       use_yn
-                  FROM popup
+                   SELECT @rn := @rn - 1 rn,
+                         popup_id,
+                         CASE
+                            WHEN popup_type = 'H' THEN 'HTML'
+                            WHEN popup_type = 'I' THEN 'Image'
+                         END
+                            popup_type,
+                         title,
+                         username,
+                         start_date,
+                         end_date,
+                         CASE
+                            WHEN link_type = '0' THEN '없음'
+                            WHEN link_type = '1' THEN '전체링크'
+                            WHEN link_type = '2' THEN '이미지맵'
+                         END
+                            link_type,
+                         link_url,
+                         CASE
+                            WHEN use_yn = 'Y' THEN '사용함'
+                            WHEN use_yn = 'N' THEN '사용안함'
+                         END
+                            use_yn
+                    FROM popup pu
+                         JOIN auth_user au ON au.id = pu.regist_id,
+                         (SELECT @rn := count(*) + 1
+                            FROM popup WHERE delete_yn = 'N') x
+                            WHERE pu.delete_yn = 'N'
+                ORDER BY regist_date DESC;
 			"""
             cur.execute(query)
             row = cur.fetchall()
@@ -185,6 +1377,7 @@ def popup_db(request):
                 value_list.append(pop[6])
                 value_list.append(pop[7])
                 value_list.append(pop[8])
+                value_list.append(pop[9])
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -256,11 +1449,69 @@ def new_popup(request):
 
             return HttpResponse(data, 'applications/json')
 
+        elif request.POST.get('method') == 'copy':
+            pop_id = request.POST.get('pop_id')
+
+            cur = connection.cursor()
+            query = """
+                  INSERT INTO popup(popup_type,
+                              link_type,
+                              image_map,
+                              title,
+                              contents,
+                              image_url,
+                              link_url,
+                              link_target,
+                              start_date,
+                              start_time,
+                              end_date,
+                              end_time,
+                              template,
+                              width,
+                              height,
+                              hidden_day,
+                              regist_id,
+                              modify_id)
+               SELECT popup_type,
+                      link_type,
+                      image_map,
+                      title,
+                      contents,
+                      image_url,
+                      link_url,
+                      link_target,
+                      end_date,
+                      start_time,
+                      end_date,
+                      end_time,
+                      template,
+                      width,
+                      height,
+                      hidden_day,
+                      regist_id,
+                      modify_id
+                 FROM popup
+                WHERE popup_id = '{0}';
+                    """.format(pop_id)
+
+            cur.execute(query)
+            cur.close()
+
+            cur = connection.cursor()
+            query = "SELECT max(popup_id) FROM popup;"
+            cur.execute(query)
+            maxN = cur.fetchall()
+            cur.close()
+
+            data = maxN[0][0]
+
+            return HttpResponse(data, 'applications/json')
+
         elif request.POST.get('method') == 'delete':
             pop_id = request.POST.get('pop_id')
 
             cur = connection.cursor()
-            query = "delete from popup where popup_id = " + pop_id
+            query = "update edxapp.popup set delete_yn = 'Y' where popup_id = " + pop_id
             cur.execute(query)
             cur.close()
 
@@ -274,7 +1525,6 @@ def new_popup(request):
 @login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
-
 
 def test(request):
     if request.is_ajax():
@@ -1176,6 +2426,18 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
+# ---------- 2017.11.03 ahn jin yong ---------- #
+@csrf_exempt
+def file_upload(request):
+    if request.FILES:
+
+        file_object_list = request.FILES.getlist('file')
+        file_object = file_object_list[0]
+        # 파일객체 고정 userid
+        common_single_file_upload(file_object, 'multisite', '1')
+
+        return JsonResponse({'hello':'world'})
+# ---------- 2017.11.03 ahn jin yong ---------- #
 
 # ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
@@ -2206,23 +3468,18 @@ def history_rows(request):
                 query_arr.append(" and a.id = 311 ")
 
         if operation:
-            print 'add query type 1'
             query_arr.append(" and b.action_flag = %s " % operation)
 
         if func:
-            print 'add query type 2'
             query_arr.append(" and a.id = %s " % func)
 
         if func_detail:
-            print 'add query type 3'
             query_arr.append(" and b.action_flag = %s " % func_detail)
 
         if user_id:
-            print 'add query type 4'
             query_arr.append(" and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id))
 
         if target_id:
-            print 'add query type 5'
             # 강좌 운영팀 관리
             if func in ['3', '295', '306']:
                 query_arr.append(" and b.object_repr like '%%%s%%' " % target_id)
@@ -2353,7 +3610,7 @@ def history_rows(request):
 
                 # 비밀번호를 변경하는 화면은 회원정보 수정과 별개로 구성되어있음
                 # 비밀번호 변경의 경우와 아닌경우를 분기
-                query_string_dict = change_message_dict['query']
+                query_string_dict = change_message_dict['query'] if change_message_dict.has_key('query') else dict()
 
                 # print 'check diff ---------------------------------------------- s'
                 # print diff_query1, [check_id, check_id, action_time, action_time]
@@ -2423,7 +3680,6 @@ def history_rows(request):
     return columns, recordsTotal, result_list
 
 
-@login_required
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     if not content_type_id:
         return ''
@@ -2466,7 +3722,6 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     return ''
 
 
-@login_required
 def get_system_name(content_type_id):
     """
     시스템 표시 구분.
@@ -2486,7 +3741,6 @@ def get_system_name(content_type_id):
     return system
 
 
-@login_required
 def get_change_message_dict(change_message):
     """
     request의 파라미터를 dict 형태로 변환후 문자열로 재변환하여 change_message 값으로 저장하고 있음.
@@ -2511,7 +3765,6 @@ def get_change_message_dict(change_message):
         return change_message_dict
 
 
-@login_required
 def get_object_repr_dict(object_repr):
     """
     object_repr 의 내용은 재정의된 문자열로 저장이되고 있으며,
@@ -2533,7 +3786,6 @@ def get_object_repr_dict(object_repr):
     return result
 
 
-@login_required
 def get_searcy_string(content_type_id, change_message_dict):
     """
     django admin 에서 사용자 검색을 한경우 검색어를 추출.
@@ -2550,7 +3802,6 @@ def get_searcy_string(content_type_id, change_message_dict):
     return search_query
 
 
-@login_required
 def get_target_id(content_type_id, object_repr_dict):
     """
     개인정보 수정, 사용자를 지정하여 처리하는 액션의 경우 대상 아이디를 조회하여 리턴.

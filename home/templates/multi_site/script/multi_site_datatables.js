@@ -20,33 +20,23 @@ Theme Version: 	1.5.2
 			"order": [[ 0, "desc" ]],
 			"fnReloadAjax": true,
 			"fnServerParams": function ( data ) {
-				 data.push({ "name": 'method', "value": 'popup_list'});
+				 data.push({ "name": 'method', "value": 'multi_site_list'});
 			},
 
 
 			dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-			//oTableTools: {
-			//	sSwfPath: $table.data('swf-path'),
-			//	aButtons: [
-			//		{
-			//			sExtends: 'xls',
-			//			sButtonText: 'Excel'
-			//		},
-			//		{
-			//			sExtends: 'print',
-			//			sButtonText: 'Print',
-			//			sInfo: 'Please press CTR+P to print or ESC to quit'
-			//		}
-			//	]
-			//},
 
 			"paginate": true,
 			"columnDefs":[
 				{
 					"targets": [1],
 					"visible": false,
-				}
+				},
+				{targets: 0, visible: true, width: '6%'},
+				{targets: 7, visible: true, width: '8%'},
+
 			],
+
 			"initComplete": function(settings, json){
 				$('input[type="search"]').attr('placeholder', '검색하세요');
 				$('input[type="search"]').attr('class', 'form-control');
@@ -89,7 +79,7 @@ Theme Version: 	1.5.2
 			var t = $('#datatable33').DataTable();
 			$row = $(this).closest('tr');
 			data = t.row($row.get(0)).data();
-			location.href='/manage/modi_popup/'+data[1]
+			location.href='/manage/modi_multi_site/'+data[1]
 		});
 	};
 

@@ -206,7 +206,7 @@
                             return data.substr(0, 25) + ' ...'
                         else
                             return data
-                        }
+                    }
                     },
                     {
                         targets: 7, visible: true, render: function (data, type, row) {
@@ -215,7 +215,7 @@
                             return data.substr(0, 15) + ' ...'
                         else
                             return data
-                        }
+                    }
                     },
                     {targets: 8, visible: true, width: '10%'},
                     {targets: 9, visible: true, width: '6%'},
@@ -328,7 +328,7 @@
 
                     console.log(row.data());
 
-                    if(!detail){
+                    if (!detail) {
                         return;
                     }
 
@@ -344,13 +344,13 @@
         }
 
         function format(d) {
-            try{
+            try {
                 if (d.content_type_detail)
                     return d.content_type_detail;
                 else if (d.target_id)
                     return d.target_id;
 
-            }catch(e){
+            } catch (e) {
                 console.log(e);
                 return null;
             }

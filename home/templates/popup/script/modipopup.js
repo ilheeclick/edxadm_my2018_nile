@@ -4,6 +4,8 @@ $(document).ready(function(){
     var id = '{{id}}';
     if (id != 99999) {
         document.getElementById('DelBtn').style.display = '';
+        document.getElementById('CopyBtn').style.display = '';
+
     }
         $.ajax({
             url: '/manage/modi_popup/' + id,

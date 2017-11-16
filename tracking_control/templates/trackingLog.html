@@ -6,7 +6,7 @@
 {% block script_down %}
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             // calendar setting
             $("#datepicker").datepicker({
                 minDate: new Date(2015, 10 - 1, 14),
@@ -40,7 +40,7 @@
 
             datalist();
 
-            $("#menu_select").change(function(){
+            $("#menu_select").change(function () {
                 var menu_sel = $("#menu_select").val();
                 if (menu_sel == '0') {
                     $("#down_div").hide();
@@ -87,7 +87,7 @@
                 bLengthChange: false,
                 searching: false,
                 "bDestroy": true,
-                'ajax':{
+                'ajax': {
                     url: "/manage/tracking_log/downlist/",
                     data: buildSearchData,
                     dataType: "json",
@@ -161,20 +161,20 @@
                     url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
                     dataType: "json",
                 }).done(function (data) {
-                    location.href = "/manage/tracking_log/down/"+data.filename;
+                    location.href = "/manage/tracking_log/down/" + data.filename;
                     $("#download").find("img").hide();
 
                     $.ajax({
                         url: "/manage/tracking_log/logdata_add/",
                         data: {
-                            'client':client,
-                            'startdate':startdate,
-                            'enddate':enddate,
-                            'log_note':log_note
+                            'client': client,
+                            'startdate': startdate,
+                            'enddate': enddate,
+                            'log_note': log_note
                         },
                         dataType: "json",
                         type: "POST"
-                    }).done(function(data){
+                    }).done(function (data) {
                         alert('파일 생성 완료!');
                         datalist();
                         $("#datepicker").val("");
@@ -208,6 +208,7 @@
                 <option value="1">로그 다운로드</option>
                 <option value="2">처리일자 검색</option>
             </select>
+
             <form class="form-inline">
                 <div class="form-group" style="display: none; margin: 15px 0 0 5px" id="date_div">
                     <label>날짜 선택</label>
@@ -224,7 +225,8 @@
                 vertical-align: middle;"/></a>
             </form>
             <div>
-                <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" style="width: 100%; margin-top: 30px;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+                <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" style="width: 100%; margin-top: 30px;"
+                       data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
                     <thead>
                     <tr>
                         <th width="5%">No</th>
