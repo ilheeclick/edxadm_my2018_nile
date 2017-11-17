@@ -62,8 +62,8 @@ jQuery.ajaxSettings.traditional = true;
                 var site_name = $('#site_name').val();
                 var site_code = $('#site_code').val();
                 var site_url = $('#site_url').val();
-                var regist_id = {{ user.id }};
-                var multi_no = {{ id }};
+                var regist_id = '{{ user.id }}';
+                var multi_no = '{{ id }}';
                 var email_list = "";
                 $(".email").each(function () {
                     if ($(this).text() != '') {
@@ -94,7 +94,7 @@ jQuery.ajaxSettings.traditional = true;
 
     function del() {
         try {
-            var multi_no = {{ id }}
+            var multi_no = '{{ id }}';
             $.post("/manage/modi_multi_site_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 multi_no: multi_no,
@@ -108,6 +108,7 @@ jQuery.ajaxSettings.traditional = true;
             alert(e);
         }
     }
+
     function setDataTable1() {
         var $table = $('#datatable1');
 
@@ -192,13 +193,13 @@ jQuery.ajaxSettings.traditional = true;
     function del_row() {
         $("#notice_body input[type=checkbox]:checked").each(function(){
             var user_id = $(this).parent().next().next().next().text();
-            var regist_id = {{ user.id }};
+            var regist_id = '{{ user.id }}';
             try {
                 var method = 'delete';
                 $.post("/manage/manager_db/", {
                     csrfmiddlewaretoken: $.cookie('csrftoken'),
                     user_id: user_id,
-                    site_id: {{ id }},
+                    site_id: '{{ id }}',
                     regist_id:regist_id,
                     method: method,
                 }).done(function (data) {
@@ -297,7 +298,7 @@ jQuery.ajaxSettings.traditional = true;
                 var method = 'add';
                 var id = '{{id}}';
                 var input_email = $('#input_email').val();
-                var regist_id = {{ user.id }};
+                var regist_id = '{{ user.id }}';
 
                 $.post("/manage/manager_db/", {
                     csrfmiddlewaretoken: $.cookie('csrftoken'),
@@ -363,6 +364,7 @@ jQuery.ajaxSettings.traditional = true;
         table.ajax.reload();
         up_date = up_date + 1;
     }
+
     $(function(){
         $('#btn-upload').click(function(e){
             e.preventDefault();

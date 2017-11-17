@@ -1,7 +1,6 @@
 jQuery.ajaxSettings.traditional = true;
     $(document).ready(function() {
         setDataTable1();
-
     });
     function setDataTable1() {
         var $table = $('#datatable1');
@@ -100,7 +99,6 @@ jQuery.ajaxSettings.traditional = true;
             flag += 1;
         }
     }
-
 
     function buildSearchData1() {
         var obj = {
@@ -206,12 +204,13 @@ jQuery.ajaxSettings.traditional = true;
                 $(this).parent().parent().find('input:checkbox').prop("checked", true);
         });
     }
+
     var group_code = $('.form-control').val();
+
     function buildSearchData2() {
         if(group_code == undefined) {
             group_code = $('.form-control').val();
         }
-
         var obj = {
             csrfmiddlewaretoken: '{{ csrf_token }}',
             user_id: '{{ user_id }}',
@@ -273,6 +272,7 @@ jQuery.ajaxSettings.traditional = true;
         }
         cnt2 += 1;
     }
+
     function Save1() {
         $("#notice_body1 input[type=checkbox]:checked").each(function() {
             var t = $('#datatable1').DataTable();
@@ -292,7 +292,7 @@ jQuery.ajaxSettings.traditional = true;
                 group_desc: group_desc,
                 use_yn: use_yn,
                 group_code_prev: group_code_prev,
-                user_id: {{ user.id }},
+                user_id: '{{ user.id }}',
                 method: method,
             }).done(function (data) {
                 update1();
@@ -326,7 +326,7 @@ jQuery.ajaxSettings.traditional = true;
                         group_name: group_name,
                         group_desc: group_desc,
                         use_yn: use_yn,
-                        user_id: {{ user.id }},
+                        user_id: '{{ user.id }}',
                         method: method,
                     }).done(function (data) {
                         update1();
@@ -367,7 +367,7 @@ jQuery.ajaxSettings.traditional = true;
                 use_yn: use_yn,
                 group_code_prev: group_code_prev,
                 detail_code_prev: detail_code_prev,
-                user_id: {{ user.id }},
+                user_id: '{{ user.id }}',
                 method: method,
             }).done(function (data) {
                 update2();
@@ -407,7 +407,7 @@ jQuery.ajaxSettings.traditional = true;
                         detail_desc: detail_desc,
                         order_no: order_no,
                         use_yn: use_yn,
-                        user_id: {{ user.id }},
+                        user_id: '{{ user.id }}',
                         method: method,
                     }).done(function (data) {
                         update2();
@@ -420,11 +420,13 @@ jQuery.ajaxSettings.traditional = true;
             }
         }
     }
+
     function update1() {
         var table = $('#datatable1').DataTable();
         table.ajax.reload(fnInitComplete1);
         cnt1 = 0;
     }
+
     function update2() {
         var table = $('#datatable2').DataTable();
         table.ajax.reload(fnInitComplete2);
@@ -447,7 +449,7 @@ jQuery.ajaxSettings.traditional = true;
             $.post("/manage/group_code_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 group_code_list: group_code_list,
-                user_id: {{ user.id }},
+                user_id: '{{ user.id }}',
                 method: method,
             }).done(function (data) {
                 update1();
@@ -478,7 +480,7 @@ jQuery.ajaxSettings.traditional = true;
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 detail_code_list: detail_code_list,
                 group_code: group_code,
-                user_id: {{ user.id }},
+                user_id: '{{ user.id }}',
                 method: method,
             }).done(function (data) {
                 update2();
@@ -488,5 +490,4 @@ jQuery.ajaxSettings.traditional = true;
         } catch (e) {
             alert(e);
         }
-
     }

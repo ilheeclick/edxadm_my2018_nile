@@ -1,22 +1,23 @@
 jQuery.ajaxSettings.traditional = true;
-$(document).ready(function(){
-    $.ajax({
-        url: '/manage/modi_popup/' + '77777',
-        data: {
-            method: 'modi'
-        }
-    }).done(function (data) {
-        if ( data >= 3 ) {
-            swal("경고", "현재 사용중인 팝업창" + data +"개 입니다.", "warning");
-        }
-    });
 
-    var value_list;
-    var id = '{{id}}';
-    if (id != 99999) {
-        document.getElementById('DelBtn').style.display = '';
-        document.getElementById('CopyBtn').style.display = '';
-    }
+    $(document).ready(function(){
+        $.ajax({
+            url: '/manage/modi_popup/' + '77777',
+            data: {
+                method: 'modi'
+            }
+        }).done(function (data) {
+            if ( data >= 3 ) {
+                swal("경고", "현재 사용중인 팝업창" + data +"개 입니다.", "warning");
+            }
+        });
+
+        var value_list;
+        var id = '{{id}}';
+        if (id != 99999) {
+            document.getElementById('DelBtn').style.display = '';
+            document.getElementById('CopyBtn').style.display = '';
+        }
         $.ajax({
             url: '/manage/modi_popup/' + id,
             data: {
@@ -92,13 +93,8 @@ $(document).ready(function(){
             else if (data[0][16] == "N") {
                 $("#use_yn").val("사용안함").prop("selected", true);
             }
-
         })
-
-});
-
-
-
+    });
 
     function Display(id)
     {
@@ -113,7 +109,6 @@ $(document).ready(function(){
           document.getElementById('Radio_IMAGE').style.display = '';         // 보이게
        }
     }
-
 
     function setValues() {
         var link_type = document.getElementById("link_type");
@@ -146,10 +141,9 @@ $(document).ready(function(){
         $('.summernote').summernote('code', '');
     }
 
-
     function copy() {
         try {
-            var pop_id = {{ id }}
+            var pop_id = '{{ id }}';
                 $.post("/manage/new_popup/", {
                     csrfmiddlewaretoken: $.cookie('csrftoken'),
                     pop_id: pop_id,
@@ -173,8 +167,7 @@ $(document).ready(function(){
             else {
                 document.getElementById("uploadform").submit();
                 var method = '';
-                var id =
-                {{ id }}
+                var id = '{{ id }}';
                 if (id == 99999) {
                     method = 'add';
                 }
@@ -241,10 +234,9 @@ $(document).ready(function(){
                     hidden_day = "7"
                 }
 
-                var regist_id = {{ user.id }};
+                var regist_id = '{{ user.id }}';
                 var contents = $('.summernote').summernote('code');
-                var pop_id =
-                {{ id }}
+                var pop_id = '{{ id }}';
 
 
                 if (use_yn.options[use_yn.selectedIndex].text == "사용함") {
@@ -289,7 +281,7 @@ $(document).ready(function(){
 
     function del() {
         try {
-            var pop_id = {{ id }}
+            var pop_id = '{{ id }}';
             $.post("/manage/new_popup/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 pop_id: pop_id,
@@ -312,60 +304,57 @@ $(document).ready(function(){
     }
 
     function preview() {
+        var link_type = document.getElementById("link_type");
+        var title = $('#title').val();
+        var image_url = $('#image_URL').val();
+        var link_target = document.getElementById("link_target");
+        var width = $('#width').val();
+        var height = $('#height').val();
+        var contents = $('.summernote').summernote('code');
 
-            var link_type = document.getElementById("link_type");
-            var title = $('#title').val();
-            var image_url = $('#image_URL').val();
+        if (link_target.options[link_target.selectedIndex].text == "blank") {
+            link_target = "B"
+        }
+        else if (link_target.options[link_target.selectedIndex].text == "self") {
+            link_target = "S"
+        }
+        if (template.options[template.selectedIndex].text == "없음") {
+            $('#Popup_0').css("display","");
+            $('#TITLE_0').html(title);
+            $('#Popup_0').css("width",width);
+            $('#Popup_0').css("height",height);
+            $('#pop_0').attr("href", $('#link_URL').val());
+            $('#IMG').attr('src',image_url);
+            var max_width = width;
+            var max_height = height;
+            max_width = max_width - 10;
+            max_height = max_height - 55;
+            $('#IMG').css('width', max_width);
+            $('#IMG').css('height', max_height);
+            $('#CONTENTS_0').html(contents);
+            $('#Popup_0').center();
+
+        }
+        else if (template.options[template.selectedIndex].text == "기본") {
             var link_target = document.getElementById("link_target");
-            var width = $('#width').val();
-            var height = $('#height').val();
-            var contents = $('.summernote').summernote('code');
-
-            if (link_target.options[link_target.selectedIndex].text == "blank") {
-                link_target = "B"
-            }
-            else if (link_target.options[link_target.selectedIndex].text == "self") {
-                link_target = "S"
-            }
-
-
-            if (template.options[template.selectedIndex].text == "없음") {
-                $('#Popup_0').css("display","");
-                $('#TITLE_0').html(title);
-                $('#Popup_0').css("width",width);
-                $('#Popup_0').css("height",height);
-                $('#pop_0').attr("href", $('#link_URL').val());
-                $('#IMG').attr('src',image_url);
-                var max_width = width;
-                var max_height = height;
-                max_width = max_width - 10;
-                max_height = max_height - 55;
-                $('#IMG').css('width', max_width);
-                $('#IMG').css('height', max_height);
-                $('#CONTENTS_0').html(contents);
-                $('#Popup_0').center();
-
-            }
-            else if (template.options[template.selectedIndex].text == "기본") {
-                var link_target = document.getElementById("link_target");
-                $('#Popup_1').css("display","");
-                $('#TITLE_1').html(title);
-                $('#CONTENTS_1').html(contents);
-                $('#Popup_1').css("width",width);
-                $('#Popup_1').css("height",height);
-                $('#pop_1').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);;
-                $('#Popup_1').center();
-            }
-            else if (template.options[template.selectedIndex].text == "중간템플릿") {
-                var link_target = document.getElementById("link_target");
-                $('#Popup_2').css("display","");
-                $('#TITLE_2').html(title);
-                $('#CONTENTS_2').html(contents);
-                $('#Popup_2').css("width",width);
-                $('#Popup_2').css("height",height);
-                $('#pop_2').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);
-                $('#Popup_2').center();
-            }
+            $('#Popup_1').css("display","");
+            $('#TITLE_1').html(title);
+            $('#CONTENTS_1').html(contents);
+            $('#Popup_1').css("width",width);
+            $('#Popup_1').css("height",height);
+            $('#pop_1').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);;
+            $('#Popup_1').center();
+        }
+        else if (template.options[template.selectedIndex].text == "중간템플릿") {
+            var link_target = document.getElementById("link_target");
+            $('#Popup_2').css("display","");
+            $('#TITLE_2').html(title);
+            $('#CONTENTS_2').html(contents);
+            $('#Popup_2').css("width",width);
+            $('#Popup_2').css("height",height);
+            $('#pop_2').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);
+            $('#Popup_2').center();
+        }
     }
 
     var link_url = $('#link_URL').val();
