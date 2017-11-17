@@ -25,6 +25,15 @@ SECRET_KEY = 'u0-$j2v%)u-w52*spjq7)i@8rv*=!el9ua+@j9j-i_h_$u-bmb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# --------------- email --------------- #
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '93immm'
+EMAIL_HOST_PASSWORD = 'aldzltbfl5842'
+# --------------- email --------------- #
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -37,7 +46,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,7 +88,7 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD': 'password',
-        'HOST': '192.168.33.10',
+        'HOST': '192.168.33.21',
         'PORT': '3306',
     }
 }
@@ -118,11 +126,11 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 # global variables ===========================================================================================
 # ============================================================================================================
-database_id = '192.168.33.10'
+database_id = '192.168.33.21'
 # database_id = '192.168.33.13'
 
-EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+EXCEL_PATH = '/Users/ahn/workspace/management/home/static/upload/'
+UPLOAD_DIR = '/Users/ahn/workspace/management/home/static/upload/'
 
 debug = True
 
