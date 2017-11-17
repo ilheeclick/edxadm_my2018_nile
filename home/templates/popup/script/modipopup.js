@@ -5,7 +5,6 @@ $(document).ready(function(){
     if (id != 99999) {
         document.getElementById('DelBtn').style.display = '';
         document.getElementById('CopyBtn').style.display = '';
-
     }
         $.ajax({
             url: '/manage/modi_popup/' + id,
@@ -118,4 +117,18 @@ $(document).ready(function(){
             document.getElementById('imagemap').style.display = '';
             document.getElementById('linkurl').style.display = '';
         }
+    }
+
+    function Reset() {
+        $('#image_map').val('');
+        $('#title').val('');
+        $('#image_URL').val('');
+        $('#link_URL').val('');
+        $('#start_date').val('');
+        $('#start_time').val('');
+        $('#end_date').val('');
+        $('#end_time').val('');
+        $('#width').val('');
+        $('#height').val('');
+        $('.summernote').summernote('code', '');
     }

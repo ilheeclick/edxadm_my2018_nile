@@ -964,10 +964,12 @@ def modi_multi_site(request, id):
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
-
         try:
             upload_file = request.FILES['uploadfile']
             uploadfile_user_id = request.POST.get('uploadfile_user_id')
+            print ('uploadfile_user_id ===================')
+            print upload_file
+            print uploadfile_user_id
         except BaseException:
             upload_file = None
             uploadfile_user_id = None
@@ -1230,9 +1232,6 @@ def manager_db(request):
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
-def popup_list(request):
-    return render(request, 'popup/popup_list.html')
-
 def modi_popup(request, id):
     mod_pop = []
     if request.is_ajax():
@@ -1254,7 +1253,7 @@ def modi_popup(request, id):
 						   image_map,
 						   title,
 						   contents,
-						   image_url,
+						   image_file,
 						   link_url,
 						   CASE
 							  WHEN link_target = 'B' THEN 'blank'
@@ -1292,15 +1291,11 @@ def modi_popup(request, id):
                     select count(use_yn) from popup where use_yn = 'Y';
                     """
             cur.execute(query)
-            print ('=====================================')
-            print query
             row = cur.fetchall()
             cur.close()
-            print row
             for p in row:
                 mod_pop.append(p)
 
-            print mod_pop
             data = json.dumps(list(mod_pop), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -1376,6 +1371,23 @@ def popup_db(request):
 def new_popup(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
+        try:
+            upload_file = request.FILES['uploadfile']
+            uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        except BaseException:
+            upload_file = None
+            uploadfile_user_id = None
+
+        if upload_file:
+            print ('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            uploadfile = request.FILES['uploadfile']
+            print type(uploadfile)
+            print uploadfile
+
+            common_single_file_upload(uploadfile, 'popup', str(uploadfile_user_id))
+
+            return render(request, 'popup/popup_add.html')
+
         if request.POST.get('method') == 'add':
             popup_type = request.POST.get('popup_type')
             link_type = request.POST.get('link_type')
@@ -1397,8 +1409,53 @@ def new_popup(request):
             use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
-            query = "insert into edxapp.popup(popup_type, link_type, image_map, title, contents, image_url, link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, modify_id, use_yn)"
-            query += " VALUES ('" + popup_type + "', '" + link_type + "', '" + image_map + "', '" + title + "', '" + contents + "', '" + image_url + "', '" + link_url + "', '" + link_target + "', '" + start_date + "', '" + start_time + "', '" + end_date + "', '" + end_time + "', '" + template + "', '" + width + "', '" + height + "', '" + hidden_day + "', '" + regist_id + "', '" + regist_id + "', '" + use_yn + "') "
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = """
+                INSERT INTO edxapp.popup(popup_type,
+                         link_type,
+                         image_map,
+                         title,
+                         contents,
+                         image_file,
+                         link_url,
+                         link_target,
+                         start_date,
+                         start_time,
+                         end_date,
+                         end_time,
+                         template,
+                         width,
+                         height,
+                         hidden_day,
+                         regist_id,
+                         modify_id,
+                         use_yn)
+                 VALUES ('{0}',
+                         '{1}',
+                         '{2}',
+                         '{3}',
+                         '{4}',
+                         '{5}',
+                         '{6}',
+                         '{7}',
+                         '{8}',
+                         '{9}',
+                         '{10}',
+                         '{11}',
+                         '{12}',
+                         '{13}',
+                         '{14}',
+                         '{15}',
+                         '{16}',
+                         '{17}',
+                         '{18}');
+            """.format(popup_type, link_type, image_map, title, contents, attatch_id[0][0], link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, regist_id, use_yn)
             cur.execute(query)
             cur.close()
 
@@ -1429,7 +1486,41 @@ def new_popup(request):
             use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
-            query = "update edxapp.popup SET popup_type = '" + popup_type + "', link_type = '" + link_type + "', image_map = '" + image_map + "', title = '" + title + "', contents = '" + contents + "', image_url = '" + image_url + "', link_url = '" + link_url + "', link_target = '" + link_target + "', start_date = '" + start_date + "', start_time = '" + start_time + "', end_date = '" + end_date + "', end_time = '" + end_time + "', template = '" + template + "', width = '" + width + "', height = '" + height + "', hidden_day = '" + hidden_day + "', modify_id = '" + regist_id + "', use_yn = '" + use_yn + "', modify_date = now() WHERE popup_id =" +pop_id
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+
+            print 'attatch_id'
+            print attatch_id[0][0]
+            print type(attatch_id[0][0])
+            cur.close()
+
+            cur = connection.cursor()
+            query = """
+                    UPDATE edxapp.popup
+                       SET popup_type = '{0}',
+                           link_type = '{1}',
+                           image_map = '{2}',
+                           title = '{3}',
+                           contents = '{4}',
+                           image_file = '{5}',
+                           link_url = '{6}',
+                           link_target = '{7}',
+                           start_date = '{8}',
+                           start_time = '{9}',
+                           end_date = '{10}',
+                           end_time = '{11}',
+                           template = '{12}',
+                           width = '{13}',
+                           height = '{14}',
+                           hidden_day = '{15}',
+                           modify_id = '{16}',
+                           use_yn = '{17}',
+                           modify_date = now()
+                     WHERE popup_id = '{18}';
+            """.format(popup_type, link_type, image_map, title, contents, attatch_id[0][0], link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, use_yn, pop_id)
+            print (query)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -1446,7 +1537,7 @@ def new_popup(request):
                               image_map,
                               title,
                               contents,
-                              image_url,
+                              image_file,
                               link_url,
                               link_target,
                               start_date,
@@ -1464,7 +1555,7 @@ def new_popup(request):
                       image_map,
                       title,
                       contents,
-                      image_url,
+                      image_file,
                       link_url,
                       link_target,
                       end_date,
