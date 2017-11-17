@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="http://www.lifelongedu.go.kr/css/main_new.css?ver=1">
 </head>
 <style>
-
     div.date{
         float:left;
         padding:3px;
@@ -30,22 +29,21 @@
         z-index: 1;
         background-color: white;
     }
-
 </style>
+
 <script>
 	{% include "popup/script/modipopup.js" %}
 </script>
+
 {% endblock %}
 {% block containor %}
 
-    <!-- start: page -->
-{#{{ user.id }}#}
 <div class="row">
     <section class="panel panel-featured ">
         <header class="panel-heading">
             <div><h2 class="panel-title">팝업추가</h2></div>
         </header>
-{#        ================================================================#}
+
         <body>
             <div class="popup templet" id="Popup_0" style="display: none">
      			<p style="text-align: center" >
@@ -65,7 +63,6 @@
                     <a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
                 </div>
     		</div>
-
 
             <div class="popup templet small" id="Popup_1" style="display: none" >
 			    <div class="pop-header">
@@ -90,8 +87,6 @@
                     <a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
                 </div>
             </div>
-
-
 
             <div class="popup templet big" id="Popup_2" style="display: none">
 		        <div class="pop-header">
@@ -123,7 +118,6 @@
 
         <div class="panel-body">
             {% csrf_token %}
-
              <div class="form-group">
                 <label class="col-sm-2 control-label">
                     종     류
@@ -161,7 +155,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     제 목
@@ -173,7 +166,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     템플릿
@@ -189,16 +181,12 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="form-group" id="Radio_HTML" style="display:none;">
                 <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
                 <div id="summernote_content" class="col-sm-10">
-{#                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>#}
                     <div class="summernote" id="summernote"> </div>
                 </div>
             </div>
-
             <div class="form-group" id="Radio_IMAGE" style="display:none;">
                 <label class="col-sm-2 control-label">
                     Image URL
@@ -232,21 +220,19 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     게시기간
                     <span class="required">*</span>
                 </label>
                 <div class="col-sm-10">
-                    <div class="date"><input type="text" class="form-control" id="start_date" placeholder="yyyymmdd" required/></div>
-                    <div class="date"><input type="text" class="form-control" id="start_time" placeholder="hhmm" required/></div>
+                    <div class="form-group date"><input type="text" id="start_date" placeholder="시작날짜"><span class="fa fa-calendar fa-2x"/></div>
+                    <div class="date"><input type="text" id="start_time" placeholder="시작시간" value=""><span class="fa fa-clock-o fa-2x"/></div>
                     <div class="date"> <b> ~ </b> </div>
-                    <div class="date"><input type="text" class="form-control" id="end_date" placeholder="yyyymmdd" required/></div>
-                    <div class="date"><input type="text" class="form-control" id="end_time" placeholder="hhmm" required/></div>
+                    <div class="form-group date"><input type="text" id="end_date"placeholder="종료날짜"><span class="fa fa-calendar fa-2x"/></div>
+                    <div class="date"><input type="text" data-format="H:m" id="end_time" placeholder="종료시간" value=""><span class="fa fa-clock-o fa-2x"/></div>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     창사이즈
@@ -256,7 +242,6 @@
                     <div class="date"><input type="text" class="form-control" id="height" placeholder="Height" required/></div>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     감추기
@@ -272,7 +257,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     사용여부
