@@ -2,69 +2,79 @@
 {% block pagetitlename %}연계강좌 지정{% endblock %}
 {% block pagetitlename_header %}연계강좌 지정{% endblock %}
 {% block script_down %}
-<style>
-    #batch_input{
-        position: absolute;
-        z-index: 1;
-        background-color: #F2F2F2;
-        width: 500px;
-        height: 300px;
-    }
-    .text-wrap{
-    white-space:normal;
-    }
-    .width-80{
-        width:80px;
-    }
-</style>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-    {% include "multi_site/script/course_list.js" %}
-</script>
+    <style>
+        #batch_input {
+            position: absolute;
+            z-index: 1;
+            background-color: #F2F2F2;
+            width: 500px;
+            height: 300px;
+        }
+
+        .text-wrap {
+            white-space: normal;
+        }
+
+        .width-80 {
+            width: 80px;
+        }
+    </style>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "multi_site/script/course_list.js" %}
+    </script>
 
 {% endblock %}
 {% block containor %}
-	<!-- start: page -->
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
+    <!-- start: page -->
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
     <div class="popup templet" id="batch_input" style="display: none">
-        <h5 style="text-align: center" >강좌ID 입력</h5>
+        <h5 style="text-align: center">강좌ID 입력</h5>
+
         <div class="templet-con">
             <p></p>
-            <textarea id="input_course" style="height: 227px; width: 500px" placeholder="course_id1&#13;&#10;course_id2&#13;&#10;course_id3&#13;&#10;..."></textarea>
+            <textarea id="input_course" style="height: 227px; width: 500px"
+                      placeholder="course_id1&#13;&#10;course_id2&#13;&#10;course_id3&#13;&#10;..."></textarea>
         </div>
-        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
-            <a class="fright" onclick="input_Save()" style="float: right;"><input class="btn btn-primary" type="button" id="input_Save" value="저장"></a>
-            <a class="fright" onclick="Hide('hide')" style="float: right;"><input class="btn btn-default" type="button" id="cancel" value="취소"></a>
+        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; ">
+            <a class="fright" onclick="input_Save()" style="float: right;"><input class="btn btn-primary" type="button"
+                                                                                  id="input_Save" value="저장"></a>
+            <a class="fright" onclick="Hide('hide')" style="float: right;"><input class="btn btn-default" type="button"
+                                                                                  id="cancel" value="취소"></a>
         </div>
     </div>
-</body>
-<section class="panel panel-featured ">
-    <header class="panel-heading">
-        <div><h2 class="panel-title"><b>{{ org_name }}</b> 연계강좌 지정</h2></div>
+    </body>
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title"><b>{{ org_name }}</b> 연계강좌 지정</h2></div>
 
-    </header>
+        </header>
 
-    <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
-        <h3>kmooc 등록강좌</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <b id="org_name1" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
-                <select id="org1" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class = "form-control" onchange="update1()">
-                    <option value="None">선택하세요.</option>
-                </select>
+        <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
+            <h3>kmooc 등록강좌</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <b id="org_name1" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
+                    <select id="org1" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class="form-control"
+                            onchange="update1()">
+                        <option value="None">선택하세요.</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px"
+                           class="form-control" id="search_input1">
+                </div>
             </div>
-            <div class="col-md-6">
-                <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input1">
-            </div>
-        </div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/course_list_db/">
-            <thead>
+            <table class="table table-hover table-striped  table-bordered" id="datatable1"
+                   data-url="/manage/course_list_db/">
+                <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
                     <td>ID</td>
@@ -77,31 +87,38 @@
                     <td>강좌번호</td>
                     <td>운영번호</td>
                 </tr>
-            </thead>
-            <tbody id="notice_body1">
-            </tbody>
-        </table>
-        <div><a href="javascript:batch_input();"><input class="btn btn-default" type="button" value="일괄등록"></a></div>
-    </div>
-    <div style="float: left; padding: 20px">
-        <div><a href="javascript:Save();"><span class="fa fa-chevron-circle-right" style="font-size: 30px; padding-top: 250px"></span></a></div>
-        <div><a href="javascript:Del();"><span class="fa fa-chevron-circle-left" style="font-size: 30px; padding-top: 30px"></span></a></div>
-    </div>
-    <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
-        <h3>기관 선택 강좌</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <b id="org_name2" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
-                <select id="org2" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class = "form-control" onchange="update2()">
-                    <option value="None">선택하세요.</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px" class = "form-control" id="search_input2">
+                </thead>
+                <tbody id="notice_body1">
+                </tbody>
+            </table>
+            <div><a href="javascript:batch_input();"><input class="btn btn-default" type="button" value="일괄등록"></a>
             </div>
         </div>
-        <table class="table table-hover table-striped table-bordered" id="datatable2" data-url="/manage/course_list/" >
-            <thead>
+        <div style="float: left; padding: 20px">
+            <div><a href="javascript:Save();"><span class="fa fa-chevron-circle-right"
+                                                    style="font-size: 30px; padding-top: 250px"></span></a></div>
+            <div><a href="javascript:Del();"><span class="fa fa-chevron-circle-left"
+                                                   style="font-size: 30px; padding-top: 30px"></span></a></div>
+        </div>
+        <div class="panel-body" style="padding-top: 0; width:47%; float: left"> 
+            <h3>기관 선택 강좌</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <b id="org_name2" style="float: left; margin: 25px 10px 10px 0px">대학명</b> &nbsp;&nbsp;&nbsp;
+                    <select id="org2" style="width: 170px; float: left; margin: 20px 0px 10px 0px" class="form-control"
+                            onchange="update2()">
+                        <option value="None">선택하세요.</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input placeholder="검색하세요." type="text" style="float: left; margin: 20px 0px 10px 0px"
+                           class="form-control" id="search_input2">
+                </div>
+            </div>
+            <table class="table table-hover table-striped table-bordered" id="datatable2"
+                   data-url="/manage/course_list/">
+                <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
                     <td>ID</td>
@@ -114,13 +131,13 @@
                     <td>강좌번호</td>
                     <td>운영번호</td>
                 </tr>
-            </thead>
-            <tbody id="notice_body2">
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody id="notice_body2">
+                </tbody>
+            </table>
+        </div>
 
-</section>
+    </section>
 
 
 {% endblock %}

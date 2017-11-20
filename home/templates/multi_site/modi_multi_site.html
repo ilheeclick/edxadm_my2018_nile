@@ -4,120 +4,133 @@
 {% block script %}{% endblock %}
 {% block script_down %}
 
-<!-- sweat alert -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-    {% include "multi_site/script/modi_multi_site.js" %}
-</script>
+    <!-- sweat alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "multi_site/script/modi_multi_site.js" %}
+    </script>
 {% endblock %}
 {% block containor %}
 
     <!-- start: page -->
-{#{{ user.id }}#}
-<div class="row">
-    <section class="panel panel-featured ">
-        <header class="panel-heading">
-            <div><h2 class="panel-title">멀티사이트 추가</h2></div>
-        </header>
-{#        ================================================================#}
+    {#{{ user.id }}#}
+    <div class="row">
+        <section class="panel panel-featured ">
+            <header class="panel-heading">
+                <div><h2 class="panel-title">멀티사이트 추가</h2></div>
+            </header>
+            {#        ================================================================#}
 
-        <div class="panel-body">
-            {% csrf_token %}
+            <div class="panel-body">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    기관명
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div>
-                        <input type="text" class="form-control" id="site_name">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        기관명
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="site_name">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    기관코드
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-4">
-                    <div>
-                        <input type="text" class="form-control" id="site_code">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        기관코드
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-4">
+                        <div>
+                            <input type="text" class="form-control" id="site_code">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    기관이미지
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-4">
-                    <div>
-                        <form action="/manage/modi_multi_site_db/" id="uploadform" method="post" enctype="multipart/form-data">
-                            <input name='uploadfile' type="file" id="uploadfile"/>
-                            <input name='uploadfile_user_id' type="text" value="{{ user.id }}" style="display: none"/>
-                        </form>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        기관이미지
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-4">
+                        <div>
+                            <form action="/manage/modi_multi_site_db/" id="uploadform" method="post"
+                                  enctype="multipart/form-data">
+                                <input name='uploadfile' type="file" id="uploadfile"/>
+                                <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
+                                       style="display: none"/>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    접속 url
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div>
-                        <input type="text" class="form-control" id="site_url">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        접속 url
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="site_url">
+                        </div>
                     </div>
                 </div>
+
+
             </div>
 
+            <footer class="panel-footer">
+                <div class="row" style="padding: 10px;">
+                    <div class="col-sm-15" align="right" style="padding: 10px;">
+                        <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn"
+                                                           style="display:none;" value="삭     제"></a>
+                        <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                                            value="저     장"></a>
+                    </div>
 
-        </div>
+                    <header class="panel-heading">
+                        <div><h2 class="panel-title">담당자 정보</h2></div>
+                    </header>
 
-        <footer class="panel-footer">
-            <div class="row" style="padding: 10px;">
-                <div class="col-sm-15" align="right" style="padding: 10px;">
-                    <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" style="display:none;" value="삭     제"></a>
-                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
+                    <div class="col-sm-15" align="right" style="padding: 10px;">
+                        <a href="javascript:add_row();"><input class="btn btn-primary" type="button" id="row_SaveBtn"
+                                                               style="display:none;" value="행추가"></a>
+                        <a href="javascript:del_row();"><input class="btn btn-default" type="button" id="row_DelBtn"
+                                                               style="display:none;" value="삭     제"></a>
+                        <a href="javascript:new_add_row();"><input class="btn btn-primary" type="button"
+                                                                   id="add_row_SaveBtn" value="행추가"></a>
+                        <a href="javascript:new_del_row();"><input class="btn btn-default" type="button"
+                                                                   id="add_row_DelBtn" value="삭     제"></a>
+                    </div>
                 </div>
+            </footer>
 
-                <header class="panel-heading">
-                    <div><h2 class="panel-title">담당자 정보</h2></div>
-                </header>
+            <div>
+                <table class="table table-hover table-striped  table-bordered" id="datatable1"
+                       data-url="/manage/multi_site_db/" style="width: 100%;">
+                    <thead>
+                    <tr>
+                        <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                        <td>Email</td>
+                        <td>이름</td>
+                        <td>id</td>
+                    </tr>
 
-                <div class="col-sm-15" align="right" style="padding: 10px;">
-                    <a href="javascript:add_row();"><input class="btn btn-primary" type="button" id="row_SaveBtn" style="display:none;" value="행추가"></a>
-                    <a href="javascript:del_row();"><input class="btn btn-default" type="button" id="row_DelBtn" style="display:none;" value="삭     제"></a>
-                    <a href="javascript:new_add_row();"><input class="btn btn-primary" type="button" id="add_row_SaveBtn" value="행추가"></a>
-                    <a href="javascript:new_del_row();"><input class="btn btn-default" type="button" id="add_row_DelBtn" value="삭     제"></a>
-                </div>
+                    </thead>
+                    <tbody id="notice_body">
+                    </tbody>
+                </table>
             </div>
-        </footer>
 
-        <div>
-            <table class="table table-hover table-striped  table-bordered" id="datatable1" data-url="/manage/multi_site_db/" style="width: 100%;" >
-            <thead>
-                <tr>
-                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
-                    <td>Email</td>
-                    <td>이름</td>
-                    <td>id</td>
-                </tr>
-
-            </thead>
-            <tbody id="notice_body">
-            </tbody>
-            </table>
-        </div>
-
-        <div class="col-sm-3" align="left">
-                    <a class="btn btn-default" href="/manage/multi_site_db">목록으로</a>
-        </div>
-    </section>
-</div>
+            <div class="col-sm-3" align="left">
+                <a class="btn btn-default" href="/manage/multi_site_db">목록으로</a>
+            </div>
+        </section>
+    </div>
 
 {% endblock %}
