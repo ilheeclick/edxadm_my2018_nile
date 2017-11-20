@@ -2,28 +2,29 @@
 {% block pagetitlename %}코드 관리{% endblock %}
 {% block pagetitlename_header %}코드 관리{% endblock %}
 {% block script_down %}
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-    {% include "code_manage/script/code_manage.js" %}
-</script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "code_manage/script/code_manage.js" %}
+    </script>
 {% endblock %}
 {% block containor %}
-	<!-- start: page -->
-<section class="panel panel-featured ">
-    <header class="panel-heading">
-        <div><h2 class="panel-title">공통 코드관리</h2></div>
-    </header>
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">공통 코드관리</h2></div>
+        </header>
 
-    <div class="panel-body" style="padding-top: 0;"> 
+        <div class="panel-body" style="padding-top: 0;"> 
 
-        <h3>그룹코드 관리</h3>
-        <div class="col-sm-15" align="right" style="padding: 10px;">
-            <a href="javascript:add_row1()"><input class="btn btn-primary" type="button" value="행추가"></a>
-            <a href="javascript:Save1()"><input class="btn btn-primary" type="button" value="저장"></a>
-            <a href="javascript:Del1()"><input class="btn btn-primary" type="button" value="삭제"></a>
-        </div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable1" style="width: 100%;" >
-            <thead>
+            <h3>그룹코드 관리</h3>
+
+            <div class="col-sm-15" align="right" style="padding: 10px;">
+                <a href="javascript:add_row1()"><input class="btn btn-primary" type="button" value="행추가"></a>
+                <a href="javascript:Save1()"><input class="btn btn-primary" type="button" value="저장"></a>
+                <a href="javascript:Del1()"><input class="btn btn-primary" type="button" value="삭제"></a>
+            </div>
+            <table class="table table-hover table-striped  table-bordered" id="datatable1" style="width: 100%;">
+                <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
                     <td>공통코드</td>
@@ -32,18 +33,20 @@
                     <td>사용여부</td>
                     <td>등록일시</td>
                 </tr>
-            </thead>
-            <tbody id="notice_body1">
-            </tbody>
-        </table>
-        <h3>상세코드 관리</h3>
-        <div class="col-sm-15" align="right" style="padding: 10px;">
-            <a href="javascript:add_row2()"><input class="btn btn-primary" type="button" value="행추가"></a>
-            <a href="javascript:Save2()"><input class="btn btn-primary" type="button" value="저장"></a>
-            <a href="javascript:Del2()"><input class="btn btn-primary" type="button" value="삭제"></a>
-        </div>
-        <table class="table table-hover table-striped  table-bordered" id="datatable2" data-url="/manage/group_code/" style="width: 100%;" >
-            <thead>
+                </thead>
+                <tbody id="notice_body1">
+                </tbody>
+            </table>
+            <h3>상세코드 관리</h3>
+
+            <div class="col-sm-15" align="right" style="padding: 10px;">
+                <a href="javascript:add_row2()"><input class="btn btn-primary" type="button" value="행추가"></a>
+                <a href="javascript:Save2()"><input class="btn btn-primary" type="button" value="저장"></a>
+                <a href="javascript:Del2()"><input class="btn btn-primary" type="button" value="삭제"></a>
+            </div>
+            <table class="table table-hover table-striped  table-bordered" id="datatable2"
+                   data-url="/manage/group_code/" style="width: 100%;">
+                <thead>
                 <tr>
                     <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
                     <td>group_code</td>
@@ -55,12 +58,12 @@
                     <td>사용여부</td>
                     <td>등록일시</td>
                 </tr>
-            </thead>
-            <tbody id="notice_body2">
-            </tbody>
-        </table>
-    </div>
-</section>
+                </thead>
+                <tbody id="notice_body2">
+                </tbody>
+            </table>
+        </div>
+    </section>
 
 
 {% endblock %}

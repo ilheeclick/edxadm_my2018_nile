@@ -89,7 +89,7 @@ def common_single_file_upload(file_object, gubun, user_id):
 
 
 # ---------- common module ---------- #
-
+@login_required
 def detail_code_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -169,6 +169,7 @@ def detail_code_db(request):
             return HttpResponse(data, 'applications/json')
 
 
+@login_required
 def group_code_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -231,6 +232,7 @@ def group_code_db(request):
 
 
 @csrf_exempt
+@login_required
 def detail_code(request):
     result = dict()
     group_code = request.GET.get('group_code')
@@ -265,6 +267,7 @@ def detail_code(request):
 
 
 @csrf_exempt
+@login_required
 def group_code(request):
     result = dict()
 
@@ -297,6 +300,7 @@ def code_manage(request):
 
 
 @csrf_exempt
+@login_required
 def course_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -691,6 +695,7 @@ def course_list(request, site_id, org_name):
     return render_to_response('multi_site/course_list.html', variables)
 
 
+@login_required
 def multisite_org(request):
     org_list = []
 
@@ -714,6 +719,7 @@ def multisite_org(request):
     return HttpResponse(data, 'applications/json')
 
 
+@login_required
 def course_list_db(request):
     result = dict()
 
@@ -772,6 +778,7 @@ def course_list_db(request):
 
 
 @csrf_exempt
+@login_required
 def multisite_course(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -845,6 +852,7 @@ def multisite_course(request):
     return render(request, 'multi_site/modi_multi_site.html')
 
 
+@login_required
 def select_list_db(request):
     site_id = request.GET.get('site_id')
     org = request.GET.get('org')
@@ -887,6 +895,7 @@ def select_list_db(request):
 
 
 @csrf_exempt
+@login_required
 def multi_site_db(request):
     if request.is_ajax():
         data = json.dumps({'status': "fail"})
@@ -931,6 +940,7 @@ def multi_site_db(request):
 
 
 @csrf_exempt
+@login_required
 def add_multi_site(request, id):
     variables = RequestContext(request, {
         'id': id
@@ -938,6 +948,7 @@ def add_multi_site(request, id):
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
 
+@login_required
 def modi_multi_site(request, id):
     mod_multi = []
     if request.is_ajax():
@@ -968,6 +979,7 @@ def modi_multi_site(request, id):
 
 
 @csrf_exempt
+@login_required
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -1112,6 +1124,7 @@ def modi_multi_site_db(request):
     return render(request, 'multi_site/modi_multi_site.html')
 
 
+@login_required
 def manager_list(request):
     result = dict()
     id = request.GET.get('id')
@@ -1138,6 +1151,7 @@ def manager_list(request):
     return HttpResponse(context, 'applications/json')
 
 
+@login_required
 def manager_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -1260,6 +1274,7 @@ def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
 
+@login_required
 def modi_popup(request, id):
     mod_pop = []
     if request.is_ajax():
@@ -1347,11 +1362,13 @@ def modi_popup(request, id):
     return render_to_response('popup/popup_modipopup.html', variables)
 
 
+@login_required
 def create_popup(request):
     return render(request, 'popup/popup_modipopup.html')
 
 
 @csrf_exempt
+@login_required
 def popup_db(request):
     if request.is_ajax():
         data = json.dumps({'status': "fail"})
@@ -1423,6 +1440,7 @@ def popup_db(request):
 
 
 @csrf_exempt
+@login_required
 def new_popup(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
