@@ -34,25 +34,23 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-
-
 def get_file_ext(filename):
     filename_split = filename.split('.')
     file_ext_index = len(filename_split)
-    file_ext = filename_split[file_ext_index-1] 
+    file_ext = filename_split[file_ext_index - 1]
     return file_ext
 
-def common_single_file_upload(file_object, gubun, user_id):
 
+def common_single_file_upload(file_object, gubun, user_id):
     file_name = str(file_object).strip()
-    file_name_enc = str(uuid.uuid4()).replace('-','')
+    file_name_enc = str(uuid.uuid4()).replace('-', '')
     file_ext = get_file_ext(file_name).strip()
     file_byte_size = file_object.size
-    file_size = str(file_byte_size/1024) + "KB"
+    file_size = str(file_byte_size / 1024) + "KB"
     file_dir = UPLOAD_DIR + file_name_enc
     file_path = UPLOAD_DIR
-    if file_path[len(file_path)-1] == '/':
-        file_path = file_path[0:(len(file_path)-1)]
+    if file_path[len(file_path) - 1] == '/':
+        file_path = file_path[0:(len(file_path) - 1)]
     fp = open(file_dir, 'wb')
     for chunk in file_object.chunks():
         fp.write(chunk)
@@ -88,6 +86,8 @@ def common_single_file_upload(file_object, gubun, user_id):
                       {6})
         """.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
         cur.execute(query)
+
+
 # ---------- common module ---------- #
 
 def detail_code_db(request):
@@ -106,7 +106,8 @@ def detail_code_db(request):
             cur = connection.cursor()
             query = '''insert into edxapp.code_detail(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, regist_id)
                        VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
-                    '''.format(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id)
+                    '''.format(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn,
+                               user_id)
             print query
             cur.execute(query)
             cur.close()
@@ -159,12 +160,14 @@ def detail_code_db(request):
                            modify_id = '{6}',
                            modify_date = now()
                      WHERE group_code = '{7}' AND detail_code = '{8}';
-                    '''.format(detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id, group_code_prev, detail_code_prev)
+                    '''.format(detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn, user_id,
+                               group_code_prev, detail_code_prev)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
+
 
 def group_code_db(request):
     if request.method == 'POST':
@@ -213,7 +216,6 @@ def group_code_db(request):
             user_id = request.POST.get('user_id')
             group_code_prev = request.POST.get('group_code_prev')
 
-
             cur = connection.cursor()
             query = '''
                     UPDATE code_group
@@ -237,7 +239,6 @@ def detail_code(request):
         group_code = '%'
 
     with connections['default'].cursor() as cur:
-
         query = '''
               SELECT group_code,
                      detail_code,
@@ -268,7 +269,6 @@ def group_code(request):
     result = dict()
 
     with connections['default'].cursor() as cur:
-
         query = '''
             SELECT group_code,
                    group_name,
@@ -289,6 +289,7 @@ def group_code(request):
 
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
+
 
 @login_required
 def code_manage(request):
@@ -362,6 +363,7 @@ def course_db(request):
             data = json.dumps({'status': "success"})
             return HttpResponse(data, 'applications/json')
 
+
 @login_required
 def course_db_list(request):
     client = MongoClient(database_id, 27017)
@@ -373,13 +375,13 @@ def course_db_list(request):
     end = request.GET['end']
     course_name = request.GET['course_name']
     choice = request.GET['choice']
-    if (course_name ==''):
+    if (course_name == ''):
         course_name = '%'
 
     if request.GET['method'] == 'course_list':
         with connections['default'].cursor() as cur:
             course_list = []
-            if (choice ==''):
+            if (choice == ''):
                 query = '''
                         SELECT @rn := @rn - 1 rn, a.*
                           FROM (  SELECT CASE
@@ -588,7 +590,8 @@ def course_db_list(request):
                 multi_num = multi[6].split('+')
                 multi_org = multi_num[0].split(':')
 
-                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                cursor = db.modulestore.active_versions.find_one(
+                    {'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
                 pb = cursor.get('versions').get('published-branch')
                 cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
                 blocks = cursor.get('blocks')
@@ -625,7 +628,6 @@ def course_db_list(request):
                 m_clsf_h = cur.fetchall()
                 cur.close()
 
-
                 value_list.append(clsf_h[0][0])
                 value_list.append(m_clsf_h[0][0])
                 value_list.append(multi[5])
@@ -640,10 +642,10 @@ def course_db_list(request):
                 value_list.append(multi[10])
                 value_list.append(multi[11])
                 value_list.append(multi[12])
-                if multi[13] != None :
+                if multi[13] != None:
                     multi_time = multi[13].replace('@', '+').replace('#', '+')
                 multi_time_num = multi_time.split('+')
-                if(len(multi_time_num) == 3):
+                if (len(multi_time_num) == 3):
                     value_list.append(multi_time_num[2])
                     value_list.append(multi_time_num[0])
                     value_list.append(multi_time_num[1])
@@ -670,23 +672,24 @@ def course_db_list(request):
     return HttpResponse(context, 'applications/json')
 
 
-
 @login_required
 def multi_site(request):
     return render(request, 'multi_site/multi_site.html')
+
 
 @login_required
 def course_manage(request):
     return render(request, 'course_manage/course_manage.html')
 
+
 @login_required
 def course_list(request, site_id, org_name):
-
     variables = RequestContext(request, {
         'site_id': site_id,
         'org_name': org_name
     })
     return render_to_response('multi_site/course_list.html', variables)
+
 
 def multisite_org(request):
     org_list = []
@@ -707,7 +710,6 @@ def multisite_org(request):
             cur.close()
 
             data = json.dumps(list(org), cls=DjangoJSONEncoder, ensure_ascii=False)
-
 
     return HttpResponse(data, 'applications/json')
 
@@ -734,7 +736,7 @@ def course_list_db(request):
         select_course = ""
 
         for index in select:
-            select_course += (index[0])+ "','"
+            select_course += (index[0]) + "','"
 
         query = '''
             SELECT replace(@rn := @rn - 1, .0, '')        rn,
@@ -767,6 +769,7 @@ def course_list_db(request):
 
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
+
 
 @csrf_exempt
 def multisite_course(request):
@@ -808,7 +811,7 @@ def multisite_course(request):
                 count = cur.fetchall()
                 cur.close()
 
-                if (count[0][0] == 1) :
+                if (count[0][0] == 1):
                     cur = connection.cursor()
                     query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
                                VALUES ('{0}','{1}','{2}')
@@ -816,7 +819,7 @@ def multisite_course(request):
                     cur.execute(query)
                     cur.close()
                     data = json.dumps({'status': "success"})
-                else :
+                else:
                     data = json.dumps({'status': "fail"})
 
             return HttpResponse(data, 'applications/json')
@@ -841,6 +844,7 @@ def multisite_course(request):
 
     return render(request, 'multi_site/modi_multi_site.html')
 
+
 def select_list_db(request):
     site_id = request.GET.get('site_id')
     org = request.GET.get('org')
@@ -851,7 +855,6 @@ def select_list_db(request):
     result = dict()
 
     with connections['default'].cursor() as cur:
-
         query = '''
             SELECT replace(@rn := @rn - 1, .0, '')        rn,
                    co.id,
@@ -881,6 +884,7 @@ def select_list_db(request):
 
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
+
 
 @csrf_exempt
 def multi_site_db(request):
@@ -917,20 +921,22 @@ def multi_site_db(request):
                 value_list.append(multi[4])
                 value_list.append(multi[5])
                 value_list.append(multi[6])
-                value_list.append('<a href="/manage/course_list/'+ str(multi[1]) + '/' + str(multi[2]) + '"><input type="button" value="관  리" class="btn btn-default"></a>')
+                value_list.append('<a href="/manage/course_list/' + str(multi[1]) + '/' + str(
+                    multi[2]) + '"><input type="button" value="관  리" class="btn btn-default"></a>')
                 multi_site_list.append(value_list)
 
             data = json.dumps(list(multi_site_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
     return render(request, 'multi_site/multi_site.html')
 
+
 @csrf_exempt
 def add_multi_site(request, id):
-
     variables = RequestContext(request, {
         'id': id
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
+
 
 def modi_multi_site(request, id):
     mod_multi = []
@@ -959,6 +965,7 @@ def modi_multi_site(request, id):
         'id': id
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
+
 
 @csrf_exempt
 def modi_multi_site_db(request):
@@ -1030,7 +1037,6 @@ def modi_multi_site_db(request):
                 cur.execute(query)
                 cur.close()
 
-
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
@@ -1042,14 +1048,12 @@ def modi_multi_site_db(request):
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
 
-
             cur = connection.cursor()
             query = '''select max(attatch_id)+1 from tb_board_attach
                     '''
             cur.execute(query)
             attatch_id = cur.fetchall()
             cur.close()
-
 
             cur = connection.cursor()
             query = '''
@@ -1081,12 +1085,12 @@ def modi_multi_site_db(request):
 
     return render(request, 'multi_site/modi_multi_site.html')
 
+
 def manager_list(request):
     result = dict()
     id = request.GET.get('id')
 
     with connections['default'].cursor() as cur:
-
         query = '''
                SELECT au.email, up.name, au.username
                  FROM edxapp.auth_user AS au
@@ -1117,7 +1121,6 @@ def manager_db(request):
             input_email = request.POST.get('input_email')
             regist_id = request.POST.get('regist_id')
 
-
             cur = connection.cursor()
             query = '''SELECT id
                          FROM edxapp.auth_user
@@ -1126,7 +1129,6 @@ def manager_db(request):
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
-
 
             cur = connection.cursor()
             query = '''SELECT count(site_id)
@@ -1137,7 +1139,7 @@ def manager_db(request):
             cnt = cur.fetchall()
             cur.close()
             print cnt[0][0]
-            if(cnt[0][0] == 1) :
+            if (cnt[0][0] == 1):
                 cur = connection.cursor()
                 query = '''update edxapp.multisite_user
                               SET delete_yn = 'N'
@@ -1145,7 +1147,7 @@ def manager_db(request):
                         '''.format(id, str(row[0][0]))
                 cur.execute(query)
                 cur.close()
-            elif(cnt[0][0] == 0):
+            elif (cnt[0][0] == 0):
                 cur = connection.cursor()
                 query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
                            VALUES ('{0}','{1}','{2}','{3}')
@@ -1221,16 +1223,17 @@ def manager_db(request):
             cur.execute(query)
             cur.close()
 
-
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
 
     return render(request, 'multi_site/modi_multi_site.html')
 
+
 @login_required
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
+
 
 def modi_popup(request, id):
     mod_pop = []
@@ -1240,47 +1243,61 @@ def modi_popup(request, id):
             cur = connection.cursor()
             query = """
 					SELECT CASE
-							  WHEN popup_type = 'H' THEN 'HTML'
-							  WHEN popup_type = 'I' THEN 'Image'
-						   END
-					       popup_type,
-					       CASE
-							  WHEN link_type = '0' THEN '없음'
-							  WHEN link_type = '1' THEN '전체링크'
-							  WHEN link_type = '2' THEN '이미지맵'
-						   END
-						   link_type,
-						   image_map,
-						   title,
-						   contents,
-						   image_file,
-						   link_url,
-						   CASE
-							  WHEN link_target = 'B' THEN 'blank'
-							  WHEN link_target = 'S' THEN 'self'
-						   END
-						   link_target,
-						   start_date,
-						   start_time,
-						   end_date,
-						   end_time,
-						   CASE
-							  WHEN template = '0' THEN '없음'
-							  WHEN template = '1' THEN '기본'
-							  WHEN template = '2' THEN '중간템플릿'
-						   END
-						   template,
-						   width,
-						   height,
-						   CASE
-							  WHEN hidden_day = '0' THEN '그만보기'
-							  WHEN hidden_day = '1' THEN '1일'
-							  WHEN hidden_day = '7' THEN '7일'
-						   END
-						   hidden_day,
-						   use_yn
-					  FROM popup
-					 WHERE popup_id = """ + id
+                      WHEN popup_type = 'H' THEN 'HTML'
+                      WHEN popup_type = 'I' THEN 'Image'
+                   END
+                      popup_type,
+                   CASE
+                      WHEN link_type = '0' THEN '없음'
+                      WHEN link_type = '1' THEN '전체링크'
+                      WHEN link_type = '2' THEN '이미지맵'
+                   END
+                      link_type,
+                   image_map,
+                   title,
+                   contents,
+                   image_file,
+                   link_url,
+                   CASE
+                      WHEN link_target = 'B' THEN 'blank'
+                      WHEN link_target = 'S' THEN 'self'
+                   END
+                      link_target,
+                   CONCAT(SUBSTRING((start_date), 1, 4),
+                          "-",
+                          SUBSTRING((start_date), 5, 2),
+                          "-",
+                          SUBSTRING((start_date), 7, 2))
+                      start_date,
+                   CONCAT(SUBSTRING((start_time), 1, 2),
+                          ":",
+                          SUBSTRING((start_time), 3, 4))
+                      start_time,
+                   CONCAT(SUBSTRING((end_date), 1, 4),
+                          "-",
+                          SUBSTRING((end_date), 5, 2),
+                          "-",
+                          SUBSTRING((end_date), 7, 2))
+                      end_date,
+                   CONCAT(SUBSTRING((end_time), 1, 2), ":", SUBSTRING((end_time), 3, 4))
+                      end_time,
+                   CASE
+                      WHEN template = '0' THEN '없음'
+                      WHEN template = '1' THEN '기본'
+                      WHEN template = '2' THEN '중간템플릿'
+                   END
+                      template,
+                   width,
+                   height,
+                   CASE
+                      WHEN hidden_day = '0' THEN '그만보기'
+                      WHEN hidden_day = '1' THEN '1일'
+                      WHEN hidden_day = '7' THEN '7일'
+                   END
+                      hidden_day,
+                   use_yn
+              FROM popup
+             WHERE popup_id = """ + id
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
@@ -1304,8 +1321,10 @@ def modi_popup(request, id):
     })
     return render_to_response('popup/popup_modipopup.html', variables)
 
+
 def create_popup(request):
     return render(request, 'popup/popup_modipopup.html')
+
 
 @csrf_exempt
 def popup_db(request):
@@ -1325,7 +1344,17 @@ def popup_db(request):
                             popup_type,
                          title,
                          username,
+                         CONCAT(SUBSTRING((start_date), 1, 4),
+                          "-",
+                          SUBSTRING((start_date), 5, 2),
+                          "-",
+                          SUBSTRING((start_date), 7, 2))
                          start_date,
+                         CONCAT(SUBSTRING((end_date), 1, 4),
+                          "-",
+                          SUBSTRING((end_date), 5, 2),
+                          "-",
+                          SUBSTRING((end_date), 7, 2))
                          end_date,
                          CASE
                             WHEN link_type = '0' THEN '없음'
@@ -1367,10 +1396,13 @@ def popup_db(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'popup/popup_add.html')
 
+
 @csrf_exempt
 def new_popup(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
+        file_flag = request.POST.get('file_flag')
+        update_flag = request.POST.get('update_flag')
         try:
             upload_file = request.FILES['uploadfile']
             uploadfile_user_id = request.POST.get('uploadfile_user_id')
@@ -1379,10 +1411,7 @@ def new_popup(request):
             uploadfile_user_id = None
 
         if upload_file:
-            print ('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             uploadfile = request.FILES['uploadfile']
-            print type(uploadfile)
-            print uploadfile
 
             common_single_file_upload(uploadfile, 'popup', str(uploadfile_user_id))
 
@@ -1407,13 +1436,18 @@ def new_popup(request):
             hidden_day = request.POST.get('hidden_day')
             regist_id = request.POST.get('regist_id')
             use_yn = request.POST.get('use_yn')
-
-            cur = connection.cursor()
-            query = '''select max(attatch_id)+1 from tb_board_attach
-                    '''
-            cur.execute(query)
-            attatch_id = cur.fetchall()
-            cur.close()
+            image_file = 0;
+            print 'file_flag=================='
+            print file_flag
+            print type(file_flag)
+            if (file_flag == '1'):
+                cur = connection.cursor()
+                query = '''select max(attatch_id)+1 from tb_board_attach
+                        '''
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
 
             cur = connection.cursor()
             query = """
@@ -1455,7 +1489,9 @@ def new_popup(request):
                          '{16}',
                          '{17}',
                          '{18}');
-            """.format(popup_type, link_type, image_map, title, contents, attatch_id[0][0], link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, regist_id, use_yn)
+            """.format(popup_type, link_type, image_map, title, contents, image_file, link_url, link_target, start_date,
+                       start_time, end_date, end_time, template, width, height, hidden_day, regist_id, regist_id,
+                       use_yn)
             cur.execute(query)
             cur.close()
 
@@ -1484,17 +1520,27 @@ def new_popup(request):
             regist_id = request.POST.get('regist_id')
             pop_id = request.POST.get('pop_id')
             use_yn = request.POST.get('use_yn')
+            image_file = 0;
 
-            cur = connection.cursor()
-            query = '''select max(attatch_id)+1 from tb_board_attach
-                    '''
-            cur.execute(query)
-            attatch_id = cur.fetchall()
-
-            print 'attatch_id'
-            print attatch_id[0][0]
-            print type(attatch_id[0][0])
-            cur.close()
+            if (update_flag == '1' and file_flag != '1'):
+                cur = connection.cursor()
+                query = '''
+                            SELECT image_file
+                              FROM popup
+                             WHERE popup_id = '{0}';
+                            '''.format(pop_id)
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
+            elif (file_flag == '1'):
+                cur = connection.cursor()
+                query = '''select max(attatch_id)+1 from tb_board_attach
+                        '''
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
 
             cur = connection.cursor()
             query = """
@@ -1519,7 +1565,9 @@ def new_popup(request):
                            use_yn = '{17}',
                            modify_date = now()
                      WHERE popup_id = '{18}';
-            """.format(popup_type, link_type, image_map, title, contents, attatch_id[0][0], link_url, link_target, start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id, use_yn, pop_id)
+            """.format(popup_type, link_type, image_map, title, contents, image_file, link_url, link_target,
+                       start_date, start_time, end_date, end_time, template, width, height, hidden_day, regist_id,
+                       use_yn, pop_id)
             print (query)
             cur.execute(query)
             cur.close()
@@ -1589,11 +1637,28 @@ def new_popup(request):
             pop_id = request.POST.get('pop_id')
 
             cur = connection.cursor()
-            query = "update edxapp.popup set delete_yn = 'Y' where popup_id = " + pop_id
+            query = "update edxapp.popup set use_yn = 'N', delete_yn = 'Y' where popup_id = " + pop_id
             cur.execute(query)
             cur.close()
 
             data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'check':
+            pop_id = request.POST.get('pop_id')
+
+            cur = connection.cursor()
+            query = """
+                    SELECT count(image_file)
+                      FROM popup
+                     WHERE popup_id = '{0}';
+                    """.format(pop_id)
+            cur.execute(query)
+            flag = cur.fetchall()
+            cur.close()
+
+            data = flag[0][0];
 
             return HttpResponse(data, 'applications/json')
 
@@ -1603,6 +1668,7 @@ def new_popup(request):
 @login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
+
 
 def test(request):
     if request.is_ajax():
@@ -2072,6 +2138,7 @@ def test(request):
     else:
         return render(request, 'test01.html')
 
+
 def signin(request):
     form = LoginForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -2081,6 +2148,7 @@ def signin(request):
             login(request, user)
             return render(request, 'stastic/stastic_index.html')
     return render(request, 'registration/login.html', {'form': form})
+
 
 @login_required
 def month_stastic(request):
@@ -2092,9 +2160,11 @@ def month_stastic(request):
 def mana_state(request):
     return render(request, 'state/mana_state.html')
 
+
 @login_required
 def dev_state(request):
     return render(request, 'state/dev_state.html')
+
 
 # certificate view
 @login_required
@@ -2277,6 +2347,7 @@ def certificate(request):
 
     return render(request, 'certificate/certificate.html')
 
+
 @login_required
 def per_certificate(request):
     client = MongoClient(database_id, 27017)
@@ -2388,6 +2459,7 @@ def per_certificate(request):
 
     return render(request, 'certificate/per_certificate.html')
 
+
 @login_required
 def uni_certificate(request):
     # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
@@ -2498,17 +2570,19 @@ def comm_notice(request):
 
     return render(request, 'community/comm_notice.html')
 
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @csrf_exempt
 def file_upload(request):
     if request.FILES:
-
         file_object_list = request.FILES.getlist('file')
         file_object = file_object_list[0]
         # 파일객체 고정 userid
         common_single_file_upload(file_object, 'multisite', '1')
 
-        return JsonResponse({'hello':'world'})
+        return JsonResponse({'hello': 'world'})
+
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
 
 # ---------- 2017.10.23 ahn jin yong ---------- #
@@ -2516,7 +2590,7 @@ def file_upload(request):
 def new_notice(request):
     # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
     if request.FILES:
-        #init list
+        # init list
         file_name_list = []
         file_dir_list = []
         file_size_raw_list = []
@@ -2525,17 +2599,17 @@ def new_notice(request):
         file_list = request.FILES.getlist('file')
         file_list_cnt = len(request.FILES.getlist('file'))
 
-        #make name, dir
+        # make name, dir
         for item in file_list:
-            file_name_list.append( str(item) )
-            file_dir_list.append( UPLOAD_DIR+str(item) )
+            file_name_list.append(str(item))
+            file_dir_list.append(UPLOAD_DIR + str(item))
 
-        #make ext
+        # make ext
         for item in file_name_list:
             file_ext = get_file_ext(item)
             file_ext_list.append(file_ext)
 
-        #crete file
+        # crete file
         cnt = 0
         for item in file_list:
             fp = open(file_dir_list[cnt], 'wb')
@@ -2544,15 +2618,15 @@ def new_notice(request):
             fp.close()
             cnt += 1
 
-        #make raw_size
+        # make raw_size
         for item in file_dir_list:
-            file_size_raw_list.append( os.path.getsize(item) )
+            file_size_raw_list.append(os.path.getsize(item))
 
-        #make size (KB)
+        # make size (KB)
         for item in file_size_raw_list:
-            file_size_list.append( str(item / 1024) + "KB" ) #invert KB
+            file_size_list.append(str(item / 1024) + "KB")  # invert KB
 
-        return JsonResponse({'name':file_name_list, 'size':file_size_list, 'len':file_list_cnt})
+        return JsonResponse({'name': file_name_list, 'size': file_size_list, 'len': file_list_cnt})
     # ---------- 공통 file upload(공지사항, K-MOOC소식, 자료실) ---------- #
 
     elif request.method == 'POST':
@@ -2580,12 +2654,12 @@ def new_notice(request):
             upload_split = upload_file.split('+')
             for item in upload_split:
                 index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
+                file_name_list.append(item[:index])
+                file_size_list.append(item[index + 3:])
             file_name_list.pop()
             file_size_list.pop()
             for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
+                file_ext_list.append(get_file_ext(item))
             file_cnt = len(file_name_list)
 
             # ------ 공지사항 쓰기 query ------ #
@@ -2612,7 +2686,7 @@ def new_notice(request):
             '''
             cur.execute(query3)
             board_list = cur.fetchall()
-            board_id = board_list[0][0] 
+            board_id = board_list[0][0]
             cur.close()
             # ------ 공지사항 게시판 아이디 조회 query ------ #
 
@@ -2677,12 +2751,12 @@ def new_notice(request):
             upload_split = upload_file.split('+')
             for item in upload_split:
                 index = item.find('   ')
-                file_name_list.append( item[:index] )
-                file_size_list.append( item[index+3:] )
+                file_name_list.append(item[:index])
+                file_size_list.append(item[index + 3:])
             file_name_list.pop()
             file_size_list.pop()
             for item in file_name_list:
-                file_ext_list.append( get_file_ext(item) )
+                file_ext_list.append(get_file_ext(item))
             file_cnt = len(file_name_list)
 
             # ------ 공지사항 수정 query ------ #
@@ -2722,6 +2796,8 @@ def new_notice(request):
         return HttpResponse(data, 'applications/json')
         # ---------- 공통 글 편집(공지사항, K-MOOC소식, 자료실) ---------- #
     return render(request, 'community/comm_newnotice.html')
+
+
 # ---------- 2017.10.23 ahn jin yong ---------- #
 
 @csrf_exempt
@@ -2771,7 +2847,7 @@ def modi_notice(request, id, use_yn):
             data = json.dumps(list(mod_notice), cls=DjangoJSONEncoder, ensure_ascii=False)
 
         elif request.GET['method'] == 'file_download':
-            pass # 'file_download with ajax is not working'
+            pass  # 'file_download with ajax is not working'
 
         return HttpResponse(data, 'applications/json')
 
@@ -2794,14 +2870,16 @@ def modi_notice(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modinotice.html', context)
+
 
 @login_required
 def test_index(request):
     return render(request, 'test_index.html')
+
 
 @login_required
 def file_download_test(request):
@@ -2816,6 +2894,7 @@ def file_download_test(request):
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
 
 @login_required
 def comm_k_news(request):
@@ -2906,18 +2985,21 @@ def comm_k_news(request):
 
     return render(request, 'community/comm_k_news.html')
 
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 @login_required
 def new_knews(request):
     if request.FILES:
-        pass # 모듈화 new_notice OK
+        pass  # 모듈화 new_notice OK
     elif request.method == 'POST':
         if request.POST['method'] == 'add':
-            pass # 모듈화 new_notice OK 
+            pass  # 모듈화 new_notice OK
         elif request.POST['method'] == 'modi':
-            pass # 모듈화 new_notice OK 
+            pass  # 모듈화 new_notice OK
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newknews.html')
+
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 
 @login_required
@@ -2969,7 +3051,7 @@ def modi_knews(request, id, use_yn):
             data = json.dumps(UPLOAD_DIR + file_name, cls=DjangoJSONEncoder, ensure_ascii=False)
 
         return HttpResponse(data, 'applications/json')
-    
+
     # ------ knews 파일첨부 보여주기 query ------ #
     cur = connection.cursor()
     query = '''
@@ -2989,10 +3071,11 @@ def modi_knews(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modi_knews.html', context)
+
 
 @login_required
 def comm_faq(request):
@@ -3089,6 +3172,7 @@ def comm_faq(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_faq.html')
 
+
 @login_required
 def new_faq(request):
     if request.method == 'POST':
@@ -3124,6 +3208,7 @@ def new_faq(request):
         return HttpResponse(data, 'applications/json')
 
     return render(request, 'community/comm_newfaq.html')
+
 
 @login_required
 def modi_faq(request, id, use_yn):
@@ -3166,6 +3251,7 @@ def modi_faq(request, id, use_yn):
 
     return render_to_response('community/comm_modifaq.html', variables)
 
+
 @login_required
 def comm_faqrequest(request):
     if request.is_ajax():
@@ -3201,6 +3287,7 @@ def comm_faqrequest(request):
             aaData = json.dumps(list(f_request_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(aaData, 'applications/json')
     return render_to_response('community/comm_faqrequest.html')
+
 
 @login_required
 def comm_reference_room(request):
@@ -3281,18 +3368,21 @@ def comm_reference_room(request):
         return HttpResponse(aaData, 'applications/json')
     return render(request, 'community/comm_reference_room.html')
 
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 @login_required
 def new_refer(request):
     if request.FILES:
-        pass # 모듈화 new_notice OK
+        pass  # 모듈화 new_notice OK
     elif request.method == 'POST':
         if request.POST['method'] == 'add':
-            pass # 모듈화 new_notice OK
+            pass  # 모듈화 new_notice OK
         elif request.POST['method'] == 'modi':
-            pass # 모듈화 new_notice OK
+            pass  # 모듈화 new_notice OK
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_newrefer.html')
+
+
 # ---------- 2017.10.24 ahn jin yong ---------- #
 
 @login_required
@@ -3363,8 +3453,8 @@ def modi_refer(request, id, use_yn):
     context = {
         'id': id,
         'use_yn': use_yn,
-        'file_list':file_list
-    } 
+        'file_list': file_list
+    }
 
     return render_to_response('community/comm_modirefer.html', context)
 
@@ -3397,6 +3487,7 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
+
 @login_required
 def history(request):
     if request.is_ajax():
@@ -3412,6 +3503,7 @@ def history(request):
 
     else:
         return render(request, 'history/history.html')
+
 
 @login_required
 def history_csv(request):
@@ -3460,6 +3552,7 @@ def history_csv(request):
 
     except Exception as e:
         print e
+
 
 @login_required
 def history_rows(request):
@@ -3729,13 +3822,16 @@ def history_rows(request):
             result_dict['content_type_id'] = content_type_dict[content_type_id]
             result_dict['action_flag'] = action_flag_dict[action_flag]
             result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'], int) else '-') if 'count' in change_message_dict and content_type_id not in ['303',
-                                                                                                                                                                                        '304'] else '-'
+            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
+                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
+                '303',
+                '304'] else '-'
 
     # pp = pprint.PrettyPrinter(indent=2)
     # pp.pprint(connection.queries)
 
     return columns, recordsTotal, result_list
+
 
 @login_required
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
@@ -3779,6 +3875,7 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
 
     return ''
 
+
 @login_required
 def get_system_name(content_type_id):
     """
@@ -3797,6 +3894,7 @@ def get_system_name(content_type_id):
     else:
         system = 'k-mooc'
     return system
+
 
 @login_required
 def get_change_message_dict(change_message):
@@ -3822,6 +3920,7 @@ def get_change_message_dict(change_message):
     finally:
         return change_message_dict
 
+
 @login_required
 def get_object_repr_dict(object_repr):
     """
@@ -3843,6 +3942,7 @@ def get_object_repr_dict(object_repr):
             result[list2[0]] = list2[1]
     return result
 
+
 @login_required
 def get_searcy_string(content_type_id, change_message_dict):
     """
@@ -3858,6 +3958,7 @@ def get_searcy_string(content_type_id, change_message_dict):
     else:
         search_query = ''
     return search_query
+
 
 @login_required
 def get_target_id(content_type_id, object_repr_dict):
@@ -3947,6 +4048,7 @@ auth_dict = {
     'bio': u'자기소개',
     'profile_image_uploaded_at': u'프로필 이미지 업로드 일시',
 }
+
 
 # community view
 def comm_mobile(request):
@@ -4106,7 +4208,6 @@ def new_mobile(request):
         return HttpResponse(data, 'applications/json')
 
     return render(request, 'community/comm_newmobile.html')
-
 
 
 @csrf_exempt
