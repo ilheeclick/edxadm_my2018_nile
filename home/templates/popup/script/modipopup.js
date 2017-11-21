@@ -6,16 +6,6 @@ $(document).ready(function () {
         height: 400,
     });
 
-    $.ajax({
-        url: '/manage/modi_popup/' + '77777',
-        data: {
-            method: 'modi'
-        }
-    }).done(function (data) {
-        if (data >= 3) {
-            swal("경고", "현재 사용중인 팝업창" + data + "개 입니다.", "warning");
-        }
-    });
 
     var value_list;
     var id = '{{id}}';
@@ -39,6 +29,10 @@ $(document).ready(function () {
             $("#radio_2").attr('checked', 'checked');
             Display("Radio_IMAGE");
         }
+        else {
+            $("#radio_1").attr('checked', 'checked');
+            Display("Radio_HTML");
+        }
 
         if (data[0][1] == "없음") {
             $("#link_type").val("없음").prop("selected", true);
@@ -51,7 +45,17 @@ $(document).ready(function () {
         }
         setValues();
 
-        $('#image_map').val(data[0][2]);
+        var image_maplist = data[0][2].split('/');
+        for (var i = 0; i < image_maplist.length; i++) {
+            if (i == 0) {
+                $('.image_map').val(image_maplist[i]);
+            }
+            else {
+                $("#location").append("<input type='text' value ='" + image_maplist[i] + "' style='margin: 0px 0px 5px 0px;' class='form-control image_map' placeholder='0.0.100.100'>");
+            }
+        }
+
+
         $('#title').val(data[0][3]);
         $('.summernote').summernote('code', data[0][4].replace(/\&\^\&/g));
         $('#image_URL').val(data[0][5]);
@@ -101,19 +105,6 @@ $(document).ready(function () {
     })
 });
 
-$('#image_map').keyup(function () {
-    var value = $(this).val();
-    var arr_char = "\"'\[]!@#$^&*=\\,<>?！'，．／：；？＾｀｜￣‥…¨〃–―∥＼´ˇ˘˝˙¸˛¡¿ː（）［］｛｝〔〕〈〉《》「」『』【】＋－＜＝＞±×÷≠≤≥∞∴♂♀∠⊥⌒∂∇≡≒≪≫√∽∝∵∫∬∈∋⊆⊇⊂⊃∪∩∧∨￢⇒⇔∀∃∮∑∏＄％￦′″Å￠￡￥¤℉‰€㎕㎗㎘㏄㎣㎤㎦㎙㎚㎛㎞㎢㏊㎍㎎㎏㏏㎈㎉㏈㎧㎨㎰㎱㎲㎳㎴㎵㎶㎷㎸㎹㎀㎁㎂㎃㎄㎺㎻㎼㎽㎾㎿㎐㎑㎒㎓㎔Ω㏀㏁㎊㎋㎌㏖㏅㎭㎮㎯㏛㎩㎪㎫㎬㏝㏐㏓㏃㏉㏜㏆＃＆＊＠§※☆★○●◎◇◆□■△▲▽▼→←↑↓↔〓◁◀▷▶♤♠♡♥♧♣⊙◈▣◐◑▒▤▥▨▧▦▩♨☏☎☜☞¶†‡↕↗↙↖↘♭♩♪♬㉿㈜№㏇™㏂㏘℡ªº─│┌┐┘└├┬┤┴┼━┃┏┓┛┗┣┳┫┻╋┠┯┨┷┿┝┰┥┸╂┒┑┚┙┖┕┎┍┞┟┡┢┦┧┩┪┭┮┱┲┵┶┹┺┽┾╀╁╃╄╅╆╇╈╉╊㉠㉡㉢㉣㉤㉥㉦㉧㉨㉩㉪㉫㉬㉭㉮㉯㉰㉱㉲㉳㉴㉵㉶㉷㉸㉹㉺㉻㈀㈁㈂㈃㈄㈅㈆㈇㈈㈉㈊㈋㈌㈍㈎㈏㈐㈑㈒㈓㈔㈕㈖㈗㈘㈙㈚㈛ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽⑾⑿⒀⒁⒂ⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ½⅓⅔¼¾⅛⅜⅝⅞¹²³⁴ⁿ₁₂₃₄ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωÆÐĦĲĿŁØŒÞŦŊæđðħıĳĸŀłøœßŧŋŉАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-
-    for (var i = 0; i < arr_char.length; i++) {
-        if (value.indexOf(arr_char[i]) != -1) {
-            swal("경고", "특수문자는 입력하실 수 없습니다.", "warning");
-            value = value.substr(0, value.indexOf(arr_char[i]));
-            $(this).val(value);
-        }
-    }
-});
-
 function Display(id) {
     if (id == "Radio_HTML") {
         document.getElementById('Radio_HTML').style.display = '';         // 보이게
@@ -143,7 +134,7 @@ function setValues() {
 }
 
 function Reset() {
-    $('#image_map').val('');
+    $('.image_map').val('');
     $('#title').val('');
     $('#image_URL').val('');
     $('#link_URL').val('');
@@ -190,6 +181,21 @@ function save() {
                 if (uploadfile == '' && data == '0') {
                     swal("경고", "이미지파일을 등록해주세요.", "warning");
                 }
+                else if ($('#title').val() == '') {
+                    swal("경고", "제목을 입력해주세요.", "warning");
+                }
+                else if ($('#start_date').val() == '') {
+                    swal("경고", "시작일을 입력해주세요.", "warning");
+                }
+                else if ($('#end_date').val() == '') {
+                    swal("경고", "종료일을 입력해주세요.", "warning");
+                }
+                else if ($('#width').val() == '') {
+                    swal("경고", "창너비를 입력해주세요.", "warning");
+                }
+                else if ($('#height').val() == '') {
+                    swal("경고", "창높이를 입력해주세요.", "warning");
+                }
                 else if (uploadfile == '' && data == '1') {
                     save_data(pop_id);
                 }
@@ -203,8 +209,26 @@ function save() {
                 alert('error = ' + error.responseJSON);
             });
         }
-        else {
-            save_data(pop_id);
+        else if (popup_type == "text") {
+
+            if ($('#title').val() == '') {
+                swal("경고", "제목을 입력해주세요.", "warning");
+            }
+            else if ($('#start_date').val() == '') {
+                swal("경고", "시작일을 입력해주세요.", "warning");
+            }
+            else if ($('#end_date').val() == '') {
+                swal("경고", "종료일을 입력해주세요.", "warning");
+            }
+            else if ($('#width').val() == '') {
+                swal("경고", "창너비를 입력해주세요.", "warning");
+            }
+            else if ($('#height').val() == '') {
+                swal("경고", "창높이를 입력해주세요.", "warning");
+            }
+            else {
+                save_data(pop_id);
+            }
         }
     } catch (e) {
         alert(e);
@@ -212,6 +236,7 @@ function save() {
 }
 
 function save_data(pop_id) {
+
     var pop_id = pop_id;
     var method = '';
     var id = '{{ id }}';
@@ -231,42 +256,49 @@ function save_data(pop_id) {
 
     var link_type = document.getElementById("link_type");
     if (link_type.options[link_type.selectedIndex].text == "없음") {
-        link_type = "0"
+        link_type = "0";
     }
     else if (link_type.options[link_type.selectedIndex].text == "전체링크") {
-        link_type = "1"
+        link_type = "1";
     }
     else if (link_type.options[link_type.selectedIndex].text == "이미지맵") {
-        link_type = "2"
+        link_type = "2";
     }
 
-    var image_map = $('#image_map').val();
+    var image_map = '';
+    $('.image_map').each(function () {
+        image_map += $(this).val() + "/";
+    });
     var title = $('#title').val();
     var image_url = $('#image_URL').val();
     var link_url = $('#link_URL').val();
     var link_target = document.getElementById("link_target");
     if (link_target.options[link_target.selectedIndex].text == "blank") {
-        link_target = "B"
+        link_target = "B";
     }
     else if (link_target.options[link_target.selectedIndex].text == "self") {
-        link_target = "S"
+        link_target = "S";
     }
 
     var start_date = $('#start_date').val().replace("-", "").replace("-", "");
-    ;
     var start_time = $('#start_time').val().replace(":", "");
-    ;
+    if (start_time.length = 3) {
+        start_time = "0" + start_time;
+    }
     var end_date = $('#end_date').val().replace("-", "").replace("-", "");
     var end_time = $('#end_time').val().replace(":", "");
+    if (end_time.length = 3) {
+        end_time = "0" + end_time;
+    }
     var template = document.getElementById("template");
     if (template.options[template.selectedIndex].text == "없음") {
-        template = "0"
+        template = "0";
     }
     else if (template.options[template.selectedIndex].text == "기본") {
-        template = "1"
+        template = "1";
     }
     else if (template.options[template.selectedIndex].text == "중간템플릿") {
-        template = "2"
+        template = "2";
     }
 
     var width = $('#width').val();
@@ -274,54 +306,69 @@ function save_data(pop_id) {
 
     var hidden_day = document.getElementById("hidden_day");
     if (hidden_day.options[hidden_day.selectedIndex].text == "그만보기") {
-        hidden_day = "0"
+        hidden_day = "0";
     }
     else if (hidden_day.options[hidden_day.selectedIndex].text == "1일") {
-        hidden_day = "1"
+        hidden_day = "1";
     }
     else if (hidden_day.options[hidden_day.selectedIndex].text == "7일") {
-        hidden_day = "7"
+        hidden_day = "7";
     }
 
     var regist_id = '{{ user.id }}';
     var contents = $('.summernote').summernote('code');
 
-
+    var use_yn = document.getElementById("use_yn");
     if (use_yn.options[use_yn.selectedIndex].text == "사용함") {
-        use_yn = "Y"
+        use_yn = "Y";
     }
     else if (use_yn.options[use_yn.selectedIndex].text == "사용안함") {
-        use_yn = "N"
+        use_yn = "N";
     }
-    $.post("/manage/new_popup/", {
-        csrfmiddlewaretoken: $.cookie('csrftoken'),
-        pop_id: pop_id,
-        popup_type: popup_type,
-        link_type: link_type,
-        image_map: image_map,
-        title: title,
-        contents: contents,
-        image_url: image_url,
-        link_url: link_url,
-        link_target: link_target,
-        start_date: start_date,
-        start_time: start_time,
-        end_date: end_date,
-        end_time: end_time,
-        template: template,
-        width: width,
-        height: height,
-        hidden_day: hidden_day,
-        regist_id: regist_id,
-        use_yn: use_yn,
-        file_flag: file_flag,
-        update_flag: update_flag,
-        method: method,
+
+    $.ajax({
+        url: '/manage/modi_popup/' + '77777',
+        data: {
+            method: 'modi'
+        }
     }).done(function (data) {
-        location.href = '/manage/popup_db';
-    }).fail(function (error) {
-        alert('error = ' + error.responseJSON);
+        var pop_cnt = 0;
+        if (data > 3) {
+            alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
+            pop_cnt = data
+            use_yn = "N";
+        }
+        $.post("/manage/new_popup/", {
+            csrfmiddlewaretoken: $.cookie('csrftoken'),
+            pop_id: pop_id,
+            popup_type: popup_type,
+            link_type: link_type,
+            image_map: image_map,
+            title: title,
+            contents: contents,
+            image_url: image_url,
+            link_url: link_url,
+            link_target: link_target,
+            start_date: start_date,
+            start_time: start_time,
+            end_date: end_date,
+            end_time: end_time,
+            template: template,
+            width: width,
+            height: height,
+            hidden_day: hidden_day,
+            regist_id: regist_id,
+            use_yn: use_yn,
+            file_flag: file_flag,
+            update_flag: update_flag,
+            method: method,
+        }).done(function (data) {
+            location.href = '/manage/popup_db';
+        }).fail(function (error) {
+            alert('error = ' + error.responseJSON);
+        });
     });
+
 }
 
 function del() {
@@ -441,5 +488,14 @@ $("#start_time, #end_time").timepicker({
     minuteStep: 1,
 });
 
-
+var add_location_cnt = 1;
+function add_location() {
+    if (add_location_cnt < 5) {
+        $("#location").append("<input type='text' style='margin: 0px 0px 5px 0px;' class='form-control image_map' placeholder='0.0.100.100'>");
+    }
+    else {
+        swal("경고", "최대 5개까지 등록 가능합니다.", "warning");
+    }
+    add_location_cnt += 1;
+}
 

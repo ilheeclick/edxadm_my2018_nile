@@ -1345,7 +1345,13 @@ def modi_popup(request, id):
                 mod_pop.append(p)
             cur = connection.cursor()
             query = """
-                    select count(use_yn) from popup where use_yn = 'Y';
+                    SELECT count(*)
+                      FROM popup
+                     WHERE     now() BETWEEN str_to_date(concat(start_date, start_time),
+                                                         '%Y%m%d%H%i')
+                                         AND str_to_date(concat(end_date, end_time),
+                                                         '%Y%m%d%H%i')
+                           AND use_yn = 'Y';
                     """
             cur.execute(query)
             row = cur.fetchall()
@@ -1463,7 +1469,7 @@ def new_popup(request):
         if request.POST.get('method') == 'add':
             popup_type = request.POST.get('popup_type')
             link_type = request.POST.get('link_type')
-            image_map = request.POST.get('image_map')
+            image_map = request.POST.get('image_map').rstrip('/')
             title = request.POST.get('title')
             contents = request.POST.get('contents')
             image_url = request.POST.get('image_url')
@@ -1480,9 +1486,7 @@ def new_popup(request):
             regist_id = request.POST.get('regist_id')
             use_yn = request.POST.get('use_yn')
             image_file = 0;
-            print 'file_flag=================='
-            print file_flag
-            print type(file_flag)
+
             if (file_flag == '1'):
                 cur = connection.cursor()
                 query = '''select max(attatch_id)+1 from tb_board_attach
@@ -1546,7 +1550,7 @@ def new_popup(request):
         elif request.POST['method'] == 'modi':
             popup_type = request.POST.get('popup_type')
             link_type = request.POST.get('link_type')
-            image_map = request.POST.get('image_map')
+            image_map = request.POST.get('image_map').rstrip('/')
             title = request.POST.get('title')
             contents = request.POST.get('contents')
             image_url = request.POST.get('image_url')
