@@ -282,12 +282,12 @@ function save_data(pop_id) {
 
     var start_date = $('#start_date').val().replace("-", "").replace("-", "");
     var start_time = $('#start_time').val().replace(":", "");
-    if (start_time.length = 3) {
+    if (start_time.length == 3) {
         start_time = "0" + start_time;
     }
     var end_date = $('#end_date').val().replace("-", "").replace("-", "");
     var end_time = $('#end_time').val().replace(":", "");
-    if (end_time.length = 3) {
+    if (end_time.length == 3) {
         end_time = "0" + end_time;
     }
     var template = document.getElementById("template");
@@ -332,11 +332,17 @@ function save_data(pop_id) {
             method: 'modi'
         }
     }).done(function (data) {
-        var pop_cnt = 0;
-        if (data > 3) {
-            alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
-            pop_cnt = data
-            use_yn = "N";
+        if( method == 'modi') {
+            if (data >= 3 && use_yn == "N") {
+                alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
+                use_yn = "N";
+            }
+        }
+        else if( method == 'add') {
+            if (data >= 3) {
+                alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
+                use_yn = "N";
+            }
         }
         $.post("/manage/new_popup/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
