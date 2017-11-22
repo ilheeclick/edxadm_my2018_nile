@@ -133,6 +133,8 @@ urlpatterns = [
     url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
     url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
 
+    url(r'^manage/series_course/$', views.series_course, name='series_course'),
+    url(r'^manage/modi_series_course/$', views.modi_series_course, name='modi_series_course'),
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

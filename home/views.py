@@ -89,6 +89,87 @@ def common_single_file_upload(file_object, gubun, user_id):
 
 
 # ---------- common module ---------- #
+
+
+@csrf_exempt
+@login_required
+def modi_series_course(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                           VALUES ('{0}','{1}','{2}')
+                        '''.format(site_id, item, user_id)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'input_add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        SELECT count(id)
+                          FROM course_overviews_courseoverview
+                         WHERE id = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                count = cur.fetchall()
+                cur.close()
+
+                if (count[0][0] == 1):
+                    cur = connection.cursor()
+                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                               VALUES ('{0}','{1}','{2}')
+                            '''.format(site_id, item, user_id)
+                    cur.execute(query)
+                    cur.close()
+                    data = json.dumps({'status': "success"})
+                else:
+                    data = json.dumps({'status': "fail"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            site_id = request.POST.get('site_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
+                        '''.format(site_id, item)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'series_course/modi_series_course.html')
+
+@login_required
+def series_course(request):
+    return render(request, 'series_course/series_course.html')
+
+
 @login_required
 def detail_code_db(request):
     if request.method == 'POST':
