@@ -89,6 +89,206 @@ def common_single_file_upload(file_object, gubun, user_id):
 
 
 # ---------- common module ---------- #
+@login_required
+def series_course_list(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        series_id = request.GET.get('series_id')
+
+        query = '''
+                    SELECT replace(@rn := @rn - 1, .0, '') rn,
+                           org,
+                           display_number_with_default,
+                           course_name
+                      FROM series_course,
+                           (SELECT @rn := count(*) + 1
+                              FROM series_course
+                             WHERE series_seq = '{0}') rn
+                     WHERE series_seq = '{1}';
+                '''.format(series_id, series_id)
+
+        print ('=========================')
+        print query
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+@login_required
+def series_course_list_db(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        if request.POST.get('method') == 'add':
+            user_id = request.POST.get('user_id')
+            series_id = request.POST.get('series_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                SELECT org, display_number_with_default, display_name
+                  FROM course_overviews_courseoverview
+                 WHERE id = '{0}'
+                        '''.format(item)
+                cur.execute(query)
+                series_index = cur.fetchall()
+                cur.close()
+
+                cur = connection.cursor()
+                query = '''
+                  INSERT INTO series_course(series_seq,
+                              org,
+                              display_number_with_default,
+                              course_name,
+                              regist_id,
+                              modify_id)
+                     VALUES ('{0}',
+                             '{1}',
+                             '{2}',
+                             '{3}',
+                             '{4}',
+                             '{5}');
+                        '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
+                                   user_id)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'list':
+            print ('=======succes==========')
+            result = dict()
+
+            series_id = request.POST.get('series_id')
+
+
+
+        elif request.POST.get('method') == 'input_add':
+            site_id = request.POST.get('site_id')
+            user_id = request.POST.get('user_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        SELECT count(id)
+                          FROM course_overviews_courseoverview
+                         WHERE id = '{0}';
+                        '''.format(item)
+                cur.execute(query)
+                count = cur.fetchall()
+                cur.close()
+
+                if (count[0][0] == 1):
+                    cur = connection.cursor()
+                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                               VALUES ('{0}','{1}','{2}')
+                            '''.format(site_id, item, user_id)
+                    cur.execute(query)
+                    cur.close()
+                    data = json.dumps({'status': "success"})
+                else:
+                    data = json.dumps({'status': "fail"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'delete':
+            site_id = request.POST.get('site_id')
+            course_list = request.POST.get('course_list')
+            course_list = course_list.split('$')
+            course_list.pop()
+
+            for item in course_list:
+                cur = connection.cursor()
+                query = '''
+                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
+                        '''.format(site_id, item)
+                cur.execute(query)
+                cur.close()
+
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+    return render(request, 'series_course/series_course_list.html')
+
+
+@login_required
+def series_course_list_view(request, id):
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('series_course/series_course_list.html', variables)
+
+
+@login_required
+def all_course(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        org = request.GET.get('org')
+        if (org == 'None'):
+            org = '%%'
+
+        query = '''
+            SELECT replace(@rn := @rn - 1, .0, '') rn,
+                   id,
+                   IFNULL(cd.detail_name, coc.org) detail_name,
+                   display_name,
+                   display_number_with_default     course
+              FROM course_overviews_courseoverview coc
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   (  SELECT @rn := count(*) + 1
+                        FROM course_overviews_courseoverview
+                       WHERE id NOT IN ('1') and org LIKE '{0}'
+                    ) b
+             WHERE org LIKE '{1}';
+        '''.format(org, org)
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
+
+@login_required
+def series_list(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        query = '''
+              SELECT replace(@rn := @rn - 1, .0, '') rn, series_id, series_name, series_seq
+                FROM series,
+                     (SELECT @rn := count(*) + 1
+                        FROM series
+                       WHERE delete_yn = 'N') a
+               WHERE delete_yn = 'N'
+            ORDER BY modify_date DESC;
+        '''
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
 
 
 @csrf_exempt
@@ -97,19 +297,29 @@ def modi_series_course(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
         if request.POST.get('method') == 'add':
-            site_id = request.POST.get('site_id')
+            series_id = request.POST.get('series_id')
+            series_name = request.POST.get('series_name')
+            note = request.POST.get('note')
             user_id = request.POST.get('user_id')
-            course_list = request.POST.get('course_list')
-            course_list = course_list.split('$')
-            course_list.pop()
+            use_yn = request.POST.get('use_yn')
 
-            for item in course_list:
-                cur = connection.cursor()
-                query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
-                           VALUES ('{0}','{1}','{2}')
-                        '''.format(site_id, item, user_id)
-                cur.execute(query)
-                cur.close()
+            cur = connection.cursor()
+            query = '''
+                    INSERT INTO edxapp.series(series_id,
+                                              series_name,
+                                              note,
+                                              regist_id,
+                                              modify_id,
+                                              use_yn)
+                         VALUES ('{0}',
+                                 '{1}',
+                                 '{2}',
+                                 '{3}',
+                                 '{4}',
+                                 '{5}');
+                    '''.format(series_id, series_name, note, user_id, user_id, use_yn)
+            cur.execute(query)
+            cur.close()
 
             data = json.dumps({'status': "success"})
 
@@ -164,6 +374,7 @@ def modi_series_course(request):
             return HttpResponse(data, 'applications/json')
 
     return render(request, 'series_course/modi_series_course.html')
+
 
 @login_required
 def series_course(request):
@@ -965,8 +1176,6 @@ def select_list_db(request):
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
-        print ('**(*)()(&)&)($)(*)(@)$)(**)(@$*)(')
-        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list

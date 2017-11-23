@@ -23,6 +23,18 @@
 
             <div class="panel-body">
                 {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        시리즈 ID
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="series_id">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
@@ -32,7 +44,7 @@
 
                     <div class="col-sm-10">
                         <div>
-                            <input type="text" class="form-control" id="site_name">
+                            <input type="text" class="form-control" id="series_name">
                         </div>
                     </div>
                 </div>
@@ -47,7 +59,7 @@
                         <div>
                             <form action="/manage/modi_multi_site_db/" id="uploadform" method="post"
                                   enctype="multipart/form-data">
-                                <input name='uploadfile' type="file" id="uploadfile"/>
+                                <input name='uploadfile' type="file" id="sumnail_file_id"/>
                                 <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
                                        style="display: none"/>
                             </form>
@@ -55,55 +67,24 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        학습 대상
-                        <span class="required">*</span>
-                    </label>
+                <div class="form-group" id="Radio_HTML">
+                    <label class="col-sm-2 control-label">시리즈 강좌 소개<span class="required">*</span></label>
 
-                    <div class="col-sm-10">
-                        <div>
-                            <input type="text" class="form-control" id="site_url">
-                        </div>
+                    <div id="summernote_content" class="col-sm-10" id="note">
+                        <div class="summernote" id="summernote"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
-                        학습 목표
-                        <span class="required">*</span>
-                    </label>
-
-                    <div class="col-sm-10">
-                        <div>
-                            <textarea class="form-control" id="site_url" style="height: 150px"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        시리즈 강좌 소개
-                        <span class="required">*</span>
-                    </label>
-
-                    <div class="col-sm-10">
-                        <div>
-                            <textarea class="form-control" id="site_url" style="height: 150px"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        사용여부
+                        공개여부
                         <span class="required">*</span>
                     </label>
 
                     <div class="col-sm-10">
                         <form>
-                            사용 <input type="radio" id="radio_1" name="radio"> &nbsp;&nbsp;
-                            미사용 <input type="radio" id="radio_2" name="radio">
+                            공개 <input type="radio" id="radio_1" name="radio" value="Y"> &nbsp;&nbsp;
+                            미공개 <input type="radio" id="radio_2" name="radio" value="N">
                         </form>
                     </div>
                 </div>
@@ -111,79 +92,16 @@
             <footer class="panel-footer">
                 <div class="row">
                     <div class="col-sm-3" align="left">
-                        <a class="btn btn-default" href="/manage/popup_add">목록으로</a>
+                        <a class="btn btn-default" href="/manage/series_course/">목록으로</a>
                     </div>
                     <div class="col-sm-9" align="right">
                         <a href=""><input class="btn btn-default" type="button" id="DelBtn"
                                           value="삭     제"></a>
-                        <a href=""><input class="btn btn-primary" type="button" id="SaveBtn"
-                                          value="저     장"></a>
+                        <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                                            value="저     장"></a>
                     </div>
                 </div>
             </footer>
-
-
-            <div class="panel-body" style="padding-top: 0; width:50%; float: left"> 
-
-                <h3>시리즈강좌 구성</h3>
-
-                <div class="row">
-                    <div class="col-sm-9" align="right" style="float: right; margin: 25px 0px 5px 0px">
-                        <a href=""><input class="btn btn-primary" type="button" id="SaveBtn"
-                                          value="저     장"></a>
-                        <a href=""><input class="btn btn-default" type="button" id="DelBtn"
-                                          value="삭     제"></a>
-                    </div>
-                </div>
-                <table class="table table-hover table-striped  table-bordered" id="datatable1"
-                       data-url="">
-                    <thead>
-                    <tr>
-                        <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
-                        <td>ID</td>
-                        <td>No</td>
-                        <td>강좌코드</td>
-                        <td>강좌명</td>
-                    </tr>
-                    </thead>
-                    <tbody id="notice_body1">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="panel-body" style="padding-top: 0; width:50%; float: left"> 
-                <h3>전체강좌 검색</h3>
-
-                <div class="row">
-                    <div class="col-md-3" align="left" style="width: 170px; float: left; margin: 20px 0px 10px 0px">
-                        <select id="org2" class="form-control" onchange="update2()">
-                            <option value="None">대학선택</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3" align="left" style="float: left; margin: 20px 0px 0px 0px">
-                        <input placeholder="검색하세요." type="text" class="form-control" id="search_input2">
-                    </div>
-                    <div class="col-sm-3" align="right" style="float: right; margin: 25px 0px 5px 0px">
-                        <a href=""><input class="btn btn-primary" type="button" id="SaveBtn"
-                                          value="추     가"></a>
-                    </div>
-                </div>
-                <table class="table table-hover table-striped table-bordered" id="datatable2"
-                       data-url="">
-                    <thead>
-                    <tr>
-                        <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
-                        <td>ID</td>
-                        <td>No</td>
-                        <td>대학명</td>
-                        <td>강좌명</td>
-                        <td>강좌코드</td>
-                    </tr>
-                    </thead>
-                    <tbody id="notice_body2">
-                    </tbody>
-                </table>
-            </div>
         </section>
     </div>
 

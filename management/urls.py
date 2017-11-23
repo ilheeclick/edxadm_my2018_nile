@@ -135,6 +135,11 @@ urlpatterns = [
 
     url(r'^manage/series_course/$', views.series_course, name='series_course'),
     url(r'^manage/modi_series_course/$', views.modi_series_course, name='modi_series_course'),
+    url(r'^manage/series_list/$', views.series_list, name='series_list'),
+    url(r'^manage/all_course/$', views.all_course, name='all_course'),
+    url(r'^manage/series_course_list_view/(?P<id>.*?)/$', views.series_course_list_view, name='series_course_list_view'),
+    url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
+    url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
 
     #history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

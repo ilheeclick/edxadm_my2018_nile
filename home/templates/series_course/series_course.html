@@ -3,7 +3,7 @@
 {% block pagetitlename_header %}시리즈 강좌{% endblock %}
 {% block script_down %}
     <script>
-{#        {% include "series_course/script/series_course_datatables.js" %}#}
+        {% include "series_course/script/series_course_datatables.js" %}
     </script>
 {% endblock %}
 {% block containor %}
@@ -15,19 +15,20 @@
 
         <div class="panel-body" style="padding-top: 0;"> 
             <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-                <a class="btn btn-default" id="add_multi_site" href="/manage/modi_series_course">신규등록</a>
+                <a class="btn btn-default" href="/manage/modi_series_course">신규등록</a>
             </div>
 
-            <table class="table table-hover table-striped  table-bordered" id="datatable33"
+            <table class="table table-hover table-striped  table-bordered" id="datatable1"
                    data-url="/manage/multi_site_db/" style="width: 100%;">
                 <thead>
                 <tr>
                     <td>No</td>
-                    <td>ID</td>
-                    <td>썸네일 이미지</td>
+                    <td>시리즈 아이디</td>
                     <td>시리즈 강좌명</td>
-                    <td>학습대상</td>
-                    <td>등록 강좌수</td>
+                    <td>구성 강좌수</td>
+                    <td>총 동영상 재생시간</td>
+                    <td>총 학습시간</td>
+                    <td>강좌관리</td>
                 </tr>
                 </thead>
                 <tbody id="notice_body">
