@@ -1064,18 +1064,18 @@ def modi_multi_site(request, id):
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
-        try:
-            upload_file = request.FILES['uploadfile']
-            uploadfile_user_id = request.POST.get('uploadfile_user_id')
-        except BaseException:
-            upload_file = None
-            uploadfile_user_id = None
-
-        if upload_file:
-            uploadfile = request.FILES['uploadfile']
-            common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
-
-            return render(request, 'multi_site/modi_multi_site.html')
+        # try:
+        #     upload_file = request.FILES['uploadfile']
+        #     uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        # except BaseException:
+        #     upload_file = None
+        #     uploadfile_user_id = None
+        #
+        # if upload_file:
+        #     uploadfile = request.FILES['uploadfile']
+        #     common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
+        #
+        #     return render(request, 'multi_site/modi_multi_site.html')
 
         if request.POST.get('method') == 'add':
             site_name = request.POST.get('site_name')
@@ -1086,17 +1086,17 @@ def modi_multi_site_db(request):
             email_list = email_list.split('+')
             email_list.pop()
 
-            cur = connection.cursor()
-            query = '''select max(attatch_id)+1 from tb_board_attach
-                    '''
-            cur.execute(query)
-            attatch_id = cur.fetchall()
-            cur.close()
+            # cur = connection.cursor()
+            # query = '''select max(attatch_id)+1 from tb_board_attach
+            #         '''
+            # cur.execute(query)
+            # attatch_id = cur.fetchall()
+            # cur.close()
 
             cur = connection.cursor()
-            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, logo_img)
-                       VALUES ('{0}','{1}','{2}','{3}','{4}', '{5}')
-                    '''.format(site_name, site_code, site_url, regist_id, regist_id, attatch_id[0][0])
+            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}')
+                    '''.format(site_name, site_code, site_url, regist_id, regist_id)
             cur.execute(query)
             cur.close()
 
@@ -1133,35 +1133,35 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
-            flag = request.POST.get('flag')
-            file_flag = request.POST.get('file_flag')
-
-            if (flag == '1' and file_flag == '0'):
-                cur = connection.cursor()
-                query = '''
-                        SELECT logo_img
-                          FROM multisite
-                         WHERE site_id = '{0}';
-                        '''.format(multi_no)
-                cur.execute(query)
-                attatch_id = cur.fetchall()
-                logo_file = attatch_id[0][0]
-                cur.close()
-            else:
-                cur = connection.cursor()
-                query = '''select max(attatch_id)+1 from tb_board_attach
-                        '''
-                cur.execute(query)
-                attatch_id = cur.fetchall()
-                logo_file = attatch_id[0][0]
-                cur.close()
+            # flag = request.POST.get('flag')
+            # file_flag = request.POST.get('file_flag')
+            #
+            # if (flag == '1' and file_flag == '0'):
+            #     cur = connection.cursor()
+            #     query = '''
+            #             SELECT logo_img
+            #               FROM multisite
+            #              WHERE site_id = '{0}';
+            #             '''.format(multi_no)
+            #     cur.execute(query)
+            #     attatch_id = cur.fetchall()
+            #     logo_file = attatch_id[0][0]
+            #     cur.close()
+            # else:
+            #     cur = connection.cursor()
+            #     query = '''select max(attatch_id)+1 from tb_board_attach
+            #             '''
+            #     cur.execute(query)
+            #     attatch_id = cur.fetchall()
+            #     logo_file = attatch_id[0][0]
+            #     cur.close()
 
             cur = connection.cursor()
             query = '''
                     update edxapp.multisite
-                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now(), logo_img = '{5}'
+                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now()
                     WHERE site_id = '{4}'
-                    '''.format(site_name, site_code, site_url, regist_id, multi_no, logo_file)
+                    '''.format(site_name, site_code, site_url, regist_id, multi_no)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})

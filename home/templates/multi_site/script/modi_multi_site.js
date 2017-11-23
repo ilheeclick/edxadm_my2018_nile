@@ -25,7 +25,7 @@ $(document).ready(function () {
     })
 });
 function save() {
-    var uploadfile = $('#uploadfile').val();
+    //var uploadfile = $('#uploadfile').val();
     var site_name = $('#site_name').val();
     var site_code = $('#site_code').val();
     var site_url = $('#site_url').val();
@@ -36,10 +36,10 @@ function save() {
         multi_no: multi_no,
         method: 'check',
     }).done(function (data) {
-        if (uploadfile == '' && data == '0') {
-            swal("경고", "기관이미지를 선택해주세요.", "warning");
-        }
-        else if (site_name == '' && file_flag == '0') {
+        /*        if (uploadfile == '' && data == '0') {
+         swal("경고", "기관이미지를 선택해주세요.", "warning");
+         }*/
+        if (site_name == '') {
             swal("경고", "기관명 입력해주세요.", "warning");
         }
         else if (site_code == '') {
@@ -81,11 +81,11 @@ function save_date(data) {
                 email_list += $(this).text() + "+";
             }
         });
-        var file_flag = '1'
-        var uploadfile = $('#uploadfile').val();
-        if (uploadfile == '') {
-            file_flag = '0'
-        }
+        /*var file_flag = '1'
+         var uploadfile = $('#uploadfile').val();
+         if (uploadfile == '') {
+         file_flag = '0'
+         }*/
         $.post("/manage/modi_multi_site_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             site_name: site_name,
@@ -95,8 +95,6 @@ function save_date(data) {
             multi_no: multi_no,
             site_index: site_index,
             email_list: email_list,
-            flag: flag,
-            file_flag: file_flag,
             method: method,
         }).done(function (data) {
             location.href = '/manage/multi_site';
