@@ -90,6 +90,34 @@ def common_single_file_upload(file_object, gubun, user_id):
 
 # ---------- common module ---------- #
 @login_required
+def modi_series(request, id):
+    mod_multi = []
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi_list':
+
+            cur = connection.cursor()
+            query = """
+					SELECT series_id, series_name, note, use_yn
+                      FROM series
+                     WHERE series_seq = '{0}';
+			""".format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_multi.append(p)
+            print mod_multi
+            data = json.dumps(list(mod_multi), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('series_course/modi_series_course.html', variables)
+
+
+@login_required
 def series_course_list(request):
     result = dict()
 
@@ -104,12 +132,9 @@ def series_course_list(request):
                       FROM series_course,
                            (SELECT @rn := count(*) + 1
                               FROM series_course
-                             WHERE series_seq = '{0}') rn
-                     WHERE series_seq = '{1}';
+                             WHERE series_seq = '{0}' AND delete_yn = 'N') rn
+                     WHERE series_seq = '{1}' AND delete_yn = 'N';
                 '''.format(series_id, series_id)
-
-        print ('=========================')
-        print query
 
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -119,6 +144,7 @@ def series_course_list(request):
     result['data'] = result_list
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
+
 
 @login_required
 def series_course_list_db(request):
@@ -130,6 +156,7 @@ def series_course_list_db(request):
             course_list = request.POST.get('course_list')
             course_list = course_list.split('$')
             course_list.pop()
+
             for item in course_list:
                 cur = connection.cursor()
                 query = '''
@@ -157,6 +184,7 @@ def series_course_list_db(request):
                              '{5}');
                         '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
                                    user_id)
+
                 cur.execute(query)
                 cur.close()
 
@@ -164,55 +192,58 @@ def series_course_list_db(request):
 
             return HttpResponse(data, 'applications/json')
 
-        elif request.POST.get('method') == 'list':
-            print ('=======succes==========')
-            result = dict()
 
+        elif request.POST.get('method') == 'delete':
+            user_id = request.POST.get('user_id')
             series_id = request.POST.get('series_id')
 
+            org_code = request.POST.get('org_code')
+            org_code = org_code.split('$')
+            org_code.pop()
 
+            course_code = request.POST.get('course_code')
+            course_code = course_code.split('$')
+            course_code.pop()
 
-        elif request.POST.get('method') == 'input_add':
-            site_id = request.POST.get('site_id')
-            user_id = request.POST.get('user_id')
-            course_list = request.POST.get('course_list')
-            course_list = course_list.split()
-
-            for item in course_list:
+            for i in xrange(0, len(course_code)):
                 cur = connection.cursor()
                 query = '''
-                        SELECT count(id)
-                          FROM course_overviews_courseoverview
-                         WHERE id = '{0}';
-                        '''.format(item)
+                        UPDATE edxapp.series_course
+                           SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
+                         WHERE     series_seq = '{1}'
+                               AND org = '{2}'
+                               AND display_number_with_default = '{3}';
+                        '''.format(user_id, series_id, org_code[i], course_code[i])
                 cur.execute(query)
-                count = cur.fetchall()
                 cur.close()
 
-                if (count[0][0] == 1):
-                    cur = connection.cursor()
-                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
-                               VALUES ('{0}','{1}','{2}')
-                            '''.format(site_id, item, user_id)
-                    cur.execute(query)
-                    cur.close()
-                    data = json.dumps({'status': "success"})
-                else:
-                    data = json.dumps({'status': "fail"})
+            data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
 
-        elif request.POST.get('method') == 'delete':
-            site_id = request.POST.get('site_id')
-            course_list = request.POST.get('course_list')
-            course_list = course_list.split('$')
-            course_list.pop()
 
-            for item in course_list:
+        elif request.POST.get('method') == 'update':
+            user_id = request.POST.get('user_id')
+            series_id = request.POST.get('series_id')
+            org_code = request.POST.get('org_code')
+            org_code = org_code.split('$')
+            org_code.pop()
+            course_code = request.POST.get('course_code')
+            course_code = course_code.split('$')
+            course_code.pop()
+            course_name = request.POST.get('course_name')
+            course_name = course_name.split('$')
+            course_name.pop()
+
+            for i in xrange(0, len(course_code)):
                 cur = connection.cursor()
                 query = '''
-                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
-                        '''.format(site_id, item)
+                        UPDATE edxapp.series_course
+                           SET course_name = '{0}', modify_id = '{1}', modify_date = now()
+                         WHERE     series_seq = '{2}'
+                               AND org = '{3}'
+                               AND display_number_with_default = '{4}';
+                        '''.format(course_name[i], user_id, series_id, org_code[i], course_code[i])
                 cur.execute(query)
                 cur.close()
 
@@ -237,8 +268,27 @@ def all_course(request):
 
     with connections['default'].cursor() as cur:
         org = request.GET.get('org')
+        series_id = request.GET.get('series_id')
         if (org == 'None'):
             org = '%%'
+
+        query = '''
+            SELECT org, display_number_with_default
+              FROM series_course
+             WHERE series_seq = '{0}' AND delete_yn = 'N';
+            '''.format(series_id)
+        cur.execute(query)
+        select = cur.fetchall()
+        Test = ""
+
+        if (str(select) == "()"):
+            Test = "('','')"
+        else:
+            for i in xrange(0, len(select)):
+                if (i < len(select) - 1):
+                    Test += "('" + select[i][0] + "','" + select[i][1] + "'), "
+                elif (i == len(select) - 1):
+                    Test += "('" + select[i][0] + "','" + select[i][1] + "')"
 
         query = '''
             SELECT replace(@rn := @rn - 1, .0, '') rn,
@@ -248,13 +298,12 @@ def all_course(request):
                    display_number_with_default     course
               FROM course_overviews_courseoverview coc
                    LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
-                   (  SELECT @rn := count(*) + 1
-                        FROM course_overviews_courseoverview
-                       WHERE id NOT IN ('1') and org LIKE '{0}'
-                    ) b
-             WHERE org LIKE '{1}';
-        '''.format(org, org)
-
+                   (SELECT @rn := count(*) + 1
+                      FROM course_overviews_courseoverview
+                     WHERE     (org, display_number_with_default) NOT IN ({0})
+                           AND org LIKE '{1}') b
+             WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
+              '''.format(Test, org, Test, org)
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -278,7 +327,7 @@ def series_list(request):
                         FROM series
                        WHERE delete_yn = 'N') a
                WHERE delete_yn = 'N'
-            ORDER BY modify_date DESC;
+            ORDER BY regist_date DESC;
         '''
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -296,6 +345,20 @@ def series_list(request):
 def modi_series_course(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
+
+        try:
+            upload_file = request.FILES['uploadfile']
+            uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        except BaseException:
+            upload_file = None
+            uploadfile_user_id = None
+
+        if upload_file:
+            uploadfile = request.FILES['uploadfile']
+            common_single_file_upload(uploadfile, 'series', str(uploadfile_user_id))
+
+            return render(request, 'series_course/modi_series_course.html')
+
         if request.POST.get('method') == 'add':
             series_id = request.POST.get('series_id')
             series_name = request.POST.get('series_name')
@@ -304,20 +367,29 @@ def modi_series_course(request):
             use_yn = request.POST.get('use_yn')
 
             cur = connection.cursor()
+            query = '''select max(attatch_id)+1 from tb_board_attach
+                    '''
+            cur.execute(query)
+            attatch_id = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
             query = '''
                     INSERT INTO edxapp.series(series_id,
                                               series_name,
                                               note,
                                               regist_id,
                                               modify_id,
-                                              use_yn)
+                                              use_yn,
+                                              sumnail_file_id)
                          VALUES ('{0}',
                                  '{1}',
                                  '{2}',
                                  '{3}',
                                  '{4}',
-                                 '{5}');
-                    '''.format(series_id, series_name, note, user_id, user_id, use_yn)
+                                 '{5}',
+                                 '{6}');
+                    '''.format(series_id, series_name, note, user_id, user_id, use_yn, attatch_id[0][0])
             cur.execute(query)
             cur.close()
 
@@ -325,51 +397,86 @@ def modi_series_course(request):
 
             return HttpResponse(data, 'applications/json')
 
-        elif request.POST.get('method') == 'input_add':
-            site_id = request.POST.get('site_id')
+        elif request.POST.get('method') == 'modi':
+            series_id = request.POST.get('series_id')
+            series_name = request.POST.get('series_name')
+            note = request.POST.get('note')
             user_id = request.POST.get('user_id')
-            course_list = request.POST.get('course_list')
-            course_list = course_list.split()
+            use_yn = request.POST.get('use_yn')
+            series_seq = request.POST.get('series_seq')
+            file_flag = request.POST.get('file_flag')
+            update_flag = request.POST.get('update_flag')
+            sumnail_file_id = None
 
-            for item in course_list:
+            if (update_flag == '1' and file_flag != '1'):
                 cur = connection.cursor()
                 query = '''
-                        SELECT count(id)
-                          FROM course_overviews_courseoverview
-                         WHERE id = '{0}';
-                        '''.format(item)
+                            SELECT sumnail_file_id
+                              FROM series
+                             WHERE series_seq = '{0}';
+                            '''.format(series_seq)
                 cur.execute(query)
-                count = cur.fetchall()
+                attatch_id = cur.fetchall()
+                sumnail_file_id = attatch_id[0][0]
+                cur.close()
+            elif (file_flag == '1'):
+                cur = connection.cursor()
+                query = '''select max(attatch_id)+1 from tb_board_attach
+                        '''
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                sumnail_file_id = attatch_id[0][0]
                 cur.close()
 
-                if (count[0][0] == 1):
-                    cur = connection.cursor()
-                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
-                               VALUES ('{0}','{1}','{2}')
-                            '''.format(site_id, item, user_id)
-                    cur.execute(query)
-                    cur.close()
-                    data = json.dumps({'status': "success"})
-                else:
-                    data = json.dumps({'status': "fail"})
+            cur = connection.cursor()
+            query = '''
+                    UPDATE series
+                       SET series_id = '{0}',
+                           series_name = '{1}',
+                           note = '{2}',
+                           modify_id = '{3}',
+                           use_yn = '{4}',
+                           sumnail_file_id = '{5}',
+                           modify_date = now()
+                     WHERE series_seq = '{6}';
+                    '''.format(series_id, series_name, note, user_id, use_yn, sumnail_file_id, series_seq)
+            cur.execute(query)
+            cur.close()
+
+            data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
 
         elif request.POST.get('method') == 'delete':
-            site_id = request.POST.get('site_id')
-            course_list = request.POST.get('course_list')
-            course_list = course_list.split('$')
-            course_list.pop()
+            series_seq = request.POST.get('series_seq')
 
-            for item in course_list:
-                cur = connection.cursor()
-                query = '''
-                        delete from edxapp.multisite_course where site_id='{0}' and course_id = '{1}'
-                        '''.format(site_id, item)
-                cur.execute(query)
-                cur.close()
+            cur = connection.cursor()
+            query = '''
+                    UPDATE series
+                       SET delete_yn = 'Y'
+                     WHERE series_seq = '{0}';
+                    '''.format(series_seq)
+            cur.execute(query)
+            cur.close()
 
             data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST.get('method') == 'check':
+            series_seq = request.POST.get('series_seq')
+
+            cur = connection.cursor()
+            query = '''
+                    SELECT count(sumnail_file_id)
+                      FROM series
+                     WHERE series_seq = '{0}';
+                    '''.format(series_seq)
+            cur.execute(query)
+            check_file = cur.fetchall()
+            cur.close()
+
+            data = check_file[0][0]
 
             return HttpResponse(data, 'applications/json')
 
@@ -400,7 +507,6 @@ def detail_code_db(request):
                        VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
                     '''.format(group_code, detail_code, detail_name, detail_Ename, detail_desc, order_no, use_yn,
                                user_id)
-            print query
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -422,7 +528,6 @@ def detail_code_db(request):
                            SET delete_yn = 'Y', modify_id = '{0}', modify_date = now()
                          WHERE group_code = '{1}' AND detail_code = '{2}';
                         '''.format(user_id, group_code, detail_code)
-                print query
                 cur.execute(query)
                 cur.close()
             data = json.dumps({'status': "success"})
@@ -1057,6 +1162,9 @@ def course_list_db(request):
                    AND id NOT IN
                           ('{2}');
         '''.format(select_course, org, select_course)
+
+        print ('+++++++++++++++++++++++++++++')
+        print (query)
 
         cur.execute(query)
         columns = [i[0] for i in cur.description]

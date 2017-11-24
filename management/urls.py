@@ -134,6 +134,7 @@ urlpatterns = [
     url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
 
     url(r'^manage/series_course/$', views.series_course, name='series_course'),
+    url(r'^manage/modi_series/(?P<id>.*?)/$', views.modi_series, name='modi_series'),
     url(r'^manage/modi_series_course/$', views.modi_series_course, name='modi_series_course'),
     url(r'^manage/series_list/$', views.series_list, name='series_list'),
     url(r'^manage/all_course/$', views.all_course, name='all_course'),

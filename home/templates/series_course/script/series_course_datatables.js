@@ -53,6 +53,17 @@ function setDataTable1() {
         "info": false,
         initComplete: function () {
         }
+
+
+    });
+
+    $table.on('click', 'tr', function () {
+        var $row;
+        var data;
+        var t = $('#datatable1').DataTable();
+        $row = $(this).closest('tr');
+        data = t.row($row.get(0)).data();
+        location.href = '/manage/modi_series/' + data.series_seq
     });
 }
 
