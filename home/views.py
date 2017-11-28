@@ -160,9 +160,9 @@ def series_course_list_db(request):
             for item in course_list:
                 cur = connection.cursor()
                 query = '''
-                SELECT org, display_number_with_default, display_name
-                  FROM course_overviews_courseoverview
-                 WHERE id = '{0}'
+                    SELECT org, display_number_with_default, display_name
+                      FROM course_overviews_courseoverview
+                     WHERE id = '{0}'
                         '''.format(item)
                 cur.execute(query)
                 series_index = cur.fetchall()
@@ -170,23 +170,63 @@ def series_course_list_db(request):
 
                 cur = connection.cursor()
                 query = '''
-                  INSERT INTO series_course(series_seq,
-                              org,
-                              display_number_with_default,
-                              course_name,
-                              regist_id,
-                              modify_id)
-                     VALUES ('{0}',
-                             '{1}',
-                             '{2}',
-                             '{3}',
-                             '{4}',
-                             '{5}');
-                        '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
-                                   user_id)
-
+                    SELECT count(*)
+                      FROM series_course
+                     WHERE     series_seq = '{0}'
+                           AND org = '{1}'
+                           AND display_number_with_default = '{2}'
+                        '''.format(series_id, series_index[0][0], series_index[0][1])
                 cur.execute(query)
+                add_check = cur.fetchall()
                 cur.close()
+
+                if (add_check[0][0] == 0):
+                    cur = connection.cursor()
+                    query = '''
+                      INSERT INTO series_course(series_seq,
+                                  org,
+                                  display_number_with_default,
+                                  course_name,
+                                  regist_id,
+                                  modify_id)
+                         VALUES ('{0}',
+                                 '{1}',
+                                 '{2}',
+                                 '{3}',
+                                 '{4}',
+                                 '{5}');
+                            '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
+                                       user_id)
+
+                    cur.execute(query)
+                    cur.close()
+
+                else :
+                    cur = connection.cursor()
+                    query = '''
+                        SELECT count(*)
+                          FROM series_course
+                         WHERE     series_seq = '{0}'
+                               AND org = '{1}'
+                               AND display_number_with_default = '{2}'
+                               AND delete_yn = 'Y';
+                            '''.format(series_id, series_index[0][0], series_index[0][1])
+                    cur.execute(query)
+                    update_check = cur.fetchall()
+                    cur.close()
+
+                    if(update_check[0][0] == 1):
+                        cur = connection.cursor()
+                        query = '''
+                                UPDATE edxapp.series_course
+                                   SET delete_yn = 'N', modify_id = '{0}', modify_date = now()
+                                 WHERE     series_seq = '{1}'
+                                       AND org = '{2}'
+                                       AND display_number_with_default = '{3}'
+                                       AND delete_yn ='Y';
+                                '''.format(user_id, series_id, series_index[0][0], series_index[0][1])
+                        cur.execute(query)
+                        cur.close()
 
             data = json.dumps({'status': "success"})
 
@@ -321,18 +361,98 @@ def series_list(request):
 
     with connections['default'].cursor() as cur:
         query = '''
-              SELECT replace(@rn := @rn - 1, .0, '') rn, series_id, series_name, series_seq
-                FROM series,
+              SELECT replace(@rn := @rn - 1, .0, '') rn,
+                     series.series_seq,
+                     series.series_id,
+                     series.series_name,
+                     count(series_course.series_seq) cnt
+                FROM series
+                     LEFT JOIN series_course
+                        ON     series.series_seq = series_course.series_seq
+                           AND series_course.delete_yn = 'N',
                      (SELECT @rn := count(*) + 1
                         FROM series
-                       WHERE delete_yn = 'N') a
-               WHERE delete_yn = 'N'
-            ORDER BY regist_date DESC;
+                       WHERE series.delete_yn = 'N') a
+               WHERE series.delete_yn = 'N'
+            GROUP BY series_name, series_course.series_seq
+            ORDER BY series.regist_date DESC;
         '''
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
-        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+        video_list = list()
+        learning_list = list()
+        columns += ['video_time']
+        columns += ['learning_time']
+
+        new_rows = []
+
+        for i in xrange(0, len(rows)):
+            query = '''
+                SELECT effort
+                  FROM (SELECT org,
+                               display_number_with_default,
+                               id,
+                               effort,
+                               (SELECT Count(*)
+                                  FROM edxapp.course_overviews_courseoverview b
+                                 WHERE     a.org = b.org
+                                       AND a.display_number_with_default =
+                                              b.display_number_with_default
+                                       AND a.start >= b.start
+                                       AND a.created >= b.created)
+                                  AS rank
+                          FROM edxapp.course_overviews_courseoverview a) ab
+                 WHERE     rank = 1
+                       AND (org, display_number_with_default) IN
+                              (SELECT org, display_number_with_default
+                                 FROM series_course
+                                WHERE series_seq = {0} AND delete_yn = 'N');
+            '''.format(rows[i][1])
+            print query
+            cur.execute(query)
+            effort = cur.fetchall()
+
+            video_time = 0
+            learning_time = 0
+            for e in effort:
+                if e[0] != None:
+                    series_time = e[0].replace('@', '+').replace('#', '+')
+                    series_time_index = series_time.split('+')
+                if (len(series_time_index) == 3):
+                    all_learning_hour = series_time_index[0].split(':')
+                    learning_hour = int(all_learning_hour[0]) * 60 * int(series_time_index[1])
+                    learning_minut = int(all_learning_hour[1]) * int(series_time_index[1])
+                    learning_time += (learning_hour + learning_minut)
+
+                    all_video_hour = series_time_index[2].split(':')
+                    video_hour = int(all_video_hour[0]) * 60 * int(series_time_index[1])
+                    video_minut = int(all_video_hour[1]) * int(series_time_index[1])
+                    video_time += (video_hour + video_minut)
+                else:
+                    learning_time = 0
+                    video_time = 0
+
+            if (len(str(video_time % 60)) == 1 and len(str(learning_time % 60)) != 1):
+                video_list.append(str(video_time // 60) + ':0' + str(video_time % 60))
+                learning_list.append(str(learning_time // 60) + ':' + str(learning_time % 60))
+
+            elif (len(str(video_time % 60)) != 1 and len(str(learning_time % 60)) == 1):
+                video_list.append(str(video_time // 60) + ':' + str(video_time % 60))
+                learning_list.append(str(learning_time // 60) + ':0' + str(learning_time % 60))
+
+            elif (len(str(video_time % 60)) == 1 and len(str(learning_time % 60)) == 1):
+                video_list.append(str(video_time // 60) + ':0' + str(video_time % 60))
+                learning_list.append(str(learning_time // 60) + ':0' + str(learning_time % 60))
+
+            else:
+                video_list.append(str(video_time // 60) + ':' + str(video_time % 60))
+                learning_list.append(str(learning_time // 60) + ':' + str(learning_time % 60))
+
+            new_rows.append(rows[i] + (video_list[i],) + (learning_list[i],))
+
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in new_rows]
 
     result['data'] = result_list
 

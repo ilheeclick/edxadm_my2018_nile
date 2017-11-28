@@ -32,9 +32,9 @@ function setDataTable1() {
             {data: "rn"},
             {data: "series_id"},
             {data: "series_name"},
-            {data: "series_name"},
-            {data: "series_name"},
-            {data: "series_name"},
+            {data: "cnt"},
+            {data: "video_time"},
+            {data: "learning_time"},
             {data: "series_seq"},
 
         ],
