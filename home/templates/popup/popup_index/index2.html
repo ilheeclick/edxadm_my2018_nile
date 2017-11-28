@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: malgun gothic;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .wrap {
+        }
+
+        .pop_top {
+            background: url(../../../static/image/bg2.jpg) no-repeat;
+            background-size: 100% 430px;
+        }
+
+        .close {
+            text-align: right;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .close > a {
+            padding: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .close > a:hover {
+            color: #000;
+        }
+
+        .pop_container {
+            vertical-align: top;
+            padding: 70px 20px 20px 20px;
+            border: 1px solid #eee;
+            min-height: 240px;
+            background: #fff;
+        }
+
+        .con-area {
+            width: 100%;
+            line-height: 30px;
+        }
+
+        .center-text {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 100px;
+        }
+
+        .top-txtarea h1, h4 {
+            color: #fff;
+        }
+
+        .top-txtarea h1 {
+            font-size: 50px;
+        }
+
+        .top-txt-bg {
+            background: rgba(0, 0, 0, .5);
+            display: inline-block;
+            padding: 10px;
+        }
+
+    </style>
+
+    <meta charset="utf-8">
+    <title>Untitled Document</title>
+</head>
+
+<body>
+
+{% for pop in pop_list %}
+<div class="wrap">
+
+    <!-- pop_top -->
+    <div class="pop_top">
+        <div style="padding:15px;">
+            <!-- close -->
+            <span class="close"><a href="../*">X</a></span>
+
+            <div class="top-txtarea center-text">
+                <div class="top-txt-bg">
+                    <h1>{{ pop.0 }}</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="logo" style="width: 100%; margin-top: -75px; position: absolute; z-index: 5;">
+        <div style=" width:100%; display:inline-block; text-align: center;">
+            <img src="../../../static/image/logo2.png">
+        </div>
+    </div>
+
+    <!-- pop_container -->
+    <div class="pop_container">
+        <!-- con-area -->
+        <div class="con-area">
+            <p>
+                {{ pop.1 }}
+            </p>
+        </div>
+    </div>
+
+
+</div>
+
+<div style="text-align: right;">
+    <label>
+        <input id="" name="" type="checkbox" style="vertical-align: middle;">
+        <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
+    </label>
+
+    <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+</div>
+{% endfor %}
+<script>
+    function popClose() {
+        window.close();
+    }
+</script>
+</body>
+</html>

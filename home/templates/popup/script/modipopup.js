@@ -1,6 +1,7 @@
 jQuery.ajaxSettings.traditional = true;
 
 $(document).ready(function () {
+
     $('.summernote').summernote({
         lang: 'ko-KR',
         height: 400,
@@ -76,11 +77,14 @@ $(document).ready(function () {
         if (data[0][12] == "없음") {
             $("#template").val("없음").prop("selected", true);
         }
-        else if (data[0][12] == "기본") {
-            $("#template").val("기본").prop("selected", true);
+        else if (data[0][12] == "type1") {
+            $("#template").val("type1").prop("selected", true);
         }
-        else if (data[0][12] == "중간템플릿") {
-            $("#template").val("중간템플릿").prop("selected", true);
+        else if (data[0][12] == "type2") {
+            $("#template").val("type2").prop("selected", true);
+        }
+        else if (data[0][12] == "type3") {
+            $("#template").val("type3").prop("selected", true);
         }
 
         $('#width').val(data[0][13]);
@@ -107,12 +111,22 @@ $(document).ready(function () {
 
 function Display(id) {
     if (id == "Radio_HTML") {
-        document.getElementById('Radio_HTML').style.display = '';         // 보이게
-        document.getElementById('Radio_IMAGE').style.display = 'none';  // 안보이게
+        document.getElementById('Radio_HTML').style.display = '';
+        document.getElementById('Radio_IMAGE').style.display = 'none';
+        document.getElementById('type1').style.display = '';
+        document.getElementById('type2').style.display = '';
+        document.getElementById('type3').style.display = '';
+        document.getElementById('map').style.display = 'none';
     }
     else if (id == "Radio_IMAGE") {
-        document.getElementById('Radio_HTML').style.display = 'none';  // 안보이게
-        document.getElementById('Radio_IMAGE').style.display = '';         // 보이게
+        document.getElementById('Radio_HTML').style.display = 'none';
+        document.getElementById('Radio_IMAGE').style.display = '';
+        document.getElementById('type1').style.display = 'none';
+        document.getElementById('type2').style.display = 'none';
+        document.getElementById('type3').style.display = 'none';
+        document.getElementById('map').style.display = '';
+        $("#template").val("없음").prop("selected", true);
+
     }
 }
 
@@ -130,6 +144,13 @@ function setValues() {
     else if (link_type.options[link_type.selectedIndex].text == "이미지맵") {
         document.getElementById('imagemap').style.display = '';
         document.getElementById('linkurl').style.display = '';
+    }
+}
+
+function Reset_check(){
+    var r = confirm("작업내용 초기화 하시겠습니까?");
+    if (r == true) {
+        Reset();
     }
 }
 
@@ -294,11 +315,14 @@ function save_data(pop_id) {
     if (template.options[template.selectedIndex].text == "없음") {
         template = "0";
     }
-    else if (template.options[template.selectedIndex].text == "기본") {
+    else if (template.options[template.selectedIndex].text == "type1") {
         template = "1";
     }
-    else if (template.options[template.selectedIndex].text == "중간템플릿") {
+    else if (template.options[template.selectedIndex].text == "type2") {
         template = "2";
+    }
+    else if (template.options[template.selectedIndex].text == "type3") {
+        template = "3";
     }
 
     var width = $('#width').val();
@@ -332,13 +356,13 @@ function save_data(pop_id) {
             method: 'modi'
         }
     }).done(function (data) {
-        if( method == 'modi') {
+        if (method == 'modi') {
             if (data >= 3 && use_yn == "N") {
                 alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
                 use_yn = "N";
             }
         }
-        else if( method == 'add') {
+        else if (method == 'add') {
             if (data >= 3) {
                 alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
                 use_yn = "N";
@@ -402,73 +426,24 @@ jQuery.fn.center = function () {
 }
 
 function preview() {
-    var link_type = document.getElementById("link_type");
-    var title = $('#title').val();
-    var image_url = $('#image_URL').val();
-    var link_target = document.getElementById("link_target");
     var width = $('#width').val();
     var height = $('#height').val();
-    var contents = $('.summernote').summernote('code');
+    if (template.options[template.selectedIndex].text == "type1") {
+        window.open("/manage/popup_index1/" + '{{id}}', null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template.options[template.selectedIndex].text == "type2") {
+        window.open("/manage/popup_index2/" + '{{id}}', null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template.options[template.selectedIndex].text == "type3") {
+        window.open("/manage/popup_index3/" + '{{id}}', null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
 
-    if (link_target.options[link_target.selectedIndex].text == "blank") {
-        link_target = "B"
-    }
-    else if (link_target.options[link_target.selectedIndex].text == "self") {
-        link_target = "S"
-    }
-    if (template.options[template.selectedIndex].text == "없음") {
-        $('#Popup_0').css("display", "");
-        $('#TITLE_0').html(title);
-        $('#Popup_0').css("width", width);
-        $('#Popup_0').css("height", height);
-        $('#pop_0').attr("href", $('#link_URL').val());
-        $('#IMG').attr('src', image_url);
-        var max_width = width;
-        var max_height = height;
-        max_width = max_width - 10;
-        max_height = max_height - 55;
-        $('#IMG').css('width', max_width);
-        $('#IMG').css('height', max_height);
-        $('#CONTENTS_0').html(contents);
-        $('#Popup_0').center();
-
-    }
-    else if (template.options[template.selectedIndex].text == "기본") {
-        var link_target = document.getElementById("link_target");
-        $('#Popup_1').css("display", "");
-        $('#TITLE_1').html(title);
-        $('#CONTENTS_1').html(contents);
-        $('#Popup_1').css("width", width);
-        $('#Popup_1').css("height", height);
-        $('#pop_1').attr("href", $('#link_URL').val()).attr("target", "_" + link_target.options[link_target.selectedIndex].text);
-        ;
-        $('#Popup_1').center();
-    }
-    else if (template.options[template.selectedIndex].text == "중간템플릿") {
-        var link_target = document.getElementById("link_target");
-        $('#Popup_2').css("display", "");
-        $('#TITLE_2').html(title);
-        $('#CONTENTS_2').html(contents);
-        $('#Popup_2').css("width", width);
-        $('#Popup_2').css("height", height);
-        $('#pop_2').attr("href", $('#link_URL').val()).attr("target", "_" + link_target.options[link_target.selectedIndex].text);
-        $('#Popup_2').center();
-    }
 }
 
 var link_url = $('#link_URL').val();
-
-function fn_move(moveGbn) {
-    if (moveGbn == 'close') {
-        $('#Popup_1').css("display", "none");
-        $('#Popup_2').css("display", "none");
-        $('#Popup_0').css("display", "none");
-    }
-    else if (moveGbn == 'move') {
-        window.open = ($('#link_URL').val());
-    }
-}
-
 
 $.datepicker.setDefaults({
     dateFormat: 'yy-mm-dd',

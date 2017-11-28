@@ -6,33 +6,12 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <link href="http://www.lifelongedu.go.kr/css/common/popup.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" type="text/css" href="http://www.lifelongedu.go.kr/css/main_new.css?ver=1">
     </head>
     <style>
         div.date {
             float: left;
             padding: 3px;
         }
-
-        #Popup_0 {
-            position: absolute;
-            z-index: 1;
-            background-color: white;
-        }
-
-        #Popup_1 {
-            position: absolute;
-            z-index: 1;
-            background-color: white;
-        }
-
-        #Popup_2 {
-            position: absolute;
-            z-index: 1;
-            background-color: white;
-        }
-
     </style>
 
     <script>
@@ -49,88 +28,7 @@
             </header>
 
             <body>
-            <div class="popup templet" id="Popup_0" style="display: none">
-                <p style="text-align: center">
-                    <a id="pop_0" target="_blank" href="">
-                        <img src="" alt="팝업 이미지" id="IMG">
-                    </a>
-                </p>
 
-                <div class="templet-con">
-                    <p id="CONTENTS_0">
-                        contents
-                    </p>
-                </div>
-                <div class="closechk btn-align" style="text-align: left; margin-top: -3px; ">
-                    <span class="fleft">
-                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox"
-                           style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp; 오늘 하루
-                        이 창을 열지 않음</label>
-                    </span>
-                    <a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-                </div>
-            </div>
-
-            <div class="popup templet small" id="Popup_1" style="display: none">
-                <div class="pop-header">
-                    <h1>공지사항</h1>
-                    <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
-                </div>
-                <div class="pop-body">
-                    <div class="templet-top cs2">
-                        <h1 style="font-size: 20px; color: #3c6674; padding: 5px" id="TITLE_1"> title </h1>
-                    </div>
-                    <div class="templet-con" style="background-color: white">
-                        <p id="CONTENTS_1"> contents </p>
-                    </div>
-                </div>
-                <div class="pop-btn" style="background-color: white">
-                    <a id="pop_1">
-                        <button type="button" class="button orange" onclick="fn_move('move')">자세히 보기 ></button>
-                    </a>
-                </div>
-                <div class="closechk btn-align" style="text-align: left">
-                    <span class="fleft">
-                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox"
-                           style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp; 오늘 하루
-                        이 창을 열지 않음</label>
-                    </span>
-                    <a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-                </div>
-            </div>
-
-            <div class="popup templet big" id="Popup_2" style="display: none">
-                <div class="pop-header">
-                    <h1 id="TITLE_2">title</h1>
-                    <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
-                </div>
-                <div class="pop-body">
-                    <div class="templet-top cs1">
-                        <img src="http://www.lifelongedu.go.kr/images/pop_img_top01.png">
-
-                        <h2 style="top: -55px;position: relative;">여러분의 소중한 의견을 통해<br><strong>늘배움의 발전된 모습</strong>을
-                            보여드리겠습니다.</h2>
-                    </div>
-                    <div class="templet-con">
-                        <p id="CONTENTS_2">
-                            contents
-                        </p>
-                    </div>
-                </div>
-                <div class="pop-btn">
-                    <a id="pop_2">
-                        <button type="button" class="button orange" onclick="fn_move('move')">만족도 조사 참여하기 ></button>
-                    </a>
-                </div>
-                <div class="closechk btn-align" style="text-align: left">
-                    <span class="fleft">
-                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox"
-                           style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp; 오늘 하루
-                        이 창을 열지 않음</label>
-                    </span>
-                    <a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-                </div>
-            </div>
             </body>
 
             <div class="panel-body">
@@ -204,10 +102,11 @@
 
                     <div class="col-sm-10">
                         <div style="float:left ">
-                            <select style="width: 150px" id="template" onchange="Reset();">
+                            <select style="width: 150px" id="template" onchange="Reset_check();">
                                 <option id="null">없음</option>
-                                <option id="all_link">기본</option>
-                                <option id="map">중간템플릿</option>
+                                <option id="type1">type1</option>
+                                <option id="type2">type2</option>
+                                <option id="type3">type3</option>
                             </select>
                         </div>
                     </div>
@@ -253,8 +152,8 @@
 
                     <div class="col-sm-10">
                         <select style="width: 150px" id="link_target">
-                            <option id="null">blank</option>
-                            <option id="all_link">self</option>
+                            <option id="blank">blank</option>
+                            <option id="self">self</option>
                         </select>
                     </div>
                 </div>
@@ -298,9 +197,9 @@
                     <div class="col-sm-10">
                         <div style="float:left ">
                             <select style="width: 150px" id="hidden_day" onchange="setValues();">
-                                <option id="null">1일</option>
-                                <option id="all_link">7일</option>
-                                <option id="map">그만보기</option>
+                                <option id="day">1일</option>
+                                <option id="week">7일</option>
+                                <option id="stop">그만보기</option>
                             </select>
                         </div>
                     </div>
@@ -314,8 +213,8 @@
                     <div class="col-sm-10">
                         <div style="float:left ">
                             <select style="width: 150px" id="use_yn">
-                                <option id="null">사용함</option>
-                                <option id="all_link">사용안함</option>
+                                <option id="use">사용함</option>
+                                <option id="unuse">사용안함</option>
                             </select>
                         </div>
                     </div>

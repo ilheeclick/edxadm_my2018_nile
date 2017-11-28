@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Untitled Document</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul, li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        #warp {
+            width: 100%;
+            height: auto;
+            background: efefef;
+            font-family: malgun gothic;
+        }
+
+        #warp h2 {
+            text-align: center;
+            font-size: 36px;
+            letter-spacing: -4px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        #warp h4 {
+            text-align: center;
+            padding: 25px 45px;
+            background: rgba(0, 0, 0, 0.3);
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .logo img {
+            width: 108px;
+            height: 40px;
+        }
+
+        .li_list ul li {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .li_list2 ul li {
+            font-size: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .btn a {
+            padding: 10px;
+            background: 10px;
+            background: #e06136;
+            text-align: center;
+            color: #fff;
+            transition: all .3s;
+            border: 1px solid #e06136;
+            border-radius: 10px;
+            font-weight: bold;
+            border-bottom: 3px solid #a04120;
+        }
+
+        .btn a:hover {
+            background: #fff;
+            color: #e06136;
+        }
+
+        .area {
+            border: 1px solid #eee;
+        }
+
+        .bg1 {
+            background: radial-gradient(circle, transparent 20%, slategray 20%, slategray 80%, transparent 80%, transparent),
+            radial-gradient(circle, transparent 20%, slategray 20%, slategray 80%, transparent 80%, transparent) 50px 50px,
+            linear-gradient(#A8B1BB 8px, transparent 8px) 0 -4px,
+            linear-gradient(90deg, #A8B1BB 8px, transparent 8px) -4px 0;
+            background-color: slategray;
+            background-size: 100px 100px, 100px 100px, 50px 50px, 50px 50px;
+        }
+
+        .main-subtext {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .sub-subtext {
+            padding: 10px;
+            border: 1px solid #eee;
+            margin: 0 auto;
+            width: 60%;
+            background: rgba(255, 255, 255, .3);
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+{% for pop in pop_list %}
+<body>
+<div id="warp">
+
+    <div class="area bg1">
+        <h4>{{ pop.0 }}</h4>
+
+        <div class="main-subtext">
+            <p class="sub-subtext">{{ pop.1 }}</p>
+        </div>
+
+        <div class="btn">
+            <a target="_{{ pop.3 }}" href="{{ pop.2 }}">열기</a>
+            <a href="javascript:popClose();">닫기</a>
+
+        </div>
+
+    </div>
+</div>
+
+<div style="text-align: right;">
+    <label>
+        <input id="" name="" type="checkbox" style="vertical-align: middle;">
+        <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
+    </label>
+
+    <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+</div>
+{% endfor %}
+<script>
+    function popClose() {
+        window.close();
+    }
+</script>
+
+</body>
+</html>

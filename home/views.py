@@ -201,7 +201,7 @@ def series_course_list_db(request):
                     cur.execute(query)
                     cur.close()
 
-                else :
+                else:
                     cur = connection.cursor()
                     query = '''
                         SELECT count(*)
@@ -215,7 +215,7 @@ def series_course_list_db(request):
                     update_check = cur.fetchall()
                     cur.close()
 
-                    if(update_check[0][0] == 1):
+                    if (update_check[0][0] == 1):
                         cur = connection.cursor()
                         query = '''
                                 UPDATE edxapp.series_course
@@ -1793,6 +1793,94 @@ def popup_add(request):
 
 
 @login_required
+def popup_index1(request, id):
+
+    cur = connection.cursor()
+    query = """
+        SELECT title,
+               contents,
+               link_url,
+               link_target,
+               hidden_day
+          FROM popup
+         WHERE popup_id = {0};
+        """.format(id)
+
+    print query
+    cur.execute(query)
+    row = cur.fetchall()
+    cur.close()
+    pop_list = []
+    for p in row:
+        print type(p)
+        pop_list.append(list(p))
+    context = {'pop_list': pop_list}
+    print('context ===================')
+    print context
+    print type(context)
+
+    return render_to_response('popup/popup_index/index1.html', context)
+
+
+@login_required
+def popup_index2(request, id):
+    cur = connection.cursor()
+    query = """
+        SELECT title,
+               contents,
+               link_url,
+               link_target,
+               hidden_day
+          FROM popup
+         WHERE popup_id = {0};
+        """.format(id)
+
+    print query
+    cur.execute(query)
+    row = cur.fetchall()
+    cur.close()
+    pop_list = []
+    for p in row:
+        print type(p)
+        pop_list.append(list(p))
+    context = {'pop_list': pop_list}
+    print('context ===================')
+    print context
+    print type(context)
+
+    return render_to_response('popup/popup_index/index2.html', context)
+
+
+@login_required
+def popup_index3(request, id):
+    cur = connection.cursor()
+    query = """
+        SELECT title,
+               contents,
+               link_url,
+               link_target,
+               hidden_day
+          FROM popup
+         WHERE popup_id = {0};
+        """.format(id)
+
+    print query
+    cur.execute(query)
+    row = cur.fetchall()
+    cur.close()
+    pop_list = []
+    for p in row:
+        print type(p)
+        pop_list.append(list(p))
+    context = {'pop_list': pop_list}
+    print('context ===================')
+    print context
+    print type(context)
+
+    return render_to_response('popup/popup_index/index3.html', context)
+
+
+@login_required
 def modi_popup(request, id):
     mod_pop = []
     if request.is_ajax():
@@ -1841,8 +1929,9 @@ def modi_popup(request, id):
                       end_time,
                    CASE
                       WHEN template = '0' THEN '없음'
-                      WHEN template = '1' THEN '기본'
-                      WHEN template = '2' THEN '중간템플릿'
+                      WHEN template = '1' THEN 'type1'
+                      WHEN template = '2' THEN 'type2'
+                      WHEN template = '3' THEN 'type3'
                    END
                       template,
                    width,
