@@ -53,9 +53,13 @@ def logfile_download(request, date):
 
     for searchDate in date_list:
         logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
-        logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
+        file_check_w2 = logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
         cnt += 1
     cnt = len(date_list)
+
+    if file_check_w2 == 2:
+        return JsonResponse({'filename': 'empty'})
+
     if cnt >= len(date_list):
         log_compress('999999', None)
         zip_file = 'tracking_log.zip'
@@ -69,8 +73,8 @@ class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
 
 
 def my_callback(filename, bytes_so_far, bytes_total):
-        print 'Transfer of %r is at %d/%d bytes (%.1f%%)' % (
-            filename, bytes_so_far, bytes_total, 100. * bytes_so_far / bytes_total)
+    print 'Transfer of %r is at %d/%d bytes (%.1f%%)' % (
+        filename, bytes_so_far, bytes_total, 100. * bytes_so_far / bytes_total)
 
 
 # web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
@@ -91,7 +95,7 @@ def logFileDownload(search_date, host, log_dir, local_dir):
         web_server = 1
     elif host == WEB2_HOST:
         web_server = 2
-
+    logfile_check = 1
     date_compile = re.compile(r'20(\d{6})')
     for i in sorted(file_list):
         if re.search(date_compile, i) is not None:
@@ -104,11 +108,13 @@ def logFileDownload(search_date, host, log_dir, local_dir):
                 callback_for_filename = functools.partial(my_callback, i)
                 sftp.get(i, local_dir+sfile)
                 sftp.get(i, local_dir+sfile, callback=callback_for_filename)
-    log_change(local_dir, CHANGE_DIR, search_date, web_server)
+    logfile_check = log_change(local_dir, CHANGE_DIR, search_date, web_server)
     client.close()
+    return logfile_check
 
 
 def log_change(path_dir, change_local, search_date, web_server):
+    logfile_check = 1
     file_list = os.listdir(path_dir)
 
     file_pattern = re.compile(r'.gz$')
@@ -199,7 +205,18 @@ def log_change(path_dir, change_local, search_date, web_server):
 
     oldLog_remove(path_dir, 1)
     if web_server == 2:
-        log_compress(search_date, change_local)
+        file_cnt = 0
+        chdir_list = os.listdir(change_local)
+        for filename in chdir_list:
+            full_filename = os.path.join(change_local, filename)
+            ext = os.path.splitext(full_filename)[-1]
+            if ext == '.gz':
+                file_cnt += 1
+        if file_cnt == 0:
+            logfile_check = 2
+        else:
+            log_compress(search_date, change_local)
+    return logfile_check
 
 
 def log_compress(search_date, dir_path):
