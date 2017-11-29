@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -49,7 +50,7 @@
         }
 
         .area-bg2 {
-            background: url(../../../static/image/bg1.png) no-repeat;
+            background: url(/manage/home/static/image/bg1.png) no-repeat;
             width: 120px;
             height: 229px;
             position: absolute;
@@ -97,16 +98,14 @@
             <div class="area-bg2"></div>
             <!-- pop_top -->
             <div class="pop_top">
-                <div class="pop_top_area1"><img src="../../../static/image/logo1.jpg"></div>
+                <div class="pop_top_area1"><img src="/manage/home/static/image/logo1.jpg"></div>
                 <div class="pop_top_area2">
                     <h1>{{ pop.0 }}</h1>
                 </div>
             </div>
             <!-- pop_container -->
             <div class="pop_container">
-                <p class="con-subtxt">
-                    {{ pop.1 }}
-                </p>
+                <p class="con-subtxt" id="contents"></p>
                 <div style="width:100%; text-align:center; margin-top:20px; margin-bottom:20px;">
                     <a style="padding:10px; background:#34ae1c; color:#fff; border-radius:10px;" target="_{{ pop.3 }}" href="{{ pop.2 }}">열기</a>
                 </div>
@@ -123,12 +122,19 @@
     <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
 </div>
 
-{% endfor %}
+
+
 <script>
+    {% autoescape off %}
+    var contents = "{{ pop.1 }}"
+    {% endautoescape %}
+    $("#contents").html(contents);
     function popClose() {
         window.close();
     }
+
 </script>
 
 </body>
+{% endfor %}
 </html>

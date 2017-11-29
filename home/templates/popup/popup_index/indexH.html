@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+{% for pop in pop_list %}
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        .pop_top_area2 {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+
+    <meta charset="utf-8">
+    <title>Untitled Document</title>
+</head>
+
+
+
+<body>
+<!-- wrap -->
+<div class="wrap">
+    <div class="area">
+        <div class="area-bg1">
+            <div class="pop_top">
+                <div class="pop_top_area2">
+                    <h1>{{ pop.0 }}</h1>
+                </div>
+            </div>
+            <!-- pop_container -->
+            <div class="pop_container">
+                <p class="con-subtxt" id="contents"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align: right;">
+    <label>
+        <input id="" name="" type="checkbox" style="vertical-align: middle;">
+        <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
+    </label>
+
+    <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+</div>
+<script>
+    {% autoescape off %}
+    var contents = "{{ pop.1 }}"
+    {% endautoescape %}
+    $("#contents").html(contents);
+    function popClose() {
+        window.close();
+    }
+
+</script>
+</body>
+
+{% endfor %}
+</html>

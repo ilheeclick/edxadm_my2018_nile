@@ -108,6 +108,7 @@ urlpatterns = [
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
 
     #popup index url
+    url(r'^manage/popup_index0/(?P<id>.*?)/(?P<type>.*?)/$', views.popup_index0, name='popup_index0'),
     url(r'^manage/popup_index1/(?P<id>.*?)/$', views.popup_index1, name='popup_index1'),
     url(r'^manage/popup_index2/(?P<id>.*?)/$', views.popup_index2, name='popup_index2'),
     url(r'^manage/popup_index3/(?P<id>.*?)/$', views.popup_index3, name='popup_index3'),

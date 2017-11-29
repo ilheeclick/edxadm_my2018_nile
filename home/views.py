@@ -1793,8 +1793,61 @@ def popup_add(request):
 
 
 @login_required
-def popup_index1(request, id):
+def popup_index0(request, id, type):
+    cur = connection.cursor()
+    if (type == "text"):
+        query = """
+            SELECT title,
+                   contents,
+                   link_url,
+                   link_target,
+                   hidden_day,
+                   popup_type
+              FROM popup
+             WHERE popup_id = {0};
+            """.format(id)
+        print query
+        cur.execute(query)
+        row = cur.fetchall()
+        cur.close()
+        pop_list = []
+        for p in row:
+            pop_list.append(list(p))
+        context = {'pop_list': pop_list}
 
+        return render_to_response('popup/popup_index/indexH.html', context)
+
+    elif (type == "image"):
+        query = """
+            SELECT title,
+                   contents,
+                   link_url,
+                   link_target,
+                   hidden_day,
+                   popup_type,
+                   attatch_file_name,
+                   width,
+                   height,
+                   image_map
+              FROM popup
+              JOIN tb_board_attach ON tb_board_attach.attatch_id = popup.image_file
+             WHERE popup_id = {0};
+            """.format(id)
+
+        print query
+        cur.execute(query)
+        row = cur.fetchall()
+        cur.close()
+        pop_list = []
+        for p in row:
+            pop_list.append(list(p))
+        context = {'pop_list': pop_list}
+
+        return render_to_response('popup/popup_index/indexI.html', context)
+
+
+@login_required
+def popup_index1(request, id):
     cur = connection.cursor()
     query = """
         SELECT title,
@@ -1812,12 +1865,8 @@ def popup_index1(request, id):
     cur.close()
     pop_list = []
     for p in row:
-        print type(p)
         pop_list.append(list(p))
     context = {'pop_list': pop_list}
-    print('context ===================')
-    print context
-    print type(context)
 
     return render_to_response('popup/popup_index/index1.html', context)
 
@@ -1841,12 +1890,8 @@ def popup_index2(request, id):
     cur.close()
     pop_list = []
     for p in row:
-        print type(p)
         pop_list.append(list(p))
     context = {'pop_list': pop_list}
-    print('context ===================')
-    print context
-    print type(context)
 
     return render_to_response('popup/popup_index/index2.html', context)
 
@@ -1870,12 +1915,8 @@ def popup_index3(request, id):
     cur.close()
     pop_list = []
     for p in row:
-        print type(p)
         pop_list.append(list(p))
     context = {'pop_list': pop_list}
-    print('context ===================')
-    print context
-    print type(context)
 
     return render_to_response('popup/popup_index/index3.html', context)
 
@@ -2079,7 +2120,6 @@ def new_popup(request):
             image_map = request.POST.get('image_map').rstrip('/')
             title = request.POST.get('title')
             contents = request.POST.get('contents')
-            image_url = request.POST.get('image_url')
             link_url = request.POST.get('link_url')
             link_target = request.POST.get('link_target')
             start_date = request.POST.get('start_date')
@@ -2096,7 +2136,7 @@ def new_popup(request):
 
             if (file_flag == '1'):
                 cur = connection.cursor()
-                query = '''select max(attatch_id)+1 from tb_board_attach
+                query = '''select max(attatch_id) from tb_board_attach
                         '''
                 cur.execute(query)
                 attatch_id = cur.fetchall()
@@ -2160,7 +2200,6 @@ def new_popup(request):
             image_map = request.POST.get('image_map').rstrip('/')
             title = request.POST.get('title')
             contents = request.POST.get('contents')
-            image_url = request.POST.get('image_url')
             link_url = request.POST.get('link_url')
             link_target = request.POST.get('link_target')
             start_date = request.POST.get('start_date')
@@ -2189,7 +2228,7 @@ def new_popup(request):
                 cur.close()
             elif (file_flag == '1'):
                 cur = connection.cursor()
-                query = '''select max(attatch_id)+1 from tb_board_attach
+                query = '''select max(attatch_id) from tb_board_attach
                         '''
                 cur.execute(query)
                 attatch_id = cur.fetchall()

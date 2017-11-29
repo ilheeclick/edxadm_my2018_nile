@@ -428,7 +428,11 @@ jQuery.fn.center = function () {
 function preview() {
     var width = $('#width').val();
     var height = $('#height').val();
-    if (template.options[template.selectedIndex].text == "type1") {
+    if (template.options[template.selectedIndex].text == "없음") {
+        window.open("/manage/popup_index0/" + '{{id}}' + '/' + $("input[type=radio][name=radio]:checked").val(), null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template.options[template.selectedIndex].text == "type1") {
         window.open("/manage/popup_index1/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
