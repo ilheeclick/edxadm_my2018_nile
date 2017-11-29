@@ -120,43 +120,43 @@
 </head>
 
 {% for pop in pop_list %}
-<body>
-<div id="warp">
+    <body>
+    <div id="warp">
 
-    <div class="area bg1">
-        <h4>{{ pop.0 }}</h4>
+        <div class="area bg1">
+            <h4>{{ pop.0 }}</h4>
 
-        <div class="main-subtext" id="contents">
+            <div class="main-subtext" id="contents">
+            </div>
+
+            <div class="btn">
+                <a target="_{{ pop.3 }}" href="{{ pop.2 }}">열기</a>
+                <a href="javascript:popClose();">닫기</a>
+
+            </div>
+
         </div>
-
-        <div class="btn">
-            <a target="_{{ pop.3 }}" href="{{ pop.2 }}">열기</a>
-            <a href="javascript:popClose();">닫기</a>
-
-        </div>
-
     </div>
-</div>
 
-<div style="text-align: right;">
-    <label>
-        <input id="" name="" type="checkbox" style="vertical-align: middle;">
-        <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
-    </label>
+    <div style="text-align: right;">
+        <label>
+            <input id="" name="" type="checkbox" style="vertical-align: middle;">
+            <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
+        </label>
 
-    <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
-</div>
+        <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+    </div>
 
-<script>
-    {% autoescape off %}
-    var contents = "{{ pop.1 }}"
-    {% endautoescape %}
-    $("#contents").html(contents);
-    function popClose() {
-        window.close();
-    }
+    <script>
+        {% autoescape off %}
+            var contents = "{{ pop.1 }}"
+        {% endautoescape %}
+        $("#contents").html(contents);
+        function popClose() {
+            window.close();
+        }
 
-</script>
+    </script>
 {% endfor %}
 </body>
 </html>

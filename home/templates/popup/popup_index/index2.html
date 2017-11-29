@@ -83,57 +83,57 @@
 <body>
 
 {% for pop in pop_list %}
-<div class="wrap">
+    <div class="wrap">
 
-    <!-- pop_top -->
-    <div class="pop_top">
-        <div style="padding:15px;">
-            <!-- close -->
-            <span class="close"><a href="../*">X</a></span>
+        <!-- pop_top -->
+        <div class="pop_top">
+            <div style="padding:15px;">
+                <!-- close -->
+                <span class="close"><a href="../*">X</a></span>
 
-            <div class="top-txtarea center-text">
-                <div class="top-txt-bg">
-                    <h1>{{ pop.0 }}</h1>
+                <div class="top-txtarea center-text">
+                    <div class="top-txt-bg">
+                        <h1>{{ pop.0 }}</h1>
+                    </div>
                 </div>
+
             </div>
+        </div>
 
+
+        <div class="logo" style="width: 100%; margin-top: -75px; position: absolute; z-index: 5;">
+            <div style=" width:100%; display:inline-block; text-align: center;">
+                <img src="/manage/home/static/image/logo2.png">
+            </div>
+        </div>
+
+        <!-- pop_container -->
+        <div class="pop_container">
+            <!-- con-area -->
+            <div class="con-area" id="contents">
+            </div>
         </div>
     </div>
 
+    <div style="text-align: right;">
+        <label>
+            <input id="" name="" type="checkbox" style="vertical-align: middle;">
+            <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
+        </label>
 
-    <div class="logo" style="width: 100%; margin-top: -75px; position: absolute; z-index: 5;">
-        <div style=" width:100%; display:inline-block; text-align: center;">
-            <img src="/manage/home/static/image/logo2.png">
-        </div>
+        <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
     </div>
 
-    <!-- pop_container -->
-    <div class="pop_container">
-        <!-- con-area -->
-        <div class="con-area" id="contents">
-        </div>
-    </div>
-</div>
+    <script>
+        {% autoescape off %}
+            var contents = "{{ pop.1 }}"
+        {% endautoescape %}
+        $("#contents").html(contents);
+        function popClose() {
+            window.close();
+        }
 
-<div style="text-align: right;">
-    <label>
-        <input id="" name="" type="checkbox" style="vertical-align: middle;">
-        <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
-    </label>
-
-    <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
-</div>
-
-<script>
-    {% autoescape off %}
-    var contents = "{{ pop.1 }}"
-    {% endautoescape %}
-    $("#contents").html(contents);
-    function popClose() {
-        window.close();
-    }
-
-</script>
-</body>
+    </script>
+    </body>
 {% endfor %}
 </html>
