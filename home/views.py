@@ -1806,7 +1806,6 @@ def popup_index0(request, id, type):
               FROM popup
              WHERE popup_id = {0};
             """.format(id)
-        print query
         cur.execute(query)
         row = cur.fetchall()
         cur.close()
@@ -1833,14 +1832,17 @@ def popup_index0(request, id, type):
               JOIN tb_board_attach ON tb_board_attach.attatch_id = popup.image_file
              WHERE popup_id = {0};
             """.format(id)
-
-        print query
         cur.execute(query)
         row = cur.fetchall()
         cur.close()
         pop_list = []
+
         for p in row:
-            pop_list.append(list(p))
+            image_map = p[9]
+            im_arr = image_map.split('/')
+            pop_list.append(list(p + (im_arr,)))
+
+        print pop_list
         context = {'pop_list': pop_list}
 
         return render_to_response('popup/popup_index/indexI.html', context)

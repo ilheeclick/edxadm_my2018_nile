@@ -20,7 +20,18 @@
 <!-- wrap -->
 <div class="wrap">
     <div class="area">
-        <a target="_{{ pop.3 }}" href="{{ pop.2 }}"><img src="/manage/home/static/test_upload/{{ pop.6 }}" id="image_file"></a>
+        <img src="/manage/home/static/test_upload/{{ pop.6 }}" id="image_file" usemap="image_map">
+
+        <map name="image_map">
+            {% if pop.9 == '' %}
+            <area shape="rect" coords="0,0,{{ pop.7 }},{{ pop.8 }}" alt="IM" target="_{{ pop.3 }}" href="{{ pop.2 }}">
+            {% else %}
+                {% for map in pop.10 %}
+                    <area shape="rect" coords="{{ map }}" alt="IM" target="_{{ pop.3 }}" href="{{ pop.2 }}">
+                {% endfor %}
+            {% endif %}
+        </map>
+
     </div>
 </div>
 <div style="text-align: right;">
