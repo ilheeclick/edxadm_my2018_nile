@@ -1,0 +1,54 @@
+@charset "utf-8";
+/* CSS Document */
+
+.pop-wrap{ position:absolute; z-index:10; font-family:"malgun gothic";}
+
+.pop-area{-webkit-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+			-moz-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+			box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+}
+.pop-top-area{min-width:400px; background:#2391d7;}
+
+.pop_imgbg{text-align:center;}
+
+.pop-body-area{min-width:400px; border:1px solid #efefef; padding:20px;}
+.pop-body-area p {text-align:center; margin-bottom: 19px;}
+.pop-body-area h4{margin-top:0px; margin-bottom:10px; text-align:center; font-size:20px;}
+.pop-footer-area {min-width:400px;margin-top:5px;}
+
+/* btn */
+.pop-btnarea{ text-align:center;}
+.pop-btnarea a{display:inline-block; text-decoration:none; transition:all ease-out .2s;}
+
+/* text-color */
+.t-gray{color:#a0a2a5;}
+.t-gray2{color:#a7a6a6;}
+.t-white{color:#fff;}
+.t-blue{color:#83b4d4;}
+
+
+/* btn-color */
+.b-green{background:#23d77e;}
+.b-gray{background:#e9e8e8;}
+
+/* height */
+.hei-123{height:123px; background:#0f55b4;}
+.hei-200{height:200px;}
+
+/* img margin */
+.pop1_imgmg > img{margin:4px auto;}
+.pop2_imgmg > img{margin:21px auto;}
+
+/*========= pop1 ============*/
+.pop1-btnarea a{padding:12px 20px; border-radius:25px; width:110px;}
+.pop1-titbar {text-align:center;}
+.pop1-titbar i{width:30px; height:5px; background:#0099ff; display:inline-block;}
+
+.pop1-btnarea .b-green:hover{background:#093;}
+
+
+/*========= pop2 ============*/
+.pop2-footer{margin-top:0px;}
+.pop2-btnarea a{padding: 12px 0px; width:100%;}
+.pop2-btnarea .b-gray:hover{background:#83b4d4; color:#fff;}
+

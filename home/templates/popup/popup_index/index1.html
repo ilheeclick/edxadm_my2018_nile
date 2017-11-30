@@ -1,118 +1,38 @@
 <!doctype html>
 <html>
 <head>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: malgun gothic;
-        }
-
-        body {
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .wrap {
-            background: #3f7cc0;
-            padding: 15px;
-        }
-
-        .pop_top {
-            padding: 15px;
-        }
-
-        .close > a {
-            padding: 10px;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .close > a:hover {
-            color: #000;
-        }
-
-        .pop_container {
-            vertical-align: top;
-            padding: 20px;
-        }
-
-        .area {
-            background: #fff;
-        }
-
-        .area-bg2 {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 30%, rgba(238, 238, 238, 1));
-        }
-
-        .area-bg2 {
-            background: url(/manage/home/static/image/bg1.png) no-repeat;
-            width: 120px;
-            height: 229px;
-            position: absolute;
-            right: 0;
-        }
-
-        .pop_top_area1 {
-            width: 100%;
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 10px;
-        }
-
-        .pop_top_area2 {
-            width: 100%;
-            text-align: center;
-        }
-
-        .pop_top h1 {
-            color: #fff;
-            background: #3f7cc0;
-            display: inline-block;
-            padding: 5px;
-            font-size: 45px;
-        }
-
-        .con-subtxt {
-            padding: 20px;
-            font-size: 18px;
-        }
-
-    </style>
-
     <meta charset="utf-8">
-    <title>Untitled Document</title>
+    <title>팝업1</title>
+    <link rel="stylesheet" type="text/css" href="/manage/home/static/css/pop.css">
 </head>
-
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<body>
 {% for pop in pop_list %}
-    <body>
-    <!-- wrap -->
-    <div class="wrap">
-        <div class="area">
-            <div class="area-bg1">
-                <div class="area-bg2"></div>
-                <!-- pop_top -->
-                <div class="pop_top">
-                    <div class="pop_top_area1"><img src="/manage/home/static/image/logo1.jpg"></div>
-                    <div class="pop_top_area2">
-                        <h1>{{ pop.0 }}</h1>
-                    </div>
+    <div class="pop-wrap">
+        <div class="pop-area">
+            <!-- pop1-top-area s -->
+            <div class="pop-top-area hei-200">
+
+                <!-- pop1_imgbg s -->
+                <div class="pop_imgbg pop1_imgmg">
+                    <img src="/manage/home/static/image/pop1_bg.png">
                 </div>
-                <!-- pop_container -->
-                <div class="pop_container" id="contents">
-                    <div style="width:100%; text-align:center; margin-top:20px; margin-bottom:20px;">
-                        <a style="padding:10px; background:#34ae1c; color:#fff; border-radius:10px;"
-                           target="_{{ pop.3 }}" href="{{ pop.2 }}">열기</a>
-                    </div>
+
+            </div>
+
+            <!-- pop-body-area s -->
+            <div class="pop-body-area">
+
+                <!-- pop1-titbar s -->
+                <div class="pop1-titbar">
+                    <i></i>
                 </div>
+                <h4>{{ pop.0 }}</h4>
+
+                <div class="t-gray" id="contents"></div>
+                <!-- pop-footer-area s -->
             </div>
         </div>
-    </div>
     <div style="text-align: right;">
         <label>
             <input id="" name="" type="checkbox" style="vertical-align: middle;">
@@ -121,19 +41,20 @@
 
         <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
     </div>
-
+    </div>
 
     <script>
+    $( document ).ready(function() {
+      console.log('Ready!!!');
+    });
         {% autoescape off %}
-            var contents = "{{ pop.1 }}"
+            var contents = "{{ pop.1 }}";
         {% endautoescape %}
         $("#contents").html(contents);
         function popClose() {
             window.close();
         }
-
     </script>
-
     </body>
 {% endfor %}
 </html>
