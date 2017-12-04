@@ -2,115 +2,70 @@
 <html>
 <head>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: malgun gothic;
-        }
-
-        body {
-            overflow-x: hidden;
-        }
-        .wrap {
-        }
-
-        .pop_top {
-            background: url(/manage/home/static/image/bg2.jpg) no-repeat;
-            background-size: 100% 430px;
-        }
-        .pop_container {
-            vertical-align: top;
-            padding: 70px 20px 20px 20px;
-            border: 1px solid #eee;
-            min-height: 240px;
-            background: #fff;
-        }
-
-        .con-area {
-            width: 100%;
-            line-height: 30px;
-        }
-
-        .center-text {
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 100px;
-        }
-
-        .top-txtarea h1, h4 {
-            color: #fff;
-        }
-
-        .top-txtarea h1 {
-            font-size: 50px;
-        }
-
-        .top-txt-bg {
-            background: rgba(0, 0, 0, .5);
-            display: inline-block;
-            padding: 10px;
-        }
-
-    </style>
-
     <meta charset="utf-8">
-    <title>Untitled Document</title>
+    <title>팝업1</title>
+    <link rel="stylesheet" type="text/css" href="/manage/home/static/css/pop.css">
 </head>
 
 <body>
-
 {% for pop in pop_list %}
-    <div class="wrap">
+    <!-- popup1 -->
+    <div class="pop-wrap">
 
-        <!-- pop_top -->
-        <div class="pop_top">
-            <div style="padding:15px;">
-                <!-- close -->
+        <!-- pop-area s -->
+        <div class="pop-area">
 
-                <div class="top-txtarea center-text">
-                    <div class="top-txt-bg">
-                        <h1>{{ pop.0 }}</h1>
-                    </div>
+            <!-- pop1-top-area s -->
+            <div class="pop-top-area">
+                <!-- pop2-titbar s -->
+                <div class="pop2-titbar">
+
+                </div>
+                <!-- pop1-titbar s -->
+                <div class="pop2_2-titbar">
+                    <p>{{ pop.0 }}</p>
+                </div>
+            </div>
+
+            <!-- pop-body-area s -->
+            <div class="pop-body-area pop2-body-area">
+
+                <div class="pop1-txtarea">
+
+
+                    <p class="t-gray" id="contents">
+                    </p>
                 </div>
 
             </div>
-        </div>
-
-
-        <div class="logo" style="width: 100%; margin-top: -75px; position: absolute; z-index: 5;">
-            <div style=" width:100%; display:inline-block; text-align: center;">
-                <img src="/manage/home/static/image/logo2.png">
+            <div style="text-align: right;/* display: inline-block; */width: 100%;z-index: 9999;position: relative;">
+                <label>
+                    <input id="" name="" type="checkbox" style="vertical-align: middle;">
+                    <span style="font-style:normal; font-size:13px;"><b>1일간 열지 않음 &nbsp;&nbsp;</b></span>
+                </label>
+            <span style="text-align: right;"><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기
+                ]</a></span>
             </div>
+
         </div>
 
-        <!-- pop_container -->
-        <div class="pop_container">
-            <!-- con-area -->
-            <div class="con-area" id="contents">
-            </div>
-        </div>
+
     </div>
-
-    <div style="text-align: right;">
-        <label>
-            <input id="" name="" type="checkbox" style="vertical-align: middle;">
-            <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
-        </label>
-
-        <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
-    </div>
-
     <script>
+        $(document).ready(function () {
+            console.log('Ready!!!');
+        });
         {% autoescape off %}
-            var contents = "{{ pop.1 }}"
+            var contents = "{{ pop.1 }}";
         {% endautoescape %}
         $("#contents").html(contents);
         function popClose() {
             window.close();
         }
-
     </script>
     </body>
 {% endfor %}
+
+
+</body>
 </html>

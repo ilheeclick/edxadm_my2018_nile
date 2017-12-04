@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-{% for pop in pop_list %}
     <head>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <style>
@@ -17,8 +16,10 @@
 
 
     <body>
+    {% for pop in pop_list %}
+
     <!-- wrap -->
-    <div class="wrap">
+    <div class="pop-wrap">
         <div class="area">
             <div class="area-bg1">
                 <div class="pop_top">
