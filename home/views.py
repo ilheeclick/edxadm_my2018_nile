@@ -3058,10 +3058,10 @@ def common_send_mail(to_user, title, content):
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
 
-    smtp_server = 'smtp.gmail.com'
-    smtp_port   = 587
-    smtp_id     = 'b930208@gmail.com'
-    smtp_pw     = '####'
+    smtp_server = '203.235.44.45'
+    smtp_port   = 8080
+    smtp_id     = 'bulk_kmooc@nile.or.kr'
+    smtp_pw     = 'k-mooc12345'
     from_user = smtp_id
 
     smtp = smtplib.SMTP(smtp_server, smtp_port)
@@ -3547,11 +3547,35 @@ def multiple_email_new(request):
     return render(request, 'multiple_email/multiple_email_new.html')
 
 #test
-def send_mail(request):
-    html = '''
-    <p>qqq</p><p>aergm<b>keam</b></p><p><b><span style="background-color: rgb(0, 255, 0);">aergmkae
-    '''
-    common_send_mail('b930208@gmail.com', '제목', html)
+def django_mail(request):
+    from django.core.mail import send_mail
+    from django.core.mail import EmailMultiAlternatives
+
+    html = ""
+    f = open("/Users/ahn/workspace/management/home/templates/multiple_email/frame.html", 'r')
+    while True:
+        line = f.readline()
+        if not line: break
+        html += line
+    f.close()
+
+    print "--------------------"
+    print html
+    print "--------------------"
+
+    from_email = 'b930208@gmail.com'
+    to_email = []
+    to_email.append('yumehahimitu@gmail.com')
+    to_email.append('b930208@gmail.com')
+
+    subject = 'CCCC'
+    text_content = ''
+    html_content = '<b>hello world</b>'
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    msg.attach_alternative(html, "text/html")
+
+    msg.send()
 
     return JsonResponse({'foo':'bar'})
 # ---------- 2017.11.03 ahn jin yong ---------- #

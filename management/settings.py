@@ -26,12 +26,13 @@ SECRET_KEY = 'u0-$j2v%)u-w52*spjq7)i@8rv*=!el9ua+@j9j-i_h_$u-bmb'
 DEBUG = True
 
 # --------------- email --------------- #
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.naver.com'
+
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = '93immm'
-EMAIL_HOST_PASSWORD = 'aldzltbfl5842'
+EMAIL_HOST_USER = 'b930208'
+EMAIL_HOST_PASSWORD = 'aldzltbfl5842!'
+EMAIL_USE_TLS = True
+
 # --------------- email --------------- #
 
 ALLOWED_HOSTS = []
@@ -57,6 +58,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.core.mail.backends.smtp.EmailBackend',
 )
 
 ROOT_URLCONF = 'management.urls'
