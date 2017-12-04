@@ -10,11 +10,9 @@
 <body>
 {% for pop in pop_list %}
     <!-- popup1 -->
-    <div class="pop-wrap">
-
+    <div class="pop-wrap" style="width: {{ pop.5 }}px">
         <!-- pop-area s -->
         <div class="pop-area">
-
             <!-- pop1-top-area s -->
             <div class="pop-top-area">
                 <!-- pop1-titbar s -->
@@ -25,7 +23,7 @@
             </div>
 
             <!-- pop-body-area s -->
-            <div class="pop-body-area pop1-body-area">
+            <div class="pop-body-area pop1-body-area" style="height: {{ pop.6 }}px">
                 <div class="pop1-imgbg"><img src="/manage/home/static/image/pop1_1bg.png" alt="bg"></div>
 
                 <div class="pop1-txtarea">
@@ -39,7 +37,7 @@
             <div style="text-align: right;/* display: inline-block; */width: 100%;z-index: 9999;position: relative;">
                 <label>
                     <input id="" name="" type="checkbox" style="vertical-align: middle;">
-                    <span style="font-style:normal; font-size:13px;"><b>1일간 열지 않음 &nbsp;&nbsp;</b></span>
+                    <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
                 </label>
                 <span style="text-align: right;"><a href="javascript:popClose();" title="닫기" style="color: inherit;">[
                     닫기 ]</a></span>

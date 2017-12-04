@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 
-.pop-wrap{ position:absolute; z-index:10; font-family:"malgun gothic";}
+.pop-wrap{ position:absolute; z-index:10; font-family:"malgun gothic"; min-width: 400px; min-height: 400px;}
 
 .pop-area{-webkit-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
 			-moz-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
@@ -11,7 +11,7 @@
 
 .pop_imgbg{text-align:center;}
 
-.pop-body-area{min-width:400px; border:1px solid #efefef; padding:20px;}
+.pop-body-area{border:1px solid #efefef; padding:20px;}
 .pop-body-area p {text-align:center; margin-bottom: 19px;}
 .pop-body-area h4{margin-top:0px; margin-bottom:10px; text-align:center; font-size:20px;}
 .pop-footer-area {min-width:400px;margin-top:5px;}
