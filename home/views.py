@@ -4154,6 +4154,11 @@ def file_download(request, file_name):
     raise Http404
 
 
+# ---------- 2017.12.04 ahn jin yong ---------- #
+def review_manage(request):
+    return render(request, 'review_manage/review_manage.html')
+# ---------- 2017.12.04 ahn jin yong ---------- #
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @login_required
 def multiple_email(request):

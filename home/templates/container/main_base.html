@@ -335,6 +335,22 @@
                                 </ul>
                             </li>
 
+                            <!-- review management -->
+                            <li class="nav nav-parent" id="review_manage">
+                                <a>
+                                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                                    <span>리뷰 관리</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="review_manage_view">
+                                        <a href="/manage/review_manage">
+                                            리뷰 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- review management -->
+
                         </ul>
                     </nav>
                     <script>
@@ -609,6 +625,11 @@
                     if (is_expanded != 'none') $('#code_manage').addClass('nav-expanded');
                     $('#code_manage').addClass('nav-active');
                     $('#code_manage_view').addClass('nav-active');
+                    break;
+                case '리뷰 관리':
+                    if (is_expanded != 'none') $('#review_manage').addClass('nav-expanded');
+                    $('#review_manage').addClass('nav-active');
+                    $('#review_manage_view').addClass('nav-active');
                     break;
             }
         }

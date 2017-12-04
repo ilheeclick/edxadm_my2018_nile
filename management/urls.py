@@ -144,6 +144,9 @@ urlpatterns = [
     url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
     url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
 
+    # review_manage url
+    url(r'^manage/review_manage/$', views.review_manage, name='review_manage'),
+
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
