@@ -7,20 +7,6 @@
 
     <!-- css -->
     <style>
-        .search_select {
-            float: left;
-            margin-right: 50px;
-            margin-bottom: 20px;
-        }
-
-        div.dataTables_wrapper {
-            margin-bottom: 3em;
-        }
-
-        #select_search {
-            width: 150px;
-        }
-
         .email_title {
             background-color: #f6f6f6;
             padding-top: 20px;
@@ -48,9 +34,18 @@
             font-size: 120%;
         }
 
-        .hello {
-            margin: 10px;
-            height: 50px;
+        .send_day2 {
+            float: left;
+            margin-right: 65px;
+            margin-top: 5px;
+            font-size: 120%;
+        }
+
+        .send_day3 {
+            float: left;
+            margin-right: 25px;
+            margin-top: 5px;
+            font-size: 120%;
         }
 
         #startDt {
@@ -66,13 +61,30 @@
         }
 
         #name_search {
+            width: 300px;
+        }
+
+        #org_search {
             float: left;
-            width: 150px;
+            width: 310px;
+            margin-right:50px;
+        }
+
+        #code_search {
+            width: 300px;
+            margin-left:5px;
         }
 
         #m_submit {
             float: right;
-            margin-top: 10px;
+        }
+
+        #del{
+            float: right;
+        }
+
+        .search_c{
+            margin-top:5px;
         }
 
         table.dataTable {
@@ -529,6 +541,20 @@
 
     <!-- js -->
     <script>
+
+        function dateMinus(days)
+        {
+            var nday = new Date();  //오늘 날짜..
+            nday.setDate(nday.getDate() - days); //오늘 날짜에서 days만큼을 뒤로 이동
+            var yy = nday.getFullYear();
+            var mm = nday.getMonth()+1;
+            var dd = nday.getDate()+1;
+
+            if( mm<10) mm="0"+mm;
+            if( dd<10) dd="0"+dd;
+            return yy + "/" + mm + "/" + dd;
+        }
+
         $(function () {
             $("#startDt").datepicker({dateFormat: 'yy/mm/dd'});
             $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
@@ -540,20 +566,9 @@
         });
 
         $(document).ready(function () {
-            $("#search_mod").change(function () {
-                if ($(this).val() === '0') {
-                    $(".search_b").css("display", "none");
-                    $(".search_a").css("display", "none");
-                }
-                if ($(this).val() === '1') {
-                    $(".search_b").css("display", "none");
-                    $(".search_a").css("display", "block");
-                }
-                if ($(this).val() === '2') {
-                    $(".search_a").css("display", "none");
-                    $(".search_b").css("display", "block");
-                }
-            });
+
+            $("#endDt").val(dateMinus(0));
+            $("#startDt").val(dateMinus(30));
 
             setDataTable();
 
@@ -561,15 +576,36 @@
                 var table = $('#example1').DataTable();
                 table.ajax.reload();
             });
+
+            $("#del").click(function () {
+                var inputs = $("input:checked");
+                var len = inputs.length;
+                var del_list = '';
+
+                for(var i=0; i<len; i++){
+                    del_list += inputs[i].className + '+'
+                }
+
+                $.get( "/manage/review_manage", {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    del_list: del_list,
+                })
+                  .done(function( data ) {
+                    var table = $('#example1').DataTable();
+                    table.ajax.reload();
+                  });
+
+            });
         });
 
         function buildSearchData() {
             var obj = {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
-                search_mod: $("#search_mod").val(),
                 startDt: $("#startDt").val(),
                 endDt: $("#endDt").val(),
                 name_search: $("#name_search").val(),
+                org_search: $("#org_search").val(),
+                code_search: $("#code_search").val(),
             }
             return obj
         }
@@ -590,7 +626,7 @@
                 ],
                 pageLength: 10,
                 ajax: {
-                    url: "/manage/multiple_email",
+                    url: "/manage/review_manage",
                     type: "GET",
                     dataType: "json",
                     data: buildSearchData,
@@ -599,41 +635,36 @@
                     }
                 },
                 columns: [
-                    {data: "mail_id", class: "details-control"},
-                    {data: "gubn", data_value: "user_id"},
-                    {data: "username", data_value: "user_id"},
-                    {data: "title", class: "details-control"},
-                    {data: "regist_date"},
-                    {data: "send_count"},
-                    {data: "success_count"},
+                    {data: "id"},
+                    {data: "id"},
+                    {data: "detail_name"},
+                    {data: "display_name"},
+                    {data: "content"},
+                    {data: "point"},
+                    {data: "good"},
+                    {data: "bad"},
+                    {data: "username"},
+                    {data: "reg_time"},
                 ],
                 columnDefs: [
-                    {targets: 0, visible: true},
+                {
+                    targets: 0, visible: true, name: "pk", render: function (data, type) {
+                    return '<input type="checkbox" class="'+data+'">';
+                },
+                },
                     {targets: 1, visible: true},
                     {targets: 2, visible: true},
                     {targets: 3, visible: true},
                     {targets: 4, visible: true},
                     {targets: 5, visible: true},
                     {targets: 6, visible: true},
+                    {targets: 7, visible: true},
+                    {targets: 8, visible: true},
+                    {targets: 9, visible: true},
                 ],
                 oTableTools: {
                     sSwfPath: $table.data('swf-path'),
-                    aButtons: [
-                        {
-                            sExtends: 'csv',
-                            sButtonText: 'csv',
-                            fnClick: function () {
-                                var param_json = buildSearchData();
-                                window.open("/manage/csv/history?" + $.param(param_json), "_blank");
-                            }
-                        },
-                        {
-                            sExtends: 'print',
-                            sButtonText: 'Print',
-                            bFooter: false,
-                            sInfo: 'Please press CTR+P to print or ESC to quit'
-                        }
-                    ]
+                    aButtons: []
                 },
                 paginate: true,
                 pagingType: "full_numbers",
@@ -708,48 +739,59 @@
                 }
             });
         }
+
+
+    function checked_all() {
+        if ($("#check_all").is(":checked")) {
+            $("#example1 tbody input[type=checkbox]:visible").prop("checked", true);
+        } else {
+            $("#example1 tbody input[type=checkbox]:visible").prop("checked", false);
+        }
+    }
     </script>
     <!-- js -->
 
     <section class="panel panel-featured ">
         <div class="email_title"><h2 class="panel-title">리뷰 관리</h2></div>
         <div class="panel-body" style="padding-top: 0;"> 
-            <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-                <a class="btn btn-default" id="add_notice" href="/manage/multiple_email_new">신규등록</a>
-            </div>
             {% load static %}
 
-            <div class="search_select">
-                <select class="form-control" id="search_mod">
-                    <option value="0">검색조건 선택</option>
-                    <option value="1">발송일자 검색</option>
-                    <option value="2">제목 검색</option>
-                </select>
-
+            <!-- top menu -->
+            <div class="search_a" style='display:block'>
+                <div class="send_day"> 리뷰 작성일</div>
+                <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
+                <input type="text" id="endDt" value="2017/12/07" placeholder="날짜 검색(종료)" class="form-control"/>
             </div>
-
-            <div class="search_a" style='display:none'>
-                <div class="send_day"> 발송일자</div>
-                <input type="text" id="startDt" placeholder="날짜검색(시작)" class="form-control"/>
-                <input type="text" id="endDt" placeholder="날짜검색(종료)" class="form-control"/>
-            </div>
-            <div class="search_b" style='display:none'>
-                <div class="send_day"> 제 목</div>
-                <input type="text" id="name_search" placeholder="제목검색" class="form-control"/>
+            <div class="search_b" style='display:block'>
+                <div class="send_day"> 리뷰 내용</div>
+                <input type="text" id="name_search" placeholder="리뷰 검색" class="form-control"/>
             </div>
             <input type="button" class="btn btn-primary" id="m_submit" value="검색">
+            <div class="search_c">
+                <div class="send_day2">기관</div>
+                <input type="text" id="org_search" placeholder="기관 검색" class="form-control"/>
+            </div>
+            <div class="search_d">
+                <div class="send_day3">강좌코드</div>
+                <input type="text" id="code_search" placeholder="강좌코드 검색" class="form-control"/>
+            </div>
+            <input type="button" class="btn btn-primary" id="del" value="삭제">
+            <!-- top menu -->
 
             <!-- data tables -->
             <table id="example1" class="display" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <th>No</th>
-                    <th>발송대상자</th>
-                    <th>발송자</th>
-                    <th>제목</th>
-                    <th>발송일시</th>
-                    <th>대상자수</th>
-                    <th>성공건수</th>
+                    <th style="width:10px;"><input type="checkbox" onclick="checked_all()" id="check_all"/></th>
+                    <th style="width:10px;">No</th>
+                    <th>기관명</th>
+                    <th>강좌명</th>
+                    <th>리뷰내용</th>
+                    <th style="width:30px;">별점</th>
+                    <th style="width:50px;">좋아요</th>
+                    <th style="width:50px;">싫어요</th>
+                    <th>등록자</th>
+                    <th>등록일</th>
                 </tr>
                 </thead>
                 <tbody>

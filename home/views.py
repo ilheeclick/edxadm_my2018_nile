@@ -4156,6 +4156,125 @@ def file_download(request, file_name):
 
 # ---------- 2017.12.04 ahn jin yong ---------- #
 def review_manage(request):
+
+    if request.is_ajax():
+
+        if request.GET.get('del_list'):
+            del_list = request.GET.get('del_list')
+            del_list = del_list.split('+')
+            del_list.pop()
+
+            with connections['default'].cursor() as cur:
+                for item in del_list:
+                    query = '''
+                        delete from edxapp.course_review
+                        where id = {0};
+                    '''.format(item)
+                    cur.execute(query)
+            return JsonResponse({'return':'success'})
+
+        startDt = request.GET.get('startDt')
+        endDt = request.GET.get('endDt')
+        startDt = startDt.replace('/', '-')
+        endDt = endDt.replace('/', '-')
+        name_search = request.GET.get('name_search')
+        org_search = request.GET.get('org_search')
+        code_search = request.GET.get('code_search')
+
+        if name_search=='' and org_search=='' and code_search=='':
+            mode = 'all'
+        elif name_search!='' and org_search=='' and code_search=='':
+            mode = 'name'
+        elif name_search=='' and org_search!='' and code_search=='':
+            mode = 'org'
+        elif name_search=='' and org_search=='' and code_search!='':
+            mode = 'code'
+        elif name_search!='' and org_search!='' and code_search=='':
+            mode = 'name_org'
+        elif name_search!='' and org_search=='' and code_search!='':
+            mode = 'name_code'
+        elif name_search=='' and org_search!='' and code_search!='':
+            mode = 'org_code'
+        elif name_search!='' and org_search!='' and code_search!='':
+            mode = 'name_org_code'
+
+        print 'mode = ',mode
+
+        with connections['default'].cursor() as cur:
+            query = '''
+                SELECT cr.id,
+                       cd.detail_name,
+                       coc.display_name,
+                       cr.content,
+                       cr.point,
+                       Sum(CASE
+                             WHEN good_bad = 'g' THEN 1
+                             ELSE 0
+                           END) AS good,
+                       Sum(CASE
+                             WHEN good_bad = 'b' THEN 1
+                             ELSE 0
+                           END) AS bad,
+                       au.username,
+                       Date_format(cr.reg_time, '%Y/%m/%d %h:%m') reg_time
+                FROM   edxapp.course_review AS cr
+                       LEFT JOIN edxapp.auth_user AS au
+                              ON au.id = cr.user_id
+                       LEFT JOIN edxapp.course_review_user AS cru
+                              ON cru.review_id = cr.id
+                       LEFT JOIN edxapp.course_overviews_courseoverview AS coc
+                              ON cr.course_id = coc.id
+                       LEFT JOIN edxapp.code_detail AS cd
+                              ON coc.org = cd.detail_code
+                WHERE cr.reg_time < '{0}' AND cr.reg_time > '{1}'
+                -- mode
+                GROUP  BY cr.id,
+                          cd.detail_name,
+                          coc.display_name,
+                          cr.content,
+                          cr.point,
+                          au.username,
+                          cr.reg_time
+                ORDER  BY id
+            '''.format(endDt, startDt)
+
+            if mode == 'name':
+                restr = "AND cr.content like '%{0}%'".format(name_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'org':
+                restr = "AND cd.detail_name like '%{0}%'".format(org_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'code':
+                restr = "AND coc.id like 'course-v1:%+{0}+%'".format(code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_org':
+                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%'".format(name_search, org_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_code':
+                restr = "AND cr.content like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(name_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'org_code':
+                restr = "AND cd.detail_name like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(org_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_org_code':
+                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(name_search, org_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            cur.execute(query)
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        result = dict()
+        result['data'] = result_list
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(context, 'applications/json')
+
     return render(request, 'review_manage/review_manage.html')
 # ---------- 2017.12.04 ahn jin yong ---------- #
 
