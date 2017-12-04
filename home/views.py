@@ -1858,7 +1858,7 @@ def popup_index1(request, id):
                link_target,
                hidden_day,
                width,
-               height
+               height-118
           FROM popup
          WHERE popup_id = {0};
         """.format(id)
@@ -1885,7 +1885,7 @@ def popup_index2(request, id):
                link_target,
                hidden_day,
                width,
-               height
+               height-156
           FROM popup
          WHERE popup_id = {0};
         """.format(id)
@@ -1912,7 +1912,7 @@ def popup_index3(request, id):
                link_target,
                hidden_day,
                width,
-               height
+               height-145
           FROM popup
          WHERE popup_id = {0};
         """.format(id)
