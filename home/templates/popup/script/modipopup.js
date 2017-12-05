@@ -357,7 +357,7 @@ function save_data(pop_id) {
         }
     }).done(function (data) {
         if (method == 'modi') {
-            if (data >= 3 && use_yn == "N") {
+            if (data >= 3 && use_yn == "Y") {
                 alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
                 use_yn = "N";
             }
