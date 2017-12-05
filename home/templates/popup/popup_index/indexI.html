@@ -8,9 +8,11 @@
     </head>
     <body>
     <!-- wrap -->
-    <div class="wrap">
-        <div class="area">
-            <img src="/manage/home/static/test_upload/{{ pop.6 }}" id="image_file" usemap="image_map">
+    <div class="pop-wrap" id="#_id"
+         style="width: {{ pop.7 }}px; height: {{ pop.8 }}px; float: left; z-index: 9999; border: 1px solid #e5e5e5; position: relative">
+        <div class="area" style="background-color: #fff;">
+            <img src="/manage/home/static/test_upload/{{ pop.6 }}" usemap="image_map"
+                 style="width: {{ pop.7 }}px; height: {{ pop.8 }}px">
 
             <map name="image_map">
                 {% if pop.9 == '' %}
@@ -23,14 +25,14 @@
                 {% endif %}
             </map>
         </div>
-    </div>
-    <div style="text-align: right;">
-        <label>
-            <input id="" name="" type="checkbox" style="vertical-align: middle;">
-            <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }}일간 열지 않음 &nbsp;&nbsp;</b></span>
-        </label>
+        <div style="text-align: right;">
+            <label>
+                <input id="" name="" type="checkbox" style="vertical-align: middle;">
+                <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }} &nbsp;&nbsp;</b></span>
+            </label>
 
-        <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+            <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+        </div>
     </div>
     <script>
         function popClose() {

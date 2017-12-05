@@ -1801,8 +1801,15 @@ def popup_index0(request, id, type):
                    contents,
                    link_url,
                    link_target,
+                   CASE
+                      WHEN hidden_day = '1' THEN '1일간 열지 않음'
+                      WHEN hidden_day = '7' THEN '7일간 열지 않음'
+                      WHEN hidden_day = '0' THEN '다시 열지 않음'
+                   END
                    hidden_day,
-                   popup_type
+                   popup_type,
+                   width-2,
+                   height-53
               FROM popup
              WHERE popup_id = {0};
             """.format(id)
@@ -1822,6 +1829,11 @@ def popup_index0(request, id, type):
                    contents,
                    link_url,
                    link_target,
+                   CASE
+                      WHEN hidden_day = '1' THEN '1일간 열지 않음'
+                      WHEN hidden_day = '7' THEN '7일간 열지 않음'
+                      WHEN hidden_day = '0' THEN '다시 열지 않음'
+                   END
                    hidden_day,
                    popup_type,
                    attatch_file_name,
@@ -1856,6 +1868,11 @@ def popup_index1(request, id):
                contents,
                link_url,
                link_target,
+               CASE
+                  WHEN hidden_day = '1' THEN '1일간 열지 않음'
+                  WHEN hidden_day = '7' THEN '7일간 열지 않음'
+                  WHEN hidden_day = '0' THEN '다시 열지 않음'
+               END
                hidden_day,
                width,
                height-118
@@ -1883,9 +1900,14 @@ def popup_index2(request, id):
                contents,
                link_url,
                link_target,
+               CASE
+                  WHEN hidden_day = '1' THEN '1일간 열지 않음'
+                  WHEN hidden_day = '7' THEN '7일간 열지 않음'
+                  WHEN hidden_day = '0' THEN '다시 열지 않음'
+               END
                hidden_day,
                width,
-               height-156
+               height-153
           FROM popup
          WHERE popup_id = {0};
         """.format(id)
@@ -1910,9 +1932,14 @@ def popup_index3(request, id):
                contents,
                link_url,
                link_target,
+               CASE
+                  WHEN hidden_day = '1' THEN '1일간 열지 않음'
+                  WHEN hidden_day = '7' THEN '7일간 열지 않음'
+                  WHEN hidden_day = '0' THEN '다시 열지 않음'
+               END
                hidden_day,
                width,
-               height-145
+               height-156
           FROM popup
          WHERE popup_id = {0};
         """.format(id)
