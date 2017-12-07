@@ -1791,6 +1791,252 @@ def manager_db(request):
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
+@login_required
+def popupZone_add(request):
+    return render(request, 'popup/popupZone_add.html')
+
+@csrf_exempt
+@login_required
+def popupZone_db(request):
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        popupZone_list = []
+
+        if request.GET['method'] == 'popupZone_list':
+            cur = connection.cursor()
+            query = """
+                      SELECT @rn := @rn - 1 rn,
+                             seq,
+                             title,
+                             username,
+                             CONCAT(SUBSTRING((start_date), 1, 4),
+                                    "-",
+                                    SUBSTRING((start_date), 5, 2),
+                                    "-",
+                                    SUBSTRING((start_date), 7, 2))
+                                start_date,
+                             CONCAT(SUBSTRING((end_date), 1, 4),
+                                    "-",
+                                    SUBSTRING((end_date), 5, 2),
+                                    "-",
+                                    SUBSTRING((end_date), 7, 2))
+                                end_date,
+                             CASE
+                                WHEN link_target = '_blank' THEN '새창열기'
+                                WHEN link_target = '_self' THEN '현재창열기'
+                             END
+                                link_target,
+                             link_url
+                        FROM popupzone pz
+                             JOIN auth_user au ON au.id = pz.regist_id,
+                             (SELECT @rn := count(*) + 1
+                                FROM popupzone) x
+                    ORDER BY regist_date DESC;
+			"""
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for pop in row:
+                value_list = []
+                value_list.append(pop[0])
+                value_list.append(pop[1])
+                value_list.append(pop[2])
+                value_list.append(pop[3])
+                value_list.append(pop[4])
+                value_list.append(pop[5])
+                value_list.append(pop[6])
+                value_list.append(pop[7])
+                popupZone_list.append(value_list)
+
+            data = json.dumps(list(popupZone_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+    return render(request, 'popup/popupZone_add.html')
+
+@login_required
+def modi_popupZone(request, id):
+    mod_popZone = []
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        if request.GET['method'] == 'modi':
+            cur = connection.cursor()
+            query = """
+					SELECT title,
+                           image_file,
+                           link_url,
+                           link_target,
+                           CONCAT(SUBSTRING((start_date), 1, 4),
+                                  "-",
+                                  SUBSTRING((start_date), 5, 2),
+                                  "-",
+                                  SUBSTRING((start_date), 7, 2))
+                              start_date,
+                           CONCAT(SUBSTRING((start_time), 1, 2),
+                                  ":",
+                                  SUBSTRING((start_time), 3, 4))
+                              start_time,
+                           CONCAT(SUBSTRING((end_date), 1, 4),
+                                  "-",
+                                  SUBSTRING((end_date), 5, 2),
+                                  "-",
+                                  SUBSTRING((end_date), 7, 2))
+                              end_date,
+                           CONCAT(SUBSTRING((end_time), 1, 2), ":", SUBSTRING((end_time), 3, 4))
+                              end_time
+                      FROM popupzone
+             WHERE seq = """ + id
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_popZone.append(p)
+            data = json.dumps(list(mod_popZone), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('popup/popupZone_modi.html', variables)
+
+
+@csrf_exempt
+@login_required
+def new_popupZone(request):
+    if request.method == 'POST':
+        data = json.dumps({'status': "fail"})
+        file_flag = request.POST.get('file_flag')
+        update_flag = request.POST.get('update_flag')
+        try:
+            upload_file = request.FILES['uploadfile']
+            uploadfile_user_id = request.POST.get('uploadfile_user_id')
+        except BaseException:
+            upload_file = None
+            uploadfile_user_id = None
+
+        if upload_file:
+            uploadfile = request.FILES['uploadfile']
+
+            common_single_file_upload(uploadfile, 'popupzone', str(uploadfile_user_id))
+
+            return render(request, 'popup/popup_add.html')
+
+        if request.POST.get('method') == 'add':
+            title = request.POST.get('title')
+            link_url = request.POST.get('link_url')
+            link_target = request.POST.get('link_target')
+            start_date = request.POST.get('start_date')
+            start_time = request.POST.get('start_time')
+            end_date = request.POST.get('end_date')
+            end_time = request.POST.get('end_time')
+            regist_id = request.POST.get('regist_id')
+
+
+            image_file = 0;
+            if (file_flag == '1'):
+                cur = connection.cursor()
+                query = '''select max(attatch_id) + 1 from tb_board_attach
+                        '''
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
+
+            cur = connection.cursor()
+            query = """
+                INSERT INTO edxapp.popupzone(title,
+                         image_file,
+                         link_url,
+                         link_target,
+                         start_date,
+                         start_time,
+                         end_date,
+                         end_time,
+                         regist_id,
+                         modify_id)
+                 VALUES ('{0}',
+                         '{1}',
+                         '{2}',
+                         '{3}',
+                         '{4}',
+                         '{5}',
+                         '{6}',
+                         '{7}',
+                         '{8}',
+                         '{9}');
+            """.format(title, image_file, link_url, link_target, start_date,
+                       start_time, end_date, end_time, regist_id, regist_id)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'modi':
+            title = request.POST.get('title')
+            link_url = request.POST.get('link_url')
+            link_target = request.POST.get('link_target')
+            start_date = request.POST.get('start_date')
+            start_time = request.POST.get('start_time')
+            end_date = request.POST.get('end_date')
+            end_time = request.POST.get('end_time')
+            regist_id = request.POST.get('regist_id')
+            seq = request.POST.get('seq')
+
+            if (file_flag != '1'):
+                cur = connection.cursor()
+                query = '''
+                            SELECT image_file
+                              FROM popupzone
+                             WHERE seq = '{0}';
+                            '''.format(seq)
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
+            elif (file_flag == '1'):
+                cur = connection.cursor()
+                query = '''select max(attatch_id) + 1 from tb_board_attach
+                        '''
+                cur.execute(query)
+                attatch_id = cur.fetchall()
+                image_file = attatch_id[0][0]
+                cur.close()
+
+            cur = connection.cursor()
+            query = """
+                    UPDATE edxapp.popupzone
+                       SET title = '{0}',
+                           image_file = '{1}',
+                           link_url = '{2}',
+                           link_target = '{3}',
+                           start_date = '{4}',
+                           start_time = '{5}',
+                           end_date = '{6}',
+                           end_time = '{7}',
+                           modify_id = '{8}',
+                           modify_date = now()
+                     WHERE seq = '{9}';
+            """.format(title, image_file, link_url, link_target,
+                       start_date, start_time, end_date, end_time, regist_id, seq)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+        elif request.POST['method'] == 'del':
+            seq = request.POST.get('seq')
+            cur = connection.cursor()
+            query = """
+                    DELETE FROM popupzone
+                          WHERE seq = '{0}';
+            """.format(seq)
+            cur.execute(query)
+            cur.close()
+            data = json.dumps({'status': "success"})
+
+            return HttpResponse(data, 'applications/json')
+
+
+    return render(request, 'popup/popupZone_add.html')
 
 @login_required
 def popup_index0(request, id, type):

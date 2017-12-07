@@ -106,6 +106,12 @@ urlpatterns = [
     url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
     url(r'^manage/new_popup/', views.new_popup, name='new_popup'),
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
+    url(r'^manage/popupZone_add/$', views.popupZone_add, name='popupZone_add'),
+    url(r'^manage/modi_popupZone/(?P<id>.*?)/$', views.modi_popupZone, name='modi_popupZone'),
+    url(r'^manage/popupZone_db/', views.popupZone_db, name='popupZone_db'),
+    url(r'^manage/new_popupZone/', views.new_popupZone, name='new_popupZone'),
+
+
 
     #popup index url
     url(r'^manage/popup_index0/(?P<id>.*?)/(?P<type>.*?)/$', views.popup_index0, name='popup_index0'),

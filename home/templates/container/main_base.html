@@ -261,12 +261,19 @@
 
                                 <a>
                                     <i class="fa fa-bell-o" aria-hidden="true"></i>
-                                    <span>팝업추가</span>
+                                    <span>팝업관리</span>
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="popup_add">
                                         <a href="/manage/popup_add">
-                                            팝업추가
+                                            팝업관리
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="popupZone_add">
+                                        <a href="/manage/popupZone_add">
+                                            팝업존관리
                                         </a>
                                     </li>
                                 </ul>
@@ -587,10 +594,15 @@
                     $('#history').addClass('nav-active');
                     $('#history_list').addClass('nav-active');
                     break;
-                case '팝업추가':
+                case '팝업관리':
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
                     $('#popup').addClass('nav-active');
                     $('#popup_add').addClass('nav-active');
+                    break;
+                case '팝업존관리':
+                    if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
+                    $('#popup').addClass('nav-active');
+                    $('#popupZone_add').addClass('nav-active');
                     break;
                 case '멀티사이트 관리':
                     if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
