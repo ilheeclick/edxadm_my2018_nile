@@ -13,6 +13,9 @@
             "fnReloadAjax": true,
             "fnServerParams": function (data) {
                 data.push({"name": 'method', "value": 'popupZone_list'});
+                data.push({"name": 'start', "value": $('#datepicker1').val()});
+                data.push({"name": 'end', "value": $('#datepicker2').val()});
+                data.push({"name": 'title', "value": $('#title').val()});
             },
             dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
             "paginate": true,
@@ -79,8 +82,10 @@
 }).apply(this, [jQuery]);
 
 
-
-
+function Search() {
+    var table = $('#datatable33').DataTable();
+    table.ajax.reload();
+}
 
 
 $.datepicker.setDefaults({

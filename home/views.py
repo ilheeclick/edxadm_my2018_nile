@@ -1803,7 +1803,15 @@ def popupZone_db(request):
         popupZone_list = []
 
         if request.GET['method'] == 'popupZone_list':
+            start = request.GET.get('start')
+            end = request.GET.get('end')
+            title = request.GET.get('title')
             cur = connection.cursor()
+            start = start.replace("-","")
+            end = end.replace("-","")
+            if ( end == '') :
+                end = 99999999
+
             query = """
                       SELECT @rn := @rn - 1 rn,
                              seq,
@@ -1830,9 +1838,16 @@ def popupZone_db(request):
                         FROM popupzone pz
                              JOIN auth_user au ON au.id = pz.regist_id,
                              (SELECT @rn := count(*) + 1
-                                FROM popupzone) x
+                                FROM popupzone
+                               WHERE     title LIKE '%{0}%'
+                                     AND '{1}' <= BINARY (start_date)
+                                     AND BINARY (end_date) <= '{2}') x
+                       WHERE     title LIKE '%{3}%'
+                             AND '{4}' <= BINARY (start_date)
+                             AND BINARY (end_date) <= '{5}'
                     ORDER BY regist_date DESC;
-			"""
+			""".format(title, start, end, title, start, end)
+            print query
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
