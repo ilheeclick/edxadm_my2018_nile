@@ -275,7 +275,6 @@
                             <!-- multiple mail sending -->
 
                             <li class="nav nav-parent" id="popup">
-
                                 <a>
                                     <i class="fa fa-bell-o" aria-hidden="true"></i>
                                     <span>팝업추가</span>
@@ -291,7 +290,6 @@
 
 
                             <li class="nav nav-parent" id="multi_site">
-
                                 <a>
                                     <i class="fa fa-window-restore" aria-hidden="true"></i>
                                     <span>멀티사이트</span>
@@ -306,7 +304,6 @@
                             </li>
 
                             <li class="nav nav-parent" id="course_manage">
-
                                 <a>
                                     <i class="fa fa-book" aria-hidden="true"></i>
                                     <span>강좌 관리</span>
@@ -321,7 +318,6 @@
                             </li>
 
                             <li class="nav nav-parent" id="code_manage">
-
                                 <a>
                                     <i class="fa fa-language" aria-hidden="true"></i>
                                     <span>코드 관리</span>
@@ -334,6 +330,22 @@
                                     </li>
                                 </ul>
                             </li>
+
+                            <!-- user enrollment -->
+                            <li class="nav nav-parent" id="user_enroll">
+                                <a>
+                                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                                    <span>회원 등록</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="user_enroll_view">
+                                        <a href="/manage/user_enroll">
+                                            회원 등록
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- user enrollment -->
 
                         </ul>
                     </nav>
@@ -609,6 +621,11 @@
                     if (is_expanded != 'none') $('#code_manage').addClass('nav-expanded');
                     $('#code_manage').addClass('nav-active');
                     $('#code_manage_view').addClass('nav-active');
+                    break;
+                case '회원 관리':
+                    if (is_expanded != 'none') $('#user_enroll').addClass('nav-expanded');
+                    $('#user_enroll').addClass('nav-active');
+                    $('#user_enroll_view').addClass('nav-active');
                     break;
             }
         }
