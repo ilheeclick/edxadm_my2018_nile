@@ -1473,7 +1473,7 @@ def add_multi_site(request, id):
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
-@login_required
+
 def modi_multi_site(request, id):
     mod_multi = []
     if request.is_ajax():
@@ -1649,7 +1649,6 @@ def modi_multi_site_db(request):
     return render(request, 'multi_site/modi_multi_site.html')
 
 
-@login_required
 def manager_list(request):
     result = dict()
     id = request.GET.get('id')
@@ -1798,9 +1797,11 @@ def manager_db(request):
 def popup_add(request):
     return render(request, 'popup/popup_add.html')
 
+
 @login_required
 def popupZone_add(request):
     return render(request, 'popup/popupZone_add.html')
+
 
 @csrf_exempt
 @login_required
@@ -1814,9 +1815,9 @@ def popupZone_db(request):
             end = request.GET.get('end')
             title = request.GET.get('title')
             cur = connection.cursor()
-            start = start.replace("-","")
-            end = end.replace("-","")
-            if ( end == '') :
+            start = start.replace("-", "")
+            end = end.replace("-", "")
+            if (end == ''):
                 end = 99999999
 
             query = """
@@ -1873,6 +1874,7 @@ def popupZone_db(request):
             data = json.dumps(list(popupZone_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
     return render(request, 'popup/popupZone_add.html')
+
 
 @login_required
 def modi_popupZone(request, id):
@@ -1950,7 +1952,6 @@ def new_popupZone(request):
             end_date = request.POST.get('end_date')
             end_time = request.POST.get('end_time')
             regist_id = request.POST.get('regist_id')
-
 
             image_file = 0;
             if (file_flag == '1'):
@@ -2057,8 +2058,8 @@ def new_popupZone(request):
 
             return HttpResponse(data, 'applications/json')
 
-
     return render(request, 'popup/popupZone_add.html')
+
 
 @login_required
 def popup_index0(request, id, type):
@@ -2192,7 +2193,6 @@ def popup_index2(request, id):
     return render_to_response('popup/popup_index/index2.html', context)
 
 
-
 @login_required
 def popup_index3(request, id):
     cur = connection.cursor()
@@ -2224,9 +2224,10 @@ def popup_index3(request, id):
 
     return render_to_response('popup/popup_index/index3.html', context)
 
-@login_required
+
 def popup_list(request):
     return render(request, 'popup/popup_list.html')
+
 
 def modi_popup(request, id):
     mod_pop = []
@@ -2322,7 +2323,6 @@ def modi_popup(request, id):
     return render_to_response('popup/popup_modipopup.html', variables)
 
 
-@login_required
 def create_popup(request):
     return render(request, 'popup/popup_modipopup.html')
 
@@ -3797,7 +3797,6 @@ def new_notice(request):
     return render(request, 'community/comm_newnotice.html')
 
 
-# ---------- 2017.10.23 ahn jin yong ---------- #
 @csrf_exempt
 def modi_notice(request, id, use_yn):
     if request.is_ajax():
@@ -4826,7 +4825,6 @@ def history_rows(request):
     return columns, recordsTotal, result_list
 
 
-@login_required
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     if not content_type_id:
         return ''
@@ -4869,7 +4867,6 @@ def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     return ''
 
 
-@login_required
 def get_system_name(content_type_id):
     """
     시스템 표시 구분.
@@ -4889,7 +4886,6 @@ def get_system_name(content_type_id):
     return system
 
 
-@login_required
 def get_change_message_dict(change_message):
     """
     request의 파라미터를 dict 형태로 변환후 문자열로 재변환하여 change_message 값으로 저장하고 있음.
@@ -4914,7 +4910,6 @@ def get_change_message_dict(change_message):
         return change_message_dict
 
 
-@login_required
 def get_object_repr_dict(object_repr):
     """
     object_repr 의 내용은 재정의된 문자열로 저장이되고 있으며,
@@ -4936,7 +4931,6 @@ def get_object_repr_dict(object_repr):
     return result
 
 
-@login_required
 def get_searcy_string(content_type_id, change_message_dict):
     """
     django admin 에서 사용자 검색을 한경우 검색어를 추출.
@@ -4953,7 +4947,6 @@ def get_searcy_string(content_type_id, change_message_dict):
     return search_query
 
 
-@login_required
 def get_target_id(content_type_id, object_repr_dict):
     """
     개인정보 수정, 사용자를 지정하여 처리하는 액션의 경우 대상 아이디를 조회하여 리턴.
@@ -5309,14 +5302,13 @@ def file_download(request, file_name):
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @login_required
 def multiple_email(request):
-
     if request.is_ajax():
 
         # what is mode?
         search_mod = request.GET.get('search_mod')
 
         # search name
-        if search_mod == '2' :
+        if search_mod == '2':
             name_search = request.GET.get('name_search')
             with connections['default'].cursor() as cur:
                 query = '''
@@ -5354,7 +5346,7 @@ def multiple_email(request):
                     ON     ge.regist_id = au.id
                     WHERE   title like '%{0}%'
                 '''.format(name_search)
-                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                query = query.replace('\xe2\x80\xa8', '')  # query bugfix
                 cur.execute(query)
                 rows = cur.fetchall()
                 columns = [col[0] for col in cur.description]
@@ -5365,7 +5357,7 @@ def multiple_email(request):
             return HttpResponse(context, 'applications/json')
 
         # search date
-        if search_mod == '1' :
+        if search_mod == '1':
             startDt = request.GET.get('startDt')
             endDt = request.GET.get('endDt')
             startDt = startDt.replace('/', '-')
@@ -5406,7 +5398,7 @@ def multiple_email(request):
                     ON     ge.regist_id = au.id
                     WHERE   regist_date BETWEEN '{0}' AND '{1}'
                 '''.format(startDt, endDt)
-                query = query.replace('\xe2\x80\xa8','') #query bugfix
+                query = query.replace('\xe2\x80\xa8', '')  # query bugfix
                 cur.execute(query)
                 rows = cur.fetchall()
                 columns = [col[0] for col in cur.description]
@@ -5417,7 +5409,7 @@ def multiple_email(request):
             return HttpResponse(context, 'applications/json')
 
         # search base
-        if search_mod == '0' :
+        if search_mod == '0':
             with connections['default'].cursor() as cur:
                 query = '''
                     SELECT mail_id,
@@ -5467,6 +5459,7 @@ def multiple_email(request):
             return HttpResponse(context, 'applications/json')
     return render(request, 'multiple_email/multiple_email.html')
 
+
 # 메일 전송 공통 모듈
 def common_send_mail(to_user, title, content):
     import smtplib
@@ -5474,13 +5467,13 @@ def common_send_mail(to_user, title, content):
     from email.mime.text import MIMEText
 
     smtp_server = 'smtp.gmail.com'
-    smtp_port   = 587
-    smtp_id     = 'b930208@gmail.com'
-    smtp_pw     = '####'
+    smtp_port = 587
+    smtp_id = 'b930208@gmail.com'
+    smtp_pw = '####'
     from_user = smtp_id
 
     smtp = smtplib.SMTP(smtp_server, smtp_port)
-    smtp.ehlo()      # say Hello
+    smtp.ehlo()  # say Hello
     smtp.starttls()  # TLS 사용시 필요
     smtp.login(smtp_id, smtp_pw)
 
@@ -5495,6 +5488,7 @@ def common_send_mail(to_user, title, content):
     s = smtp
     s.sendmail(from_user, to_user, msg.as_string())
     s.quit()
+
 
 @login_required
 def multiple_email_new(request):
@@ -5511,9 +5505,9 @@ def multiple_email_new(request):
         account_type = request.POST.get('account_type')
 
         print "user_id = {}".format(user_id)
-        print "subject_flag = {}".format(subject_flag) # experienced_student, instructor, operator / 1 2 3
-        print "send_type = {}".format(send_type)       # email, message, apppush / E M P
-        print "account_type = {}".format(account_type) # activation, inactive, all / E I A
+        print "subject_flag = {}".format(subject_flag)  # experienced_student, instructor, operator / 1 2 3
+        print "send_type = {}".format(send_type)  # email, message, apppush / E M P
+        print "account_type = {}".format(account_type)  # activation, inactive, all / E I A
 
         # 보내는 타입이 'email'일 때 로직
         if send_type == 'email':
@@ -5523,7 +5517,8 @@ def multiple_email_new(request):
                 instructor = request.POST.get('instructor')
                 operator = request.POST.get('operator')
                 # 유저 목록 구해오는 로직
-                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
+                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (
+                                instructor == 'true' and operator == 'true'):
                     target1 = '1'
                     target2 = '1'
                     target3 = '1'
@@ -5658,7 +5653,7 @@ def multiple_email_new(request):
                     query = '''
                         insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
                         values('E', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
-                    '''.format(db_account_type, target1, target2, target3, title, content.replace("'","''"), user_id)
+                    '''.format(db_account_type, target1, target2, target3, title, content.replace("'", "''"), user_id)
                     cur.execute(query)
             # 보내는 타입이 '수동입력'일 때 로직
             elif subject_flag == 'world':
@@ -5666,7 +5661,7 @@ def multiple_email_new(request):
                     query = '''
                         insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
                         values('E', 'N', 0, 0, 0, '{0}', '{1}', {2})
-                    '''.format(title, content.replace("'","''"), user_id)
+                    '''.format(title, content.replace("'", "''"), user_id)
                     cur.execute(query)
             # insert 이후 마지막 글 번호 얻어오기
             with connections['default'].cursor() as cur:
@@ -5683,13 +5678,13 @@ def multiple_email_new(request):
                 # 보내는 타입이 '수동입력'이 아닐 때 로직
                 if subject_flag == 'hello':
                     try:
-                        #common_send_mail(user, title, content) # 메일 보내는 함수
+                        # common_send_mail(user, title, content) # 메일 보내는 함수
                         with connections['default'].cursor() as cur:
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
                                 values({0}, {1}, '{2}', 'Y', {3})
-                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
-                            print query #DEBUG
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'", "''"), user_id)
+                            print query  # DEBUG
                             cur.execute(query)
                     except BaseException:
                         fail_cnt = fail_cnt + 1
@@ -5697,19 +5692,19 @@ def multiple_email_new(request):
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
                                 values({0}, {1}, '{2}', 'N', {3})
-                            '''.format(row_id, user_id_list[n], user_list[n].replace("'","''"), user_id)
-                            print query #DEBUG
+                            '''.format(row_id, user_id_list[n], user_list[n].replace("'", "''"), user_id)
+                            print query  # DEBUG
                             cur.execute(query)
                 # 보내는 타입이 '수동입력'일 때 로직
                 elif subject_flag == 'world':
                     try:
-                        #common_send_mail(user, title, content) # 메일 보내는 함수
+                        # common_send_mail(user, title, content) # 메일 보내는 함수
                         with connections['default'].cursor() as cur:
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
                                 values({0}, '{1}', 'Y', {2})
-                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
-                            print query #DEBUG
+                            '''.format(row_id, user_list[n].replace("'", "''"), user_id)
+                            print query  # DEBUG
                             cur.execute(query)
                     except BaseException:
                         fail_cnt = fail_cnt + 1
@@ -5717,14 +5712,14 @@ def multiple_email_new(request):
                             query = '''
                                 insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
                                 values({0}, '{1}', 'N', {2})
-                            '''.format(row_id, user_list[n].replace("'","''"), user_id)
-                            print query #DEBUG
+                            '''.format(row_id, user_list[n].replace("'", "''"), user_id)
+                            print query  # DEBUG
                             cur.execute(query)
 
             # making success cnt, fail cnt
             total_user = len(user_list)
             fail_cnt = fail_cnt
-            success_cnt =  (len(user_list) - fail_cnt)
+            success_cnt = (len(user_list) - fail_cnt)
 
             # update success cnt, total cnt
             with connections['default'].cursor() as cur:
@@ -5736,16 +5731,18 @@ def multiple_email_new(request):
                 '''.format(total_user, success_cnt, row_id)
                 cur.execute(query)
 
-        return JsonResponse({"return":"success"})
+        return JsonResponse({"return": "success"})
 
     return render(request, 'multiple_email/multiple_email_new.html')
 
-#test
+
+# test
 def send_mail(request):
     html = '''
     <p>qqq</p><p>aergm<b>keam</b></p><p><b><span style="background-color: rgb(0, 255, 0);">aergmkae
     '''
     common_send_mail('b930208@gmail.com', '제목', html)
 
-    return JsonResponse({'foo':'bar'})
+    return JsonResponse({'foo': 'bar'})
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
