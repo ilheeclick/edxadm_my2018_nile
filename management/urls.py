@@ -19,8 +19,8 @@ from django.contrib import admin
 
 from home.statistics import statistics_excel
 from home import views
+import tracking_control.views as tracking_view
 from django.contrib.auth import views as auth_views
-
 
 urlpatterns = [
     url(
@@ -68,16 +68,21 @@ urlpatterns = [
     url(r'^manage/comm_k_news/', views.comm_k_news, name='comm_k_news'),
     url(r'^manage/modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
     url(r'^manage/summer_upload/', views.summer_upload, name='summer_upload'),
-    url(r'^manage/new_knews/', views.new_knews, name='new_knews'), # -> new_notice (module)
+    url(r'^manage/new_knews/', views.new_knews, name='new_knews'),  # -> new_notice (module)
 
     # reference_room
     url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
-    url(r'^manage/new_refer/', views.new_refer, name='new_refer'), # -> new_notice (module)
+    url(r'^manage/new_refer/', views.new_refer, name='new_refer'),  # -> new_notice (module)
 
     # common file upload module
     url(r'^manage/file_upload/', views.file_upload, name='file_upload'),
     # ---------- board common ---------- #
+    # ---------- multiple email ---------- #
+    url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
+    url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
+    url(r'^manage/send_mail/', views.send_mail, name='multiple_email_new'),
+    # ---------- multiple email ---------- #
 
     # faq
     url(r'^manage/comm_faq/', views.comm_faq, name='comm_faq'),
@@ -120,6 +125,12 @@ urlpatterns = [
     url(r'^manage/popup_index3/(?P<id>.*?)/$', views.popup_index3, name='popup_index3'),
 
 
+    url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
+    url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
+    url(r'^manage/tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
+    # url(r'^manage/filed/$', tracking_view.send_file)
+    url(r'^manage/tracking_log/logdata_add/', tracking_view.data_insert),
+    url(r'^manage/tracking_log/downlist/', tracking_view.log_board, name='log_board'),
     # multi_site url
     url(r'^manage/multi_site/$', views.multi_site, name='multi_site'),
     url(r'^manage/multi_site_db/$', views.multi_site_db, name='multi_site'),
@@ -139,7 +150,6 @@ urlpatterns = [
     url(r'^manage/course_db_list/$', views.course_db_list, name='course_db_list'),
     url(r'^manage/course_db/$', views.course_db, name='course_db'),
 
-
     url(r'^manage/code_manage/$', views.code_manage, name='code_manage'),
     url(r'^manage/group_code/$', views.group_code, name='group_code'),
     url(r'^manage/detail_code/$', views.detail_code, name='detail_code'),
@@ -155,9 +165,8 @@ urlpatterns = [
     url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
 
-    #history
+    # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
     # url(r'^manage/history_cert/', views.history_cert, name='history_cert'),
-
 ]

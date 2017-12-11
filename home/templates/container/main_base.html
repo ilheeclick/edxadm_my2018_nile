@@ -35,7 +35,7 @@
 
     <link rel="stylesheet" href='{% static "assets/vendor/select2/css/select2.css" %}'/>
     <link rel="stylesheet" href='{% static "assets/vendor/select2-bootstrap-theme/select2-bootstrap.css" %}'/>
-    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css"%}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css" %}'/>
 
     <link rel="stylesheet" href='{% static "assets/vendor/hover/hover.css" %}'/>
     <link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}'/>
@@ -63,8 +63,9 @@
 
 </head>
 
-<body background="{%  static " assets
-/images/login_background.jpg"%}">
+<body background="{% static " assets
+/images/login_background.jpg" %}
+">
 
 
 <section class="body">
@@ -76,7 +77,7 @@
             <a href="../manage" class="logo"></a>
 
             <a href="../../../../../manage" class="logo">
-                <img src='{%  static "assets/images/logo.png"%}' height="35" alt="Porto Admin"/>
+                <img src='{% static "assets/images/logo.png" %}' height="35" alt="Porto Admin"/>
             </a>
 
             <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -92,7 +93,7 @@
             <div id="userbox" class="userbox">
                 <a href="#">
                     <figure class="profile-picture">
-                        <img src='{% static "assets/images/!logged-user.jpg"%}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg"%}'/>
+                        <img src='{% static "assets/images/!logged-user.jpg" %}' alt="Joseph Doe" class="img-circle" data-lock-picture='{% static "assets/images/!logged-user.jpg" %}'/>
                     </figure>
                     <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
 								<span class="name">
@@ -257,6 +258,22 @@
                                 </ul>
                             </li>
 
+                            <!-- multiple mail sending -->
+                            <li class="nav nav-parent" id="email">
+                                <a>
+                                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                                    <span>단체메일</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="multiple_email">
+                                        <a href="/manage/multiple_email">
+                                            단체메일 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- multiple mail sending -->
+
                             <li class="nav nav-parent" id="popup">
 
                                 <a>
@@ -379,19 +396,19 @@
             </header>
 
             {% block containor %}
-            <div class="row">
-                <div class="col-md-6 col-lg-12 col-xl-6">
-                    <section class="panel">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="panel-body">
-                                    <h2 class="panel-title">페이지 준비중입니다.</h2>
+                <div class="row">
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <section class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="panel-body">
+                                        <h2 class="panel-title">페이지 준비중입니다.</h2>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
-            </div>
             {% endblock %}
         </section>
         <!-- end: containor -->
@@ -427,42 +444,42 @@
 </section>
 
 <!-- Vendor -->
-<script src='{% static "assets/vendor/jquery/jquery.js"%}'></script>
-<script src='{% static "assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"%}'></script>
-<script src='{% static "assets/vendor/bootstrap/js/bootstrap.js"%}'></script>
-<script src='{% static "assets/vendor/nanoscroller/nanoscroller.js"%}'></script>
-<script src='{% static "assets/vendor/magnific-popup/jquery.magnific-popup.js"%}'></script>
-<script src='{% static "assets/vendor/jquery-placeholder/jquery-placeholder.js"%}'></script>
+<script src='{% static "assets/vendor/jquery/jquery.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js" %}'></script>
+<script src='{% static "assets/vendor/bootstrap/js/bootstrap.js" %}'></script>
+<script src='{% static "assets/vendor/nanoscroller/nanoscroller.js" %}'></script>
+<script src='{% static "assets/vendor/magnific-popup/jquery.magnific-popup.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-placeholder/jquery-placeholder.js" %}'></script>
 
 
 <!-- Specific Page Vendor -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src='{% static "assets/vendor/jquery-cookie/jquery-cookie.js"%}'></script>
-<script src='{% static "assets/vendor/jqueryui-touch-punch/jqueryui-touch-punch.js"%}'></script>
-<script src='{% static "assets/vendor/jquery-appear/jquery-appear.js"%}'></script>
-<script src='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"%}'></script>
-<script src='{% static "assets/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.js"%}'></script>
-<script src='{% static "assets/vendor/flot/jquery.flot.js"%}'></script>
-<script src='{% static "assets/vendor/flot.tooltip/flot.tooltip.js"%}'></script>
-<script src='{% static "assets/vendor/flot/jquery.flot.pie.js"%}'></script>
-<script src='{% static "assets/vendor/flot/jquery.flot.categories.js"%}'></script>
-<script src='{% static "assets/vendor/flot/jquery.flot.resize.js"%}'></script>
-<script src='{% static "assets/vendor/jquery-sparkline/jquery-sparkline.js"%}'></script>
-<script src='{% static "assets/vendor/raphael/raphael.js"%}'></script>
-<script src='{% static "assets/vendor/morris.js/morris.js"%}'></script>
-<script src='{% static "assets/vendor/gauge/gauge.js"%}'></script>
-<script src='{% static "assets/vendor/snap.svg/snap.svg.js"%}'></script>
-<script src='{% static "assets/vendor/liquid-meter/liquid.meter.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/jquery.vmap.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/data/jquery.vmap.sampledata.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/jquery.vmap.world.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"%}'></script>
-<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"%}'></script>
-<script src='{% static "assets/vendor/bootstrap-timepicker/bootstrap-timepicker.js"%}'></script>
+<script src='{% static "assets/vendor/jquery-cookie/jquery-cookie.js" %}'></script>
+<script src='{% static "assets/vendor/jqueryui-touch-punch/jqueryui-touch-punch.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-appear/jquery-appear.js" %}'></script>
+<script src='{% static "assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js" %}'></script>
+<script src='{% static "assets/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.js" %}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.js" %}'></script>
+<script src='{% static "assets/vendor/flot.tooltip/flot.tooltip.js" %}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.pie.js" %}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.categories.js" %}'></script>
+<script src='{% static "assets/vendor/flot/jquery.flot.resize.js" %}'></script>
+<script src='{% static "assets/vendor/jquery-sparkline/jquery-sparkline.js" %}'></script>
+<script src='{% static "assets/vendor/raphael/raphael.js" %}'></script>
+<script src='{% static "assets/vendor/morris.js/morris.js" %}'></script>
+<script src='{% static "assets/vendor/gauge/gauge.js" %}'></script>
+<script src='{% static "assets/vendor/snap.svg/snap.svg.js" %}'></script>
+<script src='{% static "assets/vendor/liquid-meter/liquid.meter.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/jquery.vmap.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/data/jquery.vmap.sampledata.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/jquery.vmap.world.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.africa.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.asia.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.australia.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.europe.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js" %}'></script>
+<script src='{% static "assets/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js" %}'></script>
+<script src='{% static "assets/vendor/bootstrap-timepicker/bootstrap-timepicker.js" %}'></script>
 
 <script src='{% static "assets/vendor/jquery-validation/jquery.validate.js" %}'></script>
 <script src='{% static "assets/vendor/select2/js/select2.js" %}'></script>
@@ -492,13 +509,13 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css"/>
 
 <!-- Theme Base, Components and Settings -->
-<script src='{% static "assets/javascripts/theme.js"%}'></script>
+<script src='{% static "assets/javascripts/theme.js" %}'></script>
 
 <!-- Theme Custom -->
-<script src='{% static "assets/javascripts/theme.custom.js"%}'></script>
+<script src='{% static "assets/javascripts/theme.custom.js" %}'></script>
 
 <!-- Theme Initialization Files -->
-<script src='{% static "assets/javascripts/theme.init.js"%}'></script>
+<script src='{% static "assets/javascripts/theme.init.js" %}'></script>
 
 {% block script_down %}{% endblock %}
 
@@ -506,22 +523,17 @@
 <script>
     // Toggle
     (function ($) {
-        /*  */
         $('ul.nav.nav-main li').mouseover(function (e) {
-            //alert($(this).find('span').text());
             $(this).addClass('nav-active');
         });
         $('ul.nav.nav-main li').mouseleave(function (e) {
-            //alert($(this).find('span').text());
             $(this).removeClass('nav-active');
             setactivesidebar('none');
         });
-        //alert($('#pagetitlename').text());
 
         function setactivesidebar(is_expanded) {
             var pagetitlename = $('#pagetitlename').text();
             console.log('pagetitlename: ' + pagetitlename);
-
 
             switch (pagetitlename) {
                 case '일일 / 주간 / 월별 통계':
@@ -574,11 +586,6 @@
                     $('#community').addClass('nav-active');
                     $('#comm_faqrequest').addClass('nav-active');
                     break;
-                case '자료실':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
-                    $('#comm_reference_room').addClass('nav-active');
-                    break;
                 case '모바일':
                     if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                     $('#community').addClass('nav-active');
@@ -603,6 +610,10 @@
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
                     $('#popup').addClass('nav-active');
                     $('#popupZone_add').addClass('nav-active');
+                case '단체메일':
+                    if (is_expanded != 'none') $('#email').addClass('nav-expanded');
+                    $('#email').addClass('nav-active');
+                    $('#multiple_email').addClass('nav-active');
                     break;
                 case '멀티사이트 관리':
                     if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
@@ -629,13 +640,11 @@
                     $('#series_course').addClass('nav-active');
                     $('#series_course_view').addClass('nav-active');
                     break;
-
             }
         }
 
         setactivesidebar('');
     }).apply(this, [jQuery]);
-
 
     //파일 다운로드 처리
     function file_download(attach_id) {
@@ -647,7 +656,6 @@
         }, "json");
     }
     ;
-
 
     //파일 삭제 처리
     function file_delete(attach_id) {
