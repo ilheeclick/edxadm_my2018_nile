@@ -1,9 +1,3 @@
-/*
- Name: 			Tables / Ajax - Examples
- Written by: 	Okler Themes - (http://www.okler.net)
- Theme Version: 	1.5.2
- */
-
 (function ($) {
 
     'use strict';
@@ -15,28 +9,22 @@
             bProcessing: true,
             rowReorder: true,
             sAjaxSource: $table.data('url'),
-            //sDom: "<T>"+'B<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-            //sDom: 'T<"clear">lfrtip',
             "order": [[0, "desc"]],
             "fnReloadAjax": true,
             "fnServerParams": function (data) {
-                data.push({"name": 'method', "value": 'multi_site_list'});
+                data.push({"name": 'method', "value": 'popupZone_list'});
+                data.push({"name": 'start', "value": $('#datepicker1').val()});
+                data.push({"name": 'end', "value": $('#datepicker2').val()});
+                data.push({"name": 'title', "value": $('#title').val()});
             },
-
-
             dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-
             "paginate": true,
             "columnDefs": [
                 {
                     "targets": [1],
                     "visible": false,
-                },
-                {targets: 0, visible: true, width: '6%'},
-                {targets: 7, visible: true, width: '8%'},
-
+                }
             ],
-
             "initComplete": function (settings, json) {
                 $('input[type="search"]').attr('placeholder', '검색하세요');
                 $('input[type="search"]').attr('class', 'form-control');
@@ -82,7 +70,7 @@
             var t = $('#datatable33').DataTable();
             $row = $(this).closest('tr');
             data = t.row($row.get(0)).data();
-            location.href = '/manage/modi_multi_site/' + data[1]
+            location.href = '/manage/modi_popupZone/' + data[1]
         });
     };
 
@@ -93,3 +81,26 @@
 
 }).apply(this, [jQuery]);
 
+
+function Search() {
+    var table = $('#datatable33').DataTable();
+    table.ajax.reload();
+}
+
+
+$.datepicker.setDefaults({
+    dateFormat: 'yy-mm-dd',
+    prevText: '이전 달',
+    nextText: '다음 달',
+    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+    showMonthAfterYear: true,
+    yearSuffix: '년'
+});
+
+$(function () {
+    $("#datepicker1, #datepicker2").datepicker();
+});

@@ -1,549 +1,243 @@
 {% extends "container/main_base.html" %}
-{% block pagetitlename %}팝업추가{% endblock %}
-{% block pagetitlename_header %}팝업추가{% endblock %}
+{% block pagetitlename %}팝업관리{% endblock %}
+{% block pagetitlename_header %}팝업관리{% endblock %}
 {% block script %}{% endblock %}
 {% block script_down %}
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-{#    <link rel="stylesheet" type="text/css" href="http://www.lifelongedu.go.kr/css/style.css" />#}
-    <link href="http://www.lifelongedu.go.kr/css/common/popup.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="http://www.lifelongedu.go.kr/css/main_new.css?ver=1">
-    <!-- <link href="http://www.lifelongedu.go.kr/css/common/default.css" rel="stylesheet" type="text/css">
-    <link href="http://www.lifelongedu.go.kr/css/common/popup.css" rel="stylesheet" type="text/css"> -->
-</head>
-<style>
-
-    div.date{
-        float:left;
-        padding:3px;
-    }
-    #Popup_0{
-        position: absolute;
-        z-index: 1;
-        background-color: white;
-    }
-    #Popup_1{
-        position: absolute;
-        z-index: 1;
-        background-color: white;
-    }
-    #Popup_2{
-        position: absolute;
-        z-index: 1;
-        background-color: white;
-    }
-
-</style>
-<script>
-    {% include "community/script/test.js" %}
-    {% include "community/script/notice.js" %}
-	{% include "popup/script/modipopup.js" %}
-
-
-    $(document).ready(function(){
-       $.ajax({
-            url: '/manage/modi_popup/' + '77777',
-            data: {
-                method: 'modi'
-            }
-        }).done(function (data) {
-            if ( data >= 3 ) {
-                alert('경고 : 현재 사용중인 팝업창' + data +'개 입니다.');
-            }
-        })
-
-    });
-
-    function copy() {
-        try {
-            var pop_id = {{ id }}
-                $.post("/manage/new_popup/", {
-                    csrfmiddlewaretoken: $.cookie('csrftoken'),
-                    pop_id: pop_id,
-                    method: 'copy',
-                }).done(function (data) {
-                    location.href = '/manage/modi_popup/'+data;
-                }).fail(function (error) {
-                    alert('error = ' + error.responseJSON);
-                });
-        } catch (e) {
-            alert(e);
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+    <style>
+        div.date {
+            float: left;
+            padding: 3px;
         }
-    }
+    </style>
 
-    function save() {
-        try {
-            var method = '';
-            var id = {{ id }}
-            if (id == 99999) {
-                method = 'add';
-            }
-            else {
-                method = 'modi';
-            }
-            var popup_type = $("input[type=radio][name=radio]:checked").val();
-            if (popup_type == "image") {
-                popup_type = "I";
-            }
-            else if (popup_type == "text") {
-                popup_type = "H";
-            }
+    <script>
+        {% include "popup/script/modipopup.js" %}
+    </script>
 
-            var link_type = document.getElementById("link_type");
-            if (link_type.options[link_type.selectedIndex].text == "없음") {
-                link_type = "0"
-            }
-            else if (link_type.options[link_type.selectedIndex].text == "전체링크") {
-                link_type = "1"
-            }
-            else if (link_type.options[link_type.selectedIndex].text == "이미지맵") {
-                link_type = "2"
-            }
-
-            var image_map = $('#image_map').val();
-            var title = $('#title').val();
-            var image_url = $('#image_URL').val();
-            var link_url = $('#link_URL').val();
-            var link_target = document.getElementById("link_target");
-            if (link_target.options[link_target.selectedIndex].text == "blank") {
-                link_target = "B"
-            }
-            else if (link_target.options[link_target.selectedIndex].text == "self") {
-                link_target = "S"
-            }
-
-            var start_date = $('#start_date').val();
-            var start_time = $('#start_time').val();
-            var end_date = $('#end_date').val();
-            var end_time = $('#end_time').val();
-            var template = document.getElementById("template");
-            if (template.options[template.selectedIndex].text == "없음") {
-                template = "0"
-            }
-            else if (template.options[template.selectedIndex].text == "기본") {
-                template = "1"
-            }
-            else if (template.options[template.selectedIndex].text == "중간템플릿") {
-                template = "2"
-            }
-
-            var width = $('#width').val();
-            var height = $('#height').val();
-
-            var hidden_day = document.getElementById("hidden_day");
-            if (hidden_day.options[hidden_day.selectedIndex].text == "그만보기") {
-                hidden_day = "0"
-            }
-            else if (hidden_day.options[hidden_day.selectedIndex].text == "1일") {
-                hidden_day = "1"
-            }
-            else if (hidden_day.options[hidden_day.selectedIndex].text == "7일") {
-                hidden_day = "7"
-            }
-
-            var regist_id = {{ user.id }};
-            var contents = $('.summernote').summernote('code');
-            var pop_id = {{ id }}
-
-
-            if (use_yn.options[use_yn.selectedIndex].text == "사용함") {
-                use_yn = "Y"
-            }
-            else if (use_yn.options[use_yn.selectedIndex].text == "사용안함") {
-                use_yn = "N"
-            }
-
-            $.post("/manage/new_popup/", {
-                csrfmiddlewaretoken: $.cookie('csrftoken'),
-                pop_id : pop_id,
-                popup_type: popup_type,
-                link_type: link_type,
-                image_map: image_map,
-                title: title,
-                contents: contents,
-                image_url: image_url,
-                link_url: link_url,
-                link_target: link_target,
-                start_date: start_date,
-                start_time: start_time,
-                end_date: end_date,
-                end_time: end_time,
-                template: template,
-                width: width,
-                height: height,
-                hidden_day: hidden_day,
-                regist_id: regist_id,
-                use_yn: use_yn,
-                method: method,
-            }).done(function (data) {
-                location.href = '/manage/popup_db';
-            }).fail(function (error) {
-                alert('error = ' + error.responseJSON);
-            });
-        } catch (e) {
-            alert(e);
-        }
-    }
-
-    function del() {
-        try {
-            var pop_id = {{ id }}
-            $.post("/manage/new_popup/", {
-                csrfmiddlewaretoken: $.cookie('csrftoken'),
-                pop_id: pop_id,
-                method: 'delete',
-            }).done(function (data) {
-                location.href = '/manage/popup_db';
-            }).fail(function (error) {
-                alert('error = ' + error.responseJSON);
-            });
-        } catch (e) {
-            alert(e);
-        }
-    }
-
-    jQuery.fn.center = function () {
-        this.css("position","absolute");
-        this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
-        this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
-        return this;
-    }
-
-    function preview() {
-
-            var link_type = document.getElementById("link_type");
-            var title = $('#title').val();
-            var image_url = $('#image_URL').val();
-            var link_target = document.getElementById("link_target");
-            var width = $('#width').val();
-            var height = $('#height').val();
-            var contents = $('.summernote').summernote('code');
-
-            if (link_target.options[link_target.selectedIndex].text == "blank") {
-                link_target = "B"
-            }
-            else if (link_target.options[link_target.selectedIndex].text == "self") {
-                link_target = "S"
-            }
-
-
-            if (template.options[template.selectedIndex].text == "없음") {
-                $('#Popup_0').css("display","");
-                $('#TITLE_0').html(title);
-                $('#Popup_0').css("width",width);
-                $('#Popup_0').css("height",height);
-                $('#pop_0').attr("href", $('#link_URL').val());
-                $('#IMG').attr('src',image_url);
-                var max_width = width;
-                var max_height = height;
-                max_width = max_width - 10;
-                max_height = max_height - 55;
-                $('#IMG').css('width', max_width);
-                $('#IMG').css('height', max_height);
-                $('#CONTENTS_0').html(contents);
-                $('#Popup_0').center();
-
-            }
-            else if (template.options[template.selectedIndex].text == "기본") {
-                var link_target = document.getElementById("link_target");
-                $('#Popup_1').css("display","");
-                $('#TITLE_1').html(title);
-                $('#CONTENTS_1').html(contents);
-                $('#Popup_1').css("width",width);
-                $('#Popup_1').css("height",height);
-                $('#pop_1').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);;
-                $('#Popup_1').center();
-            }
-            else if (template.options[template.selectedIndex].text == "중간템플릿") {
-                var link_target = document.getElementById("link_target");
-                $('#Popup_2').css("display","");
-                $('#TITLE_2').html(title);
-                $('#CONTENTS_2').html(contents);
-                $('#Popup_2').css("width",width);
-                $('#Popup_2').css("height",height);
-                $('#pop_2').attr("href", $('#link_URL').val()).attr("target","_"+ link_target.options[link_target.selectedIndex].text);
-                $('#Popup_2').center();
-            }
-    }
-
-    var link_url = $('#link_URL').val();
-
-    function fn_move(moveGbn){
-        if(moveGbn == 'close'){
-            $('#Popup_1').css("display","none");
-            $('#Popup_2').css("display","none");
-            $('#Popup_0').css("display","none");
-        }
-        else if(moveGbn == 'move') {
-            window.open = ($('#link_URL').val());
-        }
-    }
-
-</script>
 {% endblock %}
 {% block containor %}
 
-    <!-- start: page -->
-{#{{ user.id }}#}
-<div class="row">
-    <section class="panel panel-featured ">
-        <header class="panel-heading">
-            <div><h2 class="panel-title">팝업추가</h2></div>
-        </header>
-{#        ================================================================#}
-        <body>
-            <div class="popup templet" id="Popup_0" style="display: none">
-     			<p style="text-align: center" >
-		            <a id="pop_0" target="_blank" href="">
-		                <img src="" alt="팝업 이미지" id="IMG">
-		            </a>
-		        </p>
-                <div class="templet-con">
-                    <p id = "CONTENTS_0">
-                        contents
-                    </p>
-                </div>
-		        <div class="closechk btn-align" style="text-align: left; margin-top: -3px; " >
-	                    <span class="fleft">
-	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
-                    	</span>
-                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-                </div>
-    		</div>
+    <div class="row">
+        <section class="panel panel-featured ">
+            <header class="panel-heading">
+                <div><h2 class="panel-title">팝업관리</h2></div>
+            </header>
 
+            <body>
 
-            <div class="popup templet small" id="Popup_1" style="display: none" >
-			    <div class="pop-header">
-			        <h1>공지사항</h1>
-			        <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
-			    </div>
-			    <div class="pop-body">
-			        <div class="templet-top cs2">
-			            <h1 style="font-size: 20px; color: #3c6674; padding: 5px" id="TITLE_1" > title </h1>
-			        </div>
-			        <div class="templet-con" style="background-color: white">
-			            <p id = "CONTENTS_1"> contents </p>
-			        </div>
-			    </div>
-			    <div class="pop-btn" style="background-color: white">
-			        <a id="pop_1"><button type="button" class="button orange" onclick="fn_move('move')">자세히 보기 ></button></a>
-			    </div>
-			    <div class="closechk btn-align" style="text-align: left">
-	                    <span class="fleft">
-	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
-                    	</span>
-                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-	                </div>
-            </div>
+            </body>
 
+            <div class="panel-body">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        종 류
+                        <span class="required">*</span>
+                    </label>
 
-
-            <div class="popup templet big" id="Popup_2" style="display: none">
-		        <div class="pop-header">
-		            <h1 id="TITLE_2" >title</h1>
-		            <a class="img-ico close" onclick="fn_move('close')">창닫기</a>
-		        </div>
-		        <div class="pop-body">
-		            <div class="templet-top cs1">
-		                <img src="http://www.lifelongedu.go.kr/images/pop_img_top01.png">
-		                <h2 style="top: -55px;position: relative;">여러분의 소중한 의견을 통해<br><strong>늘배움의 발전된 모습</strong>을 보여드리겠습니다.</h2>
-		            </div>
-		            <div class="templet-con">
-		                <p id = "CONTENTS_2">
-		                    contents
-		                </p>
-		            </div>
-		        </div>
-		        <div class="pop-btn">
-		            <a id = "pop_2"><button type="button" class="button orange" onclick="fn_move('move')">만족도 조사 참여하기 ></button></a>
-		        </div>
-		        <div class="closechk btn-align" style="text-align: left">
-	                    <span class="fleft">
-	                    <input type="checkbox" id="tmp01" class="cookieBox" id="cookieBox" style="position:absolute; margin-top:1px"> <label for="tmp01"> &nbsp;&nbsp;&nbsp;&nbsp;  오늘 하루 이 창을 열지  않음</label>
-                    	</span>
-                    	<a class="fright" onclick="fn_move('close')" style="float: right;">닫기 X</a>
-	                </div>
-		    </div>
-        </body>
-
-        <div class="panel-body">
-            {% csrf_token %}
-
-             <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    종     류
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <form>
-                        HTML  <input type="radio" id="radio_1" name="radio" value="text" onclick="Display('Radio_HTML');"> &nbsp;&nbsp;
-                        Image  <input type="radio" id="radio_2" name="radio" value="image" onclick="Display('Radio_IMAGE');">
-                    </form>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    Link Type
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div style="float:left ">
-                        <select style="width: 150px" id="link_type" onchange="setValues();">
-                            <option id="null">없음</option>
-                            <option id="all_link">전체링크</option>
-                            <option id="map">이미지맵</option>
-                        </select>
+                    <div class="col-sm-10">
+                        <form>
+                            HTML <input type="radio" id="radio_1" name="radio" value="text"
+                                        onclick="Display('Radio_HTML');"> &nbsp;&nbsp;
+                            Image <input type="radio" id="radio_2" name="radio" value="image"
+                                         onclick="Display('Radio_IMAGE');">
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="form-group" id="imagemap" style="display:none;">
-                <label class="col-sm-2 control-label">
-                    이미지맵 좌표
-                </label>
-                <div class="col-sm-4">
-                    <div>
-                        <input type="text" class="form-control" id="image_map" placeholder="0.0.100.100/100,0,200,200/...">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Link Type
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div style="float:left ">
+                            <select style="width: 150px" id="link_type" onchange="setValues();">
+                                <option id="null">없음</option>
+                                <option id="all_link">전체링크</option>
+                                <option id="map">이미지맵</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="form-group" id="imagemap" style="display:none;">
+                    <label class="col-sm-2 control-label">
+                        이미지맵 좌표
+                    </label>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    제 목
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div>
-                        <input type="text" class="form-control" id="title">
+                    <div class="col-sm-2">
+                        <div id="location">
+                            <input type="text" style="margin: 0px 0px 5px 0px;" class="form-control image_map"
+                                   placeholder="0,0,100,100">
+                        </div>
+                        <div style="float: right;">
+                            <a href="javascript:add_location();"><input class="btn btn-primary" type="button"
+                                                                    id="PreviewBtn"
+                                                                    value="좌표 추가"></a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        제 목
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="title">
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        템플릿
+                        <span class="required">*</span>
+                    </label>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    템플릿
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div style="float:left ">
-                        <select style="width: 150px" id="template" onchange="setValues();">
-                            <option id="null">없음</option>
-                            <option id="all_link">기본</option>
-                            <option id="map">중간템플릿</option>
-                        </select>
+                    <div class="col-sm-10">
+                        <div style="float:left ">
+                            <select style="width: 150px" id="template" onchange="Reset_check();">
+                                <option id="null">없음</option>
+                                <option id="type1">type1</option>
+                                <option id="type2">type2</option>
+                                <option id="type3">type3</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="form-group" id="Radio_HTML" style="display:none;">
+                    <label class="col-sm-2 control-label">내 용 <span class="required">*</span></label>
 
+                    <div id="summernote_content" class="col-sm-10" id="ex">
+                        <div class="summernote" id="summernote"></div>
+                    </div>
+                </div>
+                <div class="form-group" id="Radio_IMAGE" style="display:none;">
+                    <label class="col-sm-2 control-label">
+                        Image file
+                        <span class="required">*</span>
+                    </label>
 
-            <div class="form-group" id="Radio_HTML" style="display:none;">
-                <label class="col-sm-2 control-label">내     용 <span class="required">*</span></label>
-                <div id="summernote_content" class="col-sm-10">
-{#                    <div class="summernote" data-plugin-summernote data-plugin-options='{ "height": 300, "codemirror": { "theme": "ambiance" }}'></div>#}
-                    <div class="summernote" id="summernote"> </div>
+                    <div class="col-sm-10">
+                        <div>
+                            <form action="/manage/new_popup/" id="uploadform" method="post"
+                                  enctype="multipart/form-data">
+                                <input name='uploadfile' type="file" id="uploadfile"/>
+                                <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
+                                       style="display: none"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <div class="form-group" id="linkurl" style="display:none;">
+                    <label id="linkurl" class="col-sm-2 control-label">
+                        Link URL
+                    </label>
 
-            <div class="form-group" id="Radio_IMAGE" style="display:none;">
-                <label class="col-sm-2 control-label">
-                    Image URL
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="image_URL" class="form-control" placeholder="https://" required/>
+                    <div class="col-sm-10">
+                        <input type="text" id="link_URL" class="form-control" placeholder="https://" required/>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group" id="linkurl" style="display:none;">
-                <label id="linkurl" class="col-sm-2 control-label">
-                    Link URL
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="link_URL" class="form-control" placeholder="https://" required/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    Link Target
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Link Target
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
                         <select style="width: 150px" id="link_target">
-                            <option id="null">blank</option>
-                            <option id="all_link">self</option>
-                        </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    게시기간
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div class="date"><input type="text" class="form-control" id="start_date" placeholder="yyyymmdd" required/></div>
-                    <div class="date"><input type="text" class="form-control" id="start_time" placeholder="hhmm" required/></div>
-                    <div class="date"> <b> ~ </b> </div>
-                    <div class="date"><input type="text" class="form-control" id="end_date" placeholder="yyyymmdd" required/></div>
-                    <div class="date"><input type="text" class="form-control" id="end_time" placeholder="hhmm" required/></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    창사이즈
-                </label>
-                <div class="col-sm-10">
-                    <div class="date"><input type="text" class="form-control" id="width" placeholder="Width" required/></div>
-                    <div class="date"><input type="text" class="form-control" id="height" placeholder="Height" required/></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    감추기
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div style="float:left ">
-                        <select style="width: 150px" id="hidden_day" onchange="setValues();">
-                            <option id="null">1일</option>
-                            <option id="all_link">7일</option>
-                            <option id="map">그만보기</option>
+                            <option id="blank">blank</option>
+                            <option id="self">self</option>
                         </select>
                     </div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        게시기간
+                        <span class="required">*</span>
+                    </label>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    사용여부
-                    <span class="required">*</span>
-                </label>
-                <div class="col-sm-10">
-                    <div style="float:left ">
-                        <select style="width: 150px" id="use_yn" onchange="setValues();">
-                            <option id="null">사용함</option>
-                            <option id="all_link">사용안함</option>
-                        </select>
+                    <div class="col-sm-10">
+                        <div class="form-group date"><input type="text" id="start_date" placeholder="시작날짜"><span
+                                class="fa fa-calendar fa-2x"/></div>
+                        <div class="date"><input type="text" id="start_time" placeholder="시작시간" value=12:00"><span
+                                class="fa fa-clock-o fa-2x"/></div>
+                        <div class="date"><b> ~ </b></div>
+                        <div class="form-group date"><input type="text" id="end_date" placeholder="종료날짜"><span
+                                class="fa fa-calendar fa-2x"/></div>
+                        <div class="date"><input type="text" data-format="H:m" id="end_time" placeholder="종료시간"
+                                                 value="12:00"><span class="fa fa-clock-o fa-2x"/></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        창사이즈
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div class="date"><input type="text" class="form-control" id="width" placeholder="Width"
+                                                 required/></div>
+                        <div class="date"><input type="text" class="form-control" id="height" placeholder="Height"
+                                                 required/></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        감추기
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div style="float:left ">
+                            <select style="width: 150px" id="hidden_day" onchange="setValues();">
+                                <option id="day">1일</option>
+                                <option id="week">7일</option>
+                                <option id="stop">그만보기</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        사용여부
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div style="float:left ">
+                            <select style="width: 150px" id="use_yn">
+                                <option id="use">사용함</option>
+                                <option id="unuse">사용안함</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-        <footer class="panel-footer">
-            <div class="row">
-                <div class="col-sm-3" align="left">
-                    <a class="btn btn-default" href="/manage/popup_add">목록으로</a>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-3" align="left">
+                        <a class="btn btn-default" href="/manage/popup_add">목록으로</a>
+                    </div>
+                    <div class="col-sm-9" align="right">
+                        <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn"
+                                                           style="display:none;" value="삭     제"></a>
+                        <a href="javascript:preview();"><input class="btn btn-primary" type="button" id="PreviewBtn"
+                                                               value="미리보기"></a>
+                        <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                                            value="저     장"></a>
+                        <a href="javascript:copy();"><input class="btn btn-primary" type="button" id="CopyBtn"
+                                                            style="display:none;" value="복     사"></a>
+                    </div>
                 </div>
-                <div class="col-sm-9" align="right">
-                    <a href="javascript:del();"><input class="btn btn-default" type="button" id="DelBtn" style="display:none;" value="삭     제"></a>
-                    <a href="javascript:preview();"><input class="btn btn-primary" type="button" id="PreviewBtn" value="미리보기"></a>
-                    <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn" value="저     장"></a>
-                    <a href="javascript:copy();"><input class="btn btn-primary" type="button" id="CopyBtn" style="display:none;" value="복     사"></a>
-                </div>
-            </div>
-        </footer>
-    </section>
-</div>
+            </footer>
+        </section>
+    </div>
 
 {% endblock %}

@@ -278,12 +278,19 @@
 
                                 <a>
                                     <i class="fa fa-bell-o" aria-hidden="true"></i>
-                                    <span>팝업추가</span>
+                                    <span>팝업관리</span>
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="popup_add">
                                         <a href="/manage/popup_add">
-                                            팝업추가
+                                            팝업관리
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="popupZone_add">
+                                        <a href="/manage/popupZone_add">
+                                            팝업존관리
                                         </a>
                                     </li>
                                 </ul>
@@ -330,6 +337,20 @@
                                     <li id="code_manage_view">
                                         <a href="/manage/code_manage">
                                             코드 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="series_course">
+
+                                <a>
+                                    <i class="fa fa-linode" aria-hidden="true"></i>
+                                    <span>시리즈 강좌</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="series_course_view">
+                                        <a href="/manage/series_course">
+                                            시리즈 강좌
                                         </a>
                                     </li>
                                 </ul>
@@ -580,11 +601,15 @@
                     $('#history').addClass('nav-active');
                     $('#history_list').addClass('nav-active');
                     break;
-                case '팝업추가':
+                case '팝업관리':
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
                     $('#popup').addClass('nav-active');
                     $('#popup_add').addClass('nav-active');
                     break;
+                case '팝업존관리':
+                    if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
+                    $('#popup').addClass('nav-active');
+                    $('#popupZone_add').addClass('nav-active');
                 case '단체메일':
                     if (is_expanded != 'none') $('#email').addClass('nav-expanded');
                     $('#email').addClass('nav-active');
@@ -609,6 +634,11 @@
                     if (is_expanded != 'none') $('#code_manage').addClass('nav-expanded');
                     $('#code_manage').addClass('nav-active');
                     $('#code_manage_view').addClass('nav-active');
+                    break;
+                case '시리즈 강좌':
+                    if (is_expanded != 'none') $('#series_course').addClass('nav-expanded');
+                    $('#series_course').addClass('nav-active');
+                    $('#series_course_view').addClass('nav-active');
                     break;
             }
         }

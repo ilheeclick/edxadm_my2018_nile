@@ -1,0 +1,86 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}시리즈 강좌{% endblock %}
+{% block pagetitlename_header %}시리즈 강좌{% endblock %}
+{% block script %}{% endblock %}
+{% block script_down %}
+
+    <!-- sweat alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "series_course/script/series_course_list_datatables.js" %}
+    </script>
+{% endblock %}
+{% block containor %}
+
+    <!-- start: page -->
+    {#{{ user.id }}#}
+    <div class="row">
+        <section class="panel panel-featured ">
+            <header class="panel-heading">
+                <div><h2 class="panel-title">시리즈강좌 관리</h2></div>
+            </header>
+
+            <div class="panel-body" style="padding-top: 0; width:50%; float: left"> 
+
+                <h3>시리즈강좌 구성</h3>
+
+                <div class="row">
+                    <div class="col-sm-9" align="right" style="float: right; margin: 25px 0px 5px 0px">
+                        <a href="javascript:Update();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                          value="저     장"></a>
+                        <a href="javascript:Del();"><input class="btn btn-default" type="button" id="DelBtn"
+                                          value="삭     제"></a>
+                    </div>
+                </div>
+                <table class="table table-hover table-striped  table-bordered" id="datatable1"
+                       data-url="">
+                    <thead>
+                    <tr>
+                        <td><input type="checkbox" onclick="checked_all1()" id="check_all1"/></td>
+                        <td>No</td>
+                        <td>기관코드</td>
+                        <td>강좌코드</td>
+                        <td>강좌명</td>
+                    </tr>
+                    </thead>
+                    <tbody id="notice_body1">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel-body" style="padding-top: 0; width:50%; float: left"> 
+                <h3>전체강좌 검색</h3>
+
+                <div class="row">
+                    <div class="col-md-3" align="left" style="width: 170px; float: left; margin: 20px 0px 10px 0px">
+                        <select id="org" class="form-control" onchange="update2()">
+                            <option value="None">대학선택</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3" align="left" style="float: left; margin: 20px 0px 0px 0px">
+                        <input placeholder="검색하세요." type="text" class="form-control" id="search_input">
+                    </div>
+                    <div class="col-sm-3" align="right" style="float: right; margin: 25px 0px 5px 0px">
+                        <a href="javascript:add();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                          value="추     가"></a>
+                    </div>
+                </div>
+                <table class="table table-hover table-striped table-bordered" id="datatable2">
+                    <thead>
+                    <tr>
+                        <td><input type="checkbox" onclick="checked_all2()" id="check_all2"/></td>
+                        <td>ID</td>
+                        <td>No</td>
+                        <td>대학명</td>
+                        <td>강좌명</td>
+                        <td>강좌코드</td>
+                    </tr>
+                    </thead>
+                    <tbody id="notice_body2">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        .pop_top_area2 {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+
+    <meta charset="utf-8">
+    <title>Untitled Document</title>
+</head>
+
+
+<body style="width: {{ pop.6 }}px; height: {{ pop.7 }}px">
+{% for pop in pop_list %}
+
+    <!-- wrap -->
+    <div style="width: {{ pop.6 }}px; float: left; z-index: 9999; position: relative; border: 1px solid #e5e5e5;">
+
+        <!-- pop-area s -->
+        <div style="-webkit-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+			-moz-box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+			box-shadow: 6px 11px 22px -6px rgba(0,0,0,0.75);
+            background:#fff;">
+            <div style="height: {{ pop.7 }}px; border-bottom: 1px solid #e5e5e5;">
+                <div style="border-bottom: 1px solid #e5e5e5;">
+                    <h4 style="text-align: center; font-size: x-large"><b>{{ pop.0 }}</b></h4>
+                </div>
+                <div style="margin: 10px 5px 10px 10px; ">
+                    <p id="contents" style="text-align:left; font-style:normal; font-size:15px;">#_contents</p>
+                </div>
+
+            </div>
+            <div style="text-align: right;">
+                <label>
+                    <input id="" name="" type="checkbox" style="vertical-align: middle;">
+                    <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }} &nbsp;&nbsp;</b></span>
+                </label>
+
+                <span><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기 ]</a></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {% autoescape off %}
+            var contents = "{{ pop.1 }}"
+        {% endautoescape %}
+        $("#contents").html(contents);
+        function popClose() {
+            window.close();
+        }
+
+    </script>
+    </body>
+
+{% endfor %}
+</html>

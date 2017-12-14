@@ -111,7 +111,19 @@ urlpatterns = [
     url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
     url(r'^manage/new_popup/', views.new_popup, name='new_popup'),
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
-    url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
+    url(r'^manage/popupZone_add/$', views.popupZone_add, name='popupZone_add'),
+    url(r'^manage/modi_popupZone/(?P<id>.*?)/$', views.modi_popupZone, name='modi_popupZone'),
+    url(r'^manage/popupZone_db/', views.popupZone_db, name='popupZone_db'),
+    url(r'^manage/new_popupZone/', views.new_popupZone, name='new_popupZone'),
+
+
+
+    #popup index url
+    url(r'^manage/popup_index0/(?P<id>.*?)/(?P<type>.*?)/$', views.popup_index0, name='popup_index0'),
+    url(r'^manage/popup_index1/(?P<id>.*?)/$', views.popup_index1, name='popup_index1'),
+    url(r'^manage/popup_index2/(?P<id>.*?)/$', views.popup_index2, name='popup_index2'),
+    url(r'^manage/popup_index3/(?P<id>.*?)/$', views.popup_index3, name='popup_index3'),
+
 
     url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
     url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
@@ -143,6 +155,15 @@ urlpatterns = [
     url(r'^manage/detail_code/$', views.detail_code, name='detail_code'),
     url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
     url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
+
+    url(r'^manage/series_course/$', views.series_course, name='series_course'),
+    url(r'^manage/modi_series/(?P<id>.*?)/$', views.modi_series, name='modi_series'),
+    url(r'^manage/modi_series_course/$', views.modi_series_course, name='modi_series_course'),
+    url(r'^manage/series_list/$', views.series_list, name='series_list'),
+    url(r'^manage/all_course/$', views.all_course, name='all_course'),
+    url(r'^manage/series_course_list_view/(?P<id>.*?)/$', views.series_course_list_view, name='series_course_list_view'),
+    url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
+    url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
 
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
