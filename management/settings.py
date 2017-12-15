@@ -123,7 +123,7 @@ database_id = '172.17.101.117'
 # database_id = '192.168.33.13'
 
 EXCEL_PATH = '/Users/kotech/workspace/scpTest/'
-UPLOAD_DIR = '/Users/kotech/workspace/management2/management/static/uploads/'
+UPLOAD_DIR = '/Users/ahn/workspace/management/home/static/upload/'
 WEB1_HOST = '172.17.101.116'
 WEB2_HOST = '172.17.101.116'
 WEB1_LOG = '/edx/var/log/tracking/tracking_w1/tracking/'
@@ -136,7 +136,7 @@ LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
 
 HOST_NAME = 'vagrant'
 EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/test_upload/'
+#UPLOAD_DIR = '/Users/redukyo/test_upload/'
 
 debug = True
 
