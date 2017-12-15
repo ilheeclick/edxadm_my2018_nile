@@ -175,7 +175,7 @@ function setDataTable2() {
             },
             {
                 targets: 7, visible: true, render: function (data, type) {
-                return '<p style="display:none">' + data + '</p><input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                return '<p style="display:none">' + data + '</p><input type="text" id="detail_use" class = "form-control" name="' + data + '" value="' + data + '">';
             },
             },
         ],

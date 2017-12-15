@@ -100,6 +100,7 @@ urlpatterns = [
 
     # monitoring url
     url(r'^manage/history/', views.history, name='history'),
+    url(r'^manage/login_history/', views.login_history, name='login_history'),
     url(r'^manage/csv/history/', views.history_csv, name='history'),
 
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
@@ -162,6 +163,7 @@ urlpatterns = [
     url(r'^manage/series_list/$', views.series_list, name='series_list'),
     url(r'^manage/all_course/$', views.all_course, name='all_course'),
     url(r'^manage/series_course_list_view/(?P<id>.*?)/$', views.series_course_list_view, name='series_course_list_view'),
+    url(r'^manage/series_complete_list_view/(?P<id>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
     url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
 

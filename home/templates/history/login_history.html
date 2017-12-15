@@ -1,0 +1,119 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}로그인이력{% endblock %}
+{% block pagetitlename_header %}로그인이력{% endblock %}
+{% block script_down %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#datatable1').DataTable({
+                dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
+                "autoWidth": false,
+                scrollX: true,
+                bProcessing: true,
+                ordering: false,
+                serverSide: false,
+                searching: true,
+            });
+        });
+    </script>
+{% endblock %}
+{% block containor %}
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">로그인이력</h2></div>
+        </header>
+
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="row">
+                <a href="javascript:search();" style="float: right; margin-right: 30px"><input class="btn btn-primary"
+                                                                                               type="button"
+                                                                                               id="searchBtn"
+                                                                                               value="검  색"></a>
+
+                <div>
+                    <b id="org_name1" style="float: left; margin: 5px 0px 0px 15px">로그인일</b> &nbsp;&nbsp;&nbsp;
+                    <div class="col-sm-2">
+                        <div class="form-group date">
+                            <input type="text" id="datepicker1"><span class="fa fa-calendar fa-2x"/>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group date">
+                            <input type="text" id="datepicker2"><span class="fa fa-calendar fa-2x"/>
+                        </div>
+                    </div>
+                    <b id="org_name1" style="float: left; margin: 5px 0px 0px 0px">시스템</b> &nbsp;&nbsp;&nbsp;
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select id="choice" class="form-control" onChange="display_date(this.value)">
+                                <option value="">선택하세요.</option>
+                                <option value="1">수강신청 시작일, 종료일</option>
+                                <option value="2">개강일, 종강일</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <br>
+
+
+            <table class="table table-hover table-striped  table-bordered" data-url="/manage/course_db_list/"
+                   id="datatable1">
+                <thead>
+                <tr>
+                    <td>시스템</td>
+                    <td>접속자아이디</td>
+                    <td>로그인 일시</td>
+                    <td>로그아웃 일시</td>
+                    <td>아이피</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>System</td>
+                    <td>staff</td>
+                    <td>2017/12/16 23:11</td>
+                    <td>2017/12/16 23:58</td>
+                    <td>127.0.0.1</td>
+                </tr>
+                <tr>
+                    <td>System</td>
+                    <td>staff</td>
+                    <td>2017/12/16 23:11</td>
+                    <td>2017/12/16 23:58</td>
+                    <td>127.0.0.1</td>
+                </tr>
+                <tr>
+                    <td>System</td>
+                    <td>staff</td>
+                    <td>2017/12/16 23:11</td>
+                    <td>2017/12/16 23:58</td>
+                    <td>127.0.0.1</td>
+                </tr>
+                <tr>
+                    <td>System</td>
+                    <td>staff</td>
+                    <td>2017/12/16 23:11</td>
+                    <td>2017/12/16 23:58</td>
+                    <td>127.0.0.1</td>
+                </tr>
+                <tr>
+                    <td>System</td>
+                    <td>staff</td>
+                    <td>2017/12/16 23:11</td>
+                    <td>2017/12/16 23:58</td>
+                    <td>127.0.0.1</td>
+                </tr>
+                </tbody>
+                <tbody id="notice_body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

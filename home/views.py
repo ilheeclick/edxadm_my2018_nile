@@ -309,6 +309,13 @@ def series_course_list_view(request, id):
     })
     return render_to_response('series_course/series_course_list.html', variables)
 
+@login_required
+def series_complete_list_view(request, id):
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('series_course/series_complete_list.html', variables)
+
 
 @login_required
 def all_course(request):
@@ -1119,8 +1126,7 @@ def course_db_list(request):
                 multi_num = multi[6].split('+')
                 multi_org = multi_num[0].split(':')
 
-                cursor = db.modulestore.active_versions.find_one(
-                    {'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
                 pb = cursor.get('versions').get('published-branch')
                 cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
                 blocks = cursor.get('blocks')
@@ -4500,6 +4506,23 @@ def history(request):
 
     else:
         return render(request, 'history/history.html')
+
+
+@login_required
+def login_history(request):
+    if request.is_ajax():
+        result = dict()
+        columns, recordsTotal, result_list = history_rows(request)
+        result['data'] = result_list
+        result['recordsTotal'] = recordsTotal
+        result['recordsFiltered'] = recordsTotal
+
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+
+        return HttpResponse(context, 'applications/json')
+
+    else:
+        return render(request, 'history/login_history.html')
 
 
 @login_required
