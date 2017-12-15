@@ -57,7 +57,12 @@ function setDataTable1() {
             },
             {
                 targets: 4, visible: true, render: function (data, type) {
-                return '<p style="display:none">' + data + '</p><input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                if( data == 'Y') {
+                    return '<select class = "form-control" style="width:100%; height:35px" name="use_yn1"form="use_yn1"><option value="Y" selected>Y</option><option value="N">N</option></select>';
+                }
+                else {
+                    return '<select class = "form-control" style="width:100%; height:35px" name="use_yn1"form="use_yn1"><option value="Y">Y</option><option value="N" selected>N</option></select>';
+                }
             },
             },
 
@@ -170,12 +175,17 @@ function setDataTable2() {
             },
             {
                 targets: 6, visible: true, render: function (data, type) {
-                return '<p style="display:none">' + data + '</p><input type="text" class = "form-control" name="' + data + '" value="' + data + '">';
+                return '<p style="display:none">' + data + '</p><input type="text" class = "form-control order_no" name="' + data + '" value="' + data + '">';
             },
             },
             {
-                targets: 7, visible: true, render: function (data, type) {
-                return '<p style="display:none">' + data + '</p><input type="text" id="detail_use" class = "form-control" name="' + data + '" value="' + data + '">';
+                targets: 7, width:'10%', visible: true, render: function (data, type) {
+                if( data == 'Y') {
+                    return '<select class = "form-control" style="width:100%; height:35px" name="use_yn1"form="use_yn1"><option value="Y" selected>Y</option><option value="N">N</option></select>';
+                }
+                else {
+                    return '<select class = "form-control" style="width:100%; height:35px" name="use_yn1"form="use_yn1"><option value="Y">Y</option><option value="N" selected>N</option></select>';
+                }
             },
             },
         ],
@@ -203,6 +213,7 @@ var fnInitComplete2 = function () {
     $('.form-control').change(function () {
         $(this).parent().parent().find('input:checkbox').prop("checked", true);
     });
+    $('.order_no').keyup(function(){$(this).val( $(this).val().replace(/[^0-9]/g,"") );} );
 }
 
 var group_code = $('.form-control').val();
@@ -248,7 +259,7 @@ function add_row1() {
         $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_code'></td>");
         $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_name'></td>");
         $("#notice_body1").append("<td><input type='test' class='form-control' id ='group_desc'></td>");
-        $("#notice_body1").append("<td><input type='test' class='form-control' id ='use_yn'></td>");
+        $("#notice_body1").append('<td><select id="use_yn" class = "form-control" style="width:100%; height:35px" name="use_yn1"form="use_yn1"><option value="Y">Y</option><option value="N">N</option></select></td>');
         $("#notice_body1").append("<td></td>");
         $("#notice_body1").append("</tr>");
     }
@@ -264,12 +275,13 @@ function add_row2() {
         $("#notice_body2").append("<td><input type='test' class='form-control' id ='detail_name'></td>");
         $("#notice_body2").append("<td><input type='test' class='form-control' id ='detail_Ename'></td>");
         $("#notice_body2").append("<td><input type='test' class='form-control' id ='detail_desc'></td>");
-        $("#notice_body2").append("<td><input type='test' class='form-control' id ='order_no'></td>");
-        $("#notice_body2").append("<td><input type='test' class='form-control' id ='use_yn'></td>");
+        $("#notice_body2").append("<td><input type='test' class='form-control order_no' id ='order_no'></td>");
+        $("#notice_body2").append('<td><select id="use_yn" class = "form-control" style="width:100%; height:35px" name="use_yn2"form="use_yn2"><option value="Y">Y</option><option value="N">N</option></select></td>');
         $("#notice_body2").append("<td></td>");
         $("#notice_body2").append("</tr>");
 
     }
+    $('.order_no').keyup(function(){$(this).val( $(this).val().replace(/[^0-9]/g,"") );} );
     cnt2 += 1;
 }
 
@@ -281,7 +293,7 @@ function Save1() {
         var data = t.row($row.get(0)).data();
         var group_name = $(this).parent().next().next().find("input[type='text']").val();
         var group_desc = $(this).parent().next().next().next().find("input[type='text']").val();
-        var use_yn = $(this).parent().next().next().next().next().find("input[type='text']").val();
+        var use_yn = $(this).parent().next().next().next().next().find("option:selected").val();
         var group_code_prev = data.group_code;
 
         try {
@@ -351,7 +363,7 @@ function Save2() {
         var detail_Ename = $(this).parent().next().next().next().find("input[type='text']").val();
         var detail_desc = $(this).parent().next().next().next().next().find("input[type='text']").val();
         var order_no = $(this).parent().next().next().next().next().next().find("input[type='text']").val();
-        var use_yn = $(this).parent().next().next().next().next().next().next().find("input[type='text']").val();
+        var use_yn = $(this).parent().next().next().next().next().next().next().find("option:selected").val();
         var group_code_prev = data.group_code;
         var detail_code_prev = data.detail_code;
 
