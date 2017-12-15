@@ -435,7 +435,10 @@ def series_list(request):
                 if e[0] != None:
                     series_time = e[0].replace('@', '+').replace('#', '+')
                     series_time_index = series_time.split('+')
-                if (len(series_time_index) == 3):
+                    time_flag = series_time.replace(':','+')
+                    time_flag_index = time_flag.split('+')
+
+                if (len(series_time_index) == 3 and '' not in time_flag_index):
                     all_learning_hour = series_time_index[0].split(':')
                     learning_hour = int(all_learning_hour[0]) * 60 * int(series_time_index[1])
                     learning_minut = int(all_learning_hour[1]) * int(series_time_index[1])
@@ -446,8 +449,8 @@ def series_list(request):
                     video_minut = int(all_video_hour[1]) * int(series_time_index[1])
                     video_time += (video_hour + video_minut)
                 else:
-                    learning_time = 0
-                    video_time = 0
+                    learning_time += 0
+                    video_time += 0
 
             if (len(str(video_time % 60)) == 1 and len(str(learning_time % 60)) != 1):
                 video_list.append(str(video_time // 60) + ':0' + str(video_time % 60))
