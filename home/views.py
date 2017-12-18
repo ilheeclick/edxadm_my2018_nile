@@ -1157,6 +1157,7 @@ def course_db_list(request):
                 cur.close()
 
                 cur = connection.cursor()
+
                 query = '''
                         SELECT detail_name
                           FROM code_detail
@@ -1165,41 +1166,52 @@ def course_db_list(request):
                 cur.execute(query)
                 m_clsf_h = cur.fetchall()
                 cur.close()
+                print 'query======='
+                print query
+                print 'course_manage==================='
+                print clsf_h
+                print m_clsf_h
+                print len(clsf_h)
+                print len(m_clsf_h)
+                if (len(clsf_h) == 0):
+                    value_list.append("")
+                elif (len(m_clsf_h) == 0):
+                    value_list.append("")
 
-                value_list.append(clsf_h[0][0])
-                value_list.append(m_clsf_h[0][0])
-                value_list.append(multi[5])
+                else :
+                    value_list.append(clsf_h[0][0])
+                    value_list.append(m_clsf_h[0][0])
+                    value_list.append(multi[5])
+                    value_list.append(multi_org[1])
+                    value_list.append(multi_num[1])
+                    value_list.append(multi_num[2])
+                    value_list.append(multi[14])
+                    value_list.append(multi[7])
+                    value_list.append(multi[8])
+                    value_list.append(multi[9])
+                    value_list.append(multi[10])
+                    value_list.append(multi[11])
+                    value_list.append(multi[12])
+                    if multi[13] != None:
+                        multi_time = multi[13].replace('@', '+').replace('#', '+')
+                    multi_time_num = multi_time.split('+')
+                    if (len(multi_time_num) == 3):
+                        value_list.append(multi_time_num[2])
+                        value_list.append(multi_time_num[0])
+                        value_list.append(multi_time_num[1])
+                        all_hour = multi_time_num[0].split(':')
+                        hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
+                        minut = int(all_hour[1]) * int(multi_time_num[1])
+                        time = hour + minut
+                        value_list.append(str(time // 60) + ':' + str(time % 60))
+                    else:
+                        value_list.append(None)
+                        value_list.append(None)
+                        value_list.append(None)
+                        value_list.append(None)
+                    value_list.append(None)
 
-                value_list.append(multi_org[1])
-                value_list.append(multi_num[1])
-                value_list.append(multi_num[2])
-                value_list.append(multi[14])
-                value_list.append(multi[7])
-                value_list.append(multi[8])
-                value_list.append(multi[9])
-                value_list.append(multi[10])
-                value_list.append(multi[11])
-                value_list.append(multi[12])
-                if multi[13] != None:
-                    multi_time = multi[13].replace('@', '+').replace('#', '+')
-                multi_time_num = multi_time.split('+')
-                if (len(multi_time_num) == 3):
-                    value_list.append(multi_time_num[2])
-                    value_list.append(multi_time_num[0])
-                    value_list.append(multi_time_num[1])
-                    all_hour = multi_time_num[0].split(':')
-                    hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
-                    minut = int(all_hour[1]) * int(multi_time_num[1])
-                    time = hour + minut
-                    value_list.append(str(time // 60) + ':' + str(time % 60))
-                else:
-                    value_list.append(None)
-                    value_list.append(None)
-                    value_list.append(None)
-                    value_list.append(None)
-                value_list.append(None)
-
-                course_list.append(value_list)
+                    course_list.append(value_list)
 
             data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
             return HttpResponse(data, 'applications/json')
