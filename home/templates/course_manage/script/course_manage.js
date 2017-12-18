@@ -8,6 +8,7 @@ function setDataTable1() {
 
     $table.dataTable({
         "scrollY": "400px",
+        "scrollX": "4000px",
         bProcessing: true,
         rowReorder: false,
         "searching": false,

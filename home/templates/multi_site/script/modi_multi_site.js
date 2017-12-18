@@ -81,11 +81,6 @@ function save_date(data) {
                 email_list += $(this).text() + "+";
             }
         });
-        /*var file_flag = '1'
-         var uploadfile = $('#uploadfile').val();
-         if (uploadfile == '') {
-         file_flag = '0'
-         }*/
         $.post("/manage/modi_multi_site_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             site_name: site_name,

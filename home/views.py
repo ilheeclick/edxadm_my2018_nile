@@ -1529,18 +1529,7 @@ def modi_multi_site(request, id):
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
-        # try:
-        #     upload_file = request.FILES['uploadfile']
-        #     uploadfile_user_id = request.POST.get('uploadfile_user_id')
-        # except BaseException:
-        #     upload_file = None
-        #     uploadfile_user_id = None
-        #
-        # if upload_file:
-        #     uploadfile = request.FILES['uploadfile']
-        #     common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
-        #
-        #     return render(request, 'multi_site/modi_multi_site.html')
+
 
         if request.POST.get('method') == 'add':
             site_name = request.POST.get('site_name')
@@ -1550,13 +1539,6 @@ def modi_multi_site_db(request):
             email_list = request.POST.get('email_list')
             email_list = email_list.split('+')
             email_list.pop()
-
-            # cur = connection.cursor()
-            # query = '''select max(attatch_id)+1 from tb_board_attach
-            #         '''
-            # cur.execute(query)
-            # attatch_id = cur.fetchall()
-            # cur.close()
 
             cur = connection.cursor()
             query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id)
@@ -1576,14 +1558,14 @@ def modi_multi_site_db(request):
                 cur.close()
 
                 cur = connection.cursor()
-                query = "select count(site_id) + 1 from multisite"
+                query = "select count(site_id) from multisite"
                 cur.execute(query)
                 cnt = cur.fetchall()
                 cur.close()
 
                 cur = connection.cursor()
-                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
-                           VALUES ('{0}','{1}','{2}','{3}')
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id, delete_yn)
+                           VALUES ('{0}','{1}','{2}','{3}', 'N')
                         '''.format(str(cnt[0][0]), str(row[0][0]), regist_id, regist_id)
                 cur.execute(query)
                 cur.close()
@@ -1598,28 +1580,6 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
-            # flag = request.POST.get('flag')
-            # file_flag = request.POST.get('file_flag')
-            #
-            # if (flag == '1' and file_flag == '0'):
-            #     cur = connection.cursor()
-            #     query = '''
-            #             SELECT logo_img
-            #               FROM multisite
-            #              WHERE site_id = '{0}';
-            #             '''.format(multi_no)
-            #     cur.execute(query)
-            #     attatch_id = cur.fetchall()
-            #     logo_file = attatch_id[0][0]
-            #     cur.close()
-            # else:
-            #     cur = connection.cursor()
-            #     query = '''select max(attatch_id)+1 from tb_board_attach
-            #             '''
-            #     cur.execute(query)
-            #     attatch_id = cur.fetchall()
-            #     logo_file = attatch_id[0][0]
-            #     cur.close()
 
             cur = connection.cursor()
             query = '''
@@ -1685,9 +1645,14 @@ def manager_list(request):
                 WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
         '''.format(id)
 
+        print 'Test === list ====='
+        print query
+
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
+
+        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list
@@ -1733,8 +1698,8 @@ def manager_db(request):
                 cur.close()
             elif (cnt[0][0] == 0):
                 cur = connection.cursor()
-                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
-                           VALUES ('{0}','{1}','{2}','{3}')
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id, delete_yn)
+                           VALUES ('{0}','{1}','{2}','{3}', 'N')
                         '''.format(id, str(row[0][0]), regist_id, regist_id)
                 cur.execute(query)
                 cur.close()
@@ -1749,14 +1714,16 @@ def manager_db(request):
 
             query = '''
                     SELECT au.email, up.name, au.username
-                      FROM edxapp.auth_user AS au
-                      JOIN edxapp.auth_userprofile as up
+                      FROM auth_user AS au
+                      JOIN auth_userprofile as up
                         ON au.id = up.user_id
                      WHERE au.email = '{0}'
                     '''.format(input_email)
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
+            print query
+            print 'temporary ----------------------'
             print row
 
             data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)

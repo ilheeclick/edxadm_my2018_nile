@@ -199,6 +199,9 @@ function save() {
                 method: 'check',
             }).done(function (data) {
                 update_flag = data;
+                if (!($('#start_date').val() < $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() < $('#end_time').val())) {
+                    swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
+                }
                 if (uploadfile == '' && data == '0') {
                     swal("경고", "이미지파일을 등록해주세요.", "warning");
                 }
@@ -211,6 +214,7 @@ function save() {
                 else if ($('#end_date').val() == '') {
                     swal("경고", "종료일을 입력해주세요.", "warning");
                 }
+
                 else if ($('#width').val() == '') {
                     swal("경고", "창너비를 입력해주세요.", "warning");
                 }
