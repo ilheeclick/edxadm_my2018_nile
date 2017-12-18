@@ -8,13 +8,13 @@ function setDataTable1() {
 
     $table.dataTable({
         "scrollY": "400px",
-        "scrollX": "400px",
+        "scrollX": "4000px",
         bProcessing: true,
         rowReorder: false,
         "searching": false,
         sAjaxSource: $table.data('url'),
         "fnReloadAjax": true,
-        "paging": true,
+        "paging": false,
         "autoWidth": false,
         "fnServerParams": function (data) {
             var choice = document.getElementById("choice");
@@ -48,6 +48,11 @@ function setDataTable1() {
             {targets: 2, visible: false},
             {targets: 5, visible: false},
             {targets: 6, visible: false},
+            {targets: 7, width:'4%'},
+            {targets: 8, width:'4%'},
+            {targets: 9, width:'4%'},
+            {targets: 14, width:'3%'},
+            {targets: 19, width:'3%'},
             {targets: 20, visible: false},
             {targets: 21, visible: false},
             {targets: 22, visible: false},

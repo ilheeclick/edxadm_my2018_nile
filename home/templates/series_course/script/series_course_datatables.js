@@ -36,11 +36,17 @@ function setDataTable1() {
             {data: "video_time"},
             {data: "learning_time"},
             {data: "series_seq"},
+            {data: "series_seq"},
 
         ],
         columnDefs: [
             {
                 targets: 6, visible: true, name: "pk", render: function (data) {
+                return '<a href="/manage/series_complete_list_view/' + data + '"><input type="button" value="보  기" class="btn btn-default"></a>';
+            },
+            },
+            {
+                targets: 7, visible: true, name: "pk", render: function (data) {
                 return '<a href="/manage/series_course_list_view/' + data + '"><input type="button" value="관  리" class="btn btn-default"></a>';
             },
             },

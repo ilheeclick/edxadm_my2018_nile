@@ -309,6 +309,13 @@ def series_course_list_view(request, id):
     })
     return render_to_response('series_course/series_course_list.html', variables)
 
+@login_required
+def series_complete_list_view(request, id):
+    variables = RequestContext(request, {
+        'id': id
+    })
+    return render_to_response('series_course/series_complete_list.html', variables)
+
 
 @login_required
 def all_course(request):
@@ -428,7 +435,10 @@ def series_list(request):
                 if e[0] != None:
                     series_time = e[0].replace('@', '+').replace('#', '+')
                     series_time_index = series_time.split('+')
-                if (len(series_time_index) == 3):
+                    time_flag = series_time.replace(':','+')
+                    time_flag_index = time_flag.split('+')
+
+                if (len(series_time_index) == 3 and '' not in time_flag_index):
                     all_learning_hour = series_time_index[0].split(':')
                     learning_hour = int(all_learning_hour[0]) * 60 * int(series_time_index[1])
                     learning_minut = int(all_learning_hour[1]) * int(series_time_index[1])
@@ -439,8 +449,8 @@ def series_list(request):
                     video_minut = int(all_video_hour[1]) * int(series_time_index[1])
                     video_time += (video_hour + video_minut)
                 else:
-                    learning_time = 0
-                    video_time = 0
+                    learning_time += 0
+                    video_time += 0
 
             if (len(str(video_time % 60)) == 1 and len(str(learning_time % 60)) != 1):
                 video_list.append(str(video_time // 60) + ':0' + str(video_time % 60))
@@ -1119,8 +1129,7 @@ def course_db_list(request):
                 multi_num = multi[6].split('+')
                 multi_org = multi_num[0].split(':')
 
-                cursor = db.modulestore.active_versions.find_one(
-                    {'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
                 pb = cursor.get('versions').get('published-branch')
                 cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
                 blocks = cursor.get('blocks')
@@ -1148,6 +1157,7 @@ def course_db_list(request):
                 cur.close()
 
                 cur = connection.cursor()
+
                 query = '''
                         SELECT detail_name
                           FROM code_detail
@@ -1156,41 +1166,52 @@ def course_db_list(request):
                 cur.execute(query)
                 m_clsf_h = cur.fetchall()
                 cur.close()
+                print 'query======='
+                print query
+                print 'course_manage==================='
+                print clsf_h
+                print m_clsf_h
+                print len(clsf_h)
+                print len(m_clsf_h)
+                if (len(clsf_h) == 0):
+                    value_list.append("")
+                elif (len(m_clsf_h) == 0):
+                    value_list.append("")
 
-                value_list.append(clsf_h[0][0])
-                value_list.append(m_clsf_h[0][0])
-                value_list.append(multi[5])
+                else :
+                    value_list.append(clsf_h[0][0])
+                    value_list.append(m_clsf_h[0][0])
+                    value_list.append(multi[5])
+                    value_list.append(multi_org[1])
+                    value_list.append(multi_num[1])
+                    value_list.append(multi_num[2])
+                    value_list.append(multi[14])
+                    value_list.append(multi[7])
+                    value_list.append(multi[8])
+                    value_list.append(multi[9])
+                    value_list.append(multi[10])
+                    value_list.append(multi[11])
+                    value_list.append(multi[12])
+                    if multi[13] != None:
+                        multi_time = multi[13].replace('@', '+').replace('#', '+')
+                    multi_time_num = multi_time.split('+')
+                    if (len(multi_time_num) == 3):
+                        value_list.append(multi_time_num[2])
+                        value_list.append(multi_time_num[0])
+                        value_list.append(multi_time_num[1])
+                        all_hour = multi_time_num[0].split(':')
+                        hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
+                        minut = int(all_hour[1]) * int(multi_time_num[1])
+                        time = hour + minut
+                        value_list.append(str(time // 60) + ':' + str(time % 60))
+                    else:
+                        value_list.append(None)
+                        value_list.append(None)
+                        value_list.append(None)
+                        value_list.append(None)
+                    value_list.append(None)
 
-                value_list.append(multi_org[1])
-                value_list.append(multi_num[1])
-                value_list.append(multi_num[2])
-                value_list.append(multi[14])
-                value_list.append(multi[7])
-                value_list.append(multi[8])
-                value_list.append(multi[9])
-                value_list.append(multi[10])
-                value_list.append(multi[11])
-                value_list.append(multi[12])
-                if multi[13] != None:
-                    multi_time = multi[13].replace('@', '+').replace('#', '+')
-                multi_time_num = multi_time.split('+')
-                if (len(multi_time_num) == 3):
-                    value_list.append(multi_time_num[2])
-                    value_list.append(multi_time_num[0])
-                    value_list.append(multi_time_num[1])
-                    all_hour = multi_time_num[0].split(':')
-                    hour = int(all_hour[0]) * 60 * int(multi_time_num[1])
-                    minut = int(all_hour[1]) * int(multi_time_num[1])
-                    time = hour + minut
-                    value_list.append(str(time // 60) + ':' + str(time % 60))
-                else:
-                    value_list.append(None)
-                    value_list.append(None)
-                    value_list.append(None)
-                    value_list.append(None)
-                value_list.append(None)
-
-                course_list.append(value_list)
+                    course_list.append(value_list)
 
             data = json.dumps(list(course_list), cls=DjangoJSONEncoder, ensure_ascii=False)
             return HttpResponse(data, 'applications/json')
@@ -1508,18 +1529,7 @@ def modi_multi_site(request, id):
 def modi_multi_site_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
-        # try:
-        #     upload_file = request.FILES['uploadfile']
-        #     uploadfile_user_id = request.POST.get('uploadfile_user_id')
-        # except BaseException:
-        #     upload_file = None
-        #     uploadfile_user_id = None
-        #
-        # if upload_file:
-        #     uploadfile = request.FILES['uploadfile']
-        #     common_single_file_upload(uploadfile, 'multisite', str(uploadfile_user_id))
-        #
-        #     return render(request, 'multi_site/modi_multi_site.html')
+
 
         if request.POST.get('method') == 'add':
             site_name = request.POST.get('site_name')
@@ -1529,13 +1539,6 @@ def modi_multi_site_db(request):
             email_list = request.POST.get('email_list')
             email_list = email_list.split('+')
             email_list.pop()
-
-            # cur = connection.cursor()
-            # query = '''select max(attatch_id)+1 from tb_board_attach
-            #         '''
-            # cur.execute(query)
-            # attatch_id = cur.fetchall()
-            # cur.close()
 
             cur = connection.cursor()
             query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id)
@@ -1555,14 +1558,14 @@ def modi_multi_site_db(request):
                 cur.close()
 
                 cur = connection.cursor()
-                query = "select count(site_id) + 1 from multisite"
+                query = "select count(site_id) from multisite"
                 cur.execute(query)
                 cnt = cur.fetchall()
                 cur.close()
 
                 cur = connection.cursor()
-                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
-                           VALUES ('{0}','{1}','{2}','{3}')
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id, delete_yn)
+                           VALUES ('{0}','{1}','{2}','{3}', 'N')
                         '''.format(str(cnt[0][0]), str(row[0][0]), regist_id, regist_id)
                 cur.execute(query)
                 cur.close()
@@ -1577,28 +1580,6 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
-            # flag = request.POST.get('flag')
-            # file_flag = request.POST.get('file_flag')
-            #
-            # if (flag == '1' and file_flag == '0'):
-            #     cur = connection.cursor()
-            #     query = '''
-            #             SELECT logo_img
-            #               FROM multisite
-            #              WHERE site_id = '{0}';
-            #             '''.format(multi_no)
-            #     cur.execute(query)
-            #     attatch_id = cur.fetchall()
-            #     logo_file = attatch_id[0][0]
-            #     cur.close()
-            # else:
-            #     cur = connection.cursor()
-            #     query = '''select max(attatch_id)+1 from tb_board_attach
-            #             '''
-            #     cur.execute(query)
-            #     attatch_id = cur.fetchall()
-            #     logo_file = attatch_id[0][0]
-            #     cur.close()
 
             cur = connection.cursor()
             query = '''
@@ -1664,9 +1645,14 @@ def manager_list(request):
                 WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
         '''.format(id)
 
+        print 'Test === list ====='
+        print query
+
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
+
+        print rows
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
     result['data'] = result_list
@@ -1712,8 +1698,8 @@ def manager_db(request):
                 cur.close()
             elif (cnt[0][0] == 0):
                 cur = connection.cursor()
-                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id)
-                           VALUES ('{0}','{1}','{2}','{3}')
+                query = '''insert into edxapp.multisite_user(site_id, user_id, regist_id, modify_id, delete_yn)
+                           VALUES ('{0}','{1}','{2}','{3}', 'N')
                         '''.format(id, str(row[0][0]), regist_id, regist_id)
                 cur.execute(query)
                 cur.close()
@@ -1728,14 +1714,16 @@ def manager_db(request):
 
             query = '''
                     SELECT au.email, up.name, au.username
-                      FROM edxapp.auth_user AS au
-                      JOIN edxapp.auth_userprofile as up
+                      FROM auth_user AS au
+                      JOIN auth_userprofile as up
                         ON au.id = up.user_id
                      WHERE au.email = '{0}'
                     '''.format(input_email)
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
+            print query
+            print 'temporary ----------------------'
             print row
 
             data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -4500,6 +4488,23 @@ def history(request):
 
     else:
         return render(request, 'history/history.html')
+
+
+@login_required
+def login_history(request):
+    if request.is_ajax():
+        result = dict()
+        columns, recordsTotal, result_list = history_rows(request)
+        result['data'] = result_list
+        result['recordsTotal'] = recordsTotal
+        result['recordsFiltered'] = recordsTotal
+
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+
+        return HttpResponse(context, 'applications/json')
+
+    else:
+        return render(request, 'history/login_history.html')
 
 
 @login_required

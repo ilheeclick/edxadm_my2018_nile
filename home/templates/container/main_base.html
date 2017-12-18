@@ -256,6 +256,13 @@
                                         </a>
                                     </li>
                                 </ul>
+                                <ul class="nav nav-children">
+                                    <li id="login_history_list">
+                                        <a href="/manage/login_history">
+                                            로그인이력
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
                             <!-- multiple mail sending -->
@@ -596,10 +603,15 @@
                     $('#monitoring').addClass('nav-active');
                     $('#moni_storage').addClass('nav-active');
                     break;
-                case '개인정보조회':
+                case '접속이력':
                     if (is_expanded != 'none') $('#history').addClass('nav-expanded');
                     $('#history').addClass('nav-active');
                     $('#history_list').addClass('nav-active');
+                    break;
+                case '로그인이력':
+                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
+                    $('#history').addClass('nav-active');
+                    $('#login_history_list').addClass('nav-active');
                     break;
                 case '팝업관리':
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
@@ -610,6 +622,7 @@
                     if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
                     $('#popup').addClass('nav-active');
                     $('#popupZone_add').addClass('nav-active');
+                    break;
                 case '단체메일':
                     if (is_expanded != 'none') $('#email').addClass('nav-expanded');
                     $('#email').addClass('nav-active');
@@ -621,6 +634,11 @@
                     $('#multi_site_add').addClass('nav-active');
                     break;
                 case '멀티사이트 추가':
+                    if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
+                    $('#multi_site').addClass('nav-active');
+                    $('#multi_site_add').addClass('nav-active');
+                    break;
+                case '연계강좌 지정':
                     if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
                     $('#multi_site').addClass('nav-active');
                     $('#multi_site_add').addClass('nav-active');

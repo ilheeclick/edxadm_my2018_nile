@@ -1,10 +1,11 @@
+{% load staticfiles %}
 <!doctype html>
 <html>
 <head>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <meta charset="utf-8">
     <title>팝업1</title>
-    <link rel="stylesheet" type="text/css" href="/manage/home/static/css/pop.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/pop.css' %}">
 </head>
 
 <body>
@@ -17,14 +18,14 @@
             <div class="pop-top-area">
                 <!-- pop1-titbar s -->
                 <div class="pop1-titbar">
-                    <i><img src="/manage/home/static/image/icon-bell.png"/ alt="벨"></i>
+                    <i><img src="{% static 'image/icon-bell.png' %}" alt="벨"></i>
                     <span>공지사항</span>
                 </div>
             </div>
 
             <!-- pop-body-area s -->
             <div class="pop-body-area pop1-body-area" style="height: {{ pop.6 }}px">
-                <div class="pop1-imgbg" style="top: {{ pop.6 }}px;"><img src="/manage/home/static/image/pop1_1bg.png" alt="bg"></div>
+                <div class="pop1-imgbg" style="top: {{ pop.6 }}px;"><img src="{% static 'image/pop1_1bg.png' %}" alt="bg"></div>
 
                 <div class="pop1-txtarea">
                     <h4>{{ pop.0 }}</h4>
@@ -44,6 +45,7 @@
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function () {
             console.log('Ready!!!');

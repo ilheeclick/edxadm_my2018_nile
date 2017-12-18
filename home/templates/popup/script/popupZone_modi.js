@@ -25,7 +25,6 @@ var file_flag = '0';
 var update_flag = '0';
 
 function Save_btn() {
-    alert('{{id}}');
     if ('{{id}}' == 'add') {
         Save();
     }

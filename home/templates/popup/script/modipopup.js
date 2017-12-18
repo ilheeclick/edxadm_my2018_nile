@@ -199,6 +199,9 @@ function save() {
                 method: 'check',
             }).done(function (data) {
                 update_flag = data;
+                if (!($('#start_date').val() < $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() < $('#end_time').val())) {
+                    swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
+                }
                 if (uploadfile == '' && data == '0') {
                     swal("경고", "이미지파일을 등록해주세요.", "warning");
                 }
@@ -211,6 +214,7 @@ function save() {
                 else if ($('#end_date').val() == '') {
                     swal("경고", "종료일을 입력해주세요.", "warning");
                 }
+
                 else if ($('#width').val() == '') {
                     swal("경고", "창너비를 입력해주세요.", "warning");
                 }
@@ -363,7 +367,7 @@ function save_data(pop_id) {
             }
         }
         else if (method == 'add') {
-            if (data >= 3) {
+            if (data >= 3 && use_yn == "Y") {
                 alert("현재 사용중인 팝업창" + data + "개 입니다.(사용안함으로 저장됩니다.)");
                 use_yn = "N";
             }
