@@ -3130,7 +3130,6 @@ def signin(request):
     form = LoginForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         user = form.authenticate_user()
-        print user.is_staff
         if (user.is_staff == True):
             login(request, user)
             return render(request, 'stastic/stastic_index.html')

@@ -147,7 +147,7 @@ function setValues() {
     }
 }
 
-function Reset_check(){
+function Reset_check() {
     var r = confirm("작업내용 초기화 하시겠습니까?");
     if (r == true) {
         Reset();
@@ -199,11 +199,12 @@ function save() {
                 method: 'check',
             }).done(function (data) {
                 update_flag = data;
-                if (!($('#start_date').val() < $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() < $('#end_time').val())) {
-                    swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
-                }
+
                 if (uploadfile == '' && data == '0') {
                     swal("경고", "이미지파일을 등록해주세요.", "warning");
+                }
+                else if ($('#link_type').val() != '없음' && $('#link_URL').val() == '') {
+                    swal("경고", "link_URL을 입력해주세요.", "warning");
                 }
                 else if ($('#title').val() == '') {
                     swal("경고", "제목을 입력해주세요.", "warning");
@@ -214,7 +215,9 @@ function save() {
                 else if ($('#end_date').val() == '') {
                     swal("경고", "종료일을 입력해주세요.", "warning");
                 }
-
+                else if ((($('#start_date').val() > $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() > $('#end_time').val()))) {
+                    swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
+                }
                 else if ($('#width').val() == '') {
                     swal("경고", "창너비를 입력해주세요.", "warning");
                 }
@@ -239,11 +242,17 @@ function save() {
             if ($('#title').val() == '') {
                 swal("경고", "제목을 입력해주세요.", "warning");
             }
+            else if ($('#link_type').val() != '없음' && $('#link_URL').val() == '') {
+                swal("경고", "link_URL을 입력해주세요.", "warning");
+            }
             else if ($('#start_date').val() == '') {
                 swal("경고", "시작일을 입력해주세요.", "warning");
             }
             else if ($('#end_date').val() == '') {
                 swal("경고", "종료일을 입력해주세요.", "warning");
+            }
+            else if ((($('#start_date').val() > $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() > $('#end_time').val()))) {
+                swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
             }
             else if ($('#width').val() == '') {
                 swal("경고", "창너비를 입력해주세요.", "warning");
@@ -431,17 +440,17 @@ jQuery.fn.center = function () {
 
 function preview() {
     var width = $('#width').val();
-    if( Number(width) < 400) {
+    if (Number(width) < 400) {
         width = "460"
     }
-    else{
+    else {
         width = String(Number($('#width').val()) + 50);
     }
     var height = $('#height').val();
-    if( Number(height) < 400) {
+    if (Number(height) < 400) {
         height = "550"
     }
-    else{
+    else {
         height = String(Number($('#height').val()) + 150);
     }
     if (template.options[template.selectedIndex].text == "없음") {

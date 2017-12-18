@@ -2,8 +2,8 @@
 <html class="fixed">
 <meta charset="UTF-8">
 <head>
-{% load staticfiles %}
-<!--jquery setting -->
+    {% load staticfiles %}
+    <!--jquery setting -->
     <meta charset="UTF-8">
     <title>국가평생교육진흥원 - KMOOC 관리자 페이지</title>
     <meta name="keywords" content="HTML5 Admin Template"/>
@@ -14,7 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
     <!-- Web Fonts  -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light"
+          rel="stylesheet" type="text/css">
 
     {% load staticfiles %}
 
@@ -35,7 +36,7 @@
 
     <link rel="stylesheet" href='{% static "assets/vendor/select2/css/select2.css" %}'/>
     <link rel="stylesheet" href='{% static "assets/vendor/select2-bootstrap-theme/select2-bootstrap.css" %}'/>
-    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css"%}'/>
+    <link rel="stylesheet" href='{% static "assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css" %}'/>
 
     <link rel="stylesheet" href='{% static "assets/vendor/hover/hover.css" %}'/>
     <link rel="stylesheet" href='{% static "assets/vendor/font-awesome/css/font-awesome.css" %}'/>
@@ -55,60 +56,75 @@
     <!-- Head Libs -->
     <script src='{% static "assets/vendor/modernizr/modernizr.js" %}'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+        console.log('Test!!!');
+    </script>
 </head>
 <body style="background-color: #ecedf0">
-		<!-- start: page -->
-		<section class="body-sign">
-			<div class="center-sign">
-                <a href="/manage/" class="logo pull-left">
-					<img src='{%  static "assets/images/logo.png" %}' height="54"/>
-				</a>
-				<div class="panel panel-sign">
-					<div class="panel-title-sign mt-xl text-right">
-						<h2 class="title text-uppercase text-weight-bold m-none"><i class="fa fa-user mr-xs"></i> 관리자 페이지 </h2>
-					</div>
-					<div class="panel-body">
-						<form action="" method="post">
-                            {% csrf_token %}
-							<div class="form-group mb-lg">
-								<label>Email</label>
-								<div class="input-group input-group-icon">
-									<input id="id_email" name="email" type="text" class="form-control input-lg">
-									<span class="input-group-addon">
-										<span class="icon icon-lg">
-											<i class="fa fa-user"></i>
-										</span>
-									</span>
-								</div>
-							</div>
+<!-- start: page -->
+{% block content %}
+    <section class="body-sign">
+    <div class="center-sign">
+    <a href="/manage/" class="logo pull-left">
+        <img src='{% static "assets/images/logo.png" %}' height="54"/>
+    </a>
 
-							<div class="form-group mb-lg">
-								<div class="clearfix">
-									<label class="pull-left">Password</label>
-								</div>
-								<div class="input-group input-group-icon">
-									<input id="id_password" name="password" type="password" class="form-control input-lg">
-									<span class="input-group-addon">
-										<span class="icon icon-lg">
-											<i class="fa fa-lock"></i>
-										</span>
-									</span>
-								</div>
-							</div>
+    <div class="panel panel-sign">
+    <div class="panel-title-sign mt-xl text-right">
+        <h2 class="title text-uppercase text-weight-bold m-none"><i class="fa fa-user mr-xs"></i> 관리자 페이지 </h2>
+    </div>
+    <div class="panel-body">
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value=""/>
 
-							<div class="row">
-								<div class="col-sm-8"></div>
-								<div class="col-sm-4 text-right">
-									<button type="submit" class="btn btn-primary hidden-xs">로그인</button>
-									<button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">Sign In</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</section>
-	</body>
+        <div class="form-group mb-lg">
+            <label>Email</label>
+
+            <div class="input-group input-group-icon">
+                <input id="id_email" name="email" type="text" class="form-control input-lg">
+                    <span class="input-group-addon">
+                        <span class="icon icon-lg">
+                            <i class="fa fa-user"></i>
+                        </span>
+                    </span>
+            </div>
+        </div>
+
+        <div class="form-group mb-lg">
+            <div class="clearfix">
+                <label class="pull-left">Password</label>
+            </div>
+            <div class="input-group input-group-icon">
+                <input id="id_password" name="password" type="password" class="form-control input-lg">
+                    <span class="input-group-addon">
+                        <span class="icon icon-lg">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                    </span>
+            </div>
+        </div>
+
+        {% if form.errors %}
+            <p align="right" style="color: red">email이나 비밀번호가 일치하지 않습니다.</p>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-4 text-right">
+                <button type="submit" class="btn btn-primary hidden-xs">로그인</button>
+                <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">Sign In
+                </button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+</div>
+</div>
+</div>
+</section>
+</body>
 </html>
