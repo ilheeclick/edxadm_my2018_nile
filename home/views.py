@@ -6080,7 +6080,6 @@ def multiple_email_new(request):
                     WHERE  mail_id = {2}
                 '''.format(total_user, success_cnt, row_id)
                 cur.execute(query)
-
             return JsonResponse({"return":"success"})
 
     return render(request, 'multiple_email/multiple_email_new.html')

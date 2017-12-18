@@ -135,6 +135,7 @@ database_id = '172.17.101.117'
 
 EXCEL_PATH = '/home/ubuntu/project/management/home/static/uploads/'
 UPLOAD_DIR = '/home/ubuntu/project/management/home/static/uploads/'
+
 WEB1_HOST = '172.17.101.116'
 WEB2_HOST = '172.17.101.116'
 WEB1_LOG = '/edx/var/log/tracking/tracking_w1/tracking/'
@@ -146,6 +147,7 @@ COMPRESS_DIR = '/Users/kotech/workspace/scpTest/'
 LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
 
 HOST_NAME = 'vagrant'
+
 debug = True
 
 dic_univ = {
