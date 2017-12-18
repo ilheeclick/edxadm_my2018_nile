@@ -6,7 +6,6 @@ function setDataTable1() {
     var $table = $('#datatable1');
     $table.dataTable({
         dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
-        "autoWidth": false,
         scrollX: true,
         bProcessing: true,
         ordering: false,

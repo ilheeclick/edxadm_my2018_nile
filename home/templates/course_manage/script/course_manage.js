@@ -10,12 +10,11 @@ function setDataTable1() {
         "scrollY": "400px",
         "scrollX": "4000px",
         bProcessing: true,
-        rowReorder: false,
+        rowReorder: true,
         "searching": false,
         sAjaxSource: $table.data('url'),
         "fnReloadAjax": true,
         "paging": false,
-        "autoWidth": false,
         "fnServerParams": function (data) {
             var choice = document.getElementById("choice");
             data.push({"name": 'method', "value": 'course_list'});
