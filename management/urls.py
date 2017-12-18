@@ -81,7 +81,7 @@ urlpatterns = [
     # ---------- multiple email ---------- #
     url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
     url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
-    url(r'^manage/send_mail/', views.send_mail, name='multiple_email_new'),
+    url(r'^manage/django_mail/', views.django_mail, name='multiple_email_new'),
     # ---------- multiple email ---------- #
 
     # faq
@@ -166,6 +166,8 @@ urlpatterns = [
     url(r'^manage/series_complete_list_view/(?P<id>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
     url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
+    # review_manage url
+    url(r'^manage/review_manage/$', views.review_manage, name='review_manage'),
 
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

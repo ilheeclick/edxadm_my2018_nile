@@ -5304,6 +5304,130 @@ def file_download(request, file_name):
     raise Http404
 
 
+# ---------- 2017.12.04 ahn jin yong ---------- #
+def review_manage(request):
+
+    if request.is_ajax():
+
+        if request.GET.get('del_list'):
+            del_list = request.GET.get('del_list')
+            del_list = del_list.split('+')
+            del_list.pop()
+
+            with connections['default'].cursor() as cur:
+                for item in del_list:
+                    query = '''
+                        delete from edxapp.course_review
+                        where id = {0};
+                    '''.format(item)
+                    cur.execute(query)
+            return JsonResponse({'return':'success'})
+
+        startDt = request.GET.get('startDt')
+        endDt = request.GET.get('endDt')
+        startDt = startDt.replace('/', '-')
+        endDt = endDt.replace('/', '-')
+        name_search = request.GET.get('name_search')
+        org_search = request.GET.get('org_search')
+        code_search = request.GET.get('code_search')
+
+        if name_search=='' and org_search=='' and code_search=='':
+            mode = 'all'
+        elif name_search!='' and org_search=='' and code_search=='':
+            mode = 'name'
+        elif name_search=='' and org_search!='' and code_search=='':
+            mode = 'org'
+        elif name_search=='' and org_search=='' and code_search!='':
+            mode = 'code'
+        elif name_search!='' and org_search!='' and code_search=='':
+            mode = 'name_org'
+        elif name_search!='' and org_search=='' and code_search!='':
+            mode = 'name_code'
+        elif name_search=='' and org_search!='' and code_search!='':
+            mode = 'org_code'
+        elif name_search!='' and org_search!='' and code_search!='':
+            mode = 'name_org_code'
+
+        print 'mode = ',mode
+
+        with connections['default'].cursor() as cur:
+            query = '''
+                SELECT cr.id,
+                       cd.detail_name,
+                       coc.display_name,
+                       cr.content,
+                       cr.point,
+                       Sum(CASE
+                             WHEN good_bad = 'g' THEN 1
+                             ELSE 0
+                           END) AS good,
+                       Sum(CASE
+                             WHEN good_bad = 'b' THEN 1
+                             ELSE 0
+                           END) AS bad,
+                       au.username,
+                       Date_format(cr.reg_time, '%Y/%m/%d %h:%m') reg_time
+                FROM   edxapp.course_review AS cr
+                       LEFT JOIN edxapp.auth_user AS au
+                              ON au.id = cr.user_id
+                       LEFT JOIN edxapp.course_review_user AS cru
+                              ON cru.review_id = cr.id
+                       LEFT JOIN edxapp.course_overviews_courseoverview AS coc
+                              ON cr.course_id = coc.id
+                       LEFT JOIN edxapp.code_detail AS cd
+                              ON coc.org = cd.detail_code
+                WHERE cr.reg_time < '{0}' AND cr.reg_time > '{1}'
+                -- mode
+                GROUP  BY cr.id,
+                          cd.detail_name,
+                          coc.display_name,
+                          cr.content,
+                          cr.point,
+                          au.username,
+                          cr.reg_time
+                ORDER  BY id
+            '''.format(endDt, startDt)
+
+            if mode == 'name':
+                restr = "AND cr.content like '%{0}%'".format(name_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'org':
+                restr = "AND cd.detail_name like '%{0}%'".format(org_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'code':
+                restr = "AND coc.id like 'course-v1:%+{0}+%'".format(code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_org':
+                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%'".format(name_search, org_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_code':
+                restr = "AND cr.content like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(name_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'org_code':
+                restr = "AND cd.detail_name like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(org_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            elif mode == 'name_org_code':
+                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(name_search, org_search, code_search)
+                query = query.replace("-- mode", restr)
+
+            cur.execute(query)
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        result = dict()
+        result['data'] = result_list
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(context, 'applications/json')
+
+    return render(request, 'review_manage/review_manage.html')
+# ---------- 2017.12.04 ahn jin yong ---------- #
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
 @login_required
 def multiple_email(request):
@@ -5513,6 +5637,227 @@ def multiple_email_new(request):
         print "subject_flag = {}".format(subject_flag)  # experienced_student, instructor, operator / 1 2 3
         print "send_type = {}".format(send_type)  # email, message, apppush / E M P
         print "account_type = {}".format(account_type)  # activation, inactive, all / E I A
+
+        # 보내는 타입이 'memo'일 때 로직
+        if send_type == 'memo':
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
+            if subject_flag == 'hello':
+                experienced_student = request.POST.get('experienced_student')
+                instructor = request.POST.get('instructor')
+                operator = request.POST.get('operator')
+                # 유저 목록 구해오는 로직
+                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor')
+                                        OR EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and instructor == 'true') or (instructor == 'true'):
+                    target1 = '1'
+                    target2 = '1'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'instructor'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif (experienced_student == 'true' and operator == 'true') or (operator == 'true'):
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '1'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                                   AND (   EXISTS
+                                              (SELECT 1
+                                                 FROM student_courseaccessrole c
+                                                WHERE     a.id = c.user_id
+                                                      AND b.course_id = c.course_id
+                                                      AND c.role = 'staff'))
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+                elif experienced_student == 'true':
+                    target1 = '1'
+                    target2 = '0'
+                    target3 = '0'
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT distinct(a.email), a.id
+                              FROM auth_user a, student_courseenrollment b
+                             WHERE     a.id = b.user_id
+                        '''
+                        if account_type == 'activation':
+                            query = query + "AND a.is_active = 1"
+                            db_account_type = 'E'
+                        elif account_type == 'inactive':
+                            query = query + "AND a.is_active = 0"
+                            db_account_type = 'I'
+                        cur.execute(query)
+                        db_account_type = 'A'
+                        rows = cur.fetchall()
+                    for item in rows:
+                        user_list.append(item[0])
+                        user_id_list.append(item[1])
+
+            # 보내는 타입이 '수동입력'일 때 로직
+            elif subject_flag == 'world':
+                notauto = request.POST.get('notauto')
+                tmp = notauto.split(',')
+                # 유저 목록 구해오는 로직
+                for email in tmp:
+                    user_list.append(email.strip())
+
+            # 제목, 내용 공통
+            title = request.POST.get('title')
+            content = request.POST.get('content')
+
+            # ---------- insert data ----------#
+            # 보내는 타입이 '수동입력'이 아닐 때 로직
+            if subject_flag == 'hello':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('M', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
+                    '''.format(db_account_type, target1, target2, target3, title, content.replace("'","''"), user_id)
+                    cur.execute(query)
+                    print query
+            # 보내는 타입이 '수동입력'일 때 로직
+            elif subject_flag == 'world':
+                with connections['default'].cursor() as cur:
+                    query = '''
+                        insert into edxapp.group_email(send_type, account_type, target1, target2, target3, title, contents, regist_id)
+                        values('M', 'N', 0, 0, 0, '{0}', '{1}', {2})
+                    '''.format(title, content.replace("'","''"), user_id)
+                    cur.execute(query)
+                    print query
+            # insert 이후 마지막 글 번호 얻어오기
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT LAST_INSERT_ID();
+                '''
+                cur.execute(query)
+                rows = cur.fetchall()
+                row_id = rows[0][0]
+            # ---------- insert data ----------#
+
+            # making user id
+            if subject_flag == 'world':
+                for item in user_list:
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            select id
+                            from auth_user
+                            where email = '{0}';
+                        '''.format(item)
+                        print query #DEBUG
+                        cur.execute(query)
+                        rows = cur.fetchall()
+                        try:
+                            user_id_list.append(rows[0][0])
+                        except BaseException:
+                            return JsonResponse({"return":"fail_no_user"})
+
+            # ---------- insert memo ----------#
+            for n in range(0, len(user_list)):
+                # 보내는 타입이 '수동입력'이 아닐 때 로직
+                if subject_flag == 'hello':
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date)
+                             values({0}, '{1}', '{2}', {3}, NULL);
+                        '''.format(user_id_list[n], title, content.replace("'","''"), user_id)
+                        print query #DEBUG
+                        cur.execute(query)
+                # 보내는 타입이 '수동입력'일 때 로직
+                elif subject_flag == 'world':
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date)
+                             values({0}, '{1}', '{2}', {3}, NULL);
+                        '''.format(user_id_list[n] ,title, content.replace("'","''"), user_id)
+                        print query #DEBUG
+                        cur.execute(query)
+            # ---------- insert memo ----------#
+
+            # making success cnt, fail cnt
+            total_user = len(user_list)
+            fail_cnt = fail_cnt
+            success_cnt =  (len(user_list) - fail_cnt)
+
+            # update success cnt, total cnt
+            with connections['default'].cursor() as cur:
+                query = '''
+                    UPDATE edxapp.group_email
+                    SET    send_count = {0},
+                           success_count = {1}
+                    WHERE  mail_id = {2}
+                '''.format(total_user, success_cnt, row_id)
+                cur.execute(query)
+
+            return JsonResponse({"return":"success"})
 
         # 보내는 타입이 'email'일 때 로직
         if send_type == 'email':
@@ -5736,17 +6081,40 @@ def multiple_email_new(request):
                 '''.format(total_user, success_cnt, row_id)
                 cur.execute(query)
 
-        return JsonResponse({"return": "success"})
+            return JsonResponse({"return":"success"})
 
     return render(request, 'multiple_email/multiple_email_new.html')
 
+#test
+def django_mail(request):
+    from django.core.mail import send_mail
+    from django.core.mail import EmailMultiAlternatives
 
-# test
-def send_mail(request):
-    html = '''
-    <p>qqq</p><p>aergm<b>keam</b></p><p><b><span style="background-color: rgb(0, 255, 0);">aergmkae
-    '''
-    common_send_mail('b930208@gmail.com', '제목', html)
+    html = ""
+    f = open("/Users/ahn/workspace/management/home/templates/multiple_email/frame.html", 'r')
+    while True:
+        line = f.readline()
+        if not line: break
+        html += line
+    f.close()
+
+    print "--------------------"
+    print html
+    print "--------------------"
+
+    from_email = 'b930208@gmail.com'
+    to_email = []
+    to_email.append('yumehahimitu@gmail.com')
+    to_email.append('b930208@gmail.com')
+
+    subject = 'CCCC'
+    text_content = ''
+    html_content = '<b>hello world</b>'
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    msg.attach_alternative(html, "text/html")
+
+    msg.send()
 
     return JsonResponse({'foo': 'bar'})
 
