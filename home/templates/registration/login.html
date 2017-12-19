@@ -110,6 +110,7 @@
         {% if form.errors %}
             <p align="right" style="color: red">email이나 비밀번호가 일치하지 않습니다.</p>
         {% endif %}
+            <p align="right" id="is_staff" style="color: red;">{{ warning }}</p>
 
         <div class="row">
             <div class="col-sm-8"></div>

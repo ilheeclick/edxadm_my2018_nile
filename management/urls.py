@@ -166,6 +166,7 @@ urlpatterns = [
     url(r'^manage/series_complete_list_view/(?P<id>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
     url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
+    url(r'^manage/series_complete_db/$', views.series_complete_db, name='series_complete_db'),
 
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),

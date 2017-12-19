@@ -153,6 +153,34 @@ def series_course_list(request):
     context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
     return HttpResponse(context, 'applications/json')
 
+@login_required
+def series_complete_db(request):
+    result = dict()
+
+    with connections['default'].cursor() as cur:
+        series_id = request.GET.get('series_id')
+
+        query = '''
+                    SELECT replace(@rn := @rn - 1, .0, '') rn,
+                           org,
+                           display_number_with_default,
+                           course_name
+                      FROM series_course,
+                           (SELECT @rn := count(*) + 1
+                              FROM series_course
+                             WHERE series_seq = '{0}' AND delete_yn = 'N') rn
+                     WHERE series_seq = '{1}' AND delete_yn = 'N';
+                '''.format(series_id, series_id)
+
+        cur.execute(query)
+        columns = [i[0] for i in cur.description]
+        rows = cur.fetchall()
+        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+
+    result['data'] = result_list
+    context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+    return HttpResponse(context, 'applications/json')
+
 
 @login_required
 def series_course_list_db(request):
@@ -205,6 +233,9 @@ def series_course_list_db(request):
                                  '{5}');
                             '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
                                        user_id)
+
+                    print ('query Test====================')
+                    print query
 
                     cur.execute(query)
                     cur.close()
@@ -359,6 +390,9 @@ def all_course(request):
                            AND org LIKE '{1}') b
              WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
               '''.format(Test, org, Test, org)
+
+        print '======================'
+        print query
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -1978,7 +2012,7 @@ def new_popupZone(request):
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
-            return HttpResponse(data, 'applications/json')
+            return course_db_list(data, 'applications/json')
 
         elif request.POST['method'] == 'modi':
             title = request.POST.get('title')
@@ -3131,8 +3165,14 @@ def signin(request):
     if request.method == 'POST' and form.is_valid():
         user = form.authenticate_user()
         if (user.is_staff == True):
+            print 'staff 임 ㅎㅎ'
             login(request, user)
             return render(request, 'stastic/stastic_index.html')
+        else:
+            print 'user 임 ㅡㅡ '
+            context = dict()
+            context['warning'] = 'Staff 권한이 없습니다!'
+            return render(request, 'registration/login.html' , context)
     return render(request, 'registration/login.html', {'form': form})
 
 
