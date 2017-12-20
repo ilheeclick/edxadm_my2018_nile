@@ -38,7 +38,14 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'home',
     'tracking_control',
+    'django.contrib.sessions.backends.db',
+    'django.contrib.sessions.backends.file',
+    'django.contrib.sessions.backends.cache',
+    'django.contrib.sessions.backends.cached_db',
+    'django.contrib.sessions.backends.signed_cookies',
 )
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -5,16 +5,42 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css"/>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#datatable1').DataTable({
-                dom: '<"toolbar"><"search">rt<"bottom"ip><"clear">',
-                scrollX: true,
-                bProcessing: true,
-                ordering: false,
-                serverSide: false,
-                searching: true,
+        /*
+         Name: 			Tables / Ajax - Examples
+         Written by: 	Okler Themes - (http://www.okler.net)
+         Theme Version: 	1.5.2
+         */
+
+        (function ($) {
+
+            'use strict';
+            var datatableInit = function () {
+
+                var $table = $('#datatable1');
+
+                $table.dataTable({
+                    bProcessing: true,
+                    rowReorder: true,
+                    sAjaxSource: $table.data('url'),
+                    "fnReloadAjax": true,
+                    "fnServerParams": function (data) {
+                        data.push({"name": 'method', "value": 'login_history'});
+                    },
+
+
+                    dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+
+                    searching : false
+                });
+            };
+
+
+            $(function () {
+                datatableInit();
             });
-        });
+
+        }).apply(this, [jQuery]);
+
     </script>
 {% endblock %}
 {% block containor %}
@@ -61,7 +87,7 @@
             <br>
 
 
-            <table class="table table-hover table-striped  table-bordered" data-url="/manage/course_db_list/"
+            <table class="table table-hover table-striped  table-bordered" data-url="/manage/login_history/"
                    id="datatable1">
                 <thead>
                 <tr>
@@ -72,50 +98,6 @@
                     <td>아이피</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/16 09:11</td>
-                    <td>2017/12/16 20:06</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/15 13:11</td>
-                    <td>2017/12/15 19:58</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/15 08:58</td>
-                    <td>2017/12/15 11:31</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/14 10:58</td>
-                    <td>2017/12/14 20:11</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/13 13:13</td>
-                    <td>2017/12/13 21:11</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                <tr>
-                    <td>System</td>
-                    <td>staff</td>
-                    <td>2017/12/13 10:11</td>
-                    <td>2017/12/13 11:53</td>
-                    <td>127.0.0.1</td>
-                </tr>
-                </tbody>
                 <tbody id="notice_body">
                 </tbody>
             </table>

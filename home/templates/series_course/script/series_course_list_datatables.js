@@ -215,7 +215,6 @@ function add() {
         update1();
         update2();
     }).fail(function (error) {
-        swal("경고", "이미 추가된 강좌가 존재합니다.", "warning");
     });
 }
 

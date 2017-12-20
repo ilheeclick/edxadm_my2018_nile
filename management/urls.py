@@ -28,7 +28,7 @@ urlpatterns = [
         views.signin,
         name='login'
     ),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/manage/'}, name='logout'),
+    url(r'^logout/$', views.logout, {'next_page': '/manage/'}, name='logout'),
     url(r'^manage/test_index/$', views.test_index),
     url(r'^manage/file_download_test$', views.file_download_test),
 
@@ -168,6 +168,9 @@ urlpatterns = [
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
     url(r'^manage/series_complete_db/$', views.series_complete_db, name='series_complete_db'),
 
+
+    # login_history
+    url(r'^manage/login_history/$', views.login_history, name='login_history'),
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),

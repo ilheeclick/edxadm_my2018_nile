@@ -17,12 +17,6 @@
             dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
             "paginate": true,
             searching: false,
-            "columnDefs": [
-                {
-                    "targets": [1],
-                    "visible": false,
-                }
-            ],
             "initComplete": function (settings, json) {
                 this.api().columns().every(function (i) {
 
@@ -51,17 +45,6 @@
                     });
                 });
             }
-        });
-
-
-        $table.on('click', 'tr', function () {
-            var $row;
-            var cell;
-            var data;
-            var t = $('#datatable33').DataTable();
-            $row = $(this).closest('tr');
-            data = t.row($row.get(0)).data();
-            location.href = '/manage/modi_popupZone/' + data[1]
         });
     };
 
