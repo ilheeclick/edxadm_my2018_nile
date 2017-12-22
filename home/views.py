@@ -3261,6 +3261,24 @@ def signin(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
+def logout_time(request):
+    if request.method == 'POST':
+        print "logout_flag========================"
+
+        s = request.session
+        key = s.session_key
+
+        cur = connection.cursor()
+        query = """
+                    UPDATE admin_login_log
+                       SET logout_date = now()
+                     WHERE session_id = '{0}';
+                """.format(key)
+        cur.execute(query)
+        cur.close()
+
+        return HttpResponse('success', 'applications/json')
+
 def logout(request, next_page=None,
            template_name='registration/logged_out.html',
            redirect_field_name=REDIRECT_FIELD_NAME,
@@ -3268,13 +3286,8 @@ def logout(request, next_page=None,
     """
     Logs out the user and displays 'You are logged out' message.
     """
-
-    print "----------------------------->"
-    print request.META.get('REMOTE_ADDR')
-    print "----------------------------->"
-
+    logout_time(request)
     auth_logout(request)
-
     if next_page is not None:
         next_page = resolve_url(next_page)
 

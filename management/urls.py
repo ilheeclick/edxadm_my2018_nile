@@ -29,6 +29,7 @@ urlpatterns = [
         name='login'
     ),
     url(r'^logout/$', views.logout, {'next_page': '/manage/'}, name='logout'),
+    url(r'^logout_time/$', views.logout_time, name='logout_time'),
     url(r'^manage/test_index/$', views.test_index),
     url(r'^manage/file_download_test$', views.file_download_test),
 
