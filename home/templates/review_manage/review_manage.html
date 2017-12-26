@@ -93,17 +93,27 @@
         })
     });
 
+    function submit_click(){
+        $("#m_submit").click(function () {
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+        });
+    }
+
     $(document).ready(function () {
 
         $("#endDt").val(dateMinus(0));
         $("#startDt").val(dateMinus(30));
 
-        setDataTable();
-
-        $("#m_submit").click(function () {
-            var table = $('#example1').DataTable();
-            table.ajax.reload();
+        $("input").keydown(function (event) {
+            if (event.which === 13) {
+                var table = $('#example1').DataTable();
+                table.ajax.reload();
+            }
         });
+
+        setDataTable();
+        submit_click();
 
         $("#del").click(function () {
             var inputs = $("input:checked");
