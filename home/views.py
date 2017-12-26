@@ -4675,33 +4675,62 @@ def login_history(request):
         login_history_list = []
 
         if request.GET['method'] == 'login_history':
-            cur = connection.cursor()
-            query = """
-                          SELECT cd.detail_name,
-                                 au.username,
-                                 al.login_date,
-                                 al.logout_date,
-                                 al.user_ip
-                            FROM admin_login_log al
-                                 JOIN code_detail cd ON al.service_gubun = cd.detail_code
-                                 JOIN auth_user au ON al.user_id = au.id
-                           WHERE group_code = '014'
-                        ORDER BY seq DESC;
-			        """
+            system = request.GET.get('system')
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
 
-            print 'query ==============='
-            print query
-            cur.execute(query)
-            row = cur.fetchall()
-            cur.close()
-            for login in row:
-                value_list = []
-                value_list.append(login[0])
-                value_list.append(login[1])
-                value_list.append(login[2])
-                value_list.append(login[3])
-                value_list.append(login[4])
-                login_history_list.append(value_list)
+            if( start_date == '' or end_date == ''):
+                cur = connection.cursor()
+                query = """
+                             SELECT cd.detail_name,
+                             au.username,
+                             al.login_date,
+                             al.logout_date,
+                             al.user_ip
+                        FROM admin_login_log al
+                             JOIN code_detail cd ON al.service_gubun = cd.detail_code
+                             JOIN auth_user au ON al.user_id = au.id
+                       WHERE group_code = '014' AND detail_code LIKE '%{0}%'
+                    ORDER BY seq DESC;
+                        """.format(system)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+                for login in row:
+                    value_list = []
+                    value_list.append(login[0])
+                    value_list.append(login[1])
+                    value_list.append(login[2])
+                    value_list.append(login[3])
+                    value_list.append(login[4])
+                    login_history_list.append(value_list)
+            else:
+                cur = connection.cursor()
+                query = """
+                             SELECT cd.detail_name,
+                             au.username,
+                             al.login_date,
+                             al.logout_date,
+                             al.user_ip
+                        FROM admin_login_log al
+                             JOIN code_detail cd ON al.service_gubun = cd.detail_code
+                             JOIN auth_user au ON al.user_id = au.id
+                       WHERE group_code = '014' AND detail_code LIKE '%{0}%'
+                              AND al.login_date >= date('{1}')
+                              AND al.login_date <= date('{2}')
+                    ORDER BY seq DESC;
+                        """.format(system, start_date, end_date)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+                for login in row:
+                    value_list = []
+                    value_list.append(login[0])
+                    value_list.append(login[1])
+                    value_list.append(login[2])
+                    value_list.append(login[3])
+                    value_list.append(login[4])
+                    login_history_list.append(value_list)
 
             data = json.dumps(list(login_history_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
