@@ -5415,6 +5415,10 @@ def review_manage(request):
                 restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(name_search, org_search, code_search)
                 query = query.replace("-- mode", restr)
 
+            print "------------------>"
+            print query
+            print "------------------>"
+
             cur.execute(query)
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
