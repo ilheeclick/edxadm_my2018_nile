@@ -72,13 +72,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'management.wsgi.application'
 
+database_id = '172.17.101.117'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD': 'password',
-        'HOST': '172.17.101.117',
+        'HOST': database_id,
         'PORT': '3306',
     }
 }
@@ -101,8 +103,6 @@ STATICFILES_DIRS = (
     ("excel", os.path.join(BASE_DIR, 'home/static/excel')),
 )
 
-database_id = '172.17.101.117'
-
 EXCEL_PATH = '/home/ubuntu/project/management/home/static/uploads/'
 UPLOAD_DIR = '/home/ubuntu/project/management/home/static/uploads/'
 
@@ -115,6 +115,8 @@ LOCAL2_DIR = '/Users/kotech/workspace/scpTest/tracking_w2/'
 CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
 COMPRESS_DIR = '/Users/kotech/workspace/scpTest/'
 LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
+
+debug = True
 
 HOST_NAME = 'vagrant'
 
