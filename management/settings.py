@@ -56,7 +56,7 @@ TEMPLATES = [
         'BACKEND': 'djangomako.backends.MakoBackend',
         'NAME': 'mako',
         'DIRS': [
-            #BASE_DIR + '/mroom/templates/',
+            #BASE_DIR + '/home/templates/<app>/',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -103,8 +103,8 @@ STATICFILES_DIRS = (
     ("excel", os.path.join(BASE_DIR, 'home/static/excel')),
 )
 
-EXCEL_PATH = '/home/ubuntu/project/management/home/static/uploads/'
-UPLOAD_DIR = '/home/ubuntu/project/management/home/static/uploads/'
+EXCEL_PATH = BASE_DIR + '/home/static/excel/'
+UPLOAD_DIR = BASE_DIR + '/home/static/uploads/'
 
 WEB1_HOST = '172.17.101.116'
 WEB2_HOST = '172.17.101.116'
