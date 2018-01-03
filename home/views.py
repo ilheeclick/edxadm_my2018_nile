@@ -1223,6 +1223,26 @@ def course_db_list(request):
 
 
 @login_required
+def user_enroll(request):
+
+    if request.is_ajax():
+        with connections['default'].cursor() as cur:
+            query = '''
+                select seq, req_org, reg_why, regist_id, regist_date, result
+                from user_bulk_reg
+            '''
+            cur.execute(query)
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+        result = dict()
+        result['data'] = result_list
+        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(context, 'applications/json')
+
+    return render(request, 'user_enroll/user_enroll.html')
+
+@login_required
 def multi_site(request):
     return render(request, 'multi_site/multi_site.html')
 

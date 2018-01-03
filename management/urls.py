@@ -78,10 +78,15 @@ urlpatterns = [
     # common file upload module
     url(r'^manage/file_upload/', views.file_upload, name='file_upload'),
     # ---------- board common ---------- #
+
     # ---------- multiple email ---------- #
     url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
     url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
     url(r'^manage/django_mail/', views.django_mail, name='multiple_email_new'),
+    # ---------- multiple email ---------- #
+
+    # ---------- multiple email ---------- #
+    url(r'^manage/user_enroll/', views.user_enroll, name='user_enroll'),
     # ---------- multiple email ---------- #
 
     # faq
