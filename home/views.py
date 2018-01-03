@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from management.settings import UPLOAD_DIR
+from management.settings import UPLOAD_DIR, EXCEL_PATH
 from management.settings import dic_univ, database_id, debug
 from models import GeneratedCertificate
 from .forms import UserForm, LoginForm
@@ -1241,6 +1241,12 @@ def user_enroll(request):
         return HttpResponse(context, 'applications/json')
 
     return render(request, 'user_enroll/user_enroll.html')
+
+def download_bulkuser_example(request):
+    fsock = open(EXCEL_PATH + 'bulk_user/user_enroll.xlsx', 'r')
+    response = HttpResponse(fsock)
+    response['Content-Disposition'] = "attachment; filename=회원일괄등록요청.xlsx"
+    return response
 
 @login_required
 def multi_site(request):

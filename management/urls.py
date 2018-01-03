@@ -87,6 +87,7 @@ urlpatterns = [
 
     # ---------- user enroll ---------- #
     url(r'^manage/user_enroll/', views.user_enroll, name='user_enroll'),
+    url(r'^manage/download_bulkuser_example/', views.download_bulkuser_example, name='download_bulkuser_example'),
     # ---------- user enroll ---------- #
 
     # faq

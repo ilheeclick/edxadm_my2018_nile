@@ -25,21 +25,32 @@
         width: 150px;
         margin-right: 10px;
     }
-
     #endDt {
         float: left;
         width: 150px;
         margin-right: 50px;
-        margin-bottom: 50px;
-    }
-
-    #m_submit {
-        float: right;
     }
 
     #example1_wrapper{
-        margin-top: 100px;
+        margin-top: 20px;
     }
+
+    #top_download{
+        float:right;
+        margin-right: 10px;
+    }
+
+    #top_enroll{
+        float:right;
+    }
+    #m_submit{
+        float: right;
+        margin-bottom: 10px;
+    }
+    .panel-body{
+        display:grid;
+    }
+
 </style>
 <!-- css -->
 
@@ -79,6 +90,10 @@
         $("#m_submit").click(function () {
             var table = $('#example1').DataTable();
             table.ajax.reload();
+        });
+
+        $("#top_enroll").click(function () {
+            alert("tob enroll");
         });
     });
 
@@ -151,18 +166,22 @@ function checked_all() {
 {% block containor %}
 
 <section class="panel panel-featured ">
-    <div class="email_title"><h2 class="panel-title">회원 관리</h2></div>
+    <div class="email_title"><h2 class="panel-title">회원 등록</h2></div>
     <div class="panel-body" style="padding-top: 0;"> 
         {% load static %}
 
         <!-- top menu -->
-        <div class="search_a" style='display:block'>
+        <div class="search_a">
             <div class="send_day"> 처리 일자</div>
             <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
             <input type="text" id="endDt" value="2017/12/07" placeholder="날짜 검색(종료)" class="form-control"/>
+            <input type="button" class="btn btn-primary" id="m_submit" value="검색">
         </div>
-        <input type="button" class="btn btn-primary" id="m_submit" value="검색">
 
+        <div class="menu">
+            <input type="button" class="btn btn-primary" id="top_enroll" value="등록">
+            <a href="/manage/download_bulkuser_example"><input type="button" class="btn btn-primary" id="top_download" value="양식 다운로드"></a>
+        </div>
         <!-- top menu -->
 
         <!-- data tables -->
