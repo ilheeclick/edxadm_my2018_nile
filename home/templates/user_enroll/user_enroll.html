@@ -116,6 +116,11 @@
 <!-- js -->
 <script>
 
+    function submit_click(){
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+    }
+
     function dateMinus(days)
     {
         var nday = new Date();  //오늘 날짜..
@@ -134,12 +139,18 @@
         $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
             var minValue = $(this).val();
             minValue = $.datepicker.parseDate("yy/mm/dd", minValue);
-            minValue.setDate(minValue.getDate() + 1);
+            minValue.setDate(minValue.getDate());
             $("#endDt").datepicker("option", "minDate", minValue);
         })
     });
 
     $(document).ready(function () {
+        //$('#endDt').keydown(function (key) {
+        $('*').keydown(function (key) {
+            if(key.keyCode == 13){
+                submit_click()
+            }
+        });
 
         $("#endDt").val(dateMinus(0));
         $("#startDt").val(dateMinus(30));
@@ -147,8 +158,7 @@
         setDataTable();
 
         $("#m_submit").click(function () {
-            var table = $('#example1').DataTable();
-            table.ajax.reload();
+            submit_click();
         });
 
     });

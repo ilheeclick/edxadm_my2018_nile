@@ -1225,30 +1225,36 @@ def course_db_list(request):
 @login_required
 def user_enroll(request):
 
+    startDt = request.GET.get('startDt')
+    endDt = request.GET.get('endDt')
+
+    print "-----------------------------> s"
+    print "startDt = ", startDt
+    print "endDt = ", endDt
+    print "-----------------------------> e"
+
     if request.is_ajax():
-        with connections['default'].cursor() as cur:
-            query = '''
-                SELECT a.seq,
-                       a.req_org,
-                       a.reg_why,
-                       b.username as regist_id,
-                       a.regist_date,
-                       CASE
-                        WHEN a.result = 'S' THEN '성공'
-                        WHEN a.result = 'N' THEN '실패'
-                       END AS result
-                  FROM user_bulk_reg as a
-                  JOIN auth_user as b
-                  ON a.regist_id = b.id
-            '''
-            cur.execute(query)
-            rows = cur.fetchall()
-            columns = [col[0] for col in cur.description]
-            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
-        result = dict()
-        result['data'] = result_list
-        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
-        return HttpResponse(context, 'applications/json')
+        # 조건 검색 요청 시
+        if request.GET.get('startDt') and request.GET.get('endDt'):
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT a.seq,
+                           a.req_org,
+                           a.reg_why,
+                           b.username AS regist_id,
+                           a.regist_date,
+                           concat('성공 : ', a.pass_cnt, ' / 실패 : ', a.fail_cnt) AS result
+                      FROM user_bulk_reg AS a JOIN auth_user AS b ON a.regist_id = b.id
+                     WHERE regist_date > date('{}') AND regist_date < DATE_ADD(date('{}'), INTERVAL 1 DAY) ;
+                '''.format(startDt, endDt)
+                cur.execute(query)
+                rows = cur.fetchall()
+                columns = [col[0] for col in cur.description]
+                result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
 
     return render(request, 'user_enroll/user_enroll.html')
 
