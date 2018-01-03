@@ -93,17 +93,27 @@
         })
     });
 
+    function submit_click(){
+        $("#m_submit").click(function () {
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+        });
+    }
+
     $(document).ready(function () {
 
         $("#endDt").val(dateMinus(0));
         $("#startDt").val(dateMinus(30));
 
-        setDataTable();
-
-        $("#m_submit").click(function () {
-            var table = $('#example1').DataTable();
-            table.ajax.reload();
+        $("input").keydown(function (event) {
+            if (event.which === 13) {
+                var table = $('#example1').DataTable();
+                table.ajax.reload();
+            }
         });
+
+        setDataTable();
+        submit_click();
 
         $("#del").click(function () {
             var inputs = $("input:checked");
@@ -142,7 +152,7 @@
         var $table = $('#example1');
         $table.dataTable({
             "order": [[ 0, "desc" ]],
-            dom: '<"clear">rt<"bottom"ip><"clear">',
+            dom: '<"toolbar">rt<"bottom"ip><"clear">',
             bProcessing: true,
             ordering: true,
             serverSide: false,
@@ -190,21 +200,7 @@
                 aButtons: []
             },
             paginate: true,
-            pagingType: "full_numbers",
-            language: {
-                lengthMenu: "_MENU_",
-                zeroRecords: "조회된 데이터가 없습니다",
-                info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
-                infoEmpty: "No records available",
-                infoFiltered: "(filtered from _MAX_ total records)",
-                sEmptyTable: "조회된 데이터가 없습니다",
-                paginate: {
-                    first: "처음",
-                    previous: "이전",
-                    next: "다음",
-                    last: "끝"
-                }
-            }
+
         });
     }
 function checked_all() {
@@ -248,19 +244,19 @@ function checked_all() {
             <!-- top menu -->
 
             <!-- data tables -->
-            <table id="example1" class="display" cellspacing="0" width="100%">
+            <table id="example1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                     <th style="width:10px;"><input type="checkbox" onclick="checked_all()" id="check_all"/></th>
                     <th style="width:10px;">No</th>
-                    <th>기관명</th>
-                    <th>강좌명</th>
-                    <th>리뷰내용</th>
-                    <th style="width:30px;">별점</th>
-                    <th style="width:50px;">좋아요</th>
-                    <th style="width:50px;">싫어요</th>
-                    <th>등록자</th>
-                    <th>등록일</th>
+                    <th style="width:110px;">기관명</th>
+                    <th style="width:230px;">강좌명</th>
+                    <th style="width:350px;">리뷰내용</th>
+                    <th style="width:80px;">별점</th>
+                    <th style="width:100px;">좋아요</th>
+                    <th style="width:100px;">싫어요</th>
+                    <th style="width:80px;">등록자</th>
+                    <th style="width:100px;">등록일</th>
                 </tr>
                 </thead>
                 <tbody>
