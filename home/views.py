@@ -1228,8 +1228,18 @@ def user_enroll(request):
     if request.is_ajax():
         with connections['default'].cursor() as cur:
             query = '''
-                select seq, req_org, reg_why, regist_id, regist_date, result
-                from user_bulk_reg
+                SELECT a.seq,
+                       a.req_org,
+                       a.reg_why,
+                       b.username as regist_id,
+                       a.regist_date,
+                       CASE
+                        WHEN a.result = 'S' THEN '성공'
+                        WHEN a.result = 'N' THEN '실패'
+                       END AS result
+                  FROM user_bulk_reg as a
+                  JOIN auth_user as b
+                  ON a.regist_id = b.id
             '''
             cur.execute(query)
             rows = cur.fetchall()

@@ -150,6 +150,7 @@
             var table = $('#example1').DataTable();
             table.ajax.reload();
         });
+
     });
 
     function buildSearchData() {
@@ -221,41 +222,47 @@ function checked_all() {
         layer_popup($href);
     });
 
-    function layer_popup(el){
+function layer_popup(el){
 
-        var $el = $(el);        //레이어의 id를 $el 변수에 저장
-        var isDim = $el.prev().hasClass('dimBg');   //dimmed 레이어를 감지하기 위한 boolean 변수
+    var $el = $(el);        //레이어의 id를 $el 변수에 저장
+    var isDim = $el.prev().hasClass('dimBg');   //dimmed 레이어를 감지하기 위한 boolean 변수
 
-        isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
+    isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
 
-        var $elWidth = ~~($el.outerWidth()),
-            $elHeight = ~~($el.outerHeight()),
-            docWidth = $(document).width(),
-            docHeight = $(document).height();
+    var $elWidth = ~~($el.outerWidth()),
+        $elHeight = ~~($el.outerHeight()),
+        docWidth = $(document).width(),
+        docHeight = $(document).height();
 
-        // 화면의 중앙에 레이어를 띄운다.
-        if ($elHeight < docHeight || $elWidth < docWidth) {
-            $el.css({
-                marginTop: -$elHeight /2,
-                marginLeft: -$elWidth/2
-            })
-        } else {
-            $el.css({top: 0, left: 0});
-        }
-
-        $el.find('a.btn-layerClose').click(function(){
-            isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
-            $('#user_org').val('');
-            $('#user_why').val('');
-            $('#user_file').val('');
-            return false;
-        });
-
-        $('.layer .dimBg').click(function(){
-            $('.dim-layer').fadeOut();
-            return false;
-        });
+    // 화면의 중앙에 레이어를 띄운다.
+    if ($elHeight < docHeight || $elWidth < docWidth) {
+        $el.css({
+            marginTop: -$elHeight /2,
+            marginLeft: -$elWidth/2
+        })
+    } else {
+        $el.css({top: 0, left: 0});
     }
+
+    $el.find('a.btn-layerClose').click(function(){
+        isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+        $('#user_org').val('');
+        $('#user_why').val('');
+        $('#user_file').val('');
+        return false;
+    });
+
+    $el.find('a.btn-layerSend').click(function(){
+        console.log('TEST');
+        isDim ? $('.dim-layer').fadeOut() : $el.fadeOut();
+        return false;
+    });
+
+    $('.layer .dimBg').click(function(){
+        $('.dim-layer').fadeOut();
+        return false;
+    });
+}
 
 
 </script>
@@ -316,7 +323,7 @@ function checked_all() {
                 등록사유 <input type="text" id="user_why" class="form-control"/><br>
                 등록파일 <input type="file" id="user_file">
                 <div class="btn-r">
-                    <a href="#" class="btn-layerClose"><input type="button" class="btn btn-primary" value="등록"></a>
+                    <a href="#" class="btn-layerSend"><input type="button" id="user_send" class="btn btn-primary" value="등록"></a>
                     <a href="#" class="btn-layerClose"><input type="button" class="btn btn-primary" value="닫기"></a>
                 </div>
                 <!--// content-->
