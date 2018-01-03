@@ -85,9 +85,9 @@ urlpatterns = [
     url(r'^manage/django_mail/', views.django_mail, name='multiple_email_new'),
     # ---------- multiple email ---------- #
 
-    # ---------- multiple email ---------- #
+    # ---------- user enroll ---------- #
     url(r'^manage/user_enroll/', views.user_enroll, name='user_enroll'),
-    # ---------- multiple email ---------- #
+    # ---------- user enroll ---------- #
 
     # faq
     url(r'^manage/comm_faq/', views.comm_faq, name='comm_faq'),
