@@ -116,6 +116,10 @@ CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
 COMPRESS_DIR = '/Users/kotech/workspace/scpTest/'
 LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
 
+REAL_WEB1_HOST = '192.168.33.20'
+REAL_WEB1_ID = 'vagrant'
+REAL_WEB1_PW = 'vagrant'
+
 debug = True
 
 HOST_NAME = 'vagrant'

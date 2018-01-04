@@ -14,6 +14,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from management.settings import UPLOAD_DIR, EXCEL_PATH
 from management.settings import dic_univ, database_id, debug
+from management.settings import REAL_WEB1_HOST, REAL_WEB1_ID, REAL_WEB1_PW
 from models import GeneratedCertificate
 from .forms import UserForm, LoginForm
 from pymongo import MongoClient
@@ -48,6 +49,16 @@ def get_file_ext(filename):
     file_ext = filename_split[file_ext_index - 1]
     return file_ext
 
+def common_read_csv(file_name):
+    user_list = []
+    f = open(UPLOAD_DIR + file_name, 'r')
+    reader = csv.reader(f, dialect=csv.excel_tab)
+    for row in reader:
+        for r in row:
+            print r.decode('euckr').encode('utf-8')
+            user_list.append( r.decode('euckr').encode('utf-8') )
+    f.close()
+    return user_list
 
 def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     file_name = str(file_object).strip()
@@ -77,7 +88,7 @@ def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     print "@@@@@@@@@@@@@@@@@@@@@"
 
     with connections['default'].cursor() as cur:
-        query = """
+        query = '''
         INSERT INTO edxapp.tb_board_attach
                     (attatch_file_name,
                      attatch_file_ext,
@@ -93,11 +104,25 @@ def common_single_file_upload(file_object, gubun, user_id, return_data=None):
                      '{4}',
                      '{5}',
                       {6})
-        """.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
+        '''.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
         cur.execute(query)
 
     if return_data == 'Y':
-        return file_name_enc
+        with connections['default'].cursor() as cur:
+            query = '''
+                SELECT max(attatch_id)
+                  FROM tb_board_attach
+                 WHERE attach_gubun = '{0}'
+            '''.format(gubun)
+            cur.execute(query)
+            rows = cur.fetchall()
+            last_index = str(rows[0][0])
+
+        context = {}
+        context['filename'] = file_name_enc + '.' + file_ext
+        context['lastindex'] = last_index
+
+        return context
 
 
 # ---------- common module ---------- #
@@ -1258,27 +1283,165 @@ def user_enroll(request):
         if request.POST.get('user_org') and request.POST.get('user_why'):
             user_org = request.POST.get('user_org')
             user_why = request.POST.get('user_why')
-            user_id = request.POST.get('user_id')
+            regist_id = request.POST.get('user_id')
             user_file = request.FILES['user_file']
 
-            file_name = common_single_file_upload(user_file, 'UE', str(user_id), 'Y')
+            user_list = []
+            error_cnt = 0
+            success_cnt = 0
+
+            file_context = common_single_file_upload(user_file, 'UE', str(regist_id), 'Y')
+
+            file_name = file_context['filename']
+            last_index = file_context['lastindex']
 
             print "---------------------> s"
             print "user_org = ", user_org
             print "user_why = ", user_why
-            print "user_id = ", user_id
+            print "regist_id = ", regist_id
             print "user_file = ", user_file
             print "file_name = ", file_name
             print "---------------------> e"
+
+            user_list = common_read_csv(file_name)
+
+            print "----------------------------> fs"
+            print "user_list = ", user_list
+            print "user_list length = ", len(user_list)
+            print "----------------------------> fe"
+
+            for i in range(1, len(user_list)):
+                tmp = str(user_list[i])
+                tmp = tmp.replace("['","")
+                tmp = tmp.replace("']","")
+                tmp = tmp.split(',')
+
+                print "*********************************"
+                print "len(tmp) = ", len(tmp)
+                print "type(len(tmp)) = ", type(len(tmp))
+                print "*********************************"
+                if len(tmp) == 9:
+                    user_id = tmp[0]
+                    user_pw = tmp[1]
+                    user_email = tmp[2]
+                    user_name = tmp[3]
+                    user_gender = tmp[4]
+                    user_year = tmp[5]
+                    user_grade = tmp[6]
+                    user_gender_code = tmp[7]
+                    user_grade_code = tmp[8]
+
+                    print "----------------------------> user s"
+                    print "user_id = ", user_id
+                    print "user_pw = ", user_pw
+                    print "user_email = ", user_email
+                    print "user_name = ", user_name
+                    print "user_gender = ", user_gender
+                    print "user_year = ", user_year
+                    print "user_grade = ", user_grade
+                    print "user_gender_code = ", user_gender_code
+                    print "user_grade_code = ", user_grade_code
+                    print "----------------------------> user e"
+
+                    try:
+                        # 회원 등록
+                        cmd = 'sshpass -p{2} ssh -o StrictHostKeyChecking=no {1}@{0} /edx/app/edxapp/edx-platform/add_user.sh {3} {4}'.format(
+                            REAL_WEB1_HOST,
+                            REAL_WEB1_ID,
+                            REAL_WEB1_PW,
+                            user_email,
+                            user_pw
+                        )
+                        result = os.system(cmd)
+
+                        # 등록된 회원 정보 변경(업데이트)
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                UPDATE auth_user AS a
+                                       JOIN auth_userprofile AS b
+                                         ON a.id = b.user_id
+                                SET    a.username = '{1}',
+                                       b.NAME = '{2}',
+                                       b.gender = '{3}',
+                                       b.year_of_birth = '{4}',
+                                       level_of_education = '{5}'
+                                WHERE  a.email = '{0}'
+                            '''.format(user_email, user_id, user_name, user_gender_code, user_year, user_grade_code)
+                            cur.execute(query)
+                            print query
+
+                        success_cnt += 1
+
+                        # 등록 세부정보 디비에 삽입
+                        with connections['default'].cursor() as cur:
+                            query = '''
+                                INSERT INTO user_bulk_reg_detail(user_bulk_reg_seq,
+                                                                 req_id,
+                                                                 email,
+                                                                 name,
+                                                                 year_of_birth,
+                                                                 gender,
+                                                                 education,
+                                                                 result_cd,
+                                                                 regist_id)
+                                     VALUES (null,
+                                             '{0}',
+                                             '{1}',
+                                             '{2}',
+                                             '{3}',
+                                             '{4}',
+                                             '{5}',
+                                             '00',
+                                             '{6}')
+                            '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code, regist_id)
+                            print query
+                            cur.execute(query)
+
+                    except BaseException:
+                        error_cnt += 1
+
+            print "-------------------> result s"
+            print "success_cnt = ", success_cnt
+            print "error_cnt = ", error_cnt
+            print "-------------------> result e"
+
+            # 등록 정보 디비에 삽입
+            with connections['default'].cursor() as cur:
+                query = '''
+                    INSERT INTO user_bulk_reg(req_org,
+                                              reg_why,
+                                              pass_cnt,
+                                              fail_cnt,
+                                              attatch_id,
+                                              regist_id)
+                         VALUES ('{0}',
+                                 '{1}',
+                                 {2},
+                                 {3},
+                                 {4},
+                                 {5})
+                '''.format(user_org, user_why, success_cnt, error_cnt, last_index, regist_id)
+                cur.execute(query)
+                print query
+
+            # 등록 세부정보 관계 테이블 동기
+            with connections['default'].cursor() as cur:
+                query = '''
+                    UPDATE user_bulk_reg_detail
+                       SET user_bulk_reg_seq = '{0}'
+                     WHERE user_bulk_reg_seq IS NULL;
+                '''.format(last_index)
+                print query
+                cur.execute(query)
 
             return JsonResponse({'a':'b'})
 
     return render(request, 'user_enroll/user_enroll.html')
 
 def download_bulkuser_example(request):
-    fsock = open(EXCEL_PATH + 'bulk_user/user_enroll.xlsx', 'r')
+    fsock = open(EXCEL_PATH + 'bulk_user/user_enroll.csv', 'r')
     response = HttpResponse(fsock)
-    response['Content-Disposition'] = "attachment; filename=회원일괄등록요청.xlsx"
+    response['Content-Disposition'] = "attachment; filename=회원일괄등록요청.csv"
     return response
 
 @login_required
