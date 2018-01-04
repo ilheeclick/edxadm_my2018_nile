@@ -49,13 +49,17 @@ def get_file_ext(filename):
     return file_ext
 
 
-def common_single_file_upload(file_object, gubun, user_id):
+def common_single_file_upload(file_object, gubun, user_id, return_data=None, adding_xlsx=None):
     file_name = str(file_object).strip()
     file_name_enc = str(uuid.uuid4()).replace('-', '')
     file_ext = get_file_ext(file_name).strip()
     file_byte_size = file_object.size
     file_size = str(file_byte_size / 1024) + "KB"
     file_dir = UPLOAD_DIR + file_name_enc
+
+    if adding_xlsx == 'Y':
+        file_dir += '.xlsx'
+
     file_path = UPLOAD_DIR
     if file_path[len(file_path) - 1] == '/':
         file_path = file_path[0:(len(file_path) - 1)]
@@ -94,6 +98,9 @@ def common_single_file_upload(file_object, gubun, user_id):
                       {6})
         """.format(file_name_enc, file_ext, file_size, file_path, file_name, gubun, user_id)
         cur.execute(query)
+
+    if return_data == 'Y':
+        return file_name_enc
 
 
 # ---------- common module ---------- #
@@ -1225,17 +1232,11 @@ def course_db_list(request):
 @login_required
 def user_enroll(request):
 
-    startDt = request.GET.get('startDt')
-    endDt = request.GET.get('endDt')
-
-    print "-----------------------------> s"
-    print "startDt = ", startDt
-    print "endDt = ", endDt
-    print "-----------------------------> e"
-
     if request.is_ajax():
         # 조건 검색 요청 시
         if request.GET.get('startDt') and request.GET.get('endDt'):
+            startDt = request.GET.get('startDt')
+            endDt = request.GET.get('endDt')
             with connections['default'].cursor() as cur:
                 query = '''
                     SELECT a.seq,
@@ -1255,6 +1256,25 @@ def user_enroll(request):
             result['data'] = result_list
             context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
             return HttpResponse(context, 'applications/json')
+
+        # 등록 요청 시
+        if request.POST.get('user_org') and request.POST.get('user_why'):
+            user_org = request.POST.get('user_org')
+            user_why = request.POST.get('user_why')
+            user_id = request.POST.get('user_id')
+            user_file = request.FILES['user_file']
+
+            file_name = common_single_file_upload(user_file, 'UE', str(user_id), 'Y', 'Y')
+
+            print "---------------------> s"
+            print "user_org = ", user_org
+            print "user_why = ", user_why
+            print "user_id = ", user_id
+            print "user_file = ", user_file
+            print "file_name = ", file_name
+            print "---------------------> e"
+
+            return JsonResponse({'a':'b'})
 
     return render(request, 'user_enroll/user_enroll.html')
 
