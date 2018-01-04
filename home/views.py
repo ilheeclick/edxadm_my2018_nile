@@ -1295,31 +1295,16 @@ def user_enroll(request):
             file_name = file_context['filename']
             last_index = file_context['lastindex']
 
-            print "---------------------> s"
-            print "user_org = ", user_org
-            print "user_why = ", user_why
-            print "regist_id = ", regist_id
-            print "user_file = ", user_file
-            print "file_name = ", file_name
-            print "---------------------> e"
-
             user_list = common_read_csv(file_name)
 
-            print "----------------------------> fs"
-            print "user_list = ", user_list
-            print "user_list length = ", len(user_list)
-            print "----------------------------> fe"
-
+            # csv파일의 첫번재 행 제외 한 나머지
             for i in range(1, len(user_list)):
                 tmp = str(user_list[i])
                 tmp = tmp.replace("['","")
                 tmp = tmp.replace("']","")
                 tmp = tmp.split(',')
 
-                print "*********************************"
-                print "len(tmp) = ", len(tmp)
-                print "type(len(tmp)) = ", type(len(tmp))
-                print "*********************************"
+                # tmp의 길이가 9라면 모든 요소가 들어가 있는 것입니다 (누락없음)
                 if len(tmp) == 9:
                     user_id = tmp[0]
                     user_pw = tmp[1]
