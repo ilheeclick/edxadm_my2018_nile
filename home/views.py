@@ -49,16 +49,13 @@ def get_file_ext(filename):
     return file_ext
 
 
-def common_single_file_upload(file_object, gubun, user_id, return_data=None, adding_xlsx=None):
+def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     file_name = str(file_object).strip()
     file_name_enc = str(uuid.uuid4()).replace('-', '')
     file_ext = get_file_ext(file_name).strip()
     file_byte_size = file_object.size
     file_size = str(file_byte_size / 1024) + "KB"
-    file_dir = UPLOAD_DIR + file_name_enc
-
-    if adding_xlsx == 'Y':
-        file_dir += '.xlsx'
+    file_dir = UPLOAD_DIR + file_name_enc + '.' + file_ext
 
     file_path = UPLOAD_DIR
     if file_path[len(file_path) - 1] == '/':
@@ -1264,7 +1261,7 @@ def user_enroll(request):
             user_id = request.POST.get('user_id')
             user_file = request.FILES['user_file']
 
-            file_name = common_single_file_upload(user_file, 'UE', str(user_id), 'Y', 'Y')
+            file_name = common_single_file_upload(user_file, 'UE', str(user_id), 'Y')
 
             print "---------------------> s"
             print "user_org = ", user_org
