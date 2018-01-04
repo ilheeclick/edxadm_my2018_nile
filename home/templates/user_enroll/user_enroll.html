@@ -3,7 +3,8 @@
 {% block pagetitlename_header %}회원 등록{% endblock %}
 {% block script_down %}
 
-<!-- css -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!--css(s)-->
 <style>
     .email_title {
         background-color: #f6f6f6;
@@ -51,80 +52,74 @@
         display:grid;
     }
 
-.pop-layer .pop-container {
-  padding: 20px 25px;
-}
-
-.pop-layer p.ctxt {
-  color: #666;
-  line-height: 25px;
-}
-
-.pop-layer .btn-r {
-  width: 100%;
-  margin: 10px 0 20px;
-  padding-top: 10px;
-  border-top: 1px solid #DDD;
-  text-align: right;
-}
-
-.pop-layer {
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: 60%;
-  width: 410px;
-  height: auto;
-  background-color: #fff;
-  border: 5px solid #3571B5;
-  z-index: 10;
-}
-
-.dim-layer {
-  display: none;
-  position: fixed;
-  _position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-}
-
-.dim-layer .dimBg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  opacity: .5;
-  filter: alpha(opacity=50);
-}
-
-.dim-layer .pop-layer {
-  display: block;
-}
-
-.layer_title{
-    margin-bottom: 30px;
-}
-
-</style>
-<!-- css -->
-
-<!-- js -->
-<script>
-
-    function submit_click(){
-            var table = $('#example1').DataTable();
-            table.ajax.reload();
+    .pop-layer .pop-container {
+      padding: 20px 25px;
     }
 
+    .pop-layer p.ctxt {
+      color: #666;
+      line-height: 25px;
+    }
+
+    .pop-layer .btn-r {
+      width: 100%;
+      margin: 10px 0 20px;
+      padding-top: 10px;
+      border-top: 1px solid #DDD;
+      text-align: right;
+    }
+
+    .pop-layer {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 60%;
+      width: 410px;
+      height: auto;
+      background-color: #fff;
+      border: 5px solid #3571B5;
+      z-index: 10;
+    }
+
+    .dim-layer {
+      display: none;
+      position: fixed;
+      _position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+    }
+
+    .dim-layer .dimBg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      opacity: .5;
+      filter: alpha(opacity=50);
+    }
+
+    .dim-layer .pop-layer {
+      display: block;
+    }
+
+    .layer_title{
+        margin-bottom: 30px;
+    }
+</style>
+<!--css(e)-->
+
+<!--js(s)-->
+<script>
+    // 달력 관련 소스
     function dateMinus(days)
     {
-        var nday = new Date();  //오늘 날짜..
-        nday.setDate(nday.getDate() - days); //오늘 날짜에서 days만큼을 뒤로 이동
+        var nday = new Date();
+        nday.setDate(nday.getDate() - days);
         var yy = nday.getFullYear();
         var mm = nday.getMonth()+1;
         var dd = nday.getDate()+1;
@@ -144,10 +139,33 @@
         })
     });
 
+    // 검색 클릭 시 테이블 동기화
+    function submit_click(){
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+    }
+
+
+
     $(document).ready(function () {
+        // 레이어 팝업 이외 요소 클릭 시 레이어 팝업 닫기
+        $("*").click(function (event) {
+             if($(event.target).is('.dimBg')) {
+                 $('.dim-layer').fadeOut()
+             }
+        });
+
+        // ESC -> 레이어 팝업 닫기, ENTER -> 검색
         $('*').keydown(function (key) {
+            if(key.keyCode == 27) {
+                if ($('.dim-layer').attr('style') == "display: block;") {
+                    $('.dim-layer').fadeOut()
+                }
+            }
             if(key.keyCode == 13){
-                submit_click()
+                if ($('.dim-layer').attr('style') != "display: block;") {
+                    submit_click()
+                }
             }
         });
 
@@ -156,10 +174,10 @@
 
         setDataTable();
 
+        // 검색 클릭 시 테이블 동기화
         $("#m_submit").click(function () {
             submit_click();
         });
-
     });
 
     function buildSearchData() {
@@ -170,7 +188,6 @@
         }
         return obj
     }
-
 
     function setDataTable() {
         var $table = $('#example1');
@@ -229,15 +246,17 @@
         });
     }
 
+    // 등록 버튼 클릭 시 레이어 팝업 띄움
     $('.btn-example').click(function(){
         var $href = $(this).attr('href');
         layer_popup($href);
     });
 
+    // 레이어 팝업 함수
     function layer_popup(el){
 
-        var $el = $(el);                            //레이어의 id를 $el 변수에 저장
-        var isDim = $el.prev().hasClass('dimBg');   //dimmed 레이어를 감지하기 위한 boolean 변수
+        var $el = $(el);
+        var isDim = $el.prev().hasClass('dimBg');
 
         isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
 
@@ -271,18 +290,26 @@
         // 등록 버튼 클릭 시
         $el.find('a.btn-layerSend').click(function(){
             if (lock == 0) {
-                /*
-                $("#fileForm").submit();
-                $.post( "/manage/user_enroll/", {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    user_org: $('#user_org').val(),
-                    user_why: $('#user_why').val()
-                    //user_file: $('#user_file')[0].files[0]
-                })
-                .done(function( data ) {
-                    alert('success');
-                });
-                */
+                if ($('#user_org').val() == "") {
+                    swal("입력 오류", "요청기관 입력을 해주세요!", "info");
+                    return false;
+                }
+                if ($('#user_why').val() == "") {
+                    swal("입력 오류", "등록사유 입력을 해주세요!", "info");
+                    return false;
+                }
+                if ($('#user_file').val() == "") {
+                    swal("입력 오류", "등록파일 등록 해주세요!", "info");
+                    return false;
+                }
+            }
+
+            //$('#user_org').val()
+            //$('#user_why').val()
+            //$('#user_file')[0].files[0]
+
+            /*
+            if (lock == 0) {
                 var formData = new FormData();
                 formData.append("csrfmiddlewaretoken", '{{ csrf_token }}');
                 formData.append("user_org", $('#user_org').val());
@@ -303,6 +330,7 @@
                 lock = 1;
                 return false;
             }
+            */
         });
 
         $('.layer .dimBg').click(function(){
@@ -311,7 +339,7 @@
         });
     }
 </script>
-<!-- js -->
+<!--js(e)-->
 
 {% endblock %}
 {% block containor %}
@@ -321,7 +349,7 @@
     <div class="panel-body" style="padding-top: 0;"> 
         {% load static %}
 
-        <!-- top menu -->
+        <!--top menu (s)-->
         <div class="search_a">
             <div class="send_day"> 처리 일자</div>
             <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
@@ -333,9 +361,9 @@
             <a href="#layer2" class="btn-example"><input type="button" class="btn btn-primary" id="top_enroll" value="등록"></a>
             <a href="/manage/download_bulkuser_example"><input type="button" class="btn btn-primary" id="top_download" value="양식 다운로드"></a>
         </div>
-        <!-- top menu -->
+        <!--top menu (e)-->
 
-        <!-- data tables -->
+        <!--data tables (s)-->
         <table id="example1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
             <thead>
             <tr>
@@ -351,18 +379,17 @@
 
             </tbody>
         </table>
-        <!-- data tables -->
-
+        <!--data tables (e)-->
     </div>
 </section>
 
-<!-- hidden layer popup html -->
+<!--hidden layer popup html (s)-->
 <div class="dim-layer">
     <div class="dimBg"></div>
     <div id="layer2" class="pop-layer">
         <div class="pop-container">
             <div class="pop-conts">
-                <!--content //-->
+                <!--content (s)-->
                 <b><h3 class="layer_title">회원일괄 등록</h3></b>
                 요청기관 <input type="text" id="user_org" class="form-control"/><br>
                 등록사유 <input type="text" id="user_why" class="form-control"/><br>
@@ -373,9 +400,10 @@
                     <a href="#" class="btn-layerSend"><input type="button" id="user_send" class="btn btn-primary" value="등록"></a>
                     <a href="#" class="btn-layerClose"><input type="button" class="btn btn-danger" value="닫기"></a>
                 </div>
-                <!--// content-->
+                <!--content (e)-->
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+<!--hidden layer popup html (e)-->
