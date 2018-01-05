@@ -38,6 +38,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from tracking_control.views import oldLog_remove
 import uuid
+import re
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -1299,13 +1300,116 @@ def user_enroll(request):
 
             # csv파일의 첫번재 행 제외 한 나머지
             for i in range(1, len(user_list)):
+                lock = 0
+                error_code = '00'
                 tmp = str(user_list[i])
                 tmp = tmp.replace("['","")
                 tmp = tmp.replace("']","")
                 tmp = tmp.split(',')
 
-                # tmp의 길이가 9라면 모든 요소가 들어가 있는 것입니다 (누락없음)
-                if len(tmp) == 9:
+                print "-----------------------> DEBUG len(tmp) s"
+                print "len(tmp) = ",len(tmp)
+                print "-----------------------> DEBUG len(tmp) e"
+
+                # ---- NULL exception check LOGIC ---- #
+                # tmp의 길이가 9가 아니면 , 가 8개가 아닌 것 (error code 없음)
+                if len(tmp) != 9:
+                    lock = 1
+                    error_cnt += 1
+
+                # 비밀번호 오류 (error code 12)
+                if not tmp[1]:
+                    lock = 1
+                    error_code = '12'
+                    # 등록 세부정보 디비에 삽입
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            INSERT INTO user_bulk_reg_detail(user_bulk_reg_seq,
+                                                             req_id,
+                                                             email,
+                                                             name,
+                                                             year_of_birth,
+                                                             gender,
+                                                             education,
+                                                             result_cd,
+                                                             regist_id)
+                                 VALUES (null,
+                                         '{0}',
+                                         '{1}',
+                                         '{2}',
+                                         '{3}',
+                                         '{4}',
+                                         '{5}',
+                                         '{6}',
+                                         '{7}')
+                        '''.format(tmp[0], tmp[2], tmp[3], tmp[5], tmp[7], tmp[8], error_code, regist_id)
+                        print query
+                        cur.execute(query)
+                    error_cnt += 1
+
+                # 성명 오류 (error code 14)
+                elif not tmp[3]:
+                    lock = 1
+                    error_code = '14'
+                    # 등록 세부정보 디비에 삽입
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            INSERT INTO user_bulk_reg_detail(user_bulk_reg_seq,
+                                                             req_id,
+                                                             email,
+                                                             name,
+                                                             year_of_birth,
+                                                             gender,
+                                                             education,
+                                                             result_cd,
+                                                             regist_id)
+                                 VALUES (null,
+                                         '{0}',
+                                         '{1}',
+                                         null,
+                                         '{2}',
+                                         '{3}',
+                                         '{4}',
+                                         '{5}',
+                                         '{6}')
+                        '''.format(tmp[0], tmp[2], tmp[5], tmp[7], tmp[8], error_code, regist_id)
+                        print query
+                        cur.execute(query)
+                    error_cnt += 1
+
+                # 컬럼 누락 오류 (error code 20)
+                elif not tmp[0] or not tmp[1] or not tmp[2] or not tmp[3] or not tmp[4] or not tmp[5] or not tmp[6] or not tmp[7] or not tmp[8]:
+                    lock = 1
+                    error_code = '20'
+                    # 등록 세부정보 디비에 삽입
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            INSERT INTO user_bulk_reg_detail(user_bulk_reg_seq,
+                                                             req_id,
+                                                             email,
+                                                             name,
+                                                             year_of_birth,
+                                                             gender,
+                                                             education,
+                                                             result_cd,
+                                                             regist_id)
+                                 VALUES (null,
+                                         null,
+                                         null,
+                                         '{0}',
+                                         null,
+                                         null,
+                                         null,
+                                         '{1}',
+                                         '{2}')
+                        '''.format(tmp[3], error_code, regist_id)
+                        print query
+                        cur.execute(query)
+                    error_cnt += 1
+                # ---- NULL exception check LOGIC ---- #
+
+                # ---- NON LOCK LOGIC ---- (start) #
+                if lock == 0:
                     user_id = tmp[0]
                     user_pw = tmp[1]
                     user_email = tmp[2]
@@ -1328,34 +1432,112 @@ def user_enroll(request):
                     print "user_grade_code = ", user_grade_code
                     print "----------------------------> user e"
 
-                    try:
-                        # 회원 등록
-                        cmd = 'sshpass -p{2} ssh -o StrictHostKeyChecking=no {1}@{0} /edx/app/edxapp/edx-platform/add_user.sh {3} {4}'.format(
-                            REAL_WEB1_HOST,
-                            REAL_WEB1_ID,
-                            REAL_WEB1_PW,
-                            user_email,
-                            user_pw
-                        )
-                        result = os.system(cmd)
+                    # 중복 아이디 체크 (error code 01)
+                    with connections['default'].cursor() as cur:
+                        query = '''
+                            SELECT count(id)
+                            FROM auth_user
+                            where username = '{0}'
+                        '''.format(user_id)
+                        cur.execute(query)
+                        rows = cur.fetchall()
+                        check = rows[0][0]
 
-                        # 등록된 회원 정보 변경(업데이트)
+                        print "--------------------> DEBUG check s"
+                        print "check = ", check
+                        print "type(check) = ", type(check)
+                        print "--------------------> DEBUG check s"
+
+                    if check == 1:
+                        print "------------------> first check logic"
+                        lock = 1
+                        error_code = '01'
+
+                    if lock == 0:
+                        # 중복 이메일 체크 (error code 02)
                         with connections['default'].cursor() as cur:
                             query = '''
-                                UPDATE auth_user AS a
-                                       JOIN auth_userprofile AS b
-                                         ON a.id = b.user_id
-                                SET    a.username = '{1}',
-                                       b.NAME = '{2}',
-                                       b.gender = '{3}',
-                                       b.year_of_birth = '{4}',
-                                       level_of_education = '{5}'
-                                WHERE  a.email = '{0}'
-                            '''.format(user_email, user_id, user_name, user_gender_code, user_year, user_grade_code)
+                                SELECT count(id)
+                                FROM auth_user
+                                where email = '{0}'
+                            '''.format(user_email)
                             cur.execute(query)
-                            print query
+                            rows = cur.fetchall()
+                            check = rows[0][0]
+                        if check == 1:
+                            lock = 1
+                            error_code = '02'
 
-                        success_cnt += 1
+                    if lock == 0:
+                        # ID 오류 (error code 11)
+                        user_id = re.sub('[^0-9]', '', user_id)
+                        if user_id.isalpha() == False:
+                            lock = 1
+                            error_code = '11'
+
+                    if lock == 0:
+                        # EMAIL 오류 (error code 13)
+                        if user_email.find('@') == -1:
+                            lock = 1
+                            error_code = '13'
+
+                    if lock == 0:
+                        # 출생년도 오류 (error code 15)
+                        if len(user_year) != 4 or user_year.isdigit() == False:
+                            lock = 1
+                            error_code = '15'
+
+                    if lock == 0:
+                        # 최종학력 오류 (error code 16)
+                        if user_grade_code != 'p' \
+                                or user_grade_code != 'm'\
+                                or user_grade_code != 'b'\
+                                or user_grade_code != 'a'\
+                                or user_grade_code != 'hs'\
+                                or user_grade_code != 'jhs'\
+                                or user_grade_code != 'el'\
+                                or user_grade_code != 'other'\
+                                or user_grade_code != 'none'\
+                                or user_grade_code != 'empty':
+                            lock = 1
+                            error_code = '16'
+
+                    if lock == 0:
+                        # 성별 오류 (error code 17)
+                        if user_gender_code != 'm' \
+                                or user_gender_code != 'f'\
+                                or user_gender_code != 'o':
+                            lock = 1
+                            error_code = '17'
+
+                    try:
+                        if lock == 0:
+                            # 회원 등록
+                            cmd = 'sshpass -p{2} ssh -o StrictHostKeyChecking=no {1}@{0} /edx/app/edxapp/edx-platform/add_user.sh {3} {4}'.format(
+                                REAL_WEB1_HOST,
+                                REAL_WEB1_ID,
+                                REAL_WEB1_PW,
+                                user_email,
+                                user_pw
+                            )
+                            result = os.system(cmd)
+
+                            # 등록된 회원 정보 변경(업데이트)
+                            with connections['default'].cursor() as cur:
+                                query = '''
+                                    UPDATE auth_user AS a
+                                           JOIN auth_userprofile AS b
+                                             ON a.id = b.user_id
+                                    SET    a.username = '{1}',
+                                           b.NAME = '{2}',
+                                           b.gender = '{3}',
+                                           b.year_of_birth = '{4}',
+                                           level_of_education = '{5}'
+                                    WHERE  a.email = '{0}'
+                                '''.format(user_email, user_id, user_name, user_gender_code, user_year, user_grade_code)
+                                cur.execute(query)
+                                print query
+                                success_cnt += 1
 
                         # 등록 세부정보 디비에 삽입
                         with connections['default'].cursor() as cur:
@@ -1376,20 +1558,26 @@ def user_enroll(request):
                                              '{3}',
                                              '{4}',
                                              '{5}',
-                                             '00',
-                                             '{6}')
-                            '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code, regist_id)
+                                             '{6}',
+                                             '{7}')
+                            '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code, error_code, regist_id)
                             print query
                             cur.execute(query)
+
+                        if error_code != '00':
+                            error_cnt += 1
 
                     except BaseException:
                         error_cnt += 1
 
-            print "-------------------> result s"
+                # ---- NON LOCK LOGIC ---- (end) #
+
+            print "-------------------> 성공 실패 카운트 start"
             print "success_cnt = ", success_cnt
             print "error_cnt = ", error_cnt
-            print "-------------------> result e"
+            print "-------------------> 성공 실패 카운트 end"
 
+            # ---- 사용자 측에 보여주는 리스트 LOGIC ---- #
             # 등록 정보 디비에 삽입
             with connections['default'].cursor() as cur:
                 query = '''
@@ -1406,8 +1594,8 @@ def user_enroll(request):
                                  {4},
                                  {5})
                 '''.format(user_org, user_why, success_cnt, error_cnt, last_index, regist_id)
-                cur.execute(query)
                 print query
+                cur.execute(query)
 
             # 등록 세부정보 관계 테이블 동기
             with connections['default'].cursor() as cur:
@@ -1418,6 +1606,7 @@ def user_enroll(request):
                 '''.format(last_index)
                 print query
                 cur.execute(query)
+            # ---- 사용자 측에 보여주는 리스트 LOGIC ---- #
 
             return JsonResponse({'a':'b'})
 
