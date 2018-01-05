@@ -317,11 +317,18 @@
                         contentType: false,
                         type: 'POST',
                 success: function(data){
-                            alert("EE");
+                            if(data.result == 'success'){
+                                var table = $('#example1').DataTable();
+                                table.ajax.reload();
+                                $('#user_org').val('');
+                                $('#user_why').val('');
+                                $('#user_file').val('');
+                            }
                          }
                 });
 
                 isDim ? $('.dim-layer').fadeOut() : $el.fadeOut();
+                swal("등록 완료", "처리가 완료되면 리스트에 표시됩니다!", "success");
                 lock = 1;
                 return false;
             }
