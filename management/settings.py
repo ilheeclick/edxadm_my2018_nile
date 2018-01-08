@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,12 +79,10 @@ DATABASES = {
         'NAME': 'edxapp',
         'USER': 'edxapp001',
         'PASSWORD': 'password',
-        'HOST': '192.168.33.10',
+        'HOST': '192.168.1.113',
         'PORT': '3306',
     }
 }
-
-APPEND_SLASH = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -118,11 +115,11 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 # global variables ===========================================================================================
 # ============================================================================================================
-database_id = '192.168.33.10'
+database_id = '192.168.1.113'
 # database_id = '192.168.33.13'
 
-EXCEL_PATH = '/Users/redukyo/workspace/management/home/static/excel/'
-UPLOAD_DIR = '/Users/redukyo/workspace/management/home/static/upload/'
+EXCEL_PATH = '/home/project/management/home/static/excel/'
+UPLOAD_DIR = '/home/project/management/home/static/upload/'
 
 debug = True
 
@@ -190,6 +187,9 @@ dic_univ = {
     'KNUk': u'경북대학교',
     'KIUk': u'경일대학교',
     'KMUk': u'국민대학교',
+    'KMUK': u'국민대학교',
+    'SWUK': u'서울여자대학교',
+    'PTUk': u'평택대학교',
     'DCUk': u'대구가톨릭대학교',
     'DHUk': u'대구한의대학교',
     'DJUk': u'대전대학교',
@@ -503,3 +503,4 @@ countries = {
     "ZM": "Zambia",
     "ZW": "Zimbabwe",
 }
+
