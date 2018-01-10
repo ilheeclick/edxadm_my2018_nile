@@ -4991,22 +4991,24 @@ def history_rows(request):
     target_id = request.GET.get('target_id')
     # search_string = urllib.quote('검색').encode('utf8')
 
-    print 'param s ---------------------------'
-    print page_no
-    print page_length
-    print system
-    print operation
-    print func
-    print func_detail
-    print user_id
-    print target_id
-    print 'param e ---------------------------'
+    print '--------------------------- DEBUG'
+    print "page_no = ",page_no
+    print "page_length = ",page_length
+    print "start_no = ",start_no
+    print "system = ",system
+    print "operation = ",operation
+    print "func = ",func
+    print "func_detail = ",func_detail
+    print "user_id = ",user_id
+    print "target_id = ",target_id
+    print '--------------------------- DEBUG'
 
     if page_length == '-1' or is_csv:
         page_length = '999999'
     else:
         start_no = int(page_no) * int(page_length)
 
+    # ----- 메인 쿼리 ----- (start)#
     with connections['default'].cursor() as cur:
         query_arr = []
         query_arr.append("""
@@ -5024,62 +5026,110 @@ def history_rows(request):
                      AND (a.app_label = 'auth' OR a.model = 'custom')
                      and b.id > 247
         """)
+    # ----- 메인 쿼리 ----- (end)#
 
+        # ----- 쿼리 추가 로직 -----------------------------> (start)
+        # "시스템 > 전체" 검색
         if system:
-            if system == 'a':
+            if system == 'a': # "시스템 > Admin"
                 query_arr.append(" and a.id = 3 ")
-            elif system == 'k':
+            elif system == 'k': # "시스템 > K-MOOC"
                 query_arr.append(" and a.id not in (3, 311) ")
-            elif system == 'i':
+            elif system == 'i': # "시스템 > Insight"
                 query_arr.append(" and a.id = 311 ")
 
+        # "수행업무" 검색 ------------------------------ (start)
+        # 조회(0)
+        # 생성(1)
+        # 수정(2)
+        # 삭제(3)
+        # "수행업무" 검색 ------------------------------ (end)
         if operation:
             query_arr.append(" and b.action_flag = %s " % operation)
 
+        # "기능" 검색 ------------------------------ (start)
+        # 회원 정보 리스트 (292)
+        # 회원 정보 상세 (291)
+        # 회원 정보 수정 (3)
+        # 등록관리 - 베타 테스터(293)
+        # 등록관리 - 일괄 등록(309)
+        # 강좌 운영팀 관리 (게시판 관리자 토의 진행자 게시판 조교)(295)
+        # 강좌 운영팀 관리 (운영팀,교수자베타 테스터)(306)
+        # 학습자 진도 페이지(302)
+        # 문제 풀이 횟수 설정 초기화(308)
+        # 익명 학습자 아이디 CSV 파일(298)
+        # 개인정보를 CSV 파일로 다운로드(304)
+        # 등록할 수 있는 학습자의 CSV 다운로드(305)
+        # 문제 답변 CSV 파일 다운로드(301)
+        # 발급된 이수증 조회(299)
+        # 발급된 이수증 CSV 파일(300)
+        # 등록된 학습자의 프로필 목록(303)
+        # 성적 보고서(294)
+        # 문항 성적 보고서 생성(307)
+        # ORA 데이터 보고 생성하기(296)
+        # 파일 다운로드(297)
+        # "기능" 검색 ------------------------------ (end)
         if func:
             query_arr.append(" and a.id = %s " % func)
 
+        # 작동안함
         if func_detail:
             query_arr.append(" and b.action_flag = %s " % func_detail)
 
+        # "접속자 아이디" 검색
         if user_id:
             query_arr.append(" and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id))
 
+        # 작동안함
         if target_id:
-            # 강좌 운영팀 관리
             if func in ['3', '295', '306']:
                 query_arr.append(" and b.object_repr like '%%%s%%' " % target_id)
             elif func in ['291']:
                 query_arr.append(
                     " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id)
 
+        # 페이지 선택 (10, 20, 50, 999999)
         query_arr.append("""
             ORDER BY b.action_time DESC, b.id desc
                LIMIT {start_no}, {page_length}
         """.format(start_no=start_no, page_length=page_length))
 
+        # 쿼리 최종 생성
         query = ''.join(query_arr)
+        # ----- 쿼리 추가 로직 -----------------------------> (end)
 
-        # print 'query:', query
-        # print start_no, page_length
+        print "---------------------------------------------------------------> query s"
+        print query
+        print "---------------------------------------------------------------> query e"
 
         cur.execute(query)
         rows = cur.fetchall()
         columns = [col[0] for col in cur.description]
 
+        print "---------------------------------------------------------------> columns s"
+        print columns
+        print "---------------------------------------------------------------> columns e"
+
         cur.execute('SELECT found_rows();')
         recordsTotal = cur.fetchone()[0]
 
-        print 'recordsTotal:', recordsTotal
+        print "---------------------------------------------------------------> recordsTotal s"
+        print 'recordsTotal = ', recordsTotal
+        print "---------------------------------------------------------------> recordsTotal e"
 
         result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
 
-        '''
+        print "---------------------------------------------------------------> result_list s"
+        print result_list
+        print "---------------------------------------------------------------> result_list e"
+
+        """
         content_type_id 에 따른 기능 구분 추가
         [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
         [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
-        '''
+        """
 
+        # auth_user_trigger 쿼리
         diff_query1 = '''
               SELECT id,
                      username,
@@ -5097,6 +5147,7 @@ def history_rows(request):
             ORDER BY action;
         '''
 
+        # auth_userprofile_trigger 쿼리
         diff_query2 = '''
               SELECT id,
                      user_id,
@@ -5121,6 +5172,7 @@ def history_rows(request):
             ORDER BY action;
         '''
 
+        # 1번 함수 -----------------------------------------------------------------------------------------------> (s)
         def git_diff_dict(columns, rows):
             return_dict = dict()
             if columns is None or rows is None:
@@ -5141,7 +5193,9 @@ def history_rows(request):
                         return_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
 
             return return_dict
+        # 1번 함수 -----------------------------------------------------------------------------------------------> (e)
 
+        # 2번 함수 -----------------------------------------------------------------------------------------------> (s)
         def git_diff_password(columns, rows):
             password_dict = dict()
             if columns is None or rows is None:
@@ -5159,61 +5213,79 @@ def history_rows(request):
                             check_list[0][column], check_list[1][column])
 
             return password_dict
+        # 2번 함수 -----------------------------------------------------------------------------------------------> (e)
 
-        for result_dict in result_list:
-            content_type_id = result_dict['content_type_id']
-            action_flag = result_dict['action_flag']
-            action_time = result_dict['action_time']
-            change_message_dict = get_change_message_dict(result_dict['change_message'])
+        """
+        result_list example
 
-            print 'action_time:', type(action_time), action_time
+        {'username': 'kmoocstaff5',
+         'action_time': '2018/01/09 01:20:34',
+         'user_id': '174',
+         'content_type_id': '3',
+         'action_flag': '2',
+         'object_repr': 'redukyonaver',
+         'object_id': '1341',
+         'change_message': "{'count': 1,
+                             'ip': '10.0.2.2',
+                             'system': 'K-MOOC',
+                             'query': {u'password1': u'1111',
+                                       u'csrfmiddlewaretoken': u'As62gf1QwJ4s3Te27OPeUS1Vfd1PIVez',
+                                       u'password2': u'1111'},
+                             'path': u'/admin/auth/user/1341/password/',
+                             'message': u'password \\uc774/\\uac00 \\ubcc0\\uacbd\\ub418\\uc5c8\\uc2b5\\ub2c8\\ub2e4.',
+                             'method': 'POST'}",
+         'app_label': 'auth',
+         'id': '3124'}
+        """
+
+        for item in result_list:
+            content_type_id = item['content_type_id']
+            action_flag = item['action_flag']
+            action_time = item['action_time']
+
+            change_message_dict = get_change_message_dict(item['change_message'])
+
+            print "---------------------------------------------------------------> change_message_dict s"
+            print change_message_dict
+            print "---------------------------------------------------------------> change_message_dict e"
 
             # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
-            diff_result = dict()
+            diff_result = {}
             diff_result_string = ''
+
             if content_type_id == '3' and action_flag == '2':
-                check_id = result_dict['object_id']
+                check_id = item['object_id']
 
                 # 비밀번호를 변경하는 화면은 회원정보 수정과 별개로 구성되어있음
                 # 비밀번호 변경의 경우와 아닌경우를 분기
                 query_string_dict = change_message_dict['query'] if change_message_dict.has_key('query') else dict()
 
-                # print 'check diff ---------------------------------------------- s'
-                # print diff_query1, [check_id, check_id, action_time, action_time]
-                # print 'check diff ---------------------------------------------- e'
-
                 if query_string_dict.has_key('password1') and query_string_dict.has_key('password2'):
-                    print 'just password change !!'
-
                     cur.execute(diff_query1, [check_id, action_time, action_time])
                     columns1 = [col[0] for col in cur.description]
                     diff_rows1 = cur.fetchall()
-                    diff_result.update(git_diff_password(columns1, diff_rows1))
+                    diff_result.update(git_diff_password(columns1, diff_rows1)) #<--------------- 2번 함수
 
                     for index, key in enumerate(diff_result.keys()):
                         diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
-                else:
 
+                else:
                     cur.execute(diff_query1, [check_id, action_time, action_time])
                     columns1 = [col[0] for col in cur.description]
                     diff_rows1 = cur.fetchall()
-                    diff_result.update(git_diff_dict(columns1, diff_rows1))
-
-                    print 'action_time ===>', result_dict['action_time']
-
+                    diff_result.update(git_diff_dict(columns1, diff_rows1)) #<--------------- 1번 함수
                     cur.execute(diff_query2, [check_id, action_time, action_time])
                     columns2 = [col[0] for col in cur.description]
                     diff_rows2 = cur.fetchall()
                     diff_result.update(git_diff_dict(columns2, diff_rows2))
 
                     for index, key in enumerate(diff_result.keys()):
-                        # print 'index -------------->', index, key, index == 0
                         diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
 
-            object_repr_dict = get_object_repr_dict(result_dict['object_repr'])
+            object_repr_dict = get_object_repr_dict(item['object_repr'])
 
             # 기능 구분에 따라 시스템 표시 구분
-            result_dict['system'] = get_system_name(content_type_id)
+            item['system'] = get_system_name(content_type_id)
 
             # 기능 구분별 상세구분 표시 내용 추가
             # 개인정보 수정의 경우 수정 내역을 표시
@@ -5222,8 +5294,8 @@ def history_rows(request):
             else:
                 content_detail = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
 
-            result_dict['content_type_detail'] = content_detail
-            result_dict['search_string'] = get_searcy_string(content_type_id, change_message_dict)
+            item['content_type_detail'] = content_detail
+            item['search_string'] = get_searcy_string(content_type_id, change_message_dict)
 
             if content_type_id in ['293', '309']:
                 beta_testers = object_repr_dict['identifiers']
@@ -5231,17 +5303,20 @@ def history_rows(request):
             else:
                 targets = get_target_id(content_type_id, object_repr_dict)
 
-            result_dict['target_id'] = targets
-            result_dict['content_type_id'] = content_type_dict[content_type_id]
-            result_dict['action_flag'] = action_flag_dict[action_flag]
-            result_dict['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            result_dict['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
+            item['target_id'] = targets
+            item['content_type_id'] = content_type_dict[content_type_id]
+            item['action_flag'] = action_flag_dict[action_flag]
+            item['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
+            item['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
                                                                              int) else '-') if 'count' in change_message_dict and content_type_id not in [
                 '303',
                 '304'] else '-'
 
-    # pp = pprint.PrettyPrinter(indent=2)
-    # pp.pprint(connection.queries)
+            print "---------------------------------------------------------------> return s"
+            print columns
+            print recordsTotal
+            print result_list
+            print "---------------------------------------------------------------> return e"
 
     return columns, recordsTotal, result_list
 
