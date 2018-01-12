@@ -3554,37 +3554,20 @@ def signin(request):
             return render(request, 'stastic/stastic_index.html')
     return render(request, 'registration/login.html', {'form': form})
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
-
 # state view
-
 def mana_state(request):
     return render(request, 'state/mana_state.html')
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def dev_state(request):
     return render(request, 'state/dev_state.html')
 
-
 # certificate view
-
 def certificate(request):
     client = MongoClient(database_id, 27017)
     db = client.edxapp
@@ -3764,14 +3747,8 @@ def certificate(request):
 
     return render(request, 'certificate/certificate.html')
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def per_certificate(request):
     client = MongoClient(database_id, 27017)
     db = client.edxapp
@@ -3882,14 +3859,8 @@ def per_certificate(request):
 
     return render(request, 'certificate/per_certificate.html')
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def uni_certificate(request):
     # cert = GeneratedCertificate.objects.get(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02')
     cert = GeneratedCertificate.objects.filter(course_id='course-v1:KoreaUnivK+ku_hum_001+2015_A02').only('course_id')
@@ -4302,25 +4273,13 @@ def modi_notice(request, id, use_yn):
 
     return render_to_response('community/comm_modinotice.html', context)
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def test_index(request):
     return render(request, 'test_index.html')
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def file_download_test(request):
     print 'called  file_download_test'
 
@@ -4334,14 +4293,7 @@ def file_download_test(request):
             return response
     raise Http404
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def comm_k_news(request):
     knews_list = []
     if request.is_ajax():
@@ -4521,14 +4473,8 @@ def modi_knews(request, id, use_yn):
 
     return render_to_response('community/comm_modi_knews.html', context)
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def comm_faq(request):
     faq_list = []
     data = json.dumps({'status': "fail"})
@@ -4623,14 +4569,8 @@ def comm_faq(request):
         return HttpResponse(data, 'applications/json')
     return render(request, 'community/comm_faq.html')
 
-<< << << < HEAD
-== == == =
+
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def new_faq(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -4666,14 +4606,7 @@ def new_faq(request):
 
     return render(request, 'community/comm_newfaq.html')
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def modi_faq(request, id, use_yn):
     mod_faq = []
     if request.is_ajax():
@@ -4714,14 +4647,7 @@ def modi_faq(request, id, use_yn):
 
     return render_to_response('community/comm_modifaq.html', variables)
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def comm_faqrequest(request):
     if request.is_ajax():
         aaData = json.dumps({'status': "fail"})
@@ -4757,14 +4683,7 @@ def comm_faqrequest(request):
         return HttpResponse(aaData, 'applications/json')
     return render_to_response('community/comm_faqrequest.html')
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def comm_reference_room(request):
     refer_list = []
     if request.is_ajax():
@@ -4962,14 +4881,7 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def history(request):
     if request.is_ajax():
         result = dict()
@@ -4985,8 +4897,6 @@ def history(request):
     else:
         return render(request, 'history/history.html')
 
-<< << << < HEAD
-== == == =
 @login_required
 def login_history(request):
     if request.is_ajax():
@@ -5005,11 +4915,6 @@ def login_history(request):
 
 
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def history_csv(request):
     filename = 'history_csv_%s.csv' % datetime.datetime.now().strftime('%y%m%d%H%M%S')
     columns, recordsTotal, result_list = history_rows(request)
@@ -5057,14 +4962,7 @@ def history_csv(request):
     except Exception as e:
         print e
 
-<< << << < HEAD
-== == == =
 @login_required
-
->> >> >> > 5
-dec79b478c75eb8d6eb5e88edfaf49e3df95b21
-
-
 def history_rows(request):
     if request.is_ajax():
         is_csv = False
