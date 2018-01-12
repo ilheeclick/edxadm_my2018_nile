@@ -4892,18 +4892,472 @@ def summer_upload(request):
 @login_required
 def history(request):
     if request.is_ajax():
-        result = dict()
-        columns, recordsTotal, result_list = history_rows(request)
-        result['data'] = result_list
-        result['recordsTotal'] = recordsTotal
-        result['recordsFiltered'] = recordsTotal
+        if request.GET.get('d_id') and request.GET.get('d_time'):
 
-        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            d_id = request.GET.get('d_id')
+            d_time = request.GET.get('d_time')
+            status = ''
+            lock = 0
 
-        return HttpResponse(context, 'applications/json')
+            print "--------------------------------->"
+            print d_id
+            print d_time
 
-    else:
-        return render(request, 'history/history.html')
+            r_year = d_time[0:4]
+            r_mon = d_time[4:6]
+            r_day = d_time[6:8]
+            r_hour = d_time[8:10]
+            r_min = d_time[10:12]
+            r_sec = d_time[12:15]
+            print "--------------------------------->"
+
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT password
+                      FROM auth_user_trigger
+                     WHERE created BETWEEN (  '{0}-{1}-{2} {3}:{4}:{5}'
+                                            + INTERVAL 9 HOUR
+                                            - INTERVAL 2 SECOND)
+                                       AND (  '{0}-{1}-{2} {3}:{4}:{5}'
+                                            + INTERVAL 9 HOUR
+                                            + INTERVAL 2 SECOND)
+                '''.format(r_year, r_mon, r_day, r_hour, r_min, r_sec)
+
+                print query
+
+                cur.execute(query)
+                rows = cur.fetchall()
+
+                if len(rows) == 0:
+                    double_lock = 1
+                else:
+                    if rows[0][0] != rows[1][0] :
+                        print "change password !!!"
+                        status += '비밀번호 변경 ("{}" -> "{}")\n'.format(rows[0][0], rows[1][0])
+                    else :
+                        print "no change password !!!"
+                        status += '비밀번호 변경 없음\n'.format(rows[0][0], rows[1][0])
+                        lock = 1
+
+                    if lock == 0:
+                        print "--------------------------> return s"
+                        print "lock = ", lock
+                        print "--------------------------> return e"
+                        return JsonResponse({'return':status})
+
+            with connections['default'].cursor() as cur:
+                query = '''
+                    SELECT name,
+                           gender,
+                           year_of_birth,
+                           level_of_education,
+                           country,
+                           bio
+                      FROM auth_userprofile_trigger
+                     WHERE created BETWEEN (  '{0}-{1}-{2} {3}:{4}:{5}'
+                                            + INTERVAL 9 HOUR
+                                            - INTERVAL 2 SECOND)
+                                       AND (  '{0}-{1}-{2} {3}:{4}:{5}'
+                                            + INTERVAL 9 HOUR
+                                            + INTERVAL 2 SECOND)
+                '''.format(r_year, r_mon, r_day, r_hour, r_min, r_sec)
+
+                print query
+
+                cur.execute(query)
+                rows = cur.fetchall()
+
+                if len(rows) == 0 and double_lock == 1:
+                    return JsonResponse({'return':'fail'})
+
+
+                if rows[0][0] != rows[1][0] :
+                    print "change name !!!"
+                    status += '이름 변경 ("{}" -> "{}")\n'.format(rows[0][0], rows[1][0])
+                if rows[0][1] != rows[1][1] :
+                    print "change gender !!!"
+                    status += '성별 변경 ("{}" -> "{}")\n'.format(rows[0][1], rows[1][1])
+                if rows[0][2] != rows[1][2] :
+                    print "change year_of_birth !!!"
+                    status += '생년월일 변경 ("{}" -> "{}")\n'.format(rows[0][2], rows[1][2])
+                if rows[0][3] != rows[1][3] :
+                    print "change level_of_education !!!"
+                    status += '학력 변경 ("{}" -> "{}")\n'.format(rows[0][3], rows[1][3])
+                if rows[0][4] != rows[1][4] :
+                    print "change country !!!"
+                    status += '도시 변경 ("{}" -> "{}")\n'.format(rows[0][4], rows[1][4])
+                if rows[0][5] != rows[1][5] :
+                    print "change bio !!!"
+                    status += 'bio 변경 ("{}" -> "{}")\n'.format(rows[0][5], rows[1][5])
+
+                print status
+            print "--------------------------------->"
+
+            return JsonResponse({'return':status})
+
+        startDt = request.GET.get('startDt')
+        endDt = request.GET.get('endDt')
+        startDt = startDt.replace('/', '-')
+        endDt = endDt.replace('/', '-')
+
+        system = request.GET.get('system')
+        func = request.GET.get('func')
+        oper = request.GET.get('oper')
+
+        print "----------------------------> s"
+        print "startDt = ",startDt
+        print "endDt = ",endDt
+        print "system = ",system
+        print "func = ",func
+        print "oper = ",oper
+        print "----------------------------> e"
+
+        with connections['default'].cursor() as cur:
+            query = '''
+                  SELECT id,
+                         system,
+                         func,
+                         oper,
+                         target,
+                         search,
+                         count,
+                         ip,
+                         username,
+                         action_time,
+                         concat(id,
+                                '+',
+                                content,
+                                '+',
+                                action_time,
+                                '+',
+                                func,
+                                '+',
+                                oper)
+                            AS content
+                    FROM (SELECT id,
+                                 system,
+                                 func,
+                                 oper,
+                                 ''
+                                    AS target,
+                                 search,
+                                 count,
+                                 ip,
+                                 username,
+                                 action_time,
+                                 CASE
+                                    WHEN filename = '' AND rolename = '' THEN role
+                                    WHEN role = '' AND rolename = '' THEN filename
+                                    WHEN role = '' AND filename = '' THEN rolename
+                                    ELSE ''
+                                 END
+                                    AS content
+                            FROM (SELECT a.id,
+                                         a.action_time,
+                                         a.user_id,
+                                         a.content_type_id,
+                                         a.object_id,
+                                         a.object_repr,
+                                         a.change_message,
+                                         @v1 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('count', a.change_message),
+                                                      LOCATE('ip', a.change_message))
+                                            AS v1,
+                                         @v2 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('ip', a.change_message),
+                                                      LOCATE('system', a.change_message))
+                                            AS v2,
+                                         @v3 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('path', a.change_message),
+                                                      LOCATE('query', a.change_message))
+                                            AS v3,
+                                         @v4 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('method', a.change_message),
+                                                      LOCATE('}', a.change_message))
+                                            AS v4,
+                                         @v5 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('filename', a.change_message),
+                                                      LOCATE('method', a.change_message))
+                                            AS v5,
+                                         @v6 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('role', a.change_message),
+                                                      LOCATE('method', a.change_message))
+                                            AS v6,
+                                         @v7 :=
+                                            SUBSTRING(
+                                               a.change_message,
+                                               LOCATE('rolename', a.change_message),
+                                               LOCATE('unique_student_identifier',
+                                                      a.change_message))
+                                            AS v7,
+                                         @v8 :=
+                                            SUBSTRING(a.change_message,
+                                                      LOCATE('q=', a.change_message),
+                                                      LOCATE('method', a.change_message))
+                                            AS v8,
+                                         CASE
+                                            WHEN concat(
+                                                    '',
+                                                    SUBSTRING(@v1, 9, LOCATE(',', @v1) - 9) * 1) =
+                                                 SUBSTRING(@v1, 9, LOCATE(',', @v1) - 9)
+                                            THEN
+                                               SUBSTRING(@v1, 9, LOCATE(',', @v1) - 9)
+                                         END
+                                            AS count,
+                                         SUBSTRING(@v2, 7, LOCATE(',', @v2) - 8)
+                                            AS ip,
+                                         SUBSTRING(@v8, 3, LOCATE(',', @v8) - 4)
+                                            AS search,
+                                         SUBSTRING(@v3, 10, LOCATE(',', @v3) - 11)
+                                            AS path,
+                                         SUBSTRING(@v4, 11, LOCATE('}', @v4) - 12)
+                                            AS method,
+                                         SUBSTRING(@v5, 14, LOCATE('}', @v5) - 15)
+                                            AS filename,
+                                         CASE
+                                            WHEN @v6 LIKE '%staff%' THEN 'staff'
+                                            WHEN @v6 LIKE '%instructor%' THEN 'instructor'
+                                            WHEN @v6 LIKE '%beta%' THEN 'beta'
+                                            ELSE ''
+                                         END
+                                            AS role,
+                                         CASE
+                                            WHEN @v7 LIKE '%Admin%' THEN 'Administrator'
+                                            WHEN @v7 LIKE '%Moderator%' THEN 'Moderator'
+                                            WHEN @v7 LIKE '%Community TA%' THEN 'Community TA'
+                                            ELSE ''
+                                         END
+                                            AS rolename,
+                                         CASE
+                                            WHEN a.content_type_id = 3
+                                            THEN
+                                               'Admin'
+                                            WHEN a.content_type_id = 311
+                                            THEN
+                                               'Insight'
+                                            WHEN     a.content_type_id != 3
+                                                 AND a.content_type_id != 311
+                                            THEN
+                                               'K-MOOC'
+                                         END
+                                            AS system,
+                                         b.username,
+                                         CASE
+                                            WHEN a.content_type_id = 292
+                                            THEN
+                                               '회원 정보 리스트'
+                                            WHEN a.content_type_id = 291
+                                            THEN
+                                               '회원 정보 상세'
+                                            WHEN a.content_type_id = 3
+                                            THEN
+                                               '회원 정보 수정'
+                                            WHEN a.content_type_id = 293
+                                            THEN
+                                               '등록관리 - 베타 테스터'
+                                            WHEN a.content_type_id = 309
+                                            THEN
+                                               '등록관리 - 일괄 등록'
+                                            WHEN a.content_type_id = 295
+                                            THEN
+                                               '강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)'
+                                            WHEN a.content_type_id = 306
+                                            THEN
+                                               '강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)'
+                                            WHEN a.content_type_id = 302
+                                            THEN
+                                               '학습자 진도 페이지'
+                                            WHEN a.content_type_id = 308
+                                            THEN
+                                               '문제 풀이 횟수 설정 초기화'
+                                            WHEN a.content_type_id = 298
+                                            THEN
+                                               '익명 학습자 아이디 CSV 파일'
+                                            WHEN a.content_type_id = 304
+                                            THEN
+                                               '개인정보를 CSV 파일로 다운로드'
+                                            WHEN a.content_type_id = 305
+                                            THEN
+                                               '등록할 수 있는 학습자의 CSV 다운로드'
+                                            WHEN a.content_type_id = 301
+                                            THEN
+                                               '문제 답변 CSV 파일 다운로드'
+                                            WHEN a.content_type_id = 299
+                                            THEN
+                                               '발급된 이수증 조회'
+                                            WHEN a.content_type_id = 300
+                                            THEN
+                                               '발급된 이수증 CSV 파일'
+                                            WHEN a.content_type_id = 303
+                                            THEN
+                                               '등록된 학습자의 프로필 목록'
+                                            WHEN a.content_type_id = 294
+                                            THEN
+                                               '성적 보고서'
+                                            WHEN a.content_type_id = 307
+                                            THEN
+                                               '문항 성적 보고서 생성'
+                                            WHEN a.content_type_id = 296
+                                            THEN
+                                               'ORA 데이터 보고 생성하기'
+                                            WHEN a.content_type_id = 297
+                                            THEN
+                                               '파일 다운로드'
+                                         END
+                                            AS func,
+                                         CASE
+                                            WHEN a.action_flag = 0 THEN '조회'
+                                            WHEN a.action_flag = 1 THEN '생성'
+                                            WHEN a.action_flag = 2 THEN '수정'
+                                            WHEN a.action_flag = 3 THEN '삭제'
+                                         END
+                                            AS oper
+                                    FROM django_admin_log AS a
+                                         JOIN auth_user AS b ON a.user_id = b.id
+                                   WHERE     a.id > 200
+                                         AND content_type_id NOT IN (188,
+                                                                     62,
+                                                                     76,
+                                                                     270,
+                                                                     254,
+                                                                     194)) m) m2
+            '''
+
+            query_add = "WHERE '{0}' < action_time AND action_time < '{1}'\n".format(startDt, endDt)
+            query += query_add
+
+            # 시스템 검색조건 추가
+            if system != 'all' and system == 'Admin':
+                query_add = "AND system = 'Admin'\n"
+                query += query_add
+
+            elif system != 'all' and system == 'K-MOOC':
+                query_add = "AND system = 'K-MOOC'\n"
+                query += query_add
+
+            elif system != 'all' and system == 'Insight':
+                query_add = "AND system = 'Isight'\n"
+                query += query_add
+
+            # 기능 검색조건 추가
+            if func != 'all' and func == '회원 정보 리스트':
+                query_add = "AND func = '회원 정보 리스트'\n"
+                query += query_add
+
+            elif func != 'all' and func == '회원 정보 상세':
+                query_add = "AND func = '회원 정보 상세'\n"
+                query += query_add
+
+            elif func != 'all' and func == '회원 정보 수정':
+                query_add = "AND func = '회원 정보 수정'\n"
+                query += query_add
+
+            elif func != 'all' and func == '등록관리 - 베타 테스터':
+                query_add = "AND func = '등록관리 - 베타 테스터'\n"
+                query += query_add
+
+            elif func != 'all' and func == '등록관리 - 일괄 등록':
+                query_add = "AND func = '등록관리 - 일괄 등록'\n"
+                query += query_add
+
+            elif func != 'all' and func == '강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)':
+                query_add = "AND func = '강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)'\n"
+                query += query_add
+
+            elif func != 'all' and func == '강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)':
+                query_add = "AND func = '강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)'\n"
+                query += query_add
+
+            elif func != 'all' and func == '학습자 진도 페이지':
+                query_add = "AND func = '학습자 진도 페이지'\n"
+                query += query_add
+
+            elif func != 'all' and func == '문제 풀이 횟수 설정 초기화':
+                query_add = "AND func = '문제 풀이 횟수 설정 초기화'\n"
+                query += query_add
+
+            elif func != 'all' and func == '익명 학습자 아이디 CSV 파일':
+                query_add = "AND func = '익명 학습자 아이디 CSV 파일'\n"
+                query += query_add
+
+            elif func != 'all' and func == '개인정보를 CSV 파일로 다운로드':
+                query_add = "AND func = '개인정보를 CSV 파일로 다운로드'\n"
+                query += query_add
+
+            elif func != 'all' and func == '등록할 수 있는 학습자의 CSV 다운로드':
+                query_add = "AND func = '등록할 수 있는 학습자의 CSV 다운로드'\n"
+                query += query_add
+
+            elif func != 'all' and func == '문제 답변 CSV 파일 다운로드':
+                query_add = "AND func = '문제 답변 CSV 파일 다운로드'\n"
+                query += query_add
+
+            elif func != 'all' and func == '발급된 이수증 조회':
+                query_add = "AND func = '발급된 이수증 조회'\n"
+                query += query_add
+
+            elif func != 'all' and func == '발급된 이수증 CSV 파일':
+                query_add = "AND func = '발급된 이수증 CSV 파일'\n"
+                query += query_add
+
+            elif func != 'all' and func == '등록된 학습자의 프로필 목록':
+                query_add = "AND func = '등록된 학습자의 프로필 목록'\n"
+                query += query_add
+
+            elif func != 'all' and func == '성적 보고서':
+                query_add = "AND func = '성적 보고서'\n"
+                query += query_add
+
+            elif func != 'all' and func == '문항 성적 보고서 생성':
+                query_add = "AND func = '문항 성적 보고서 생성'\n"
+                query += query_add
+
+            elif func != 'all' and func == 'ORA 데이터 보고 생성하기':
+                query_add = "AND func = 'ORA 데이터 보고 생성하기'\n"
+                query += query_add
+
+            elif func != 'all' and func == '파일 다운로드':
+                query_add = "AND func = '파일 다운로드'\n"
+                query += query_add
+
+            # 기능 검색조건 추가
+            if oper != 'all' and oper == '조회':
+                query_add = "AND oper = '조회'\n"
+                query += query_add
+            elif oper != 'all' and oper == '생성':
+                query_add = "AND oper = '생성'\n"
+                query += query_add
+            elif oper != 'all' and oper == '수정':
+                query_add = "AND oper = '수정'\n"
+                query += query_add
+            elif oper != 'all' and oper == '삭제':
+                query_add = "AND oper = '삭제'\n"
+                query += query_add
+
+            # 정렬 조건 추가
+            query_add = "ORDER BY action_time DESC"
+            query += query_add
+
+            print "---------------------------------> s"
+            print query
+            print "---------------------------------> e"
+
+            cur.execute(query)
+            rows = cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
+            result = dict()
+            result['data'] = result_list
+            context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+            return HttpResponse(context, 'applications/json')
+
+    return render(request, 'history/history.html')
 
 
 @login_required
@@ -4970,356 +5424,6 @@ def history_csv(request):
 
     except Exception as e:
         print e
-
-
-@login_required
-def history_rows(request):
-    if request.is_ajax():
-        is_csv = False
-    else:
-        is_csv = True
-
-    page_no = request.GET.get('page_no')
-    page_length = request.GET.get('page_length')
-    start_no = 0
-
-    system = request.GET.get('system')
-    operation = request.GET.get('operation')
-    func = request.GET.get('func')
-    func_detail = request.GET.get('func_detail')
-    user_id = request.GET.get('user_id')
-    target_id = request.GET.get('target_id')
-    # search_string = urllib.quote('검색').encode('utf8')
-
-    print '--------------------------- DEBUG'
-    print "page_no = ",page_no
-    print "page_length = ",page_length
-    print "start_no = ",start_no
-    print "system = ",system
-    print "operation = ",operation
-    print "func = ",func
-    print "func_detail = ",func_detail
-    print "user_id = ",user_id
-    print "target_id = ",target_id
-    print '--------------------------- DEBUG'
-
-    if page_length == '-1' or is_csv:
-        page_length = '999999'
-    else:
-        start_no = int(page_no) * int(page_length)
-
-    # ----- 메인 쿼리 ----- (start)#
-    with connections['default'].cursor() as cur:
-        query_arr = []
-        query_arr.append("""
-            SELECT SQL_CALC_FOUND_ROWS
-                     b.content_type_id, b.id, date_format(if(b.content_type_id = '311', adddate(b.action_time, interval 9 hour), b.action_time), '%Y/%m/%d %H:%i:%s') action_time,
-                     a.app_label,
-                     b.user_id,
-                     (select username from auth_user where id = b.user_id) username,
-                     b.object_id, b.object_repr,
-                     b.change_message,
-                     b.action_flag
-                FROM django_content_type a, django_admin_log b, auth_user c
-               WHERE     a.id = b.content_type_id
-                         and b.user_id = c.id
-                     AND (a.app_label = 'auth' OR a.model = 'custom')
-                     and b.id > 247
-        """)
-    # ----- 메인 쿼리 ----- (end)#
-
-        # ----- 쿼리 추가 로직 -----------------------------> (start)
-        # "시스템 > 전체" 검색
-        if system:
-            if system == 'a': # "시스템 > Admin"
-                query_arr.append(" and a.id = 3 ")
-            elif system == 'k': # "시스템 > K-MOOC"
-                query_arr.append(" and a.id not in (3, 311) ")
-            elif system == 'i': # "시스템 > Insight"
-                query_arr.append(" and a.id = 311 ")
-
-        # "수행업무" 검색 ------------------------------ (start)
-        # 조회(0)
-        # 생성(1)
-        # 수정(2)
-        # 삭제(3)
-        # "수행업무" 검색 ------------------------------ (end)
-        if operation:
-            query_arr.append(" and b.action_flag = %s " % operation)
-
-        # "기능" 검색 ------------------------------ (start)
-        # 회원 정보 리스트 (292)
-        # 회원 정보 상세 (291)
-        # 회원 정보 수정 (3)
-        # 등록관리 - 베타 테스터(293)
-        # 등록관리 - 일괄 등록(309)
-        # 강좌 운영팀 관리 (게시판 관리자 토의 진행자 게시판 조교)(295)
-        # 강좌 운영팀 관리 (운영팀,교수자베타 테스터)(306)
-        # 학습자 진도 페이지(302)
-        # 문제 풀이 횟수 설정 초기화(308)
-        # 익명 학습자 아이디 CSV 파일(298)
-        # 개인정보를 CSV 파일로 다운로드(304)
-        # 등록할 수 있는 학습자의 CSV 다운로드(305)
-        # 문제 답변 CSV 파일 다운로드(301)
-        # 발급된 이수증 조회(299)
-        # 발급된 이수증 CSV 파일(300)
-        # 등록된 학습자의 프로필 목록(303)
-        # 성적 보고서(294)
-        # 문항 성적 보고서 생성(307)
-        # ORA 데이터 보고 생성하기(296)
-        # 파일 다운로드(297)
-        # "기능" 검색 ------------------------------ (end)
-        if func:
-            query_arr.append(" and a.id = %s " % func)
-
-        # 작동안함
-        if func_detail:
-            query_arr.append(" and b.action_flag = %s " % func_detail)
-
-        # "접속자 아이디" 검색
-        if user_id:
-            query_arr.append(" and (c.id = '{user_id}' or c.username like '%{user_id}%')".format(user_id=user_id))
-
-        # 작동안함
-        if target_id:
-            if func in ['3', '295', '306']:
-                query_arr.append(" and b.object_repr like '%%%s%%' " % target_id)
-            elif func in ['291']:
-                query_arr.append(
-                    " and b.change_message like concat('%%',(select id from auth_user where username = '%s'),'%%') " % target_id)
-
-        # 페이지 선택 (10, 20, 50, 999999)
-        query_arr.append("""
-            ORDER BY b.action_time DESC, b.id desc
-               LIMIT {start_no}, {page_length}
-        """.format(start_no=start_no, page_length=page_length))
-
-        # 쿼리 최종 생성
-        query = ''.join(query_arr)
-        # ----- 쿼리 추가 로직 -----------------------------> (end)
-
-        print "---------------------------------------------------------------> query s"
-        print query
-        print "---------------------------------------------------------------> query e"
-
-        cur.execute(query)
-        rows = cur.fetchall()
-        columns = [col[0] for col in cur.description]
-
-        print "---------------------------------------------------------------> columns s"
-        print columns
-        print "---------------------------------------------------------------> columns e"
-
-        cur.execute('SELECT found_rows();')
-        recordsTotal = cur.fetchone()[0]
-
-        print "---------------------------------------------------------------> recordsTotal s"
-        print 'recordsTotal = ', recordsTotal
-        print "---------------------------------------------------------------> recordsTotal e"
-
-        result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
-
-        print "---------------------------------------------------------------> result_list s"
-        print result_list
-        print "---------------------------------------------------------------> result_list e"
-
-        """
-        content_type_id 에 따른 기능 구분 추가
-        [306]강좌 운영팀 관리 (운영팀 - staff, 교수자 - instructor, 베타 테스터 - beta)
-        [295]강좌 운영팀 관리 (게시판 관리자 - Administrator, 토의 진행자 - Moderator, 게시판 조교 - Community TA)
-        """
-
-        # auth_user_trigger 쿼리
-        diff_query1 = '''
-              SELECT id,
-                     username,
-                     first_name,
-                     last_name,
-                     email,
-                     password,
-                     is_staff,
-                     is_active,
-                     is_superuser
-                FROM auth_user_trigger
-               WHERE id = %s
-                     AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
-                                     AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2 SECOND)
-            ORDER BY action;
-        '''
-
-        # auth_userprofile_trigger 쿼리
-        diff_query2 = '''
-              SELECT id,
-                     user_id,
-                     name,
-                     language,
-                     location,
-                     courseware,
-                     gender,
-                     mailing_address,
-                     year_of_birth,
-                     level_of_education,
-                     goals,
-                     allow_certificate,
-                     country,
-                     city,
-                     bio,
-                     profile_image_uploaded_at
-                FROM auth_userprofile_trigger
-               WHERE     user_id = %s
-                     AND created BETWEEN adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL -2 SECOND)
-                                     AND adddate(str_to_date(%s, '%%Y/%%m/%%d %%H:%%i:%%s'), INTERVAL 2 SECOND)
-            ORDER BY action;
-        '''
-
-        # 1번 함수 -----------------------------------------------------------------------------------------------> (s)
-        def git_diff_dict(columns, rows):
-            return_dict = dict()
-            if columns is None or rows is None:
-                pass
-
-            elif not rows or len(rows) < 2:
-                pass
-
-            else:
-                check_list = [dict(zip(columns, row)) for row in rows]
-
-                for column in columns:
-                    if column == 'password':
-                        continue
-
-                    if not str(check_list[0][column]).replace('None', '') == str(check_list[1][column]).replace('None',
-                                                                                                                ''):
-                        return_dict[auth_dict[column]] = '"%s" > "%s"' % (check_list[0][column], check_list[1][column])
-
-            return return_dict
-        # 1번 함수 -----------------------------------------------------------------------------------------------> (e)
-
-        # 2번 함수 -----------------------------------------------------------------------------------------------> (s)
-        def git_diff_password(columns, rows):
-            password_dict = dict()
-            if columns is None or rows is None:
-                pass
-
-            elif not rows or len(rows) < 2:
-                pass
-
-            else:
-                check_list = [dict(zip(columns, row)) for row in rows]
-
-                for column in columns:
-                    if not check_list[0][column] == check_list[1][column]:
-                        password_dict[auth_dict[column]] = '"%s" > "%s"' % (
-                            check_list[0][column], check_list[1][column])
-
-            return password_dict
-        # 2번 함수 -----------------------------------------------------------------------------------------------> (e)
-
-        """
-        result_list example
-
-        {'username': 'kmoocstaff5',
-         'action_time': '2018/01/09 01:20:34',
-         'user_id': '174',
-         'content_type_id': '3',
-         'action_flag': '2',
-         'object_repr': 'redukyonaver',
-         'object_id': '1341',
-         'change_message': "{'count': 1,
-                             'ip': '10.0.2.2',
-                             'system': 'K-MOOC',
-                             'query': {u'password1': u'1111',
-                                       u'csrfmiddlewaretoken': u'As62gf1QwJ4s3Te27OPeUS1Vfd1PIVez',
-                                       u'password2': u'1111'},
-                             'path': u'/admin/auth/user/1341/password/',
-                             'message': u'password \\uc774/\\uac00 \\ubcc0\\uacbd\\ub418\\uc5c8\\uc2b5\\ub2c8\\ub2e4.',
-                             'method': 'POST'}",
-         'app_label': 'auth',
-         'id': '3124'}
-        """
-
-        for item in result_list:
-            content_type_id = item['content_type_id']
-            action_flag = item['action_flag']
-            action_time = item['action_time']
-
-            change_message_dict = get_change_message_dict(item['change_message'])
-
-            print "---------------------------------------------------------------> change_message_dict s"
-            print change_message_dict
-            print "---------------------------------------------------------------> change_message_dict e"
-
-            # 회원정보 수정의 경우 변경점을 찾아서 추가한다.
-            diff_result = {}
-            diff_result_string = ''
-
-            if content_type_id == '3' and action_flag == '2':
-                check_id = item['object_id']
-
-                # 비밀번호를 변경하는 화면은 회원정보 수정과 별개로 구성되어있음
-                # 비밀번호 변경의 경우와 아닌경우를 분기
-                query_string_dict = change_message_dict['query'] if change_message_dict.has_key('query') else dict()
-
-                if query_string_dict.has_key('password1') and query_string_dict.has_key('password2'):
-                    cur.execute(diff_query1, [check_id, action_time, action_time])
-                    columns1 = [col[0] for col in cur.description]
-                    diff_rows1 = cur.fetchall()
-                    diff_result.update(git_diff_password(columns1, diff_rows1)) #<--------------- 2번 함수
-
-                    for index, key in enumerate(diff_result.keys()):
-                        diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
-
-                else:
-                    cur.execute(diff_query1, [check_id, action_time, action_time])
-                    columns1 = [col[0] for col in cur.description]
-                    diff_rows1 = cur.fetchall()
-                    diff_result.update(git_diff_dict(columns1, diff_rows1)) #<--------------- 1번 함수
-                    cur.execute(diff_query2, [check_id, action_time, action_time])
-                    columns2 = [col[0] for col in cur.description]
-                    diff_rows2 = cur.fetchall()
-                    diff_result.update(git_diff_dict(columns2, diff_rows2))
-
-                    for index, key in enumerate(diff_result.keys()):
-                        diff_result_string += ('' if index == 0 else ', ') + key + " : " + diff_result[key]
-
-            object_repr_dict = get_object_repr_dict(item['object_repr'])
-
-            # 기능 구분에 따라 시스템 표시 구분
-            item['system'] = get_system_name(content_type_id)
-
-            # 기능 구분별 상세구분 표시 내용 추가
-            # 개인정보 수정의 경우 수정 내역을 표시
-            if content_type_id in ['2', '3']:
-                content_detail = diff_result_string
-            else:
-                content_detail = get_content_detail(content_type_id, object_repr_dict, change_message_dict)
-
-            item['content_type_detail'] = content_detail
-            item['search_string'] = get_searcy_string(content_type_id, change_message_dict)
-
-            if content_type_id in ['293', '309']:
-                beta_testers = object_repr_dict['identifiers']
-                targets = beta_testers.replace('[', '').replace("u'", "").replace('\'', '')
-            else:
-                targets = get_target_id(content_type_id, object_repr_dict)
-
-            item['target_id'] = targets
-            item['content_type_id'] = content_type_dict[content_type_id]
-            item['action_flag'] = action_flag_dict[action_flag]
-            item['ip'] = change_message_dict['ip'] if 'ip' in change_message_dict else '-'
-            item['cnt'] = (change_message_dict['count'] if isinstance(change_message_dict['count'],
-                                                                             int) else '-') if 'count' in change_message_dict and content_type_id not in [
-                '303',
-                '304'] else '-'
-
-            print "---------------------------------------------------------------> return s"
-            print columns
-            print recordsTotal
-            print result_list
-            print "---------------------------------------------------------------> return e"
-
-    return columns, recordsTotal, result_list
-
 
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     if not content_type_id:

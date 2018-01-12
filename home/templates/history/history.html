@@ -1,363 +1,354 @@
 {% extends "container/main_base.html" %}
 {% block pagetitlename %}접속이력{% endblock %}
 {% block pagetitlename_header %}접속이력{% endblock %}
-{% block script %}{% endblock %}
-
 {% block script_down %}
-    <style type="text/css">
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-        div.dataTables_info {
-            width: 40%;
-        }
+<style type="text/css">
 
-        div.dataTables_paginate .paginate_button,
-        div.dataTables_paginate .paginate_active {
-            border: 0px solid #ddd;
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            padding: 5px 13px;
-            cursor: pointer;
-            *cursor: hand;
-        }
+.pop-layer .pop-container {
+  padding: 20px 25px;
+}
 
-        div.dataTables_paginate .paginate_button {
-            background-color: #fff;
-            color: #777;
+.pop-layer p.ctxt {
+  color: #666;
+  line-height: 25px;
+}
 
-        }
+.pop-layer .btn-r {
+  width: 100%;
+  margin: 10px 0 20px;
+  padding-top: 10px;
+  border-top: 1px solid #DDD;
+  text-align: right;
+}
 
-        div.dataTables_paginate .paginate_button.current {
-            background-color: #0088cc;
-            color: #fff;
+.pop-layer {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 410px;
+  height: auto;
+  background-color: #fff;
+  border: 5px solid #3571B5;
+  z-index: 10;
+}
 
-        }
+.dim-layer {
+  display: none;
+  position: fixed;
+  _position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
 
-        div.dataTables_paginate .paginate_button:hover {
-            background-color: #ccc;
-        }
+.dim-layer .dimBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: .5;
+  filter: alpha(opacity=50);
+}
 
-        div.dataTables_paginate .paginate_active {
-            background-color: #99B3FF;
-        }
+.dim-layer .pop-layer {
+  display: block;
+}
 
-        .dataTables_paginate {
-            height: 22px;
-            line-height: 22px;
-        }
+a.btn-layerClose {
+  display: inline-block;
+  height: 25px;
+  padding: 0 14px 0;
+  border: 1px solid #304a8a;
+  background-color: #3f5a9d;
+  font-size: 13px;
+  color: #fff;
+  line-height: 25px;
+}
 
-    </style>
+a.btn-layerClose:hover {
+  border: 1px solid #091940;
+  background-color: #1f326a;
+  color: #fff;
+}
 
-    <script>
-        $(document).ready(function () {
-            console.log('dataTable version ' + $.fn.dataTable.version);
+    #startDt {
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+        margin-bottom: 15px;
+    }
+    #endDt {
+        float: left;
+        width: 150px;
+        margin-right: 50px;
+    }
 
-            $("input, select").keyup(function (e) {
-                if (e.keyCode == 13)
-                    search();
-            });
+    #name_search {
+        width: 300px;
+    }
+    #org_search {
+        float: left;
+        width: 310px;
+        margin-right:50px;
+    }
+    #code_search {
+        width: 300px;
+        margin-left:5px;
+    }
+    #m_submit {
+        float: right;
+        margin-right: 30px;
+        margin-top: 27px;
+    }
+    .search_c{
+        margin-top:5px;
+    }
 
-            setDataTable();
-            inputFuncChange();
-        });
+    #system {
+        margin-bottom: 15px;
+    }
+    #datatable-ajax_wrapper{
+        margin-top:15px;
+    }
 
-        function inputFuncChange() {
-            $("#func").change(function () {
-                var func_val = eval($(this).val());
+</style>
 
+<script>
+    // 달력 관련 소스
+    function dateMinus(days)
+    {
+        var nday = new Date();
+        nday.setDate(nday.getDate() - days);
+        var yy = nday.getFullYear();
+        var mm = nday.getMonth()+1;
+        var dd = nday.getDate()+1;
 
-                $("#func_detail").val("");
-                $("#func_detail option:not([value=''])").remove();
+        if( mm<10) mm="0"+mm;
+        if( dd<10) dd="0"+dd;
+        return yy + "/" + mm + "/" + dd;
+    }
 
-                $("#func_detail").prop("disabled", true);
-                $("#target_id").prop("disabled", true);
+    $(function () {
+        $("#startDt").datepicker({dateFormat: 'yy/mm/dd'});
+        $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("yy/mm/dd", minValue);
+            minValue.setDate(minValue.getDate());
+            $("#endDt").datepicker("option", "minDate", minValue);
+        })
+    });
 
-                switch (func_val) {
-                    case 3:
-                        $("#target_id").prop("disabled", false);
-                        break;
-                    case 291:
-                        $("#target_id").prop("disabled", false);
-                        break;
-                    case 295:
-                        $("#func_detail").prop("disabled", false);
-                        $("#target_id").prop("disabled", false);
+    function submit_click(){
+        var table = $('#datatable-ajax').DataTable();
+        table.ajax.reload();
+    }
 
-                        // 게시판 관리자 토의 진행자 게시판 조교
-                        options = {
-                            'Administrator': '게시판 관리자',
-                            'Moderator': '토의 진행자',
-                            'Community TA': '게시판 커뮤니티 조교',
-                        }
-                        $.each(options, function (key, value) {
-                            $("#func_detail").append($('<option>', {
-                                value: key,
-                                text: value
-                            }));
-
-                        })
-
-                        break;
-                    case 306:
-                        $("#func_detail").prop("disabled", false);
-                        $("#target_id").prop("disabled", false);
-
-                        // 게시판 관리자 토의 진행자 게시판 조교
-                        options = {
-                            'staff': '운영팀',
-                            'instructor': '교수자',
-                            'beta': '베타 테스터',
-                        }
-
-                        $("#func_detail").append($('<option>', {
-                            value: key,
-                            text: value
-                        }));
-
-                        break;
-                    default:
-
-
-                        break;
-                }
-            });
-
-        }
-
-        function search() {
+    $(document).ready(function () {
+        $("#m_submit").click(function () {
             var table = $('#datatable-ajax').DataTable();
             table.ajax.reload();
-        }
+        });
 
-        function buildSearchData() {
-            var table = $("#datatable-ajax").DataTable();
-            var info = table.page.info();
-            var system = $("#system").val();
-            var operation = $("#operation").val();
-            var func = $("#func").val();
-            var func_detail = $("#func_detail").val();
-            var user_id = $("#user_id").val();
-            var target_id = $("#target_id").val();
-
-            var obj = {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                org: $("#org").val(),
-                course: $("#course").val(),
-                run: $("#run").val(),
-                page_no: info.page,
-                page_length: info.length,
-                system: system,
-                operation: operation,
-                func: func,
-                func_detail: func_detail,
-                user_id: user_id,
-                target_id: target_id
+        $("*").keydown(function (event) {
+            if (event.which === 13) {
+                submit_click();
             }
+        });
 
-            return obj
+        $("#endDt").val(dateMinus(0));
+        $("#startDt").val(dateMinus(30));
+
+        setDataTable();
+    });
+
+    function hello(d_id, d_content, d_time, d_func, d_oper){
+        //console.log(d_id);
+        //console.log(d_content);
+        //console.log(d_time);
+        //console.log(d_func);
+        //console.log(d_oper);
+
+        $.get( "/manage/history", {
+            d_id: d_id,
+            d_time: d_time
+        })
+          .done(function( data ) {
+              if(data.return == 'fail'){
+                  swal("변경 내용", "변경 내용이 데이터베이스에 기록되지 않았습니다", "error");
+                  //swal('변경 내용', '변경 내용이 데이터베이스에 기록되지 않았습니다');
+              }
+              else{
+                  swal('변경 내용', data.return);
+              }
+          });
+    }
+
+    function hello2(d_content) {
+        swal('생성 파일', d_content);
+    }
+
+    function search() {
+        var table = $('#datatable-ajax').DataTable();
+        table.ajax.reload();
+    }
+
+    function buildSearchData() {
+        //var system = $("#system").val();
+
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            startDt: $("#startDt").val(),
+            endDt: $("#endDt").val(),
+            system : $("#system").val(),
+            func : $("#func").val(),
+            oper : $("#oper").val(),
+
         }
+        return obj
+    }
 
-        function setDataTable() {
-            var $table = $('#datatable-ajax');
+    function setDataTable() {
+        var $table = $('#datatable-ajax');
 
-            $table.dataTable({
-                dom: 'T<"clear"l><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
-                bProcessing: true,
-                ordering: false,
-                serverSide: true,
-                searching: false,
-                lengthMenu: [
-                    [10, 20, 50, 999999], //key
-                    [10, 20, 50, "All"] //value
-                ],
-                pageLength: 10,
-                ajax: {
-                    url: "/manage/history/",
-                    type: "GET",
-                    dataType: "json",
-                    data: buildSearchData,
-                    dataSrc: function (json) {
-                        return json.data;
+        $table.dataTable({
+            dom: 'T<"clear"l><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: false,
+            serverSide: false,
+            searching: false,
+            lengthMenu: [
+                [10, 20, 50, 999999], //key
+                [10, 20, 50, "All"] //value
+            ],
+            pageLength: 10,
+            ajax: {
+                url: "/manage/history/",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "system"},
+                {data: "func"},
+                {data: "oper"},
+                {data: "search"},
+                {data: "count"},
+                {data: "username"},
+                {data: "ip"},
+                {data: "action_time"},
+                {data: "content"},
+            ],
+            columnDefs: [
+                {targets: 0, visible: true, width: '5%'},
+                {targets: 1, visible: true, width: '10%'},
+                {targets: 2, visible: true, width: '10%'},
+                {targets: 3, visible: true, width: '10%'},
+                {targets: 4, visible: true, width: '3%'},
+                {targets: 5, visible: true, width: '8%'},
+                {targets: 6, visible: true, width: '1%'},
+                {targets: 7, visible: true, width: '12%'},
+                {
+                    targets: 8, visible: true, width: '10%', render: function (data, type) {
+                    tmp = data.split("+");
+                    //console.log("a = " + tmp[0]);
+                    //console.log("b = " + tmp[1]);
+                    //console.log("c = " + tmp[2]);
+
+                    var d_id = tmp[0];
+                    var d_content = tmp[1];
+                    var d_time = tmp[2];
+                    var d_func = tmp[3];
+                    var d_oper = tmp[4];
+
+                    //console.log(d_func);
+                    //console.log(d_oper);
+
+                    if(d_func == '회원 정보 수정'){
+                        d_func = 3 ;
                     }
-                },
-                columns: [
-                    {data: "id", class: "details-control"},
-                    {data: "system", data_value: "user_id"},
-                    {data: "username", data_value: "user_id"},
-                    {data: "action_time", class: "details-control"},
-                    {data: "content_type_id"},
-                    {data: "action_flag"},
-                    {data: "content_type_detail"},
-                    {data: "target_id"},
-                    {data: "search_string"},
-                    {data: "cnt"},
-                    {data: "ip"},
-                ],
-                columnDefs: [
-                    {targets: 0, visible: false,},
-                    {targets: 1, visible: true, width: '6%'},
-                    {targets: 2, visible: true, width: '11%'},
-                    {targets: 3, visible: true, width: '10%'},
-                    {targets: 4, visible: true, width: '17%'},
-                    {targets: 5, visible: true, width: '8%'},
-                    {
-                        targets: 6, visible: true, render: function (data, type, row) {
-                        var data_length = data.length
-                        if (data_length > 25)
-                            return data.substr(0, 25) + ' ...'
-                        else
-                            return data
+                    else if(d_func == '파일 다운로드'){
+                        d_func = 297 ;
                     }
-                    },
-                    {
-                        targets: 7, visible: true, render: function (data, type, row) {
-                        var data_length = data.length
-                        if (data_length > 15)
-                            return data.substr(0, 15) + ' ...'
-                        else
-                            return data
+                    else{
+                        d_func = 'null' ;
                     }
-                    },
-                    {targets: 8, visible: true, width: '10%'},
-                    {targets: 9, visible: true, width: '6%'},
-                    {targets: 10, visible: true, width: '9%'},
-                ],
-                oTableTools: {
-                    sSwfPath: $table.data('swf-path'),
-                    aButtons: [
-                        {
-                            sExtends: 'csv',
-                            sButtonText: 'csv',
-                            fnClick: function () {
-                                var param_json = buildSearchData();
-                                window.open("/manage/csv/history?" + $.param(param_json), "_blank");
-                            }
-                        },
-                        {
-                            sExtends: 'print',
-                            sButtonText: 'Print',
-                            bFooter: false,
-                            sInfo: 'Please press CTR+P to print or ESC to quit'
+
+                    if(d_oper == '수정'){
+                        d_oper = 2 ;
+                    }
+                    else if(d_oper == '생성'){
+                        d_oper = 1 ;
+                    }
+                    else{
+                        d_oper = 'null' ;
+                    }
+
+                    if(d_func == 3 && d_oper == 2){
+
+                        d_time = d_time.toString();
+                        dt = d_time.split(" ");
+                        dt_f = dt[0].split("-");
+                        dt_b = dt[1].split(":");
+                        var d_year = dt_f[0];
+                        var d_mon = dt_f[1];
+                        var d_day = dt_f[2];
+                        var d_hour = dt_b[0];
+                        var d_min = dt_b[1];
+                        var d_sec = dt_b[2];
+                        var full_time = d_year + '' + d_mon + '' + d_day + '' + d_hour + '' + d_min + '' + d_sec;
+
+                        //console.log(full_time);
+
+                        if(d_content == ''){
+                           d_content = 'null'
                         }
-                    ]
-                },
-                paginate: true,
-                pagingType: "full_numbers",
-                language: {
-                    lengthMenu: "_MENU_",
-                    zeroRecords: "조회된 데이터가 없습니다",
-                    info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
-                    infoEmpty: "No records available",
-                    infoFiltered: "(filtered from _MAX_ total records)",
-                    sEmptyTable: "조회된 데이터가 없습니다",
-                    paginate: {
-                        first: "처음",
-                        previous: "이전",
-                        next: "다음",
-                        last: "끝"
+
+                        return '<a onclick="hello(' + d_id + ', ' + d_content + ',' + full_time + ',' + d_func + ',' + d_oper + ');">상세보기</a>';
+                    }
+                    else if(d_func == 297 && d_oper == 1){
+                        return '<a onclick="hello2(\'' + d_content + '\');">상세보기</a>';
+                    }
+                    else{
+                        return '';
                     }
                 },
-
-                //tfooter 활성화 해야 사용 가능.
-                "initComplete": function (settings, json) {
-                    $("table").css({'table-layout': 'fixed'});
-                    $("table td").css({'text-overflow': 'ellipsis', 'overflow': 'hidden'});
-                    $("select[name=datatable-ajax_length]").css({"height": "30px", "margin-top": "5px"});
-
-                    $("#datatable-ajax").before("<span style='float: right; padding-top: 15px;'>* 회원정보 수정 기능의 수정 업무는 업무 내용이 있을시 클릭하여 상세 내역을 확인할수 있습니다.</span>");
-
-                    $('input[type="search"]').attr('placeholder', '검색하세요');
-                    $('input[type="search"]').attr('class', 'form-control');
-                    $('input[type="search"]').css('width', '200px');
-                    //$('#ZeroClipboard_TableToolsMovie_1').css('align','left');
-                    $('#ToolTables_datatable-ajax_0').attr('class', 'btn btn-default');
-                    $('#ToolTables_datatable-ajax_1').attr('class', 'btn btn-default');
-
-                    this.api().columns().every(function (i) {
-                        //if (i == 0){
-                        //	return;
-                        //}
-
-                        var column = this;
-                        var select = $('<select style="width: 100%;"><option value=""></option></select>')
-                                .appendTo($(column.footer()).empty()).select2({
-                                    placeholder: '선택하세요.',
-                                    allowClear: true
-                                }).attr('width', '100%')
-                                .on('change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex(
-                                            $(this).val()
-                                    );
-
-                                    column
-                                            .search(val ? '^' + val + '$' : '', true, false)
-                                            .draw();
-                                });
-
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
-                        });
-                    });
-                }
-            });
-
-            var detailRows = [];
-            $table.on('click', 'tr', function () {
-
-                //$("tr.details").each(function(){
-                //    $(this).removeClass('details');
-                //    $(this).next().remove();
-                //});
-
-                var dt = $('#datatable-ajax').DataTable();
-                var tr = $(this).closest('tr');
-                var row = dt.row(tr);
-
-                //console.log(row.data());
-                //return;
-
-                var idx = $.inArray(tr.attr('id'), detailRows);
-
-                if (row.child.isShown()) {
-                    tr.removeClass('details');
-                    row.child.hide();
-
-                    // Remove from the 'open' array
-                    detailRows.splice(idx, 1);
-                } else {
-                    var detail = format(row.data());
-
-                    console.log(row.data());
-
-                    if (!detail) {
-                        return;
+                },
+            ],
+            oTableTools: {
+                sSwfPath: $table.data('swf-path'),
+                aButtons: [
+                    {
+                        sExtends: 'csv',
+                        sButtonText: 'csv',
+                        fnClick: function () {
+                            var param_json = buildSearchData();
+                            window.open("/manage/csv/history?" + $.param(param_json), "_blank");
+                        }
+                    },
+                    {
+                        sExtends: 'print',
+                        sButtonText: 'Print',
+                        bFooter: false,
+                        sInfo: 'Please press CTR+P to print or ESC to quit'
                     }
+                ]
+            },
+            paginate: true,
+        });
+    }
 
-                    tr.addClass('details');
-                    row.child(format(row.data())).show();
+</script>
 
-                    // Add to the 'open' array
-                    if (idx === -1) {
-                        detailRows.push(tr.attr('id'));
-                    }
-                }
-            });
-        }
-
-        function format(d) {
-            try {
-                if (d.content_type_detail)
-                    return d.content_type_detail;
-                else if (d.target_id)
-                    return d.target_id;
-
-            } catch (e) {
-                console.log(e);
-                return null;
-            }
-        }
-
-
-    </script>
 {% endblock %}
 {% block containor %}
     <!-- start: page -->
@@ -366,16 +357,36 @@
         <header class="panel-heading">
             <div><h2 class="panel-title">접속이력</h2></div>
         </header>
-        <div class="panel-body container-fluid">
+        <div class="panel-body">
+            {% load static %}
+
+            <!-- top menu -->
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label"> 접속 일시 (시작)</label>
+                        <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label"> 접속 일시 (종료)</label>
+                        <input type="text" id="endDt" value="2017/12/07" placeholder="날짜 검색(종료)" class="form-control"/>
+                    </div>
+                </div>
+                <input type="button" class="btn btn-primary" id="m_submit" value="검색">
+            </div>
+
             <div class="row">
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label class="control-label">시스템</label>
                         <select name="system" id="system" class="form-control">
-                            <option value="">전체</option>
-                            <option value="a">Admin</option>
-                            <option value="k">K-MOOC</option>
-                            <option value="i">Insight</option>
+                            <option value="all">전체</option>
+                            <option value="Admin">Admin</option>
+                            <option value="K-MOOC">K-MOOC</option>
+                            <option value="Insight">Insight</option>
                         </select>
                     </div>
                 </div>
@@ -384,113 +395,65 @@
                     <div class="form-group">
                         <label class="control-label">기능</label>
                         <select name="func" id="func" class="form-control">
-                            <option value="">전체</option>
-                            <!--
-                            옵션을 value 순으로 작성하였으나 화면단위로 묶어서 재정렬.
-                            -->
-
-                            <option value="292">회원 정보 리스트</option>
-                            <option value="291">회원 정보 상세</option>
-
-                            <option value="3">회원정보 수정</option>
-
-                            <option value="293">등록관리 - 베타 테스터</option>
-                            <option value="309">등록관리 - 일괄 등록</option>
-
-                            <option value="295">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
-                            <option value="306">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
-
-                            <option value="302">학습자 진도 페이지</option>
-                            <option value="308">문제 풀이 횟수 설정 초기화</option>
-
-                            <option value="298">익명 학습자 아이디 CSV 파일</option>
-
-                            <option value="304">개인정보를 CSV 파일로 다운로드</option>
-                            <option value="305">등록할 수 있는 학습자의 CSV 다운로드</option>
-                            <option value="301">문제 답변 CSV 파일 다운로드</option>
-
-                            <option value="299">발급된 이수증 조회</option>
-                            <option value="300">발급된 이수증 CSV 파일</option>
-                            <option value="303">등록된 학습자의 프로필 목록</option>
-                            <option value="294">성적 보고서</option>
-                            <option value="307">문항 성적 보고서 생성</option>
-                            <option value="296">ORA 데이터 보고 생성하기</option>
-
-                            <option value="297">파일 다운로드</option>
-
+                            <option value="all">전체</option>
+                            <option value="회원 정보 리스트">회원 정보 리스트</option>
+                            <option value="회원 정보 상세">회원 정보 상세</option>
+                            <option value="회원 정보 수정">회원 정보 수정</option>
+                            <option value="등록관리 - 베타 테스터">등록관리 - 베타 테스터</option>
+                            <option value="등록관리 - 일괄 등록">등록관리 - 일괄 등록</option>
+                            <option value="강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)">강좌 운영팀 관리 (게시판 관리자, 토의 진행자, 게시판 조교)</option>
+                            <option value="강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)">강좌 운영팀 관리 (운영팀, 교수자, 베타 테스터)</option>
+                            <option value="학습자 진도 페이지">학습자 진도 페이지</option>
+                            <option value="문제 풀이 횟수 설정 초기화">문제 풀이 횟수 설정 초기화</option>
+                            <option value="익명 학습자 아이디 CSV 파일">익명 학습자 아이디 CSV 파일</option>
+                            <option value="개인정보를 CSV 파일로 다운로드">개인정보를 CSV 파일로 다운로드</option>
+                            <option value="등록할 수 있는 학습자의 CSV 다운로드">등록할 수 있는 학습자의 CSV 다운로드</option>
+                            <option value="문제 답변 CSV 파일 다운로드">문제 답변 CSV 파일 다운로드</option>
+                            <option value="발급된 이수증 조회">발급된 이수증 조회</option>
+                            <option value="발급된 이수증 CSV 파일">발급된 이수증 CSV 파일</option>
+                            <option value="등록된 학습자의 프로필 목록">등록된 학습자의 프로필 목록</option>
+                            <option value="성적 보고서">성적 보고서</option>
+                            <option value="문항 성적 보고서 생성">문항 성적 보고서 생성</option>
+                            <option value="ORA 데이터 보고 생성하기">ORA 데이터 보고 생성하기</option>
+                            <option value="파일 다운로드">파일 다운로드</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <div class="form-group">
-                        <label class="control-label">수행 업무</label>
-                        <select name="operation" id="operation" class="form-control">
-                            <option value="">전체</option>
-                            <option value="0">조회</option>
-                            <option value="1">생성</option>
-                            <option value="2">수정</option>
-                            <option value="3">삭제</option>
+                        <label class="control-label">수행업무</label>
+                        <select name="oper" id="oper" class="form-control">
+                            <option value="all">전체</option>
+                            <option value="조회">조회</option>
+                            <option value="생성">생성</option>
+                            <option value="수정">수정</option>
+                            <option value="삭제">삭제</option>
                         </select>
                     </div>
                 </div>
-
-                <div class="col-sm-1">
-                    <div class="form-group">
-                        <label class="control-label">업무 내용</label>
-                        <select name="func_detail" id="func_detail" class="form-control" disabled>
-                            <option value="">전체</option>
-                        </select>
-                    </div>
-                </div>
-
             </div>
+            <!-- top menu -->
 
-            <br/>
-
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label class="control-label">접속자 아이디</label>
-                        <input type="text" name="user_id" id="user_id" class="form-control">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label class="control-label">대상자 아이디</label>
-                        <input type="text" name="target_id" id="target_id" class="form-control" disabled>
-                    </div>
-                </div>
-            </div>
-
-            <br/>
-
-            <div align="right">
-                <a href="javascript:search();"><input class="btn btn-primary" type="button" id="searchBtn" value="검  색"></a>
-            </div>
-        </div>
-
-        <div class="panel-body">
-            {% load static %}
-            <table class="table table-hover table-striped  table-bordered" id="datatable-ajax"
-                   data-url="/manage/comm_notice" style="width: 100%;"
-                   data-swf-path="{% static 'assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf' %}">
+            <!-- data tables -->
+            <table id="datatable-ajax" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <th>id</th>
                     <th>시스템</th>
-                    <th>접속자 아이디</th>
-                    <th>접속 일시</th>
                     <th>기능</th>
                     <th>수행 업무</th>
-                    <th>업무 내용</th>
-                    <th>대상자 아이디</th>
                     <th>검색어</th>
                     <th>건수</th>
+                    <th>접속자 아이디</th>
                     <th>아이피</th>
+                    <th>접속 일시</th>
+                    <th>업무 내용</th>
                 </tr>
                 </thead>
+                <tbody>
+                </tbody>
             </table>
+            <!-- data tables -->
         </div>
     </section>
 {% endblock %}
