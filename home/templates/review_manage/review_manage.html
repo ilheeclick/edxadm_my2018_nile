@@ -1,0 +1,268 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}리뷰 관리{% endblock %}
+{% block pagetitlename_header %}리뷰 관리{% endblock %}
+{% block script_down %}
+
+<!-- css -->
+<style>
+    .email_title {
+        background-color: #f6f6f6;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        border-bottom: solid black 1px;
+    }
+    .send_day {
+        float: left;
+        margin-right: 20px;
+        margin-top: 5px;
+        font-size: 120%;
+    }
+    .send_day2 {
+        float: left;
+        margin-right: 65px;
+        margin-top: 5px;
+        font-size: 120%;
+    }
+    .send_day3 {
+        float: left;
+        margin-right: 25px;
+        margin-top: 5px;
+        font-size: 120%;
+    }
+    #startDt {
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+    }
+    #endDt {
+        float: left;
+        width: 150px;
+        margin-right: 50px;
+    }
+    #name_search {
+        width: 300px;
+    }
+    #org_search {
+        float: left;
+        width: 310px;
+        margin-right:50px;
+    }
+    #code_search {
+        width: 300px;
+        margin-left:5px;
+    }
+    #m_submit {
+        float: right;
+    }
+    #del{
+        float: right;
+        margin-bottom:10px;
+    }
+    .search_c{
+        margin-top:5px;
+    }
+    #example1_wrapper{
+        margin-top:80px;
+    }
+</style>
+<!-- css -->
+
+<!-- js -->
+<script>
+    function dateMinus(days)
+    {
+        var nday = new Date();  //오늘 날짜..
+        nday.setDate(nday.getDate() - days); //오늘 날짜에서 days만큼을 뒤로 이동
+        var yy = nday.getFullYear();
+        var mm = nday.getMonth()+1;
+        var dd = nday.getDate()+1;
+
+        if( mm<10) mm="0"+mm;
+        if( dd<10) dd="0"+dd;
+        return yy + "/" + mm + "/" + dd;
+    }
+
+    $(function () {
+        $("#startDt").datepicker({dateFormat: 'yy/mm/dd'});
+        $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("yy/mm/dd", minValue);
+            minValue.setDate(minValue.getDate() + 1);
+            $("#endDt").datepicker("option", "minDate", minValue);
+        })
+    });
+
+    function submit_click(){
+        $("#m_submit").click(function () {
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+        });
+    }
+
+    $(document).ready(function () {
+
+        $("#endDt").val(dateMinus(0));
+        $("#startDt").val(dateMinus(30));
+
+        $("input").keydown(function (event) {
+            if (event.which === 13) {
+                var table = $('#example1').DataTable();
+                table.ajax.reload();
+            }
+        });
+
+        setDataTable();
+        submit_click();
+
+        $("#del").click(function () {
+            var inputs = $("input:checked");
+            var len = inputs.length;
+            var del_list = '';
+
+            for(var i=0; i<len; i++){
+                del_list += inputs[i].className + '+'
+            }
+
+            $.get( "/manage/review_manage", {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                del_list: del_list,
+            })
+              .done(function( data ) {
+                var table = $('#example1').DataTable();
+                table.ajax.reload();
+              });
+
+        });
+    });
+
+    function buildSearchData() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            startDt: $("#startDt").val(),
+            endDt: $("#endDt").val(),
+            name_search: $("#name_search").val(),
+            org_search: $("#org_search").val(),
+            code_search: $("#code_search").val(),
+        }
+        return obj
+    }
+
+    function setDataTable() {
+        var $table = $('#example1');
+        $table.dataTable({
+            "order": [[ 0, "desc" ]],
+            dom: '<"toolbar">rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: true,
+            serverSide: false,
+            searching: true,
+            pageLength: 10,
+            ajax: {
+                url: "/manage/review_manage",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "id"},
+                {data: "id"},
+                {data: "detail_name"},
+                {data: "display_name"},
+                {data: "content"},
+                {data: "point"},
+                {data: "good"},
+                {data: "bad"},
+                {data: "username"},
+                {data: "reg_time"},
+            ],
+            columnDefs: [
+            {
+                targets: 0, visible: true, name: "pk", render: function (data, type) {
+                return '<input type="checkbox" class="'+data+'">';
+            },
+            },
+                {targets: 1, visible: true},
+                {targets: 2, visible: true},
+                {targets: 3, visible: true},
+                {targets: 4, visible: true},
+                {targets: 5, visible: true},
+                {targets: 6, visible: true},
+                {targets: 7, visible: true},
+                {targets: 8, visible: true},
+                {targets: 9, visible: true},
+            ],
+            oTableTools: {
+                sSwfPath: $table.data('swf-path'),
+                aButtons: []
+            },
+            paginate: true,
+
+        });
+    }
+function checked_all() {
+    if ($("#check_all").is(":checked")) {
+        $("#example1 tbody input[type=checkbox]:visible").prop("checked", true);
+    } else {
+        $("#example1 tbody input[type=checkbox]:visible").prop("checked", false);
+    }
+}
+</script>
+<!-- js -->
+
+{% endblock %}
+{% block containor %}
+
+    <section class="panel panel-featured ">
+        <div class="email_title"><h2 class="panel-title">리뷰 관리</h2></div>
+        <div class="panel-body" style="padding-top: 0;"> 
+            {% load static %}
+
+            <!-- top menu -->
+            <div class="search_a" style='display:block'>
+                <div class="send_day"> 리뷰 작성일</div>
+                <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
+                <input type="text" id="endDt" value="2017/12/07" placeholder="날짜 검색(종료)" class="form-control"/>
+            </div>
+            <div class="search_b" style='display:block'>
+                <div class="send_day"> 리뷰 내용</div>
+                <input type="text" id="name_search" placeholder="리뷰 검색" class="form-control"/>
+            </div>
+            <input type="button" class="btn btn-primary" id="m_submit" value="검색">
+            <div class="search_c">
+                <div class="send_day2">기관</div>
+                <input type="text" id="org_search" placeholder="기관 검색" class="form-control"/>
+            </div>
+            <div class="search_d">
+                <div class="send_day3">강좌코드</div>
+                <input type="text" id="code_search" placeholder="강좌코드 검색" class="form-control"/>
+            </div>
+            <input type="button" class="btn btn-primary" id="del" value="삭제">
+            <!-- top menu -->
+
+            <!-- data tables -->
+            <table id="example1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th style="width:10px;"><input type="checkbox" onclick="checked_all()" id="check_all"/></th>
+                    <th style="width:10px;">No</th>
+                    <th style="width:110px;">기관명</th>
+                    <th style="width:230px;">강좌명</th>
+                    <th style="width:350px;">리뷰내용</th>
+                    <th style="width:80px;">별점</th>
+                    <th style="width:100px;">좋아요</th>
+                    <th style="width:100px;">싫어요</th>
+                    <th style="width:80px;">등록자</th>
+                    <th style="width:100px;">등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <!-- data tables -->
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}팝업존관리{% endblock %}
+{% block pagetitlename_header %}팝업존관리{% endblock %}
+{% block script_down %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "popup/script/popupZone_add.js" %}
+    </script>
+
+{% endblock %}
+{% block containor %}
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">팝업존관리</h2></div>
+        </header>
+
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="panel-body" align="left" style="padding: 0%; margin: 0;">
+                <div style="float: left; margin-top: 4px">
+                    게시일
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group date">
+                        <input type="text" id="datepicker1"><span class="fa fa-calendar fa-2x"/>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group date">
+                        <input type="text" id="datepicker2"><span class="fa fa-calendar fa-2x"/>
+                    </div>
+                </div>
+                <div style="float: left; margin-top: 4px">
+                    제목
+                </div>
+                <div class="col-sm-3" style="margin-top: 3px">
+                    <div class="form-group date">
+                        <input type="text" id="title">
+                    </div>
+                </div>
+                <div align="right">
+                    <a class="btn btn-success" id="add_notice" href="javascript:Search();">검색</a>
+                </div>
+            </div>
+            <div align="right" style="margin-top: 20px">
+                <a class="btn btn-primary" id="add_notice" href="/manage/modi_popupZone/add">신규등록</a>
+            </div>
+            <table class="table table-hover table-striped  table-bordered" id="datatable33" data-url="/manage/popupZone_db/"
+                   style="width: 100%;">
+                <thead>
+                <tr>
+                    <td>No</td>
+                    <td>No(seq)</td>
+                    <td>제목</td>
+                    <td>등록자</td>
+                    <td>게시시작일</td>
+                    <td>게시종료일</td>
+                    <td>링크타입</td>
+                    <td>링크URL</td>
+                </tr>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

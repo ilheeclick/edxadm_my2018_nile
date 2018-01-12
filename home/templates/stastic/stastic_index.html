@@ -96,6 +96,7 @@
                 url: "/manage/excel_download/" + $("#datepicker").val()
             }).done(function (data) {
                 alert('파일 생성 완료!');
+                alert(data);
                 $("#download").prop("href", data);
                 $("#downloadBtn").click();
                 $("#download").find("img").hide();

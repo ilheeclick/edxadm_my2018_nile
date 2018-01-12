@@ -1,0 +1,124 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}팝업존관리{% endblock %}
+{% block pagetitlename_header %}팝업존관리{% endblock %}
+{% block script %}{% endblock %}
+{% block script_down %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+    <style>
+        div.date {
+            float: left;
+            padding: 3px;
+        }
+    </style>
+
+    <script>
+        {% include "popup/script/popupZone_modi.js" %}
+    </script>
+
+{% endblock %}
+{% block containor %}
+
+    <div class="row">
+        <section class="panel panel-featured ">
+            <header class="panel-heading">
+                <div><h2 class="panel-title">팝업존관리</h2></div>
+            </header>
+
+            <div class="panel-body">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        제 목
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="title">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="Radio_IMAGE" >
+                    <label class="col-sm-2 control-label">
+                        Image file
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <form action="/manage/new_popup/" id="uploadform" method="post"
+                                  enctype="multipart/form-data">
+                                <input name='uploadfile' type="file" id="image_file"/>
+                                <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
+                                       style="display: none"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Link URL
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <div>
+                            <input type="text" class="form-control" id="link_url">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Link Target
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="col-sm-10">
+                        <select style="width: 150px" id="link_target">
+                            <option id="blank" value="_blank">새창열기</option>
+                            <option id="self" value="_self">현재창열기</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        게시기간
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="form-group date"><input type="text" id="start_date" placeholder="시작날짜"><span
+                                class="fa fa-calendar fa-2x"/></div>
+                        <div class="date"><input type="text" id="start_time" placeholder="시작시간" value="12:00"><span
+                                class="fa fa-clock-o fa-2x"/></div>
+                        <div class="date"><b> ~ </b></div>
+                        <div class="form-group date"><input type="text" id="end_date" placeholder="종료날짜"><span
+                                class="fa fa-calendar fa-2x"/></div>
+                        <div class="date"><input type="text" data-format="H:m" id="end_time" placeholder="종료시간"
+                                                 value="12:00"><span class="fa fa-clock-o fa-2x"/></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-3" align="left">
+                        <a class="btn btn-default" href="/manage/popup_add">목록으로</a>
+                    </div>
+                    <div class="col-sm-9" align="right">
+                        <a href="javascript:Del();"><input class="btn btn-default" type="button" id="DelBtn"
+                                                           style="display:none;" value="삭     제"></a>
+                        <a href="javascript:Save_btn();"><input class="btn btn-primary" type="button" id="SaveBtn"
+                                                            value="저     장"></a>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+{% endblock %}

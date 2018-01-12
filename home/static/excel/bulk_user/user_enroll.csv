@@ -1,0 +1,10 @@
+아이디,비밀번호,email,이름(실명),성별,출생년도,최종학력,성별코드,최종학력코드
+abc00001,password01,hong1@daum.net,홍길동,남,1910,학사,m,b
+abc00002,password02,hong2@daum.net,임꺽정,남,1911,석사,m,m
+abc00003,password03,hong3@daum.net,내맘대,남,1912,학사,m,b
+abc00004,password04,hong4@daum.net,서울시,남,1913,박사,m,p
+abc00005,password05,hong5@daum.net,이순신,남,1914,전문학사,m,a
+abc00006,password06,hong6@daum.net,신사임당,여,1915,고등학교 졸업,f,hs
+abc00007,password07,hong7@daum.net,유관순,여,1916,중학교 졸업,f,jhs
+abc00008,password08,hong8@daum.net,세종대왕,남,1917,기타교육,m,other
+abc00009,password09,hong9@daum.net,혁거세,여,1918,중학교 졸업,f,jhs

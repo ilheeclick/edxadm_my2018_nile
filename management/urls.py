@@ -19,16 +19,16 @@ from django.contrib import admin
 
 from home.statistics import statistics_excel
 from home import views
+import tracking_control.views as tracking_view
 from django.contrib.auth import views as auth_views
-
 
 urlpatterns = [
     url(
-        r'^accounts/login/',
+        r'^manage/accounts/login/',
         views.signin,
         name='login'
     ),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/manage/'}, name='logout'),
+    url(r'^manage/logout/$', auth_views.logout, {'next_page': '/manage/'}, name='logout'),
     url(r'^manage/test_index/$', views.test_index),
     url(r'^manage/file_download_test$', views.file_download_test),
 
@@ -68,13 +68,27 @@ urlpatterns = [
     url(r'^manage/comm_k_news/', views.comm_k_news, name='comm_k_news'),
     url(r'^manage/modi_knews/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_knews, name='modi_knews'),
     url(r'^manage/summer_upload/', views.summer_upload, name='summer_upload'),
-    url(r'^manage/new_knews/', views.new_knews, name='new_knews'), # -> new_notice (module)
+    url(r'^manage/new_knews/', views.new_knews, name='new_knews'),  # -> new_notice (module)
 
     # reference_room
     url(r'^manage/comm_reference_room/', views.comm_reference_room, name='comm_reference_room'),
     url(r'^manage/modi_refer/(?P<id>.*?)/(?P<use_yn>.*?)/$', views.modi_refer, name='modi_refer'),
-    url(r'^manage/new_refer/', views.new_refer, name='new_refer'), # -> new_notice (module)
+    url(r'^manage/new_refer/', views.new_refer, name='new_refer'),  # -> new_notice (module)
+
+    # common file upload module
+    url(r'^manage/file_upload/', views.file_upload, name='file_upload'),
     # ---------- board common ---------- #
+
+    # ---------- multiple email ---------- #
+    url(r'^manage/multiple_email/', views.multiple_email, name='multiple_email'),
+    url(r'^manage/multiple_email_new/', views.multiple_email_new, name='multiple_email_new'),
+    url(r'^manage/django_mail/', views.django_mail, name='multiple_email_new'),
+    # ---------- multiple email ---------- #
+
+    # ---------- user enroll ---------- #
+    url(r'^manage/user_enroll/', views.user_enroll, name='user_enroll'),
+    url(r'^manage/download_bulkuser_example/', views.download_bulkuser_example, name='download_bulkuser_example'),
+    # ---------- user enroll ---------- #
 
     # faq
     url(r'^manage/comm_faq/', views.comm_faq, name='comm_faq'),
@@ -92,6 +106,7 @@ urlpatterns = [
 
     # monitoring url
     url(r'^manage/history/', views.history, name='history'),
+    url(r'^manage/login_history/', views.login_history, name='login_history'),
     url(r'^manage/csv/history/', views.history_csv, name='history'),
 
     url(r'^manage/file_delete/', views.file_delete, name='file_delete'),
@@ -103,12 +118,65 @@ urlpatterns = [
     url(r'^manage/popup_db/', views.popup_db, name='popup_db'),
     url(r'^manage/new_popup/', views.new_popup, name='new_popup'),
     url(r'^manage/modi_popup/(?P<id>.*?)/$', views.modi_popup, name='modi_popup'),
-    url(r'^manage/popup_list/', views.popup_list, name='popup_list'),
+    url(r'^manage/popupZone_add/$', views.popupZone_add, name='popupZone_add'),
+    url(r'^manage/modi_popupZone/(?P<id>.*?)/$', views.modi_popupZone, name='modi_popupZone'),
+    url(r'^manage/popupZone_db/', views.popupZone_db, name='popupZone_db'),
+    url(r'^manage/new_popupZone/', views.new_popupZone, name='new_popupZone'),
 
 
-    #history
+
+    #popup index url
+    url(r'^manage/popup_index0/(?P<id>.*?)/(?P<type>.*?)/$', views.popup_index0, name='popup_index0'),
+    url(r'^manage/popup_index1/(?P<id>.*?)/$', views.popup_index1, name='popup_index1'),
+    url(r'^manage/popup_index2/(?P<id>.*?)/$', views.popup_index2, name='popup_index2'),
+    url(r'^manage/popup_index3/(?P<id>.*?)/$', views.popup_index3, name='popup_index3'),
+
+
+    url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
+    url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
+    url(r'^manage/tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
+    # url(r'^manage/filed/$', tracking_view.send_file)
+    url(r'^manage/tracking_log/logdata_add/', tracking_view.data_insert),
+    url(r'^manage/tracking_log/downlist/', tracking_view.log_board, name='log_board'),
+    # multi_site url
+    url(r'^manage/multi_site/$', views.multi_site, name='multi_site'),
+    url(r'^manage/multi_site_db/$', views.multi_site_db, name='multi_site'),
+    url(r'^manage/add_multi_site/(?P<id>.*?)/$', views.add_multi_site, name='add_multi_site'),
+    url(r'^manage/modi_multi_site_db/$', views.modi_multi_site_db, name='modi_multi_site_db'),
+    url(r'^manage/modi_multi_site/(?P<id>.*?)/$', views.modi_multi_site, name='modi_multi_site'),
+    url(r'^manage/manager_list/$', views.manager_list, name='manager_list'),
+    url(r'^manage/manager_db/$', views.manager_db, name='manager_db'),
+    url(r'^manage/course_list/(?P<site_id>.*?)/(?P<org_name>.*?)/$', views.course_list, name='course_list'),
+    url(r'^manage/course_list_db/$', views.course_list_db, name='course_list_db'),
+    url(r'^manage/select_list_db/$', views.select_list_db, name='select_list_db'),
+    url(r'^manage/multisite_course/$', views.multisite_course, name='multisite_course'),
+    url(r'^manage/multisite_org/$', views.multisite_org, name='multisite_org'),
+
+    # course_manage url
+    url(r'^manage/course_manage/$', views.course_manage, name='course_manage'),
+    url(r'^manage/course_db_list/$', views.course_db_list, name='course_db_list'),
+    url(r'^manage/course_db/$', views.course_db, name='course_db'),
+
+    url(r'^manage/code_manage/$', views.code_manage, name='code_manage'),
+    url(r'^manage/group_code/$', views.group_code, name='group_code'),
+    url(r'^manage/detail_code/$', views.detail_code, name='detail_code'),
+    url(r'^manage/group_code_db/$', views.group_code_db, name='group_code_db'),
+    url(r'^manage/detail_code_db/$', views.detail_code_db, name='detail_code_db'),
+
+    url(r'^manage/series_course/$', views.series_course, name='series_course'),
+    url(r'^manage/modi_series/(?P<id>.*?)/$', views.modi_series, name='modi_series'),
+    url(r'^manage/modi_series_course/$', views.modi_series_course, name='modi_series_course'),
+    url(r'^manage/series_list/$', views.series_list, name='series_list'),
+    url(r'^manage/all_course/$', views.all_course, name='all_course'),
+    url(r'^manage/series_course_list_view/(?P<id>.*?)/$', views.series_course_list_view, name='series_course_list_view'),
+    url(r'^manage/series_complete_list_view/(?P<id>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
+    url(r'^manage/series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
+    url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
+    # review_manage url
+    url(r'^manage/review_manage/$', views.review_manage, name='review_manage'),
+
+    # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),
     # url(r'^manage/history_cert/', views.history_cert, name='history_cert'),
-
 ]

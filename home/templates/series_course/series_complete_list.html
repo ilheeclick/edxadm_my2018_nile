@@ -1,0 +1,107 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}시리즈 강좌{% endblock %}
+{% block pagetitlename_header %}시리즈 강좌{% endblock %}
+{% block script_down %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "series_course/script/series_complete_list_datatables.js" %}
+    </script>
+{% endblock %}
+{% block containor %}
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">시리즈 강좌 이수현황</h2></div>
+        </header>
+
+
+        <div class="panel-body" style="padding-top: 0;"> 
+            <h4>강좌명 : 홍길동과 함께 하는 시리즈 강좌</h4><br><br>
+            <a style="float: right" href="javascript:Save1()"><input class="btn btn-primary" type="button"
+                                                                     value="Excel"></a>
+            <table class="table table-hover table-striped  table-bordered" data-url="/manage/group_code/"
+                   id="datatable1">
+                <thead>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>NO</td>
+                    <td>강좌명</td>
+                    <td>Course id</td>
+                    <td>이름</td>
+                    <td>영문아이디</td>
+                    <td>이수번호</td>
+                    <td>이수일</td>
+                </tr>
+                <tbody>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>1</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트6</td>
+                    <td>Test6</td>
+                    <td>6</td>
+                    <td>2017/12/16</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>2</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트5</td>
+                    <td>Test5</td>
+                    <td>5</td>
+                    <td>2017/12/16</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>3</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트4</td>
+                    <td>Test4</td>
+                    <td>4</td>
+                    <td>2017/12/15</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>4</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트3</td>
+                    <td>Test3</td>
+                    <td>3</td>
+                    <td>2017/12/15</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>5</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트2</td>
+                    <td>Test2</td>
+                    <td>2</td>
+                    <td>2017/12/15</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>6</td>
+                    <td>테스트강좌</td>
+                    <td>course-v1:Test1+Test1+Test1</td>
+                    <td>테스트1</td>
+                    <td>Test1</td>
+                    <td>1</td>
+                    <td>2017/12/13</td>
+                </tr>
+
+                </tbody>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

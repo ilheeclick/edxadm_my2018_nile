@@ -1,0 +1,72 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <title>팝업1</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/pop.css' %}">
+</head>
+
+<body>
+{% for pop in pop_list %}
+    <!-- popup1 -->
+    <div class="pop-wrap" style="width: {{ pop.5 }}px">
+
+        <!-- pop-area s -->
+        <div class="pop-area">
+
+            <!-- pop1-top-area s -->
+            <div class="pop-top-area">
+                <!-- pop2-titbar s -->
+                <div class="pop2-titbar">
+
+                </div>
+                <!-- pop1-titbar s -->
+                <div class="pop2_2-titbar">
+                    <p>{{ pop.0 }}</p>
+                </div>
+            </div>
+
+            <!-- pop-body-area s -->
+            <div class="pop-body-area pop2-body-area" style="height: {{ pop.6 }}px">
+
+                <div class="pop1-txtarea">
+
+
+                    <p class="t-gray" id="contents">
+                    </p>
+                </div>
+
+            </div>
+            <div style="text-align: right;/* display: inline-block; */width: 100%;z-index: 9999;position: relative;">
+                <label>
+                    <input id="" name="" type="checkbox" style="vertical-align: middle;">
+                    <span style="font-style:normal; font-size:13px;"><b>{{ pop.4 }} &nbsp;&nbsp;</b></span>
+                </label>
+            <span style="text-align: right;"><a href="javascript:popClose();" title="닫기" style="color: inherit;">[ 닫기
+                ]</a></span>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script>
+        $(document).ready(function () {
+            console.log('Ready!!!');
+        });
+        {% autoescape off %}
+            var contents = "{{ pop.1 }}";
+        {% endautoescape %}
+        $("#contents").html(contents);
+        function popClose() {
+            window.close();
+        }
+    </script>
+    </body>
+{% endfor %}
+
+
+</body>
+</html>

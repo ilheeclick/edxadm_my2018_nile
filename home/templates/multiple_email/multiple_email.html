@@ -1,0 +1,201 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}단체메일{% endblock %}
+{% block pagetitlename_header %}단체메일{% endblock %}
+{% block script_down %}
+
+<!-- css -->
+<style>
+    .search_select {
+        float: left;
+        margin-right: 50px;
+        margin-bottom: 20px;
+    }
+    .email_title {
+        background-color: #f6f6f6;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        border-bottom: solid black 1px;
+    }
+    .send_day {
+        float: left;
+        margin-right: 20px;
+        margin-top: 5px;
+        font-size: 120%;
+    }
+    #startDt {
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+    }
+    #endDt {
+        float: left;
+        width: 150px;
+        margin-right: 50px;
+    }
+    #name_search {
+        float: left;
+        width: 150px;
+    }
+    #m_submit {
+        float: right;
+        margin-top: 10px;
+    }
+    #example1_wrapper{
+        margin-top:80px;
+    }
+</style>
+<!-- css -->
+
+<!-- js -->
+<script>
+    $(function () {
+        $("#startDt").datepicker({dateFormat: 'yy/mm/dd'});
+        $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("yy/mm/dd", minValue);
+            minValue.setDate(minValue.getDate() + 1);
+            $("#endDt").datepicker("option", "minDate", minValue);
+        })
+    });
+
+    $(document).ready(function () {
+        $("#search_mod").change(function () {
+            if ($(this).val() === '0') {
+                $(".search_b").css("display", "none");
+                $(".search_a").css("display", "none");
+            }
+            if ($(this).val() === '1') {
+                $(".search_b").css("display", "none");
+                $(".search_a").css("display", "block");
+            }
+            if ($(this).val() === '2') {
+                $(".search_a").css("display", "none");
+                $(".search_b").css("display", "block");
+            }
+        });
+
+        setDataTable();
+
+        $("#m_submit").click(function () {
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+        });
+    });
+
+    function buildSearchData() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            search_mod: $("#search_mod").val(),
+            startDt: $("#startDt").val(),
+            endDt: $("#endDt").val(),
+            name_search: $("#name_search").val(),
+        }
+        return obj
+    }
+
+    function setDataTable() {
+        var $table = $('#example1');
+        $table.dataTable({
+            "order": [[ 0, "desc" ]],
+            dom: '<"clear">rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: true,
+            serverSide: false,
+            searching: true,
+            pageLength: 10,
+            ajax: {
+                url: "/manage/multiple_email",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "mail_id", class: "details-control"},
+                {data: "gubn", data_value: "user_id"},
+                {data: "username", data_value: "user_id"},
+                {data: "title", class: "details-control"},
+                {data: "regist_date"},
+                {data: "send_count"},
+                {data: "success_count"},
+            ],
+            columnDefs: [
+                {targets: 0, visible: true},
+                {targets: 1, visible: true},
+                {targets: 2, visible: true},
+                {targets: 3, visible: true},
+                {targets: 4, visible: true},
+                {targets: 5, visible: true},
+                {targets: 6, visible: true},
+            ],
+            paginate: true
+        });
+    }
+</script>
+<!-- js -->
+
+{% endblock %}
+{% block containor %}
+
+    <section class="panel panel-featured ">
+        <div class="email_title"><h2 class="panel-title">단체메일 관리</h2></div>
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
+                <a class="btn btn-default" id="add_notice" href="/manage/multiple_email_new">신규등록</a>
+            </div>
+            {% load static %}
+
+            <div class="search_select">
+                <select class="form-control" id="search_mod">
+                    <option value="0">검색조건 선택</option>
+                    <option value="1">발송일자 검색</option>
+                    <option value="2">제목 검색</option>
+                </select>
+
+            </div>
+
+            <div class="search_a" style='display:none'>
+                <div class="send_day"> 발송일자</div>
+                <input type="text" id="startDt" placeholder="날짜검색(시작)" class="form-control"/>
+                <input type="text" id="endDt" placeholder="날짜검색(종료)" class="form-control"/>
+            </div>
+            <div class="search_b" style='display:none'>
+                <div class="send_day"> 제 목</div>
+                <input type="text" id="name_search" placeholder="제목검색" class="form-control"/>
+            </div>
+            <input type="button" class="btn btn-primary" id="m_submit" value="검색">
+
+            <!-- data tables -->
+            <table id="example1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>발송대상자</th>
+                    <th>발송자</th>
+                    <th>제목</th>
+                    <th>발송일시</th>
+                    <th>대상자수</th>
+                    <th>성공건수</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in good %}
+                    <tr>
+                        <td>{{ item.0 }}</td>
+                        <td>{{ item.1 }}</td>
+                        <td>{{ item.2 }}</td>
+                        <td>{{ item.3 }}</td>
+                        <td>{{ item.4 }}</td>
+                        <td>{{ item.5 }}</td>
+                        <td>{{ item.6 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <!-- data tables -->
+        </div>
+    </section>
+{% endblock %}

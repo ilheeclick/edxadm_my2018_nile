@@ -1,0 +1,105 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}강좌 관리{% endblock %}
+{% block pagetitlename_header %}강좌 관리{% endblock %}
+{% block script_down %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% include "course_manage/script/course_manage.js" %}
+    </script>
+{% endblock %}
+{% block containor %}
+    <!-- start: page -->
+    <section class="panel panel-featured ">
+        <header class="panel-heading">
+            <div><h2 class="panel-title">강좌 관리</h2></div>
+        </header>
+
+        <div class="panel-body" style="padding-top: 0;"> 
+            <div class="row">
+                <a href="javascript:search();" align="right"><input class="btn btn-primary" type="button" id="searchBtn"
+                                                                    value="검  색"></a>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <select id="choice" class="form-control" onChange="display_date(this.value)">
+                            <option value="">선택하세요.</option>
+                            <option value="1">수강신청 시작일, 종료일</option>
+                            <option value="2">개강일, 종강일</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group date" style="display: none">
+                        <input type="text" id="datepicker1"><span class="fa fa-calendar fa-2x"/>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group date" style="display: none">
+                        <input type="text" id="datepicker2"><span class="fa fa-calendar fa-2x"/>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">강좌명</label>
+                        <input type="text" id="course_name" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+            <a href="javascript:Del();" style="float:right; margin:0px 30px 0px 5px"><input class="btn btn-default"
+                                                                                            type="button"
+                                                                                            value="삭 제"></a>
+            <a href="javascript:Save();" style="float:right;"><input class="btn btn-primary" type="button" value="저 장"></a>
+            <br>
+            <br>
+
+
+            <table class="table table-hover table-striped  table-bordered" data-url="/manage/course_db_list/"
+                   id="datatable1">
+                <thead>
+                <tr>
+                    <td><input type="checkbox" onclick="checked_all()" id="check_all"/></td>
+                    <td>NO</td>
+                    <td>ID</td>
+                    <td>개발유형</td>
+                    <td>개발년도</td>
+                    <td>개발유형</td>
+                    <td>개발년도</td>
+                    <td>대학명</td>
+                    <td>대분류</td>
+                    <td>중분류</td>
+                    <td>강좌명</td>
+                    <td>기관번호</td>
+                    <td>강좌번호</td>
+                    <td>강좌별운영번호</td>
+                    <td>상태</td>
+                    <td>개설일</td>
+                    <td>수강신청시작일</td>
+                    <td>수강신청마감일</td>
+                    <td>종강일</td>
+                    <td>이수증생성일</td>
+                    <td>교수자</td>
+                    <td>동영상재생시간</td>
+                    <td>주간학습권장시간</td>
+                    <td>총주차</td>
+                    <td>총학습시간</td>
+                    <td>강좌수준</td>
+                </tr>
+                </thead>
+                <tbody id="notice_body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+{% endblock %}

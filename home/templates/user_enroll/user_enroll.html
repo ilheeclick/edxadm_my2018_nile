@@ -1,0 +1,410 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}회원 등록{% endblock %}
+{% block pagetitlename_header %}회원 등록{% endblock %}
+{% block script_down %}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!--css(s)-->
+<style>
+    .email_title {
+        background-color: #f6f6f6;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        border-bottom: solid black 1px;
+    }
+
+    .send_day {
+        float: left;
+        margin-right: 20px;
+        margin-top: 5px;
+        font-size: 120%;
+    }
+
+    #startDt {
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+    }
+    #endDt {
+        float: left;
+        width: 150px;
+        margin-right: 50px;
+    }
+
+    #example1_wrapper{
+        margin-top: 20px;
+    }
+
+    #top_download{
+        float:right;
+        margin-right: 10px;
+    }
+
+    #top_enroll{
+        float:right;
+    }
+    #m_submit{
+        float: right;
+        margin-bottom: 10px;
+    }
+    .panel-body{
+        display:grid;
+    }
+
+    .pop-layer .pop-container {
+      padding: 20px 25px;
+    }
+
+    .pop-layer p.ctxt {
+      color: #666;
+      line-height: 25px;
+    }
+
+    .pop-layer .btn-r {
+      width: 100%;
+      margin: 10px 0 20px;
+      padding-top: 10px;
+      border-top: 1px solid #DDD;
+      text-align: right;
+    }
+
+    .pop-layer {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 60%;
+      width: 410px;
+      height: auto;
+      background-color: #fff;
+      border: 5px solid #3571B5;
+      z-index: 10;
+    }
+
+    .dim-layer {
+      display: none;
+      position: fixed;
+      _position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+    }
+
+    .dim-layer .dimBg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      opacity: .5;
+      filter: alpha(opacity=50);
+    }
+
+    .dim-layer .pop-layer {
+      display: block;
+    }
+
+    .layer_title{
+        margin-bottom: 30px;
+    }
+</style>
+<!--css(e)-->
+
+<!--js(s)-->
+<script>
+    // 달력 관련 소스
+    function dateMinus(days)
+    {
+        var nday = new Date();
+        nday.setDate(nday.getDate() - days);
+        var yy = nday.getFullYear();
+        var mm = nday.getMonth()+1;
+        var dd = nday.getDate()+1;
+
+        if( mm<10) mm="0"+mm;
+        if( dd<10) dd="0"+dd;
+        return yy + "/" + mm + "/" + dd;
+    }
+
+    $(function () {
+        $("#startDt").datepicker({dateFormat: 'yy/mm/dd'});
+        $("#endDt").datepicker({dateFormat: 'yy/mm/dd'}).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("yy/mm/dd", minValue);
+            minValue.setDate(minValue.getDate());
+            $("#endDt").datepicker("option", "minDate", minValue);
+        })
+    });
+
+    // 검색 클릭 시 테이블 동기화
+    function submit_click(){
+            var table = $('#example1').DataTable();
+            table.ajax.reload();
+    }
+
+
+
+    $(document).ready(function () {
+        // 레이어 팝업 이외 요소 클릭 시 레이어 팝업 닫기
+        $("*").click(function (event) {
+             if($(event.target).is('.dimBg')) {
+                 $('.dim-layer').fadeOut()
+             }
+        });
+
+        // ESC -> 레이어 팝업 닫기, ENTER -> 검색
+        $('*').keydown(function (key) {
+            if(key.keyCode == 27) {
+                if ($('.dim-layer').attr('style') == "display: block;") {
+                    $('.dim-layer').fadeOut()
+                }
+            }
+            if(key.keyCode == 13){
+                if ($('.dim-layer').attr('style') != "display: block;") {
+                    submit_click()
+                }
+            }
+        });
+
+        $("#endDt").val(dateMinus(0));
+        $("#startDt").val(dateMinus(30));
+
+        setDataTable();
+
+        // 검색 클릭 시 테이블 동기화
+        $("#m_submit").click(function () {
+            submit_click();
+        });
+    });
+
+    function buildSearchData() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            startDt: $("#startDt").val(),
+            endDt: $("#endDt").val(),
+        }
+        return obj
+    }
+
+    function setDataTable() {
+        var $table = $('#example1');
+        $table.dataTable({
+            "order": [[ 0, "desc" ]],
+            dom: '<"toolbar">rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: true,
+            serverSide: false,
+            searching: true,
+            pageLength: 10,
+            ajax: {
+                url: "/manage/user_enroll",
+                type: "GET",
+                dataType: "json",
+                data: buildSearchData,
+                dataSrc: function (json) {
+                    return json.data;
+                }
+            },
+            columns: [
+                {data: "seq"},
+                {data: "req_org"},
+                {data: "reg_why"},
+                {data: "regist_id"},
+                {data: "regist_date"},
+                {data: "result"},
+            ],
+            columnDefs: [
+                {targets: 0, visible: true},
+                {targets: 1, visible: true},
+                {targets: 2, visible: true},
+                {targets: 3, visible: true},
+                {targets: 4, visible: true},
+                {targets: 5, visible: true},
+            ],
+            oTableTools: {
+                sSwfPath: $table.data('swf-path'),
+                aButtons: []
+            },
+            paginate: true,
+            language: {
+                lengthMenu: "_MENU_",
+                zeroRecords: "조회된 데이터가 없습니다",
+                info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                infoEmpty: "No records available",
+                infoFiltered: "(filtered from _MAX_ total records)",
+                sEmptyTable: "조회된 데이터가 없습니다",
+                paginate: {
+                    first: "처음",
+                    previous: "이전",
+                    next: "다음",
+                    last: "끝"
+                }
+            },
+        });
+    }
+
+    // 등록 버튼 클릭 시 레이어 팝업 띄움
+    $('.btn-example').click(function(){
+        var $href = $(this).attr('href');
+        layer_popup($href);
+    });
+
+    // 레이어 팝업 함수
+    function layer_popup(el){
+
+        var $el = $(el);
+        var isDim = $el.prev().hasClass('dimBg');
+
+        isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
+
+        var $elWidth = ~~($el.outerWidth()),
+            $elHeight = ~~($el.outerHeight()),
+            docWidth = $(document).width(),
+            docHeight = $(document).height();
+
+        if ($elHeight < docHeight || $elWidth < docWidth) {
+            var lock = 0;
+            $el.css({
+                marginTop: -$elHeight /2,
+                marginLeft: -$elWidth/2
+            })
+        } else {
+            $el.css({top: 0, left: 0});
+        }
+
+        // 닫기 버튼 클릭 시
+        $el.find('a.btn-layerClose').click(function(){
+            if (lock == 0){
+                isDim ? $('.dim-layer').fadeOut() : $el.fadeOut();
+                $('#user_org').val('');
+                $('#user_why').val('');
+                $('#user_file').val('');
+                lock = 1;
+                return false;
+            }
+        });
+
+        // 등록 버튼 클릭 시
+        $el.find('a.btn-layerSend').click(function(){
+            if (lock == 0) {
+                if ($('#user_org').val() == "") {
+                    swal("입력 오류", "요청기관 입력을 해주세요!", "info");
+                    return false;
+                }
+                if ($('#user_why').val() == "") {
+                    swal("입력 오류", "등록사유 입력을 해주세요!", "info");
+                    return false;
+                }
+                if ($('#user_file').val() == "") {
+                    swal("입력 오류", "등록파일 등록 해주세요!", "info");
+                    return false;
+                }
+            }
+
+            if (lock == 0) {
+                var formData = new FormData();
+                formData.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                formData.append("user_org", $('#user_org').val());
+                formData.append("user_why", $('#user_why').val());
+                formData.append("user_file", $('#user_file')[0].files[0]);
+                formData.append("user_id", '{{ user.id }}');
+                $.ajax({url: '/manage/user_enroll/',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                success: function(data){
+                            if(data.result == 'success'){
+                                var table = $('#example1').DataTable();
+                                table.ajax.reload();
+                                $('#user_org').val('');
+                                $('#user_why').val('');
+                                $('#user_file').val('');
+                            }
+                         }
+                });
+
+                isDim ? $('.dim-layer').fadeOut() : $el.fadeOut();
+                swal("등록 완료", "처리가 완료되면 리스트에 표시됩니다!", "success");
+                lock = 1;
+                return false;
+            }
+        });
+
+        $('.layer .dimBg').click(function(){
+            $('.dim-layer').fadeOut();
+            return false;
+        });
+    }
+</script>
+<!--js(e)-->
+
+{% endblock %}
+{% block containor %}
+
+<section class="panel panel-featured ">
+    <div class="email_title"><h2 class="panel-title">회원 등록</h2></div>
+    <div class="panel-body" style="padding-top: 0;"> 
+        {% load static %}
+
+        <!--top menu (s)-->
+        <div class="search_a">
+            <div class="send_day"> 처리 일자</div>
+            <input type="text" id="startDt" value="2017/12/07" placeholder="날짜 검색(시작)" class="form-control"/>
+            <input type="text" id="endDt" value="2017/12/07" placeholder="날짜 검색(종료)" class="form-control"/>
+            <input type="button" class="btn btn-success" id="m_submit" value="검색">
+        </div>
+
+        <div class="menu">
+            <a href="#layer2" class="btn-example"><input type="button" class="btn btn-primary" id="top_enroll" value="등록"></a>
+            <a href="/manage/download_bulkuser_example"><input type="button" class="btn btn-primary" id="top_download" value="양식 다운로드"></a>
+        </div>
+        <!--top menu (e)-->
+
+        <!--data tables (s)-->
+        <table id="example1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>요청기관</th>
+                <th>등록사유</th>
+                <th>등록자</th>
+                <th>등록일</th>
+                <th>처리결과</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <!--data tables (e)-->
+    </div>
+</section>
+
+<!--hidden layer popup html (s)-->
+<div class="dim-layer">
+    <div class="dimBg"></div>
+    <div id="layer2" class="pop-layer">
+        <div class="pop-container">
+            <div class="pop-conts">
+                <!--content (s)-->
+                <b><h3 class="layer_title">회원일괄 등록</h3></b>
+                요청기관 <input type="text" id="user_org" class="form-control"/><br>
+                등록사유 <input type="text" id="user_why" class="form-control"/><br>
+                <form id="fileForm" action="/manage/user_enroll/" enctype="multipart/form-data">
+                    등록파일 <input type="file" id="user_file">
+                </form>
+                <div class="btn-r">
+                    <a href="#" class="btn-layerSend"><input type="button" id="user_send" class="btn btn-primary" value="등록"></a>
+                    <a href="#" class="btn-layerClose"><input type="button" class="btn btn-danger" value="닫기"></a>
+                </div>
+                <!--content (e)-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!--hidden layer popup html (e)-->
