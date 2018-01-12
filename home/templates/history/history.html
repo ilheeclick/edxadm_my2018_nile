@@ -118,6 +118,12 @@ a.btn-layerClose:hover {
         margin-top:15px;
     }
 
+    #datatable-ajax_paginate{
+        display:none;
+    }
+    #datatable-ajax_info{
+        display:none;
+    }
 </style>
 
 <script>
@@ -218,7 +224,10 @@ a.btn-layerClose:hover {
         var $table = $('#datatable-ajax');
 
         $table.dataTable({
-            dom: 'T<"clear"l><"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+            dom: '<"toolbar">rt<"bottom"ip><"clear">Bfrtip',
+            buttons: [
+            'csv', 'excel'
+            ],
             bProcessing: true,
             ordering: false,
             serverSide: false,
@@ -324,25 +333,6 @@ a.btn-layerClose:hover {
                 },
                 },
             ],
-            oTableTools: {
-                sSwfPath: $table.data('swf-path'),
-                aButtons: [
-                    {
-                        sExtends: 'csv',
-                        sButtonText: 'csv',
-                        fnClick: function () {
-                            var param_json = buildSearchData();
-                            window.open("/manage/csv/history?" + $.param(param_json), "_blank");
-                        }
-                    },
-                    {
-                        sExtends: 'print',
-                        sButtonText: 'Print',
-                        bFooter: false,
-                        sInfo: 'Please press CTR+P to print or ESC to quit'
-                    }
-                ]
-            },
             paginate: true,
         });
     }
