@@ -3547,27 +3547,40 @@ def test(request):
         return render(request, 'test01.html')
 
 
+@csrf_exempt
 def signin(request):
     form = LoginForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         user = form.authenticate_user()
-        if (user.is_staff == True):
+        if user.is_staff:
             login(request, user)
-            return render(request, 'stastic/stastic_index.html')
-    return render(request, 'registration/login.html', {'form': form})
+            next_url = request.POST.get('next')
+
+            if next_url is None:
+                return render(request, 'stastic/stastic_index.html')
+            else:
+                return redirect(next_url)
+    context = {
+        'form': form,
+        'next': request.GET.get('next')
+    }
+    return render(request, 'registration/login.html', context)
 
 
 @login_required
 def month_stastic(request):
     return render(request, 'stastic/month_stastic.html')
 
+
 # state view
 def mana_state(request):
     return render(request, 'state/mana_state.html')
 
+
 @login_required
 def dev_state(request):
     return render(request, 'state/dev_state.html')
+
 
 # certificate view
 def certificate(request):
@@ -4295,6 +4308,7 @@ def file_download_test(request):
             return response
     raise Http404
 
+
 @login_required
 def comm_k_news(request):
     knews_list = []
@@ -4608,6 +4622,7 @@ def new_faq(request):
 
     return render(request, 'community/comm_newfaq.html')
 
+
 @login_required
 def modi_faq(request, id, use_yn):
     mod_faq = []
@@ -4649,6 +4664,7 @@ def modi_faq(request, id, use_yn):
 
     return render_to_response('community/comm_modifaq.html', variables)
 
+
 @login_required
 def comm_faqrequest(request):
     if request.is_ajax():
@@ -4684,6 +4700,7 @@ def comm_faqrequest(request):
             aaData = json.dumps(list(f_request_list), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(aaData, 'applications/json')
     return render_to_response('community/comm_faqrequest.html')
+
 
 @login_required
 def comm_reference_room(request):
@@ -4883,6 +4900,7 @@ def summer_upload(request):
         return HttpResponse('/manage/home/static/upload/' + filename)
     return HttpResponse('fail')
 
+
 @login_required
 def history(request):
     if request.is_ajax():
@@ -4925,10 +4943,10 @@ def history(request):
                 if len(rows) == 0:
                     double_lock = 1
                 else:
-                    if rows[0][0] != rows[1][0] :
+                    if rows[0][0] != rows[1][0]:
                         print "change password !!!"
                         status += '비밀번호 변경 ("{}" -> "{}")\n'.format(rows[0][0], rows[1][0])
-                    else :
+                    else:
                         print "no change password !!!"
                         status += '비밀번호 변경 없음\n'.format(rows[0][0], rows[1][0])
                         lock = 1
@@ -4937,7 +4955,7 @@ def history(request):
                         print "--------------------------> return s"
                         print "lock = ", lock
                         print "--------------------------> return e"
-                        return JsonResponse({'return':status})
+                        return JsonResponse({'return': status})
 
             with connections['default'].cursor() as cur:
                 query = '''
@@ -4962,32 +4980,31 @@ def history(request):
                 rows = cur.fetchall()
 
                 if len(rows) == 0 and double_lock == 1:
-                    return JsonResponse({'return':'fail'})
+                    return JsonResponse({'return': 'fail'})
 
-
-                if rows[0][0] != rows[1][0] :
+                if rows[0][0] != rows[1][0]:
                     print "change name !!!"
                     status += '이름 변경 ("{}" -> "{}")\n'.format(rows[0][0], rows[1][0])
-                if rows[0][1] != rows[1][1] :
+                if rows[0][1] != rows[1][1]:
                     print "change gender !!!"
                     status += '성별 변경 ("{}" -> "{}")\n'.format(rows[0][1], rows[1][1])
-                if rows[0][2] != rows[1][2] :
+                if rows[0][2] != rows[1][2]:
                     print "change year_of_birth !!!"
                     status += '생년월일 변경 ("{}" -> "{}")\n'.format(rows[0][2], rows[1][2])
-                if rows[0][3] != rows[1][3] :
+                if rows[0][3] != rows[1][3]:
                     print "change level_of_education !!!"
                     status += '학력 변경 ("{}" -> "{}")\n'.format(rows[0][3], rows[1][3])
-                if rows[0][4] != rows[1][4] :
+                if rows[0][4] != rows[1][4]:
                     print "change country !!!"
                     status += '도시 변경 ("{}" -> "{}")\n'.format(rows[0][4], rows[1][4])
-                if rows[0][5] != rows[1][5] :
+                if rows[0][5] != rows[1][5]:
                     print "change bio !!!"
                     status += 'bio 변경 ("{}" -> "{}")\n'.format(rows[0][5], rows[1][5])
 
                 print status
             print "--------------------------------->"
 
-            return JsonResponse({'return':status})
+            return JsonResponse({'return': status})
 
         startDt = request.GET.get('startDt')
         endDt = request.GET.get('endDt')
@@ -4999,11 +5016,11 @@ def history(request):
         oper = request.GET.get('oper')
 
         print "----------------------------> s"
-        print "startDt = ",startDt
-        print "endDt = ",endDt
-        print "system = ",system
-        print "func = ",func
-        print "oper = ",oper
+        print "startDt = ", startDt
+        print "endDt = ", endDt
+        print "system = ", system
+        print "func = ", func
+        print "oper = ", oper
         print "----------------------------> e"
 
         with connections['default'].cursor() as cur:
@@ -5353,6 +5370,7 @@ def history(request):
 
     return render(request, 'history/history.html')
 
+
 @login_required
 def login_history(request):
     if request.is_ajax():
@@ -5417,6 +5435,7 @@ def history_csv(request):
 
     except Exception as e:
         print e
+
 
 def get_content_detail(content_type_id, object_repr_dict, change_message_dict):
     if not content_type_id:
