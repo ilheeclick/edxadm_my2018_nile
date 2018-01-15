@@ -100,8 +100,16 @@
                                     {{ user.username }} 님 환영합니다.
                                     <a href="{% url 'logout' %}">
                                         <button id="logout">로그아웃</button>
-                                         </a>
+                                     </a>
                                 </span>
+
+                        <script>
+                            window.onbeforeunload = function() {
+                                $.post("/logout_time/", {
+                                    csrfmiddlewaretoken:$.cookie('csrftoken')
+                                })
+                            }
+                        </script>
                     </div>
                 </a>
             </div>

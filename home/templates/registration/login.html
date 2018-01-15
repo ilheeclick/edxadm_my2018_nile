@@ -78,7 +78,7 @@
             <div class="panel-body">
                 <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="next" value="{{next}}"/>
+                    <input type="hidden" name="next" value="{{next|default_if_none:''}}"/>
 
                     <div class="form-group mb-lg">
                         <label>Email</label>
@@ -110,6 +110,8 @@
                     {% if form.errors %}
                     <p align="right" style="color: red">email이나 비밀번호가 일치하지 않습니다.</p>
                     {% endif %}
+
+                    <p align="right" id="is_staff" style="color: red;">{{ warning }}</p>
 
                     <div class="row">
                         <div class="col-sm-8"></div>

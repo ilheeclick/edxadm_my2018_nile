@@ -29,6 +29,8 @@ urlpatterns = [
         name='login'
     ),
     url(r'^manage/logout/$', auth_views.logout, {'next_page': '/manage/'}, name='logout'),
+    url(r'^logout/$', views.logout, {'next_page': '/manage/'}, name='logout'),
+    url(r'^logout_time/$', views.logout_time, name='logout_time'),
     url(r'^manage/test_index/$', views.test_index),
     url(r'^manage/file_download_test$', views.file_download_test),
 
@@ -123,14 +125,11 @@ urlpatterns = [
     url(r'^manage/popupZone_db/', views.popupZone_db, name='popupZone_db'),
     url(r'^manage/new_popupZone/', views.new_popupZone, name='new_popupZone'),
 
-
-
-    #popup index url
+    # popup index url
     url(r'^manage/popup_index0/(?P<id>.*?)/(?P<type>.*?)/$', views.popup_index0, name='popup_index0'),
     url(r'^manage/popup_index1/(?P<id>.*?)/$', views.popup_index1, name='popup_index1'),
     url(r'^manage/popup_index2/(?P<id>.*?)/$', views.popup_index2, name='popup_index2'),
     url(r'^manage/popup_index3/(?P<id>.*?)/$', views.popup_index3, name='popup_index3'),
-
 
     url(r'^manage/tracking_log/$', tracking_view.log_download, name='tracking_log'),
     url(r'^manage/tracking_log/date/(?P<date>.*?)/$', tracking_view.logfile_download, name='tracking_log'),
@@ -174,7 +173,9 @@ urlpatterns = [
     url(r'^manage/series_course_list/$', views.series_course_list, name='series_course_list'),
     # review_manage url
     url(r'^manage/review_manage/$', views.review_manage, name='review_manage'),
-
+    url(r'^manage/series_complete_db/$', views.series_complete_db, name='series_complete_db'),
+    # login_history
+    url(r'^manage/login_history/$', views.login_history, name='login_history'),
     # history
     # url(r'^manage/history_auth/', views.history_auth, name='history_auth'),
     # url(r'^manage/history_inst/', views.history_inst, name='history_inst'),

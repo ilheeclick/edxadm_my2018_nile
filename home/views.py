@@ -39,6 +39,30 @@ from django.contrib.auth.decorators import login_required
 from tracking_control.views import oldLog_remove
 import uuid
 import re
+from django.contrib.auth import (
+    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+    logout as auth_logout, update_session_auth_hash,
+)
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
+)
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, QueryDict
+from django.shortcuts import resolve_url
+from django.template.response import TemplateResponse
+from django.utils.deprecation import (
+    RemovedInDjango20Warning, RemovedInDjango110Warning,
+)
+from django.utils.encoding import force_text
+from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.utils.six.moves.urllib.parse import urlparse, urlunparse
+from django.utils.translation import ugettext as _
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -187,6 +211,67 @@ def series_course_list(request):
 
 
 @login_required
+def series_complete_db(request):
+    if request.is_ajax():
+        data = json.dumps({'status': "fail"})
+        login_history_list = []
+
+        if request.GET['method'] == 'list':
+            cur = connection.cursor()
+            query = """
+                        SELECT ab.display_name,
+                               course_id,
+                               aup.name,
+                               au.username,
+                               cg.id,
+                               cg.created_date
+                          FROM (SELECT org,
+                                       display_number_with_default,
+                                       display_name,
+                                       id,
+                                       effort,
+                                       (SELECT Count(*)
+                                          FROM course_overviews_courseoverview b
+                                         WHERE     a.org = b.org
+                                               AND a.display_number_with_default =
+                                                      b.display_number_with_default
+                                               AND a.start >= b.start
+                                               AND a.created >= b.created)
+                                          AS rank
+                                  FROM course_overviews_courseoverview a) ab
+                               JOIN series_course sc
+                                  ON     ab.org = sc.org
+                                     AND ab.display_number_with_default =
+                                            sc.display_number_with_default
+                               JOIN certificates_generatedcertificate cg ON cg.course_id = ab.id
+                               JOIN auth_user au ON au.id = cg.user_id
+                               JOIN auth_userprofile aup ON au.id = aup.user_id
+                         WHERE     rank = 1
+                               AND status = 'downloadable'
+                               AND sc.series_seq = 2
+                               AND sc.delete_yn = 'N';
+			        """
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            index_num = len(row)
+            for login in row:
+                value_list = []
+                value_list.append(index_num)
+                value_list.append(login[0])
+                value_list.append(login[1])
+                value_list.append(login[2])
+                value_list.append(login[3])
+                value_list.append(login[4])
+                value_list.append(login[5])
+                index_num = index_num - 1
+                login_history_list.append(value_list)
+
+            data = json.dumps(list(login_history_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+
+
+@login_required
 def series_course_list_db(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
@@ -219,7 +304,7 @@ def series_course_list_db(request):
                 cur.execute(query)
                 add_check = cur.fetchall()
                 cur.close()
-
+                course_name = series_index[0][2].replace('\'', '\"')
                 if (add_check[0][0] == 0):
                     cur = connection.cursor()
                     query = '''
@@ -235,13 +320,12 @@ def series_course_list_db(request):
                                  '{3}',
                                  '{4}',
                                  '{5}');
-                            '''.format(series_id, series_index[0][0], series_index[0][1], series_index[0][2], user_id,
+                            '''.format(series_id, series_index[0][0], series_index[0][1], course_name, user_id,
                                        user_id)
-
                     cur.execute(query)
                     cur.close()
 
-                else:
+                elif (add_check[0][0] == 1):
                     cur = connection.cursor()
                     query = '''
                         SELECT count(*)
@@ -263,10 +347,11 @@ def series_course_list_db(request):
                                  WHERE     series_seq = '{1}'
                                        AND org = '{2}'
                                        AND display_number_with_default = '{3}'
-                                       AND delete_yn ='Y';
                                 '''.format(user_id, series_id, series_index[0][0], series_index[0][1])
                         cur.execute(query)
                         cur.close()
+                    else:
+                        print 'TTTTTTTT'
 
             data = json.dumps({'status': "success"})
 
@@ -392,6 +477,9 @@ def all_course(request):
                            AND org LIKE '{1}') b
              WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
               '''.format(Test, org, Test, org)
+
+        print '======================'
+        print query
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -1162,7 +1250,8 @@ def course_db_list(request):
                 multi_num = multi[6].split('+')
                 multi_org = multi_num[0].split(':')
 
-                cursor = db.modulestore.active_versions.find_one({'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
+                cursor = db.modulestore.active_versions.find_one(
+                    {'org': multi_org[1], 'course': multi_num[1], 'run': multi_num[2]})
                 pb = cursor.get('versions').get('published-branch')
                 cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)})
                 blocks = cursor.get('blocks')
@@ -2399,7 +2488,7 @@ def new_popupZone(request):
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
-            return HttpResponse(data, 'applications/json')
+            return course_db_list(data, 'applications/json')
 
         elif request.POST['method'] == 'modi':
             title = request.POST.get('title')
@@ -3554,17 +3643,109 @@ def signin(request):
         user = form.authenticate_user()
         if user.is_staff:
             login(request, user)
+            s = request.session
+            key = s.session_key
+            client_ip = request.META['REMOTE_ADDR']
+
+            cur = connection.cursor()
+            query = """
+                        SELECT email
+                          FROM auth_user
+                         WHERE username = '{0}';
+			        """.format(user)
+            cur.execute(query)
+            email = cur.fetchall()
+            cur.close()
+
+            cur = connection.cursor()
+            query = """
+                        INSERT INTO admin_login_log(service_gubun,
+                            session_id,
+                            user_id,
+                            email,
+                            login_date,
+                            user_ip)
+                     VALUES ('02',
+                             '{0}',
+                             '{1}',
+                             '{2}',
+                             now(),
+                             '{3}');
+			        """.format(key, user.id, email[0][0], client_ip)
+            cur.execute(query)
+            cur.close()
+
             next_url = request.POST.get('next')
 
-            if next_url is None:
-                return render(request, 'stastic/stastic_index.html')
-            else:
+            if next_url:
                 return redirect(next_url)
+            else:
+                return render(request, 'stastic/stastic_index.html')
+
+        else:
+            context = dict()
+            context['warning'] = 'Staff 권한이 없습니다!'
+            return render(request, 'registration/login.html', context)
     context = {
         'form': form,
         'next': request.GET.get('next')
     }
     return render(request, 'registration/login.html', context)
+
+
+def logout_time(request):
+    if request.method == 'POST':
+        print "logout_flag========================"
+
+        s = request.session
+        key = s.session_key
+
+        cur = connection.cursor()
+        query = """
+                    UPDATE admin_login_log
+                       SET logout_date = now()
+                     WHERE session_id = '{0}';
+                """.format(key)
+        cur.execute(query)
+        cur.close()
+
+        return HttpResponse('success', 'applications/json')
+
+
+def logout(request, next_page=None,
+           template_name='registration/logged_out.html',
+           redirect_field_name=REDIRECT_FIELD_NAME,
+           extra_context=None):
+    """
+    Logs out the user and displays 'You are logged out' message.
+    """
+    logout_time(request)
+    auth_logout(request)
+    if next_page is not None:
+        next_page = resolve_url(next_page)
+
+    if (redirect_field_name in request.POST or
+                redirect_field_name in request.GET):
+        next_page = request.POST.get(redirect_field_name,
+                                     request.GET.get(redirect_field_name))
+        # Security check -- don't allow redirection to a different host.
+        if not is_safe_url(url=next_page, host=request.get_host()):
+            next_page = request.path
+
+    if next_page:
+        # Redirect to this page until the session has been cleared.
+        return HttpResponseRedirect(next_page)
+
+    current_site = get_current_site(request)
+    context = {
+        'site': current_site,
+        'site_name': current_site.name,
+        'title': _('Logged out')
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+
+    return TemplateResponse(request, template_name, context)
 
 
 @login_required
@@ -5374,18 +5555,70 @@ def history(request):
 @login_required
 def login_history(request):
     if request.is_ajax():
-        result = dict()
-        columns, recordsTotal, result_list = history_rows(request)
-        result['data'] = result_list
-        result['recordsTotal'] = recordsTotal
-        result['recordsFiltered'] = recordsTotal
+        data = json.dumps({'status': "fail"})
+        login_history_list = []
 
-        context = json.dumps(result, cls=DjangoJSONEncoder, ensure_ascii=False)
+        if request.GET['method'] == 'login_history':
+            system = request.GET.get('system')
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
 
-        return HttpResponse(context, 'applications/json')
+            if (start_date == '' or end_date == ''):
+                cur = connection.cursor()
+                query = """
+                             SELECT cd.detail_name,
+                             au.username,
+                             al.login_date,
+                             al.logout_date,
+                             al.user_ip
+                        FROM admin_login_log al
+                             JOIN code_detail cd ON al.service_gubun = cd.detail_code
+                             JOIN auth_user au ON al.user_id = au.id
+                       WHERE group_code = '014' AND detail_code LIKE '%{0}%'
+                    ORDER BY seq DESC;
+                        """.format(system)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+                for login in row:
+                    value_list = []
+                    value_list.append(login[0])
+                    value_list.append(login[1])
+                    value_list.append(login[2])
+                    value_list.append(login[3])
+                    value_list.append(login[4])
+                    login_history_list.append(value_list)
+            else:
+                cur = connection.cursor()
+                query = """
+                             SELECT cd.detail_name,
+                             au.username,
+                             al.login_date,
+                             al.logout_date,
+                             al.user_ip
+                        FROM admin_login_log al
+                             JOIN code_detail cd ON al.service_gubun = cd.detail_code
+                             JOIN auth_user au ON al.user_id = au.id
+                       WHERE group_code = '014' AND detail_code LIKE '%{0}%'
+                              AND al.login_date >= date('{1}')
+                              AND al.login_date <= date('{2}')
+                    ORDER BY seq DESC;
+                        """.format(system, start_date, end_date)
+                cur.execute(query)
+                row = cur.fetchall()
+                cur.close()
+                for login in row:
+                    value_list = []
+                    value_list.append(login[0])
+                    value_list.append(login[1])
+                    value_list.append(login[2])
+                    value_list.append(login[3])
+                    value_list.append(login[4])
+                    login_history_list.append(value_list)
 
-    else:
-        return render(request, 'history/login_history.html')
+            data = json.dumps(list(login_history_list), cls=DjangoJSONEncoder, ensure_ascii=False)
+        return HttpResponse(data, 'applications/json')
+    return render(request, 'history/login_history.html')
 
 
 @login_required

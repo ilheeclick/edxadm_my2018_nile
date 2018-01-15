@@ -24,6 +24,8 @@ INSTALLED_APPS = (
     'tracking_control',
 )
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
