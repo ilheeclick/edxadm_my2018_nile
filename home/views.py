@@ -1916,6 +1916,7 @@ def add_multi_site(request, id):
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
 
+@login_required
 def modi_multi_site(request, id):
     mod_multi = []
     if request.is_ajax():
@@ -3072,6 +3073,7 @@ def new_popup(request):
     return render(request, 'popup/popup_add.html')
 
 
+@login_required
 def stastic_index(request):
     return render(request, 'stastic/stastic_index.html')
 
@@ -3877,7 +3879,7 @@ def uni_certificate(request):
 
 
 # community view
-
+@login_required
 def comm_notice(request):
     noti_list = []
     if request.is_ajax():
@@ -5628,6 +5630,7 @@ auth_dict = {
 
 
 # community view
+@login_required
 def comm_mobile(request):
     if request.is_ajax():
         if request.GET['method'] == 'mobile_list':
@@ -5891,6 +5894,7 @@ def file_download(request, file_name):
 
 
 # ---------- 2017.12.04 ahn jin yong ---------- #
+@login_required
 def review_manage(request):
     if request.is_ajax():
 
