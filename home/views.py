@@ -526,7 +526,7 @@ def series_list(request):
 
         for i in xrange(0, len(rows)):
             query = '''
-                SELECT effort
+                SELECT IFNULL(effort, 0) effort
                   FROM (SELECT org,
                                display_number_with_default,
                                id,
@@ -559,7 +559,7 @@ def series_list(request):
                     time_flag = series_time.replace(':', '+')
                     time_flag_index = time_flag.split('+')
 
-                if (len(series_time_index) == 3 and '' not in time_flag_index):
+                if (len(series_time_index) == 3 and  '' not in time_flag_index):
                     all_learning_hour = series_time_index[0].split(':')
                     learning_hour = int(all_learning_hour[0]) * 60 * int(series_time_index[1])
                     learning_minut = int(all_learning_hour[1]) * int(series_time_index[1])
@@ -1055,14 +1055,14 @@ def course_db_list(request):
                                      END
                                         create_year,
                                          d.course_no,
-                                         e.detail_name,
+                                         IFNULL(e.detail_name, a.org) detail_name,
                                          a.display_name,
                                          a.id,
-                                         a.created,
-                                         a.enrollment_start,
-                                         a.enrollment_end,
-                                         a.end,
-                                         c.cert_date,
+                                         DATE_FORMAT(a.created,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1096,20 +1096,20 @@ def course_db_list(request):
                                             ON a.id = c.course_id
                                          LEFT OUTER JOIN code_detail e ON e.detail_code = a.org
                                    WHERE     start >=
-                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL -1 MONTH),
                                                             '%Y-%m-%d')
                                          AND end <=
-                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                                DATE_FORMAT(DATE_ADD(now(), INTERVAL 1 MONTH),
                                                             '%Y-%m-%d')
                                          AND display_name like '%{0}%'
                                 GROUP BY a.id) a,
                                (SELECT @rn := count(*) + 1
                                   FROM course_overviews_courseoverview
                                  WHERE     start >=
-                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 MONTH),
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL -1 MONTH),
                                                           '%Y-%m-%d')
                                        AND end <=
-                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL 6 MONTH),
+                                              DATE_FORMAT(DATE_ADD(now(), INTERVAL 1 MONTH),
                                                           '%Y-%m-%d')
                                        AND display_name like '%{1}%') b;
                 '''.format(course_name, course_name)
@@ -1127,14 +1127,14 @@ def course_db_list(request):
                                      END
                                         create_year,
                                          d.course_no,
-                                         e.detail_name,
+                                         IFNULL(e.detail_name, a.org) detail_name,
                                          a.display_name,
                                          a.id,
-                                         a.created,
-                                         a.enrollment_start,
-                                         a.enrollment_end,
-                                         a.end,
-                                         c.cert_date,
+                                         DATE_FORMAT(a.created,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1188,14 +1188,14 @@ def course_db_list(request):
                                      END
                                         create_year,
                                          d.course_no,
-                                         e.detail_name,
+                                         IFNULL(e.detail_name, a.org) detail_name,
                                          a.display_name,
                                          a.id,
-                                         a.created,
-                                         a.enrollment_start,
-                                         a.enrollment_end,
-                                         a.end,
-                                         c.cert_date,
+                                         DATE_FORMAT(a.created,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
+                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1288,13 +1288,6 @@ def course_db_list(request):
                 cur.execute(query)
                 m_clsf_h = cur.fetchall()
                 cur.close()
-                print 'query======='
-                print query
-                print 'course_manage==================='
-                print clsf_h
-                print m_clsf_h
-                print len(clsf_h)
-                print len(m_clsf_h)
                 if (len(clsf_h) == 0):
                     value_list.append("")
                 elif (len(m_clsf_h) == 0):
@@ -1967,7 +1960,7 @@ def multi_site_db(request):
                        site_code,
                        site_url,
                        username,
-                       regist_date
+                       DATE_FORMAT(regist_date,'%Y/%m/%d %H:%i:%s')
                   FROM multisite a JOIN auth_user b on a.regist_id= b.id,
                        (SELECT @rn := count(*) + 1
                           FROM multisite where delete_yn = 'N') b
@@ -5568,8 +5561,8 @@ def login_history(request):
                 query = """
                              SELECT cd.detail_name,
                              au.username,
-                             al.login_date,
-                             al.logout_date,
+                             DATE_FORMAT(al.login_date,'%Y/%m/%d %H:%i:%s'),
+                             DATE_FORMAT(al.logout_date,'%Y/%m/%d %H:%i:%s'),
                              al.user_ip
                         FROM admin_login_log al
                              JOIN code_detail cd ON al.service_gubun = cd.detail_code

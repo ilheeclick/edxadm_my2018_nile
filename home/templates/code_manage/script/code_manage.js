@@ -5,7 +5,7 @@ $(document).ready(function () {
 function setDataTable1() {
     var $table = $('#datatable1');
     $table.dataTable({
-        dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
+        dom: '<"toolbar"><"search"Bf>rt<"bottom"ip><"clear">',
         scrollX: true,
         bProcessing: true,
         ordering: false,
@@ -94,7 +94,7 @@ function setDataTable1() {
 };
 var flag = 0;
 var fnInitComplete1 = function () {
-    $('.buttons-html5').attr('class', 'btn btn-primary');
+    $('.buttons-html5').attr('class', 'btn btn-default');
     $('.form-control').change(function () {
         $(this).parent().parent().find('input:checkbox').prop("checked", true);
     });
@@ -102,6 +102,9 @@ var fnInitComplete1 = function () {
         setDataTable2();
         flag += 1;
     }
+    $('input[type="search"]').attr('placeholder', '검색하세요');
+    $('input[type="search"]').attr('class', 'form-control');
+    $('input[type="search"]').css('width', '200px').css('margin-left', '30px');
 }
 
 function buildSearchData1() {
@@ -208,7 +211,7 @@ function setDataTable2() {
     });
 }
 var fnInitComplete2 = function () {
-    $('.buttons-html5').attr('class', 'btn btn-primary');
+    $('.buttons-html5').attr('class', 'btn btn-default');
     $('.form-control').change(function () {
         $(this).parent().parent().find('input:checkbox').prop("checked", true);
     });

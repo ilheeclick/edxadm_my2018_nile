@@ -77,7 +77,20 @@ function setDataTable1() {
                 filename: $("#pagetitle").text() + '-강좌관리',
             }
         ],
-
+        language: {
+                    lengthMenu: "_MENU_",
+                    zeroRecords: "조회된 데이터가 없습니다",
+                    info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                    infoEmpty: "No records available",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    sEmptyTable: "조회된 데이터가 없습니다",
+                    paginate: {
+                        first: "처음",
+                        previous: "이전",
+                        next: "다음",
+                        last: "끝"
+                    }
+                },
         "initComplete": fnInitComplete
     });
 }
@@ -120,7 +133,7 @@ var fnInitComplete = function () {
     $('.choice_2').html(html2);
 
 
-    $('.buttons-html5').attr('class', 'btn btn-primary');
+    $('.buttons-html5').attr('class', 'btn btn-default');
     $('input[type="checkbox"]').css("float", "right");
 
     $("#notice_body input[type=checkbox]:unchecked").each(function () {

@@ -47,6 +47,20 @@
                     "visible": false,
                 }
             ],
+            language: {
+                    lengthMenu: "_MENU_",
+                    zeroRecords: "조회된 데이터가 없습니다",
+                    info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                    infoEmpty: "No records available",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    sEmptyTable: "조회된 데이터가 없습니다",
+                    paginate: {
+                        first: "처음",
+                        previous: "이전",
+                        next: "다음",
+                        last: "끝"
+                    }
+                },
             "initComplete": function (settings, json) {
                 $('input[type="search"]').attr('placeholder', '검색하세요');
                 $('input[type="search"]').attr('class', 'form-control');
@@ -102,7 +116,6 @@
     });
 
 }).apply(this, [jQuery]);
-
 
 
 
