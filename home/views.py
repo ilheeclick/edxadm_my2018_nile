@@ -2317,16 +2317,26 @@ def popupZone_db(request):
                              title,
                              username,
                              CONCAT(SUBSTRING((start_date), 1, 4),
-                                    "-",
+                                    "/",
                                     SUBSTRING((start_date), 5, 2),
-                                    "-",
-                                    SUBSTRING((start_date), 7, 2))
+                                    "/",
+                                    SUBSTRING((start_date), 7, 2),
+                                    " ",
+                                    SUBSTRING((start_time), 1, 2),
+                                    ":",
+                                    SUBSTRING((start_time), 3, 2),
+                                    ":00")
                                 start_date,
                              CONCAT(SUBSTRING((end_date), 1, 4),
-                                    "-",
+                                    "/",
                                     SUBSTRING((end_date), 5, 2),
-                                    "-",
-                                    SUBSTRING((end_date), 7, 2))
+                                    "/",
+                                    SUBSTRING((end_date), 7, 2),
+                                    " ",
+                                    SUBSTRING((end_time), 1, 2),
+                                    ":",
+                                    SUBSTRING((end_time), 3, 2),
+                                    ":00")
                                 end_date,
                              CASE
                                 WHEN link_target = '_blank' THEN '새창열기'
@@ -2828,45 +2838,56 @@ def popup_db(request):
         if request.GET['method'] == 'popup_list':
             cur = connection.cursor()
             query = """
-                   SELECT @rn := @rn - 1 rn,
-                         popup_id,
-                         CASE
-                            WHEN popup_type = 'H' THEN 'HTML'
-                            WHEN popup_type = 'I' THEN 'Image'
-                         END
-                            popup_type,
-                         title,
-                         username,
-                         CONCAT(SUBSTRING((start_date), 1, 4),
-                          "-",
-                          SUBSTRING((start_date), 5, 2),
-                          "-",
-                          SUBSTRING((start_date), 7, 2))
-                         start_date,
-                         CONCAT(SUBSTRING((end_date), 1, 4),
-                          "-",
-                          SUBSTRING((end_date), 5, 2),
-                          "-",
-                          SUBSTRING((end_date), 7, 2))
-                         end_date,
-                         CASE
-                            WHEN link_type = '0' THEN '없음'
-                            WHEN link_type = '1' THEN '전체링크'
-                            WHEN link_type = '2' THEN '이미지맵'
-                         END
-                            link_type,
-                         link_url,
-                         CASE
-                            WHEN use_yn = 'Y' THEN '사용함'
-                            WHEN use_yn = 'N' THEN '사용안함'
-                         END
-                            use_yn
-                    FROM popup pu
-                         JOIN auth_user au ON au.id = pu.regist_id,
-                         (SELECT @rn := count(*) + 1
-                            FROM popup WHERE delete_yn = 'N') x
-                            WHERE pu.delete_yn = 'N'
-                ORDER BY regist_date DESC;
+                     SELECT @rn := @rn - 1 rn,
+                             popup_id,
+                             CASE
+                                WHEN popup_type = 'H' THEN 'HTML'
+                                WHEN popup_type = 'I' THEN 'Image'
+                             END
+                                popup_type,
+                             title,
+                             username,
+                             CONCAT(SUBSTRING((start_date), 1, 4),
+                                    "/",
+                                    SUBSTRING((start_date), 5, 2),
+                                    "/",
+                                    SUBSTRING((start_date), 7, 2),
+                                    " ",
+                                    SUBSTRING((start_time), 1, 2),
+                                    ":",
+                                    SUBSTRING((start_time), 3, 2),
+                                    ":00")
+                                start_date,
+                             CONCAT(SUBSTRING((end_date), 1, 4),
+                                    "/",
+                                    SUBSTRING((end_date), 5, 2),
+                                    "/",
+                                    SUBSTRING((end_date), 7, 2),
+                                    " ",
+                                    SUBSTRING((end_time), 1, 2),
+                                    ":",
+                                    SUBSTRING((end_time), 3, 2),
+                                    ":00")
+                                end_date,
+                             CASE
+                                WHEN link_type = '0' THEN '없음'
+                                WHEN link_type = '1' THEN '전체링크'
+                                WHEN link_type = '2' THEN '이미지맵'
+                             END
+                                link_type,
+                             link_url,
+                             CASE
+                                WHEN use_yn = 'Y' THEN '사용함'
+                                WHEN use_yn = 'N' THEN '사용안함'
+                             END
+                                use_yn
+                        FROM popup pu
+                             JOIN auth_user au ON au.id = pu.regist_id,
+                             (SELECT @rn := count(*) + 1
+                                FROM popup
+                               WHERE delete_yn = 'N') x
+                       WHERE pu.delete_yn = 'N'
+                    ORDER BY regist_date DESC;
 			"""
             cur.execute(query)
             row = cur.fetchall()
@@ -4077,7 +4098,7 @@ def comm_notice(request):
                 SELECT board_id,
                        content,
                        subject,
-                       SUBSTRING(reg_date, 1, 11),
+                       Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date,
                        CASE
                           WHEN use_yn = 'Y' THEN '보임'
                           WHEN use_yn = 'N' THEN '숨김'
@@ -4494,7 +4515,7 @@ def comm_k_news(request):
                 SELECT board_id,
                        content,
                        subject,
-                       SUBSTRING(reg_date, 1, 11),
+                       Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date,
                        CASE
                           WHEN use_yn = 'Y' THEN '보임'
                           WHEN use_yn = 'N' THEN '숨김'
@@ -4676,7 +4697,7 @@ def comm_faq(request):
 					SELECT board_id,
 						   content,
 						   subject,
-						   SUBSTRING(reg_date, 1, 11),
+						   Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date,
 						   CASE
 							  WHEN use_yn = 'Y' THEN '보임'
 							  WHEN use_yn = 'N' THEN '숨김'
@@ -4852,7 +4873,7 @@ def comm_faqrequest(request):
 						   question,
 						   student_email,
 						   response_email,
-						   SUBSTRING(reg_date, 1, 11)
+						   Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date
 					  FROM faq_request;
 			"""
             cur.execute(query)
@@ -4895,7 +4916,7 @@ def comm_reference_room(request):
 						   END
 							  head_title,
 						   subject,
-						   SUBSTRING(reg_date, 1, 11),
+						   Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date,
 						   CASE
 							  WHEN use_yn = 'Y' THEN '보임'
 							  WHEN use_yn = 'N' THEN '숨김'
@@ -5885,7 +5906,7 @@ def comm_mobile(request):
                      (@rn := @rn + 1)                   rn,
                      subject,
                      content,
-                     SUBSTRING(reg_date, 1, 11),
+                     Date_format(reg_date, '%Y/%m/%d %h:%m:%s') reg_date,
                      if(use_yn = 'Y', '보임', '숨김') use_yn,
                      if(odby = '0', '', odby)           odby,
                      use_yn
@@ -6307,7 +6328,7 @@ def multiple_email(request):
                            end gubn,
                            au.username,
                            title,
-                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m:%s') regist_date,
                            send_count,
                            success_count
                     FROM   edxapp.group_email AS ge
@@ -6359,7 +6380,7 @@ def multiple_email(request):
                            end gubn,
                            au.username,
                            title,
-                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m:%s') regist_date,
                            send_count,
                            success_count
                     FROM   edxapp.group_email AS ge
@@ -6411,7 +6432,7 @@ def multiple_email(request):
                            end                                        gubn,
                            au.username,
                            title,
-                           Date_format(regist_date, '%Y/%m/%d %h:%m') regist_date,
+                           Date_format(regist_date, '%Y/%m/%d %h:%m:%s') regist_date,
                            send_count,
                            success_count
                     FROM   edxapp.group_email AS ge

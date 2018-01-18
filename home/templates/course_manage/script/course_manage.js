@@ -81,7 +81,7 @@ function setDataTable1() {
                     lengthMenu: "_MENU_",
                     zeroRecords: "조회된 데이터가 없습니다",
                     info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
-                    infoEmpty: "No records available",
+                    infoEmpty: "조회된 데이터가 없습니다",
                     infoFiltered: "(filtered from _MAX_ total records)",
                     sEmptyTable: "조회된 데이터가 없습니다",
                     paginate: {
