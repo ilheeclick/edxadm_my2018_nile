@@ -27,7 +27,7 @@ $('#knews_save').on('click', function(e){
         }
 
         // ajax new board
-        $.post("/manage/new_notice/", {
+        $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             title: knews_title,
             content: knews_content,
@@ -37,7 +37,7 @@ $('#knews_save').on('click', function(e){
             method: action_mode,
             odby: odby
         }).done(function(data){
-            location.href='/manage/comm_k_news';
+            location.href='/comm_k_news';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -50,7 +50,7 @@ $('#knews_save').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice/',
+        url:'/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
@@ -101,7 +101,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,

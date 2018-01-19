@@ -11,7 +11,7 @@ $(document).ready(function () {
         document.getElementById('add_row_SaveBtn').style.display = 'none';
     }
     $.ajax({
-        url: '/manage/modi_multi_site/' + id,
+        url: '/modi_multi_site/' + id,
         data: {
             method: 'modi'
         }
@@ -31,7 +31,7 @@ function save() {
     var site_url = $('#site_url').val();
     var multi_no = '{{ id }}';
 
-    $.post("/manage/modi_multi_site_db/", {
+    $.post("/modi_multi_site_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         multi_no: multi_no,
         method: 'check',
@@ -81,7 +81,7 @@ function save_date(data) {
                 email_list += $(this).text() + "+";
             }
         });
-        $.post("/manage/modi_multi_site_db/", {
+        $.post("/modi_multi_site_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             site_name: site_name,
             site_code: site_code,
@@ -92,7 +92,7 @@ function save_date(data) {
             email_list: email_list,
             method: method,
         }).done(function (data) {
-            location.href = '/manage/multi_site';
+            location.href = '/multi_site';
         }).fail(function (error) {
             alert('errorasdfasf = ' + error.responseJSON);
         });
@@ -105,12 +105,12 @@ function save_date(data) {
 function del() {
     try {
         var multi_no = '{{ id }}';
-        $.post("/manage/modi_multi_site_db/", {
+        $.post("/modi_multi_site_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             multi_no: multi_no,
             method: 'delete',
         }).done(function (data) {
-            location.href = '/manage/multi_site';
+            location.href = '/multi_site';
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -144,7 +144,7 @@ function setDataTable1() {
             }
         ],
         ajax: {
-            url: "/manage/manager_list",
+            url: "/manager_list",
             type: "GET",
             dataType: "json",
             data: buildSearchData1,
@@ -206,7 +206,7 @@ function del_row() {
         var regist_id = '{{ user.id }}';
         try {
             var method = 'delete';
-            $.post("/manage/manager_db/", {
+            $.post("/manager_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 user_id: user_id,
                 site_id: '{{ id }}',
@@ -275,7 +275,7 @@ function verify() {
         var method = 'verify';
         var input_email = $('#input_email').val();
 
-        $.post("/manage/manager_db/", {
+        $.post("/manager_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             input_email: input_email,
             method: method,
@@ -310,7 +310,7 @@ function save_info() {
             var input_email = $('#input_email').val();
             var regist_id = '{{ user.id }}';
 
-            $.post("/manage/manager_db/", {
+            $.post("/manager_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 id: id,
                 input_email: input_email,
@@ -338,7 +338,7 @@ function new_save_info() {
             var method = 'temporary';
             var input_email = $('#input_email').val();
 
-            $.post("/manage/manager_db/", {
+            $.post("/manager_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 input_email: input_email,
                 method: method,

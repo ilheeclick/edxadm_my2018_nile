@@ -11,7 +11,7 @@
 
         //not working.
         function file_download_ajax() {
-            $.post("/manage/file_download_test", {
+            $.post("/file_download_test", {
                         csrfmiddlewaretoken: '{{csrf_token}}',
                     }, function (data) {
                         alert(data);
@@ -25,7 +25,7 @@
 <body>
 <h3>test_index page.</h3>
 <br/>
-<a href="/manage/file_download_test" target="hidden_target">file_download_test1</a>
+<a href="/file_download_test" target="hidden_target">file_download_test1</a>
 <br/>
 <a href="javascript:file_download_ajax();">file_download_test2</a>
 

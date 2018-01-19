@@ -124,7 +124,7 @@
                 del_list += inputs[i].className + '+'
             }
 
-            $.get( "/manage/review_manage", {
+            $.get( "/review_manage", {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 del_list: del_list,
             })
@@ -159,7 +159,7 @@
             searching: true,
             pageLength: 10,
             ajax: {
-                url: "/manage/review_manage",
+                url: "/review_manage",
                 type: "GET",
                 dataType: "json",
                 data: buildSearchData,

@@ -18,11 +18,11 @@
 
     <div class="panel-body" style="padding-top: 0;"> 
         <div class="panel-body" align="right" style="padding: 0%; margin: 0;">
-            <a class="btn btn-default" id="add_notice" href="/manage/new_knews">신규등록</a>
+            <a class="btn btn-default" id="add_notice" href="/new_knews">신규등록</a>
 
         </div>
         {% load static %}
-        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/manage/comm_k_news" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
+        <table class="table table-hover table-striped  table-bordered" id="datatable-ajax" data-url="/comm_k_news" style="width: 100%;" data-swf-path="{% static "assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls.swf" %}">
             <thead>
                 <tr>
                     <td>ID</td>

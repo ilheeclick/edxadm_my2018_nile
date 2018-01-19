@@ -22,7 +22,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -38,7 +38,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-        url : '/manage/modi_notice/'+id+'/'+use_yn,
+        url : '/modi_notice/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -47,7 +47,7 @@ $(document).ready(function(){
         if (data[4] != null) {
             value_list = data[4];
             for (var i = 0; i < value_list.length; i++) {
-                html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
+                html += "<li><a href='/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -102,7 +102,7 @@ $('#notice_mod').on('click', function(e){
         }
         
         // ajax
-        $.post("/manage/new_notice/", {
+        $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             title: noticetitle,
             content: noticecontent,
@@ -114,7 +114,7 @@ $('#notice_mod').on('click', function(e){
             odby: odby,
             delete_list: delete_list
         }).done(function(data){
-            location.href='/manage/comm_notice';
+            location.href='/comm_notice';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -127,7 +127,7 @@ $('#notice_mod').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice/',
+        url:'/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
@@ -168,7 +168,7 @@ $('#notice_del').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/manage/comm_notice/',
+        url:'/comm_notice/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -176,7 +176,7 @@ $('#notice_del').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_notice'
+        location.href='/comm_notice'
     });
 });
 
@@ -186,7 +186,7 @@ $('#notice_delete').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/manage/comm_notice/',
+        url:'/comm_notice/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -194,7 +194,7 @@ $('#notice_delete').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_notice'
+        location.href='/comm_notice'
     });
 });
 

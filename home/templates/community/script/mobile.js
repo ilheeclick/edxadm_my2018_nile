@@ -17,7 +17,7 @@ function sendFile(file, modules, editable) {
     $.ajax({
         csrfmiddlewaretoken:$.cookie('csrftoken'),
         type: 'POST',
-        url: '/manage/summer_upload/',
+        url: '/summer_upload/',
         data: data,
         cache: false,
         contentType: false,
@@ -51,7 +51,7 @@ $('#mobile_save').on('click', function(e){
             head_title = ''
         }
         /* insert to database */
-        $.post("/manage/new_mobile/", {
+        $.post("/new_mobile/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             nt_title: mobiletitle,
             nt_cont: mobilecontent,
@@ -63,7 +63,7 @@ $('#mobile_save').on('click', function(e){
             mobile: 'M',
             method: action_mode
         }).done(function(data){
-            location.href='/manage/comm_mobile';
+            location.href='/comm_mobile';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -76,7 +76,7 @@ $(document).on('click', '#fileupload', function(){
 
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_mobile/',
+        url:'/new_mobile/',
 
 
         beforeSubmit: function (data,form,option) {

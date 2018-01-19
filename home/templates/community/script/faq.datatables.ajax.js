@@ -90,7 +90,7 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			var noti_id = data[0];
 			//alert('data[0] == '+data[0]+' data[1] == '+data[1]);
-			location.href='/manage/modi_faq/'+data[0]+'/'+data[7]
+			location.href='/modi_faq/'+data[0]+'/'+data[7]
 		});
 		
 	};

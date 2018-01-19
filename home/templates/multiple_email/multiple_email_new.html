@@ -36,7 +36,7 @@ td{padding-left:20px;}
 <script>
 $(document).ready(function(){
     $("#goto_home").click(function(){
-        location.href='/manage/multiple_email/'
+        location.href='/multiple_email/'
     });
     $(".notauto").click(function(){
         $('.mail2').hide();
@@ -123,7 +123,7 @@ $(document).ready(function(){
             $('.loading_back').show();
             $('.loading').show();
             $('#mail_submit').hide();
-            $.post("/manage/multiple_email_new/",
+            $.post("/multiple_email_new/",
                     {
                         "userid": userid,
                         "subject_flag": subject_flag,
@@ -138,7 +138,7 @@ $(document).ready(function(){
                     })
                     .done(function (data) {
                         if (data.return == 'success'){
-                            $(location).attr('href', '/manage/multiple_email');
+                            $(location).attr('href', '/multiple_email');
                         }
                         else{
                             alert("error");
@@ -146,7 +146,7 @@ $(document).ready(function(){
                     });
         }
         else if(subject_flag == "world" && submit_lock == 0) {
-            $.post("/manage/multiple_email_new/",
+            $.post("/multiple_email_new/",
                     {
                         "userid": userid,
                         "subject_flag": subject_flag,
@@ -159,7 +159,7 @@ $(document).ready(function(){
                     })
                     .done(function (data) {
                         if (data.return == 'success'){
-                            $(location).attr('href', '/manage/multiple_email');
+                            $(location).attr('href', '/multiple_email');
                         }
                         else if (data.return == 'fail_no_user'){
                             alert("no user");

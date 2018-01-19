@@ -5,7 +5,7 @@ $(document).ready(function () {
         document.getElementById('DelBtn').style.display = '';
     }
     $.ajax({
-        url: '/manage/modi_popupZone/' + '{{ id }}',
+        url: '/modi_popupZone/' + '{{ id }}',
         data: {
             method: 'modi'
         }
@@ -73,7 +73,7 @@ function Save() {
         file_flag = '1';
         document.getElementById("uploadform").submit();
 
-        $.post("/manage/new_popupZone/", {
+        $.post("/new_popupZone/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             title: title,
             link_url: link_url,
@@ -86,7 +86,7 @@ function Save() {
             file_flag: file_flag,
             method: 'add',
         }).done(function (data) {
-            location.href = '/manage/popupZone_db';
+            location.href = '/popupZone_db';
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -126,7 +126,7 @@ function Modi() {
             file_flag = '1';
             document.getElementById("uploadform").submit();
         }
-        $.post("/manage/new_popupZone/", {
+        $.post("/new_popupZone/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             title: title,
             link_url: link_url,
@@ -140,7 +140,7 @@ function Modi() {
             seq: '{{ id }}',
             method: 'modi',
         }).done(function (data) {
-            location.href = '/manage/popupZone_db';
+            location.href = '/popupZone_db';
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -149,12 +149,12 @@ function Modi() {
 }
 
 function Del() {
-    $.post("/manage/new_popupZone/", {
+    $.post("/new_popupZone/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         seq: '{{ id }}',
         method: 'del',
     }).done(function (data) {
-        location.href = '/manage/popupZone_db';
+        location.href = '/popupZone_db';
     }).fail(function (error) {
         alert('error = ' + error.responseJSON);
     });

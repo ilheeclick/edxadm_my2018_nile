@@ -1980,7 +1980,7 @@ def multi_site_db(request):
                 value_list.append(multi[4])
                 value_list.append(multi[5])
                 value_list.append(multi[6])
-                value_list.append('<a href="/manage/course_list/' + str(multi[1]) + '/' + str(
+                value_list.append('<a href="/course_list/' + str(multi[1]) + '/' + str(
                     multi[2]) + '"><input type="button" value="관  리" class="btn btn-default"></a>')
                 multi_site_list.append(value_list)
 
@@ -3688,16 +3688,14 @@ def signin(request):
 
 def logout_time(request):
     if request.method == 'POST':
-        print "logout_flag========================"
-
         s = request.session
         key = s.session_key
 
         cur = connection.cursor()
         query = """
-                    UPDATE admin_login_log
-                       SET logout_date = now()
-                     WHERE session_id = '{0}';
+            UPDATE admin_login_log
+               SET logout_date = now()
+             WHERE session_id = '{0}';
                 """.format(key)
         cur.execute(query)
         cur.close()
@@ -5071,7 +5069,7 @@ def summer_upload(request):
         for chunk in file.chunks():
             fp.write(chunk)
         fp.close()
-        return HttpResponse('/manage/home/static/upload/' + filename)
+        return HttpResponse('/home/static/upload/' + filename)
     return HttpResponse('fail')
 
 
@@ -6264,7 +6262,6 @@ def review_manage(request):
         return HttpResponse(context, 'applications/json')
 
     return render(request, 'review_manage/review_manage.html')
-
 
 # ---------- 2017.12.04 ahn jin yong ---------- #
 

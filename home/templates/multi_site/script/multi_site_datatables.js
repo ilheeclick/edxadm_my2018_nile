@@ -96,7 +96,7 @@
             var t = $('#datatable33').DataTable();
             $row = $(this).closest('tr');
             data = t.row($row.get(0)).data();
-            location.href = '/manage/modi_multi_site/' + data[1]
+            location.href = '/modi_multi_site/' + data[1]
         });
     };
 

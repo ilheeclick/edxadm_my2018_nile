@@ -101,7 +101,7 @@ USE_TZ = True
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 
-STATIC_URL = '/manage/home/static/'
+STATIC_URL = '/home/static/'
 
 STATICFILES_DIRS = (
     ("css", os.path.join(BASE_DIR, 'static/css')),
@@ -521,4 +521,4 @@ countries = {
     "ZW": "Zimbabwe",
 }
 
-LOGIN_URL = '/manage/accounts/login/'
+LOGIN_URL = '/accounts/login/'

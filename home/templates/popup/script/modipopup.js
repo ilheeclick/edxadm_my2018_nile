@@ -15,7 +15,7 @@ $(document).ready(function () {
         document.getElementById('CopyBtn').style.display = '';
     }
     $.ajax({
-        url: '/manage/modi_popup/' + id,
+        url: '/modi_popup/' + id,
         data: {
             method: 'modi'
         }
@@ -171,12 +171,12 @@ function Reset() {
 function copy() {
     try {
         var pop_id = '{{ id }}';
-        $.post("/manage/new_popup/", {
+        $.post("/new_popup/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             pop_id: pop_id,
             method: 'copy',
         }).done(function (data) {
-            location.href = '/manage/modi_popup/' + data;
+            location.href = '/modi_popup/' + data;
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -193,7 +193,7 @@ function save() {
         var pop_id = '{{ id }}';
 
         if (popup_type == "image") {
-            $.post("/manage/new_popup/", {
+            $.post("/new_popup/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 pop_id: pop_id,
                 method: 'check',
@@ -364,7 +364,7 @@ function save_data(pop_id) {
     }
 
     $.ajax({
-        url: '/manage/modi_popup/' + '77777',
+        url: '/modi_popup/' + '77777',
         data: {
             method: 'modi'
         }
@@ -381,7 +381,7 @@ function save_data(pop_id) {
                 use_yn = "N";
             }
         }
-        $.post("/manage/new_popup/", {
+        $.post("/new_popup/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             pop_id: pop_id,
             popup_type: popup_type,
@@ -406,7 +406,7 @@ function save_data(pop_id) {
             update_flag: update_flag,
             method: method,
         }).done(function (data) {
-            location.href = '/manage/popup_db';
+            location.href = '/popup_db';
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -417,12 +417,12 @@ function save_data(pop_id) {
 function del() {
     try {
         var pop_id = '{{ id }}';
-        $.post("/manage/new_popup/", {
+        $.post("/new_popup/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             pop_id: pop_id,
             method: 'delete',
         }).done(function (data) {
-            location.href = '/manage/popup_db';
+            location.href = '/popup_db';
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
         });
@@ -454,19 +454,19 @@ function preview() {
         height = String(Number($('#height').val()) + 150);
     }
     if (template.options[template.selectedIndex].text == "없음") {
-        window.open("/manage/popup_index0/" + '{{id}}' + '/' + $("input[type=radio][name=radio]:checked").val(), null,
+        window.open("/popup_index0/" + '{{id}}' + '/' + $("input[type=radio][name=radio]:checked").val(), null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
     else if (template.options[template.selectedIndex].text == "type1") {
-        window.open("/manage/popup_index1/" + '{{id}}', null,
+        window.open("/popup_index1/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
     else if (template.options[template.selectedIndex].text == "type2") {
-        window.open("/manage/popup_index2/" + '{{id}}', null,
+        window.open("/popup_index2/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
     else if (template.options[template.selectedIndex].text == "type3") {
-        window.open("/manage/popup_index3/" + '{{id}}', null,
+        window.open("/popup_index3/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
 
