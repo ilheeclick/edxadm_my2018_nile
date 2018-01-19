@@ -88,7 +88,8 @@
 
                     <div class="col-sm-10">
                         <form>
-                            <input type="radio" id="radio_1" name="radio" value="O" checked="checked">&nbsp;<b>Oauth</b> &nbsp;&nbsp;
+                            <input type="radio" id="radio_1" name="radio" value="O" checked="checked">&nbsp;<b>Oauth</b>
+                            &nbsp;&nbsp;
                             <input type="radio" id="radio_2" name="radio" value="P">&nbsp;<b>Parameter</b>
                         </form>
                     </div>
@@ -100,16 +101,21 @@
                         <span class="required">*</span>
                     </label>
 
-                    <div class="col-sm-4">
-                        <a href="javascript:random_num();"><button>key생성</button></a>
-                        <input type="text" id="random_num" class="form-control" disabled="disabled">
+                    <div class="col-sm-10">
+                        <div style="float: left">
+                            <a href="javascript:random_num();"><input class="btn btn-default" type="button" id="DelBtn"
+                                                                      value="key생성"></a>
+                        </div>
+                        <div style="float: left">
+                            <input type="text" id="random_num" class="form-control" disabled="disabled">
+                        </div>
                     </div>
                 </div>
                 <script>
                     function random_num() {
                         var result = '';
 
-                        for(var i = 0; i<16; i++) {
+                        for (var i = 0; i < 16; i++) {
                             var random_num = Math.floor(Math.random() * 10);
                             result += random_num.toString()
                         }

@@ -108,6 +108,10 @@ $.datepicker.setDefaults({
     yearSuffix: '년'
 });
 
+$(function () {
+    $("#datepicker1, #datepicker2").datepicker();
+});
+
 var fnInitComplete = function () {
 
     console.log("initComplete2");
@@ -161,9 +165,7 @@ var fnInitComplete = function () {
 
 }
 
-$(function () {
-    $("#datepicker1, #datepicker2").datepicker();
-});
+
 
 
 function checked_all() {

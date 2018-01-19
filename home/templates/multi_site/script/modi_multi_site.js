@@ -21,8 +21,15 @@ $(document).ready(function () {
             $('#site_name').val(data[0][0]);
             $('#site_code').val(data[0][1]);
             $('#site_url').val(data[0][2]);
+            if (data[0][3] == "O") {
+                $("#radio_1").attr('checked', 'checked');
+            }
+            else if (data[0][3] == "P") {
+                $("#radio_2").attr('checked', 'checked');
+            }
+            $('#random_num').val(data[0][4]);
         }
-    })
+    });
 });
 function save() {
     //var uploadfile = $('#uploadfile').val();
@@ -30,6 +37,8 @@ function save() {
     var site_code = $('#site_code').val();
     var site_url = $('#site_url').val();
     var multi_no = '{{ id }}';
+    var system = $("input[type=radio][name=radio]:checked").val();
+    var random_num = $('#random_num').val();
 
     $.post("/manage/modi_multi_site_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
@@ -47,6 +56,12 @@ function save() {
         }
         else if (site_url == '') {
             swal("경고", "접속 url을 입력해주세요.", "warning");
+        }
+        else if (system == '') {
+            swal("경고", "인증방식을 선택해주세요.", "warning");
+        }
+        else if (random_num == '') {
+            swal("경고", "암호화key를 생성해주세요.", "warning");
         }
         else {
             save_date(data);
@@ -81,6 +96,8 @@ function save_date(data) {
                 email_list += $(this).text() + "+";
             }
         });
+        var system = $("input[type=radio][name=radio]:checked").val();
+        var random_num = $('#random_num').val();
         $.post("/manage/modi_multi_site_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             site_name: site_name,
@@ -90,6 +107,8 @@ function save_date(data) {
             multi_no: multi_no,
             site_index: site_index,
             email_list: email_list,
+            system: system,
+            random_num: random_num,
             method: method,
         }).done(function (data) {
             location.href = '/manage/multi_site';
@@ -389,5 +408,4 @@ $(function () {
         $("input:file").val().toLowerCase();
     });
 });
-
 

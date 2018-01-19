@@ -370,7 +370,7 @@
                             <!-- review management -->
                             <li class="nav nav-parent" id="review_manage">
                                 <a>
-                                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                                    <i class="fa fa-comments" aria-hidden="true"></i>
                                     <span>리뷰 관리</span>
                                 </a>
                                 <ul class="nav nav-children">
@@ -386,7 +386,7 @@
                             <!-- user enrollment -->
                             <li class="nav nav-parent" id="user_enroll">
                                 <a>
-                                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                                    <i class="fa fa-user-plus" aria-hidden="true"></i>
                                     <span>회원 등록</span>
                                 </a>
                                 <ul class="nav nav-children">
@@ -628,6 +628,11 @@
                     if (is_expanded != 'none') $('#community').addClass('nav-expanded');
                     $('#community').addClass('nav-active');
                     $('#comm_faqrequest').addClass('nav-active');
+                    break;
+                case '자료실':
+                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
+                    $('#community').addClass('nav-active');
+                    $('#comm_reference_room').addClass('nav-active');
                     break;
                 case '모바일':
                     if (is_expanded != 'none') $('#community').addClass('nav-expanded');

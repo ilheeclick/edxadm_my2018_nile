@@ -45,8 +45,10 @@ $(document).ready(function () {
             $("#link_type").val("이미지맵").prop("selected", true);
         }
         setValues();
-
-        var image_maplist = data[0][2].split('/');
+        var image_maplist = [];
+        if(data[0][2] != undefined) {
+            image_maplist = data[0][2].split('/');
+        }
         for (var i = 0; i < image_maplist.length; i++) {
             if (i == 0) {
                 $('.image_map').val(image_maplist[i]);
@@ -58,7 +60,9 @@ $(document).ready(function () {
 
 
         $('#title').val(data[0][3]);
-        $('.summernote').summernote('code', data[0][4].replace(/\&\^\&/g));
+        if(data[0][4] != undefined) {
+            $('.summernote').summernote('code', data[0][4].replace(/\&\^\&/g));
+        }
         $('#image_URL').val(data[0][5]);
         $('#link_URL').val(data[0][6]);
 

@@ -2,7 +2,6 @@
 {% block pagetitlename %}강좌 관리{% endblock %}
 {% block pagetitlename_header %}강좌 관리{% endblock %}
 {% block script_down %}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css"/>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         {% include "course_manage/script/course_manage.js" %}
@@ -37,13 +36,13 @@
 
                 <div class="col-sm-2">
                     <div class="form-group date" style="display: none">
-                        <input type="text" id="datepicker1"><span class="fa fa-calendar fa-2x"/>
+                        <input type="text" class="form-control" id="datepicker1" placeholder="From">
                     </div>
                 </div>
 
                 <div class="col-sm-2">
                     <div class="form-group date" style="display: none">
-                        <input type="text" id="datepicker2"><span class="fa fa-calendar fa-2x"/>
+                        <input type="text" class="form-control" id="datepicker2" placeholder="To">
                     </div>
                 </div>
 

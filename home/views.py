@@ -1997,7 +1997,6 @@ def add_multi_site(request, id):
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
-
 @login_required
 def modi_multi_site(request, id):
     mod_multi = []
@@ -2008,7 +2007,9 @@ def modi_multi_site(request, id):
             query = """
 					SELECT site_name,
                            site_code,
-                           site_url
+                           site_url,
+                           login_type,
+                           Encryption_key
 					  FROM multisite
                      WHERE site_id =
 			""" + id
@@ -2027,7 +2028,6 @@ def modi_multi_site(request, id):
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
-
 @csrf_exempt
 @login_required
 def modi_multi_site_db(request):
@@ -2042,11 +2042,13 @@ def modi_multi_site_db(request):
             email_list = request.POST.get('email_list')
             email_list = email_list.split('+')
             email_list.pop()
+            system = request.POST.get('system')
+            random_num = request.POST.get('random_num')
 
             cur = connection.cursor()
-            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id)
-                       VALUES ('{0}','{1}','{2}','{3}','{4}')
-                    '''.format(site_name, site_code, site_url, regist_id, regist_id)
+            query = '''insert into edxapp.multisite(site_name, site_code, site_url, regist_id, modify_id, login_type , Encryption_key, modify_date)
+                       VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}', now())
+                    '''.format(site_name, site_code, site_url, regist_id, regist_id, system, random_num)
             cur.execute(query)
             cur.close()
 
@@ -2083,13 +2085,15 @@ def modi_multi_site_db(request):
             site_url = request.POST.get('site_url')
             multi_no = request.POST.get('multi_no')
             regist_id = request.POST.get('regist_id')
+            system = request.POST.get('system')
+            random_num = request.POST.get('random_num')
 
             cur = connection.cursor()
             query = '''
                     update edxapp.multisite
-                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now()
+                    SET site_name = '{0}', site_code = '{1}', site_url = '{2}', modify_id = '{3}', modify_date = now(), login_type = '{5}', Encryption_key = '{6}'
                     WHERE site_id = '{4}'
-                    '''.format(site_name, site_code, site_url, regist_id, multi_no)
+                    '''.format(site_name, site_code, site_url, regist_id, multi_no, system, random_num)
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
