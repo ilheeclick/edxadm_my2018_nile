@@ -18,7 +18,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -57,7 +57,7 @@ $('#refer_save').on('click', function(e){
         }
 
         // ajax new refer
-        $.post("/manage/new_notice/", {
+        $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             title: refertitle,
             content: refercontent,
@@ -67,7 +67,7 @@ $('#refer_save').on('click', function(e){
             method: action_mode,
             odby: odby
         }).done(function(data){
-            location.href='/manage/comm_reference_room';
+            location.href='/comm_reference_room';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -80,7 +80,7 @@ $('#refer_save').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice/',
+        url:'/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();

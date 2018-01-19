@@ -88,7 +88,7 @@
                 searching: false,
                 "bDestroy": true,
                 'ajax': {
-                    url: "/manage/tracking_log/downlist/",
+                    url: "/tracking_log/downlist/",
                     data: buildSearchData,
                     dataType: "json",
                     type: "POST",
@@ -158,14 +158,14 @@
             } else {
                 $("#download").find("img").show();
                 $.ajax({
-                    url: "/manage/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
+                    url: "/tracking_log/date/" + $("#datepicker").val() + "/" + $("#datepicker2").val(),
                     dataType: "json",
                 }).done(function (data) {
-                    location.href = "/manage/tracking_log/down/" + data.filename;
+                    location.href = "/tracking_log/down/" + data.filename;
                     $("#download").find("img").hide();
 
                     $.ajax({
-                        url: "/manage/tracking_log/logdata_add/",
+                        url: "/tracking_log/logdata_add/",
                         data: {
                             'client': client,
                             'startdate': startdate,

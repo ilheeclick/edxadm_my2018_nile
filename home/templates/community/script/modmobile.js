@@ -22,7 +22,7 @@ $(document).ready(function () {
         $.ajax({
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -38,7 +38,7 @@ $(document).ready(function () {
     }
 
     $.ajax({
-        url: '/manage/modi_mobile/' + id + '/' + use_yn,
+        url: '/modi_mobile/' + id + '/' + use_yn,
         data: {
             method: 'modi'
         }
@@ -48,7 +48,7 @@ $(document).ready(function () {
         if (data[3] != null) {
             value_list = data[3];
             for (var i = 0; i < value_list.length; i++) {
-                html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
+                html += "<li><a href='/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -83,7 +83,7 @@ $('#mobile_mod').on('click', function (e) {
             head_title = ''
         }
         /* insert to database */
-        $.post("/manage/new_mobile/", {
+        $.post("/new_mobile/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             nt_title: mobiletitle,
             nt_cont: mobilecontent,
@@ -97,7 +97,7 @@ $('#mobile_mod').on('click', function (e) {
             odby: odby,
             method: action_mode
         }).done(function (data) {
-            location.href = '/manage/comm_mobile';
+            location.href = '/comm_mobile';
 
         }).fail(function (error) {
             alert('error = ' + error.responseJSON);
@@ -110,7 +110,7 @@ $('#mobile_mod').on('click', function (e) {
 $(document).on('click', '#fileupload', function () {
     $('#uploadform').ajaxForm({
         type: "POST",
-        url: '/manage/new_mobile/',
+        url: '/new_mobile/',
         beforeSubmit: function (data, form, option) {
             if ($("#uploadfile").val() != "") {
 
@@ -146,7 +146,7 @@ $('#mobile_del').on('click', function () {
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url: '/manage/comm_mobile/',
+        url: '/comm_mobile/',
         data: {
             noti_id: id,
             use_yn: use_yn,
@@ -154,7 +154,7 @@ $('#mobile_del').on('click', function () {
         }
     }).done(function (data) {
         console.log(data);
-        location.href = '/manage/comm_mobile'
+        location.href = '/comm_mobile'
     });
 });
 
@@ -164,7 +164,7 @@ $('#mobile_delete').on('click', function () {
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url: '/manage/comm_mobile/',
+        url: '/comm_mobile/',
         data: {
             noti_id: id,
             use_yn: use_yn,
@@ -172,6 +172,6 @@ $('#mobile_delete').on('click', function () {
         }
     }).done(function (data) {
         console.log(data);
-        location.href = '/manage/comm_mobile'
+        location.href = '/comm_mobile'
     });
 });

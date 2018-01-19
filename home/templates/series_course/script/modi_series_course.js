@@ -13,7 +13,7 @@ $(document).ready(function () {
     });
     $("#radio_1").attr('checked', 'checked');
     $.ajax({
-        url: '/manage/modi_series/' + '{{ id }}',
+        url: '/modi_series/' + '{{ id }}',
         data: {
             method: 'modi_list'
         }
@@ -37,7 +37,7 @@ var file_flag = '0';
 var update_flag = '0';
 function save() {
     var sumnail_file_id = $('#sumnail_file_id').val();
-    $.post("/manage/modi_series_course/", {
+    $.post("/modi_series_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         series_seq: '{{id}}',
         method: 'check',
@@ -77,7 +77,7 @@ function Save_info() {
     var user_id = '{{ user.id }}';
     var use_yn = $("input[type=radio][name=radio]:checked").val();
 
-    $.post("/manage/modi_series_course/", {
+    $.post("/modi_series_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         series_id: series_id,
         series_name: series_name,
@@ -89,7 +89,7 @@ function Save_info() {
         update_flag: update_flag,
         method: method,
     }).done(function (data) {
-        location.href = '/manage/series_course';
+        location.href = '/series_course';
     }).fail(function (error) {
         alert('errorasdfasf = ' + error.responseJSON);
     });
@@ -99,12 +99,12 @@ function Save_info() {
 
 function Del() {
 
-    $.post("/manage/modi_series_course/", {
+    $.post("/modi_series_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         series_seq: '{{id}}',
         method: 'delete',
     }).done(function (data) {
-        location.href = '/manage/series_course';
+        location.href = '/series_course';
     }).fail(function (error) {
         alert('errorasdfasf = ' + error.responseJSON);
     });

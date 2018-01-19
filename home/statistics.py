@@ -189,7 +189,7 @@ def certificate_excel(request, course_id):
 
     wb.save(save_path)
 
-    return HttpResponse('/manage/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
 # 일일통계
@@ -812,7 +812,7 @@ def statistics_excel(request, date):
             start_row += 1
 
         wb.save(save_path)
-    return HttpResponse('/manage/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
 
 
 def get_value_from_dict(dict, key, default=None):

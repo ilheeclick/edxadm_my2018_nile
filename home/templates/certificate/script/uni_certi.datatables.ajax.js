@@ -91,7 +91,7 @@ Theme Version: 	1.5.2
 			if(org_id == null){
 				alert(1);
 				$.ajax({
-					url : '/manage/certificate/',
+					url : '/certificate/',
 					data : {
 						method : 'uni_certi'
 					}
@@ -106,7 +106,7 @@ Theme Version: 	1.5.2
 			}else if(org_id != null && course_id != null){
 				alert(2);
 				$.ajax({
-					url : '/manage/certificate/',
+					url : '/certificate/',
 					data : {
 						method : 'uni_certi',
 						org_id : org_id,
@@ -127,7 +127,7 @@ Theme Version: 	1.5.2
 			}else{
 				alert(3);
 				$.ajax({
-					url : '/manage/certificate/',
+					url : '/certificate/',
 					data : {
 						method : 'uni_certi',
 						org_id : org_id
@@ -155,7 +155,7 @@ Theme Version: 	1.5.2
 			data = t.row($row.get(0)).data();
 			//console.log(data[0]+'/'+data[2]);
 			$.ajax({
-				url : '/manage/certificate',
+				url : '/certificate',
 				data : {
 					method : 'create_certi',
 					org_name : data[0],

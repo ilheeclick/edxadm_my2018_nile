@@ -93,7 +93,7 @@
         } else {
             $("#download").find("img").show();
             $.ajax({
-                url: "/manage/excel_download/" + $("#datepicker").val()
+                url: "/excel_download/" + $("#datepicker").val()
             }).done(function (data) {
                 alert('파일 생성 완료!');
                 alert(data);
@@ -111,7 +111,7 @@
         }
         $("#download_week").find("img").show();
         $.ajax({
-                    url: "/manage/excel_download_week/" + $("#datepicker_week").val()
+                    url: "/excel_download_week/" + $("#datepicker_week").val()
                 })
                 .done(function (data) {
                     alert('파일 생성 완료!');
@@ -128,7 +128,7 @@
         }
         $("#download_month").find("img").show();
         $.ajax({
-                    url: "/manage/excel_download_month/" + $("#datepicker_month").val()
+                    url: "/excel_download_month/" + $("#datepicker_month").val()
                 })
                 .done(function (data) {
                     alert('파일 생성 완료!');

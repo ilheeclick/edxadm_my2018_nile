@@ -205,7 +205,7 @@ function Save() {
         choice2_list += choice2 + "$";
     });
 
-    $.post("/manage/course_db/", {
+    $.post("/course_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         course_id: course_id,
@@ -237,7 +237,7 @@ function Del() {
         course_id += data[2] + "$";
     });
 
-    $.post("/manage/course_db/", {
+    $.post("/course_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         course_id: course_id,

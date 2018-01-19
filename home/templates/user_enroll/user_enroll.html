@@ -200,7 +200,7 @@
             searching: true,
             pageLength: 10,
             ajax: {
-                url: "/manage/user_enroll",
+                url: "/user_enroll",
                 type: "GET",
                 dataType: "json",
                 data: buildSearchData,
@@ -311,7 +311,7 @@
                 formData.append("user_why", $('#user_why').val());
                 formData.append("user_file", $('#user_file')[0].files[0]);
                 formData.append("user_id", '{{ user.id }}');
-                $.ajax({url: '/manage/user_enroll/',
+                $.ajax({url: '/user_enroll/',
                         data: formData,
                         processData: false,
                         contentType: false,
@@ -360,7 +360,7 @@
 
         <div class="menu">
             <a href="#layer2" class="btn-example"><input type="button" class="btn btn-primary" id="top_enroll" value="등록"></a>
-            <a href="/manage/download_bulkuser_example"><input type="button" class="btn btn-default" id="top_download" value="양식 다운로드"></a>
+            <a href="/download_bulkuser_example"><input type="button" class="btn btn-default" id="top_download" value="양식 다운로드"></a>
         </div>
         <!--top menu (e)-->
 
@@ -394,7 +394,7 @@
                 <b><h3 class="layer_title">회원일괄 등록</h3></b>
                 요청기관 <input type="text" id="user_org" class="form-control"/><br>
                 등록사유 <input type="text" id="user_why" class="form-control"/><br>
-                <form id="fileForm" action="/manage/user_enroll/" enctype="multipart/form-data">
+                <form id="fileForm" action="/user_enroll/" enctype="multipart/form-data">
                     등록파일 <input type="file" id="user_file">
                 </form>
                 <div class="btn-r">

@@ -21,7 +21,7 @@ function setDataTable1() {
         "scrollY": "300px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/series_list",
+            url: "/series_list",
             type: "GET",
             dataType: "json",
             data: buildSearchData1,
@@ -43,12 +43,12 @@ function setDataTable1() {
         columnDefs: [
             {
                 targets: 6, visible: true, name: "pk", render: function (data) {
-                return '<a href="/manage/series_complete_list_view/' + data + '"><input type="button" value="보  기" class="btn btn-default"></a>';
+                return '<a href="/series_complete_list_view/' + data + '"><input type="button" value="보  기" class="btn btn-default"></a>';
             },
             },
             {
                 targets: 7, visible: true, name: "pk", render: function (data) {
-                return '<a href="/manage/series_course_list_view/' + data + '"><input type="button" value="관  리" class="btn btn-default"></a>';
+                return '<a href="/series_course_list_view/' + data + '"><input type="button" value="관  리" class="btn btn-default"></a>';
             },
             },
         ],
@@ -70,7 +70,7 @@ function setDataTable1() {
         var t = $('#datatable1').DataTable();
         $row = $(this).closest('tr');
         data = t.row($row.get(0)).data();
-        location.href = '/manage/modi_series/' + data.series_seq
+        location.href = '/modi_series/' + data.series_seq
     });
 }
 
@@ -107,7 +107,7 @@ function Save() {
         console.log($(this).closest('tr'))
         $(this).closest('tr').hide();
     });
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         site_id: '{{ site_id }}',
@@ -133,7 +133,7 @@ function Del() {
         data = t.row($row.get(0)).data();
         course_list += data.id + "$";
     });
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         site_id: '{{ site_id }}',
         course_list: course_list,
@@ -165,7 +165,7 @@ function batch_input() {
 function input_Save() {
     var course_list = $('#input_course').val();
 
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         site_id: '{{ site_id }}',

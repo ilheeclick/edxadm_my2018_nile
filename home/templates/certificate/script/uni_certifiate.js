@@ -9,7 +9,7 @@ $(document).ready(function(){
     var value_list2=[];
     $('#loading').hide();
     $.ajax({
-        url : '/manage/certificate/',
+        url : '/certificate/',
         data :{
             method : 'org'
         }
@@ -120,7 +120,7 @@ $(document).on('change', '#org', function(){
     }else{
         html="";
         $.ajax({
-            url : '/manage/certificate/',
+            url : '/certificate/',
             data : {
                 method : 'course',
                 org : org

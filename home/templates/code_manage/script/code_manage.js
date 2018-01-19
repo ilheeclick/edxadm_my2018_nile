@@ -17,7 +17,7 @@ function setDataTable1() {
         "scrollY": "250px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/group_code",
+            url: "/group_code",
             type: "GET",
             dataType: "json",
             data: buildSearchData1,
@@ -129,7 +129,7 @@ function setDataTable2() {
         "scrollY": "250px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/detail_code",
+            url: "/detail_code",
             type: "GET",
             dataType: "json",
             data: buildSearchData2,
@@ -300,7 +300,7 @@ function Save1() {
 
         try {
             var method = 'update';
-            $.post("/manage/group_code_db/", {
+            $.post("/group_code_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 group_name: group_name,
                 group_desc: group_desc,
@@ -334,7 +334,7 @@ function Save1() {
             try {
                 var method = 'add_row_save';
 
-                $.post("/manage/group_code_db/", {
+                $.post("/group_code_db/", {
                     csrfmiddlewaretoken: $.cookie('csrftoken'),
                     group_code: group_code,
                     group_name: group_name,
@@ -371,7 +371,7 @@ function Save2() {
 
         try {
             var method = 'update';
-            $.post("/manage/detail_code_db/", {
+            $.post("/detail_code_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 detail_code: detail_code,
                 detail_name: detail_name,
@@ -412,7 +412,7 @@ function Save2() {
             try {
                 var method = 'add_row_save';
 
-                $.post("/manage/detail_code_db/", {
+                $.post("/detail_code_db/", {
                     csrfmiddlewaretoken: $.cookie('csrftoken'),
                     group_code: group_code,
                     detail_code: detail_code,
@@ -460,7 +460,7 @@ function Del1() {
     try {
         var method = 'del';
 
-        $.post("/manage/group_code_db/", {
+        $.post("/group_code_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             group_code_list: group_code_list,
             user_id: '{{ user.id }}',
@@ -490,7 +490,7 @@ function Del2() {
     try {
         var method = 'del';
 
-        $.post("/manage/detail_code_db/", {
+        $.post("/detail_code_db/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             detail_code_list: detail_code_list,
             group_code: group_code,

@@ -8,7 +8,7 @@ $(document).ready(function(){
     var use_yn = '{{use_yn}}';
     var html = "";
     $.ajax({
-        url : '/manage/modi_knews/'+id+'/'+use_yn,
+        url : '/modi_knews/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -16,7 +16,7 @@ $(document).ready(function(){
         if(data[4] != null) {
             value_list = data[4];
             for (var i = 0; i < value_list.length; i++) {
-                html += "<li><a href='/manage/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
+                html += "<li><a href='/file_download/" + value_list[i][1] + "' class='file_download' target='hidden_target' id='" + value_list[i][0] + "'>" + value_list[i][1] + "</a> <button type='button' onclick='file_delete(" + value_list[i][0] + ");' class='btn btn-default' class='file_delete'>X</button></li>";
             }
             $('#saved_file').html(html);
         }
@@ -44,7 +44,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -99,7 +99,7 @@ $('#knews_mod').on('click', function(e){
         }
 
         // ajax
-        $.post("/manage/new_notice/", {
+        $.post("/new_notice/", {
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             title: knews_title,
             content: knews_content,
@@ -111,7 +111,7 @@ $('#knews_mod').on('click', function(e){
             odby: odby,
             delete_list: delete_list
         }).done(function(data){
-            location.href='/manage/comm_k_news';
+            location.href='/comm_k_news';
         }).fail(function(error) {
             alert('error = ' + error.responseJSON);
         });
@@ -124,7 +124,7 @@ $('#knews_mod').on('click', function(e){
 $(document).on('click', '#fileupload', function(){
     $('#uploadform').ajaxForm({
         type: "POST",
-        url:'/manage/new_notice/',
+        url:'/new_notice/',
         beforeSubmit: function (data,form,option) {
             if( $("#uploadfile").val() != "" ){
                 var ext = $('#uploadfile').val().split('.').pop().toLowerCase();
@@ -164,7 +164,7 @@ $('#knews_del').on('click', function(){
     var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     $.ajax({
-        url:'/manage/comm_k_news/',
+        url:'/comm_k_news/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -172,7 +172,7 @@ $('#knews_del').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_k_news'
+        location.href='/comm_k_news'
     });
 });
 
@@ -181,7 +181,7 @@ $('#knews_delete').on('click', function(){
     var id = '{{id}}';
     var use_yn = '{{use_yn}}';
     $.ajax({
-        url:'/manage/comm_k_news/',
+        url:'/comm_k_news/',
         data:{
             noti_id:id,
             use_yn:use_yn,
@@ -189,6 +189,6 @@ $('#knews_delete').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_k_news'
+        location.href='/comm_k_news'
     });
 });

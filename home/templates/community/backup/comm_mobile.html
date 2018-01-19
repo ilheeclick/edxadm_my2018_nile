@@ -52,7 +52,7 @@
                 ],
                 pageLength: 10,
                 ajax: {
-                    url: "/manage/comm_mobile/",
+                    url: "/comm_mobile/",
                     type: "GET",
                     dataType: "json",
                     data: buildSearchData,
@@ -68,7 +68,7 @@
                             sButtonText: 'csv',
                             fnClick: function () {
                                 var param_json = buildSearchData();
-                                window.open("/manage/csv/history?" + $.param(param_json), "_blank");
+                                window.open("/csv/history?" + $.param(param_json), "_blank");
                             }
                         },
                         {
@@ -189,7 +189,7 @@
             }
 
             $.ajax({
-                url: '/manage/comm_mobile/',
+                url: '/comm_mobile/',
                 method: method,
                 data: {csrfmiddlewaretoken: $.cookie('csrftoken'), 'test': '0001'},
                 dataType: 'json',
@@ -217,7 +217,7 @@
                 <a class="btn btn-default" href="javascript:test(1);">test1</a>
                 <a class="btn btn-default" href="javascript:test(2);">test2</a>
                 <a class="btn btn-default" href="javascript:test(3);">test3</a>
-                <a class="btn btn-default" id="add_notice" href="/manage/new_refer">신규등록</a>
+                <a class="btn btn-default" id="add_notice" href="/new_refer">신규등록</a>
 
             </div>
             {% load static %}

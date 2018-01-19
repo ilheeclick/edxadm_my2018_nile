@@ -100,13 +100,13 @@
                                     {{ user.username }} 님 환영합니다.
                                     <a href="{% url 'logout' %}">
                                         <button id="logout">로그아웃</button>
-                                     </a>
+                                         </a>
                                 </span>
 
                         <script>
-                            window.onbeforeunload = function() {
+                            window.onbeforeunload = function () {
                                 $.post("/logout_time/", {
-                                    csrfmiddlewaretoken:$.cookie('csrftoken')
+                                    csrfmiddlewaretoken: $.cookie('csrftoken')
                                 })
                             }
                         </script>
@@ -143,7 +143,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="day_stastic">
-                                        <a href="/manage">
+                                        <a href="/">
                                             일일/주간/월별 통계
                                         </a>
                                     </li>
@@ -157,7 +157,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="mana_state">
-                                        <a href="/manage/mana_state">
+                                        <a href="/mana_state">
                                             운영 현황
                                         </a>
                                     </li>
@@ -171,14 +171,14 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="uni_certificate">
-                                        <a href="/manage/uni_certificate">
+                                        <a href="/uni_certificate">
                                             대학별 이수증 발급 현황
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="per_certificate">
-                                        <a href="/manage/per_certificate">
+                                        <a href="/per_certificate">
                                             사용자별 이수증 발급 현황
                                         </a>
                                     </li>
@@ -191,35 +191,35 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="comm_notice">
-                                        <a href="/manage/comm_notice">
+                                        <a href="/comm_notice">
                                             공지사항
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="comm_k_news">
-                                        <a href="/manage/comm_k_news">
+                                        <a href="/comm_k_news">
                                             K-MOOC 소식
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="comm_faq">
-                                        <a href="/manage/comm_faq">
+                                        <a href="/comm_faq">
                                             Q&A
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="comm_faqrequest">
-                                        <a href="/manage/comm_faqrequest">
+                                        <a href="/comm_faqrequest">
                                             Q&A 질문현황
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="comm_reference_room">
-                                        <a href="/manage/comm_reference_room">
+                                        <a href="/comm_reference_room">
                                             자료실
                                         </a>
                                     </li>
@@ -229,7 +229,7 @@
                                 <!--
                                 <ul class="nav nav-children">
                                     <li id="comm_mobile">
-                                        <a href="/manage/comm_mobile">
+                                        <a href="/comm_mobile">
                                             모바일
                                         </a>
                                     </li>
@@ -243,7 +243,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="moni_storage">
-                                        <a href="/manage/moni_storage">
+                                        <a href="/moni_storage">
                                             스토리지
                                         </a>
                                     </li>
@@ -259,14 +259,14 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="history_list">
-                                        <a href="/manage/history">
+                                        <a href="/history">
                                             접속이력
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="login_history_list">
-                                        <a href="/manage/login_history">
+                                        <a href="/login_history">
                                             로그인이력
                                         </a>
                                     </li>
@@ -281,7 +281,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="multiple_email">
-                                        <a href="/manage/multiple_email">
+                                        <a href="/multiple_email">
                                             단체메일 관리
                                         </a>
                                     </li>
@@ -296,14 +296,14 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="popup_add">
-                                        <a href="/manage/popup_add">
+                                        <a href="/popup_add">
                                             팝업관리
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav nav-children">
                                     <li id="popupZone_add">
-                                        <a href="/manage/popupZone_add">
+                                        <a href="/popupZone_add">
                                             팝업존관리
                                         </a>
                                     </li>
@@ -318,7 +318,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="multi_site_add">
-                                        <a href="/manage/multi_site">
+                                        <a href="/multi_site">
                                             멀티사이트 관리
                                         </a>
                                     </li>
@@ -332,7 +332,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="course_manage_view">
-                                        <a href="/manage/course_manage">
+                                        <a href="/course_manage">
                                             강좌 관리
                                         </a>
                                     </li>
@@ -346,7 +346,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="code_manage_view">
-                                        <a href="/manage/code_manage">
+                                        <a href="/code_manage">
                                             코드 관리
                                         </a>
                                     </li>
@@ -360,7 +360,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="series_course_view">
-                                        <a href="/manage/series_course">
+                                        <a href="/series_course">
                                             시리즈 강좌
                                         </a>
                                     </li>
@@ -375,7 +375,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="review_manage_view">
-                                        <a href="/manage/review_manage">
+                                        <a href="/review_manage">
                                             리뷰 관리
                                         </a>
                                     </li>
@@ -391,7 +391,7 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="user_enroll_view">
-                                        <a href="/manage/user_enroll">
+                                        <a href="/user_enroll">
                                             회원 등록
                                         </a>
                                     </li>
@@ -439,19 +439,19 @@
             </header>
 
             {% block containor %}
-                <div class="row">
-                    <div class="col-md-6 col-lg-12 col-xl-6">
-                        <section class="panel">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <h2 class="panel-title">페이지 준비중입니다.</h2>
-                                    </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-12 col-xl-6">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="panel-body">
+                                    <h2 class="panel-title">페이지 준비중입니다.</h2>
                                 </div>
                             </div>
-                        </section>
-                    </div>
+                        </div>
+                    </section>
                 </div>
+            </div>
             {% endblock %}
         </section>
         <!-- end: containor -->
@@ -717,7 +717,7 @@
 
     //파일 다운로드 처리
     function file_download(attach_id) {
-        $.post("/manage/file_download/", {
+        $.post("/file_download/", {
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             attach_id: attach_id
         }, function (data) {
@@ -729,7 +729,7 @@
     //파일 삭제 처리
     function file_delete(attach_id) {
         if (confirm('파일을 삭제 하시겠습니까?')) {
-            $.post("/manage/file_delete/", {
+            $.post("/file_delete/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 attach_id: attach_id
             }, function (data) {

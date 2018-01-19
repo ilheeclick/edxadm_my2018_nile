@@ -4,7 +4,7 @@ $(document).ready(function () {
     setDataTable2();
 
     $.ajax({
-        url: '/manage/multisite_org/',
+        url: '/multisite_org/',
         data: {
             method: 'org'
         }
@@ -35,7 +35,7 @@ function setDataTable1() {
         "scrollY": "400px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/series_course_list",
+            url: "/series_course_list",
             type: "GET",
             dataType: "json",
             data: buildSearchData1,
@@ -95,7 +95,7 @@ function setDataTable2() {
         "scrollY": "400px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/all_course",
+            url: "/all_course",
             type: "GET",
             dataType: "json",
             data: buildSearchData2,
@@ -205,7 +205,7 @@ function add() {
         data = t.row($row.get(0)).data();
         course_list += data.id + "$";
     });
-    $.post("/manage/series_course_list_db/", {
+    $.post("/series_course_list_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         series_id: series_id,
@@ -233,7 +233,7 @@ function Del() {
         org_code += data.org + "$";
     });
 
-    $.post("/manage/series_course_list_db/", {
+    $.post("/series_course_list_db/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         series_id: '{{ id }}',
@@ -265,7 +265,7 @@ function Update() {
     });
 
         try {
-            $.post("/manage/series_course_list_db/", {
+            $.post("/series_course_list_db/", {
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 user_id: '{{ user.id }}',
                 series_id: '{{ id }}',

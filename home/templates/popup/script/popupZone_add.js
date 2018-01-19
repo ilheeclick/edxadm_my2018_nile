@@ -84,7 +84,7 @@
             var t = $('#datatable33').DataTable();
             $row = $(this).closest('tr');
             data = t.row($row.get(0)).data();
-            location.href = '/manage/modi_popupZone/' + data[1]
+            location.href = '/modi_popupZone/' + data[1]
         });
     };
 

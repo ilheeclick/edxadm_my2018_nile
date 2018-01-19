@@ -17,7 +17,7 @@ $(document).ready(function(){
         $.ajax({
             csrfmiddlewaretoken:$.cookie('csrftoken'),
             type: 'POST',
-            url: '/manage/summer_upload/',
+            url: '/summer_upload/',
             data: data,
             cache: false,
             contentType: false,
@@ -32,7 +32,7 @@ $(document).ready(function(){
         });
     }
     $.ajax({
-        url : '/manage/modi_faq/'+id+'/'+use_yn,
+        url : '/modi_faq/'+id+'/'+use_yn,
             data : {
                 method : 'modi'
             }
@@ -61,7 +61,7 @@ $('#faq_mod').on('click', function(){
             head_title='';
         }else{
             /* insert to database */
-            $.post("/manage/new_faq/", {
+            $.post("/new_faq/", {
                 csrfmiddlewaretoken:$.cookie('csrftoken'),
                 faq_question: faq_question,
                 faq_answer: faq_answer,
@@ -70,7 +70,7 @@ $('#faq_mod').on('click', function(){
                 notice: 'F',
                 method: action_mode
             }).done(function(data){
-                location.href='/manage/comm_faq';
+                location.href='/comm_faq';
 
             }).fail(function(error) {
                 alert('error = ' + error.responseJSON);
@@ -87,7 +87,7 @@ $('#del_faq').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/manage/comm_faq/',
+        url:'/comm_faq/',
         data:{
             faq_id:id,
             use_yn:use_yn,
@@ -95,7 +95,7 @@ $('#del_faq').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_faq'
+        location.href='/comm_faq'
     });
 });
 
@@ -105,7 +105,7 @@ $('#faq_delete').on('click', function(){
     var use_yn = '{{use_yn}}';
 
     $.ajax({
-        url:'/manage/comm_faq/',
+        url:'/comm_faq/',
         data:{
             faq_id:id,
             use_yn:use_yn,
@@ -113,6 +113,6 @@ $('#faq_delete').on('click', function(){
         }
     }).done(function(data){
         console.log(data);
-        location.href='/manage/comm_faq'
+        location.href='/comm_faq'
     });
 });

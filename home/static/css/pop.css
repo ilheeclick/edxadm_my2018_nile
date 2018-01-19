@@ -50,14 +50,14 @@
 
 /*========= pop2 ============*/
 .pop2-titbar{background:#23d77e; height:23px;}
-.pop2_2-titbar{background:url(/manage/home/static/image/bg2pt.gif) repeat-x; text-align: center; padding: 13px;}
+.pop2_2-titbar{background:url(/home/static/image/bg2pt.gif) repeat-x; text-align: center; padding: 13px;}
 .pop2-body-area{border-top:0px; padding-top:0px;}
 .pop2_2-titbar p {font-size:21px; font-weight:600;}
 .pop2-body-area p{margin-bottom:0px;}
 .pop1-titbar > span{line-height: 37px; vertical-align: top; color:#fff; padding-left:5px; font-size:20px;}
 /*========= pop3 ============*/
 .pop3-titbar{height: 75px; background:#23d77e;}
-.pop3-bg{background:url(/manage/home/static/image/bg3pt.gif) repeat-x;}
+.pop3-bg{background:url(/home/static/image/bg3pt.gif) repeat-x;}
 
 
 

@@ -120,7 +120,7 @@ Theme Version: 	1.5.2
 			var noti_id = data[0];
 			//alert(data[2]);
 			//console.log(data);
-			location.href='/manage/modi_notice/'+data[0]+'/'+data[8]
+			location.href='/modi_notice/'+data[0]+'/'+data[8]
 		});
 	};
 

@@ -4,7 +4,7 @@ $(document).ready(function () {
     setDataTable2();
 
     $.ajax({
-        url: '/manage/multisite_org/',
+        url: '/multisite_org/',
         data: {
             method: 'org'
         }
@@ -36,7 +36,7 @@ function setDataTable1() {
         "scrollY": "300px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/course_list_db",
+            url: "/course_list_db",
             type: "GET",
             dataType: "json",
             data: buildSearchData1,
@@ -102,7 +102,7 @@ function setDataTable2() {
         "scrollY": "300px",
         "scrollCollapse": true,
         ajax: {
-            url: "/manage/select_list_db",
+            url: "/select_list_db",
             type: "GET",
             dataType: "json",
             data: buildSearchData2,
@@ -230,7 +230,7 @@ function Save() {
         console.log($(this).closest('tr'))
         $(this).closest('tr').hide();
     });
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         site_id: '{{ site_id }}',
@@ -256,7 +256,7 @@ function Del() {
         data = t.row($row.get(0)).data();
         course_list += data.id + "$";
     });
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         site_id: '{{ site_id }}',
         course_list: course_list,
@@ -288,7 +288,7 @@ function batch_input() {
 function input_Save() {
     var course_list = $('#input_course').val();
 
-    $.post("/manage/multisite_course/", {
+    $.post("/multisite_course/", {
         csrfmiddlewaretoken: $.cookie('csrftoken'),
         user_id: '{{ user.id }}',
         site_id: '{{ site_id }}',

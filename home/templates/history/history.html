@@ -181,7 +181,7 @@ a.btn-layerClose:hover {
         //console.log(d_func);
         //console.log(d_oper);
 
-        $.get( "/manage/history", {
+        $.get( "/history", {
             d_id: d_id,
             d_time: d_time
         })
@@ -238,7 +238,7 @@ a.btn-layerClose:hover {
             ],
             pageLength: 10,
             ajax: {
-                url: "/manage/history/",
+                url: "/history/",
                 type: "GET",
                 dataType: "json",
                 data: buildSearchData,

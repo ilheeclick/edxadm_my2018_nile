@@ -93,7 +93,7 @@ Theme Version: 	1.5.2
 				var email = $('#email').val();
 
 				$.ajax({
-					url : '/manage/per_certificate/',
+					url : '/per_certificate/',
 					data : {
 						method : 'email_search',
 						org_id : org_id,
@@ -116,7 +116,7 @@ Theme Version: 	1.5.2
 				var email = $('#email').val();
 
 				$.ajax({
-					url : '/manage/per_certificate/',
+					url : '/per_certificate/',
 					data : {
 						method : 'email_search',
 						email : email
@@ -139,7 +139,7 @@ Theme Version: 	1.5.2
 				var html2="";
 
 				$.ajax({
-					url : '/manage/per_certificate/',
+					url : '/per_certificate/',
 					data : {
 						method : 'per_certi',
 						org_id : org_id,
