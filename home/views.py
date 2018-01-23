@@ -6151,11 +6151,10 @@ def file_download(request, file_name):
         with open(file_path, 'rb') as fh:
             if file_name == 'tracking_log.zip':
                 response = HttpResponse(fh.read(), content_type="application/x-zip-compressed")
+                oldLog_remove(file_path, 3)
             else:
                 response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-
-            oldLog_remove(file_path, 3)
 
             return response
     raise Http404

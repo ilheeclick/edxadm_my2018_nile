@@ -35,6 +35,8 @@ def makedir():
 
 
 def logfile_download(request, date):
+    global logfile_check
+    logfile_check = 1
     makedir()
     split_str = date.find("/")
     start_date = date[:split_str]
@@ -55,11 +57,15 @@ def logfile_download(request, date):
         logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
         logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
         cnt += 1
-    cnt = len(date_list)
+    # cnt = len(date_list)
+
     if cnt >= len(date_list):
-        log_compress('999999', None)
-        zip_file = 'tracking_log.zip'
-        return JsonResponse({'filename': zip_file})
+        logfile_check = log_compress('999999', None)
+        if logfile_check == 1:
+            return JsonResponse({'filename': 'empty'})
+        else:
+            zip_file = 'tracking_log.zip'
+            return JsonResponse({'filename': zip_file})
     raise Http404
 
 
@@ -69,8 +75,8 @@ class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
 
 
 def my_callback(filename, bytes_so_far, bytes_total):
-        print 'Transfer of %r is at %d/%d bytes (%.1f%%)' % (
-            filename, bytes_so_far, bytes_total, 100. * bytes_so_far / bytes_total)
+    print 'Transfer of %r is at %d/%d bytes (%.1f%%)' % (
+        filename, bytes_so_far, bytes_total, 100. * bytes_so_far / bytes_total)
 
 
 # web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
@@ -91,7 +97,6 @@ def logFileDownload(search_date, host, log_dir, local_dir):
         web_server = 1
     elif host == WEB2_HOST:
         web_server = 2
-
     date_compile = re.compile(r'20(\d{6})')
     for i in sorted(file_list):
         if re.search(date_compile, i) is not None:
@@ -102,13 +107,14 @@ def logFileDownload(search_date, host, log_dir, local_dir):
             if searchfile == search_date:
                 search_name.append(i)
                 callback_for_filename = functools.partial(my_callback, i)
-                sftp.get(i, local_dir+sfile)
+                # sftp.get(i, local_dir+sfile)
                 sftp.get(i, local_dir+sfile, callback=callback_for_filename)
     log_change(local_dir, CHANGE_DIR, search_date, web_server)
     client.close()
 
 
 def log_change(path_dir, change_local, search_date, web_server):
+    print 'log_change s ---------------------'
     file_list = os.listdir(path_dir)
 
     file_pattern = re.compile(r'.gz$')
@@ -199,11 +205,20 @@ def log_change(path_dir, change_local, search_date, web_server):
 
     oldLog_remove(path_dir, 1)
     if web_server == 2:
-        log_compress(search_date, change_local)
+        file_cnt = 0
+        chdir_list = os.listdir(change_local)
+        for filename in chdir_list:
+            full_filename = os.path.join(change_local, filename)
+            ext = os.path.splitext(full_filename)[-1]
+            if ext == '.gz':
+                file_cnt += 1
+        if file_cnt != 0:
+            log_compress(search_date, change_local)
 
 
 def log_compress(search_date, dir_path):
-    if search_date != '999999':
+    logfile_cnt = 0
+    if search_date != '-1' and search_date != '999999':
         zipname = search_date + "_tracking_log.zip"
         fantasy_zip = zipfile.ZipFile(LOG_COMPLETE_DIR+zipname, 'w')
 
@@ -215,9 +230,21 @@ def log_compress(search_date, dir_path):
 
         fantasy_zip.close()
         oldLog_remove(dir_path, 1)
-    else:
-        shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
+    elif search_date == '999999':
+        file_cnt = 0
+        chdir_list = os.listdir(LOG_COMPLETE_DIR)
+        for filename in chdir_list:
+            full_filename = os.path.join(LOG_COMPLETE_DIR, filename)
+            ext = os.path.splitext(full_filename)[-1]
+            if ext == '.zip':
+                file_cnt += 1
+        if file_cnt == 0:
+            logfile_cnt = 1
+        else:
+            shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
         oldLog_remove(LOG_COMPLETE_DIR, 2)
+
+    return logfile_cnt
 
 
 # fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
