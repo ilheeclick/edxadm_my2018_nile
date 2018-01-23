@@ -96,13 +96,7 @@ function save_date(data) {
                 email_list += $(this).text() + "+";
             }
         });
-<<<<<<< HEAD
-        var system = $("input[type=radio][name=radio]:checked").val();
-        var random_num = $('#random_num').val();
-        $.post("/manage/modi_multi_site_db/", {
-=======
         $.post("/modi_multi_site_db/", {
->>>>>>> origin/dev
             csrfmiddlewaretoken: $.cookie('csrftoken'),
             site_name: site_name,
             site_code: site_code,
