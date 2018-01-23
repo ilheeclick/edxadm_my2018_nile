@@ -397,6 +397,23 @@
                             </li>
                             <!-- user enrollment -->
 
+                            <!-- trackinglog -->
+                            <li class="nav nav-parent" id="tracking_log">
+                                <a>
+                                    <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                    <span>트래킹 로그 조회</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="tracking_log_list">
+                                        <a href="/manage/tracking_log">
+                                            기간별 조회
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- trackinglog -->
+
+
                         </ul>
                     </nav>
                     <script>
@@ -437,19 +454,19 @@
             </header>
 
             {% block containor %}
-            <div class="row">
-                <div class="col-md-6 col-lg-12 col-xl-6">
-                    <section class="panel">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="panel-body">
-                                    <h2 class="panel-title">페이지 준비중입니다.</h2>
+                <div class="row">
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <section class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="panel-body">
+                                        <h2 class="panel-title">페이지 준비중입니다.</h2>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
-            </div>
             {% endblock %}
         </section>
         <!-- end: containor -->
@@ -707,6 +724,12 @@
                     $('#user_enroll').addClass('nav-active');
                     $('#user_enroll_view').addClass('nav-active');
                     break;
+                case '트래킹 로그 조회':
+                    if (is_expanded != 'none') $('#tracking_log').addClass('nav-expanded');
+                    $('#tracking_log').addClass('nav-active');
+                    $('#tracking_log_list').addClass('nav-active');
+                    break;
+
             }
         }
 

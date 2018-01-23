@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, HOST_NAME, UPLOAD_DIR, LOG_COMPLETE_DIR
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, HOST_NAME, LOGZIP_DIR, LOG_COMPLETE_DIR
 import functools
 import paramiko
 import re
@@ -27,7 +27,7 @@ def log_download(request):
 
 
 def makedir():
-    dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, UPLOAD_DIR, LOG_COMPLETE_DIR]
+    dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, LOGZIP_DIR, LOG_COMPLETE_DIR]
     for dir in dir_list:
         print 'make dir   ', dir
         if not os.path.exists(dir):
@@ -241,7 +241,7 @@ def log_compress(search_date, dir_path):
         if file_cnt == 0:
             logfile_cnt = 1
         else:
-            shutil.make_archive(UPLOAD_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
+            shutil.make_archive(LOGZIP_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
         oldLog_remove(LOG_COMPLETE_DIR, 2)
 
     return logfile_cnt
