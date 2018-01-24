@@ -91,6 +91,8 @@ function save_date(data) {
         var regist_id = '{{ user.id }}';
         var multi_no = '{{ id }}';
         var email_list = "";
+        var system = $("input[type=radio][name=radio]:checked").val();
+        var random_num = $('#random_num').val();
         $(".email").each(function () {
             if ($(this).text() != '') {
                 email_list += $(this).text() + "+";
