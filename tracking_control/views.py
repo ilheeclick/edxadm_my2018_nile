@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, HOST_NAME, LOGZIP_DIR, LOG_COMPLETE_DIR
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR, LOG_COMPLETE_DIR
 import functools
 import paramiko
 import re
@@ -54,9 +54,14 @@ def logfile_download(request, date):
         date_list.append(date.strftime("%Y%m%d"))
 
     for searchDate in date_list:
-        logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
-        logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
+        logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR, 1)
+        logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR, 2)
+        # ------------------------------- 실제 서버 반영시 하단 내용으로 반영
+        # logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
+        # logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
+        # -------------------------------------------------------
         cnt += 1
+        print 'cnt ====== ', cnt
     # cnt = len(date_list)
 
     if cnt >= len(date_list):
@@ -80,23 +85,25 @@ def my_callback(filename, bytes_so_far, bytes_total):
 
 
 # web_server는 나중에 실제 반영시에 아이피로 조건을 줘서 처리 예정
-def logFileDownload(search_date, host, log_dir, local_dir):
+def logFileDownload(search_date, host, log_dir, local_dir, web_server):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(AllowAnythingPolicy())
-    client.connect(host, username=HOST_NAME)
+    client.connect(host, username=USER_NAME, password='?kmooc')
 
     sftp = client.open_sftp()
     sftp.chdir(log_dir)
 
     file_list = sftp.listdir()
     search_name = []
-    web_server = 1
+    # ---------------------------------------------------
+    # web_server = 1
 
     # 원래는 host로 하여야하나 테스트 위해서 log_dir로 조건 줌
-    if host == WEB1_HOST:
-        web_server = 1
-    elif host == WEB2_HOST:
-        web_server = 2
+    # if host == WEB1_HOST:
+    #     web_server = 1
+    # elif host == WEB2_HOST:
+    #     web_server = 2
+    # ----------------------------------------------------
     date_compile = re.compile(r'20(\d{6})')
     for i in sorted(file_list):
         if re.search(date_compile, i) is not None:
@@ -114,7 +121,7 @@ def logFileDownload(search_date, host, log_dir, local_dir):
 
 
 def log_change(path_dir, change_local, search_date, web_server):
-    print 'log_change s ---------------------'
+    print 'log_change s ---------------------', web_server
     file_list = os.listdir(path_dir)
 
     file_pattern = re.compile(r'.gz$')

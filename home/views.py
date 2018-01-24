@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from management.settings import UPLOAD_DIR, EXCEL_PATH
+from management.settings import UPLOAD_DIR, EXCEL_PATH, LOGZIP_DIR
 from management.settings import dic_univ, database_id, debug
 from management.settings import REAL_WEB1_HOST, REAL_WEB1_ID, REAL_WEB1_PW
 from models import GeneratedCertificate
@@ -6143,8 +6143,11 @@ def file_delete(request):
 def file_download(request, file_name):
     print 'called  file_download_test'
 
-    # 실제 있는 파일로 지정
-    file_path = '%s%s' % (STATIC_URL, file_name)
+    if file_name == 'tracking_log.zip':
+        file_path = '%s%s' % (LOGZIP_DIR, file_name)
+    else:
+        # 실제 있는 파일로 지정
+        file_path = '%s%s' % (STATIC_URL, file_name)
     # file_path = '/Users/kotech/workspace/scpTest/tracking_log.zip'
     print 'file_path:', file_path
     if os.path.exists(file_path):
