@@ -119,7 +119,7 @@ EXCEL_PATH = '/home/project/management/home/static/excel/'
 UPLOAD_DIR = '/home/project/management/home/static/upload/'
 EXCEL_PATH = BASE_DIR + '/home/static/excel/'
 UPLOAD_DIR = BASE_DIR + '/home/static/uploads/'
-LOGZIP_DIR = '/home/ubuntu/project/management/static/uploads/'
+LOGZIP_DIR = '/home/ubuntu/project/management/tracking_control/static/uploads/'
 WEB1_HOST = '172.17.101.116'
 WEB2_HOST = '172.17.101.116'
 WEB1_LOG = '/edx/var/log/tracking/'
@@ -127,8 +127,12 @@ WEB2_LOG = '/edx/var/log/tracking/'
 LOCAL1_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w1/'
 LOCAL2_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w2/'
 CHANGE_DIR = '/home/ubuntu/project/management/tracking_control/static/ch_tracking/'
-COMPRESS_DIR = '/home/ubuntu/project/management/tracking_control/static/'
 LOG_COMPLETE_DIR = '/home/ubuntu/project/management/tracking_control/static/zip_tracking/'
+# LOCAL1_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w1/'
+# LOCAL2_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w2/'
+# CHANGE_DIR = '/home/ubuntu/project/management/tracking_control/static/ch_tracking/'
+# COMPRESS_DIR = '/home/ubuntu/project/management/tracking_control/static/'
+# LOG_COMPLETE_DIR = '/home/ubuntu/project/management/tracking_control/static/zip_tracking/'
 
 REAL_WEB1_HOST = '192.168.33.20'
 REAL_WEB1_ID = 'vagrant'
@@ -136,7 +140,7 @@ REAL_WEB1_PW = 'vagrant'
 
 debug = True
 
-HOST_NAME = 'vagrant'
+USER_NAME = 'ubuntu'
 
 dic_univ = {
     'KYUNGNAMUNIVk': u'경남대학교',
