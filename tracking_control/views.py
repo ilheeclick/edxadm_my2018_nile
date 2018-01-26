@@ -340,7 +340,7 @@ def log_board(request):
         cur = connection.cursor()
         query = """
             SELECT no,
-                   date_format(date_add(processingdate, INTERVAL 9 HOUR),
+                   date_format(processingdate,
                                '%Y-%m-%d %H:%i:%s'),
                    username,
                    DATE_FORMAT(startdate, "%Y/%m/%d"),
