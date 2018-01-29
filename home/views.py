@@ -1,68 +1,43 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, render_to_response, redirect
-from django.template import Context, RequestContext
-from django.http import Http404, HttpResponse, FileResponse, JsonResponse
-from django.db import connection
-from management.settings import UPLOAD_DIR, STATIC_URL
-from django.core.serializers.json import DjangoJSONEncoder
-from django.views.decorators.csrf import csrf_exempt
-from django.db import connections
-from django.views.generic import View
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from management.settings import UPLOAD_DIR, EXCEL_PATH, LOGZIP_DIR
-from management.settings import dic_univ, database_id, debug
-from management.settings import REAL_WEB1_HOST, REAL_WEB1_ID, REAL_WEB1_PW
-from models import GeneratedCertificate
-from .forms import UserForm, LoginForm
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-import json
-import os
-import subprocess
-import commands
-import sys
-import pprint
 import ast
-import urllib
+import commands
 import csv
 import datetime
-import logging
-from django.views.generic import View
-from .forms import UserForm, LoginForm
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from tracking_control.views import oldLog_remove
-import uuid
+import json
+import os
 import re
+import subprocess
+import sys
+import urllib
+import uuid
+
+from bson.objectid import ObjectId
 from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
+    REDIRECT_FIELD_NAME, logout as auth_logout, )
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import (
-    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
-)
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, QueryDict
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import connection
+from django.db import connections
+from django.http import Http404, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, render_to_response, redirect
 from django.shortcuts import resolve_url
+from django.template import RequestContext
 from django.template.response import TemplateResponse
-from django.utils.deprecation import (
-    RemovedInDjango20Warning, RemovedInDjango110Warning,
-)
-from django.utils.encoding import force_text
-from django.utils.http import is_safe_url, urlsafe_base64_decode
-from django.utils.six.moves.urllib.parse import urlparse, urlunparse
+from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.csrf import csrf_exempt
+from pymongo import MongoClient
+
+from management.settings import REAL_WEB1_HOST, REAL_WEB1_ID, REAL_WEB1_PW
+from management.settings import STATIC_URL
+from management.settings import UPLOAD_DIR, EXCEL_PATH, LOGZIP_DIR
+from management.settings import dic_univ, database_id
+from models import GeneratedCertificate
+from tracking_control.views import oldLog_remove
+from .forms import LoginForm
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -559,7 +534,7 @@ def series_list(request):
                     time_flag = series_time.replace(':', '+')
                     time_flag_index = time_flag.split('+')
 
-                if (len(series_time_index) == 3 and  '' not in time_flag_index):
+                if (len(series_time_index) == 3 and '' not in time_flag_index):
                     all_learning_hour = series_time_index[0].split(':')
                     learning_hour = int(all_learning_hour[0]) * 60 * int(series_time_index[1])
                     learning_minut = int(all_learning_hour[1]) * int(series_time_index[1])
@@ -1997,6 +1972,7 @@ def add_multi_site(request, id):
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
+
 @login_required
 def modi_multi_site(request, id):
     mod_multi = []
@@ -2027,6 +2003,7 @@ def modi_multi_site(request, id):
         'id': id
     })
     return render_to_response('multi_site/modi_multi_site.html', variables)
+
 
 @csrf_exempt
 @login_required
@@ -6290,6 +6267,7 @@ def review_manage(request):
 
     return render(request, 'review_manage/review_manage.html')
 
+
 # ---------- 2017.12.04 ahn jin yong ---------- #
 
 # ---------- 2017.11.03 ahn jin yong ---------- #
@@ -6951,7 +6929,6 @@ def multiple_email_new(request):
 
 # test
 def django_mail(request):
-    from django.core.mail import send_mail
     from django.core.mail import EmailMultiAlternatives
 
     html = ""
@@ -6982,4 +6959,51 @@ def django_mail(request):
 
     return JsonResponse({'foo': 'bar'})
 
+
 # ---------- 2017.11.03 ahn jin yong ---------- #
+
+
+from os import listdir
+from os.path import isfile, join
+import os.path, time
+
+
+@login_required
+def unused_video(request):
+    # 미사용 동영상 체크 파일 경로 : /video/data/remove_target_check
+    filepath = '/video/data/remove_target_check/'
+
+    if request.is_ajax():
+        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat('/video/data/remove_target_check/list3.txt')
+
+        print mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime
+
+        files = [f for f in listdir(filepath) if isfile(join(filepath, f))]
+
+        # 조건 검색 요청 시
+        # linux 계열은 파일 최초 수정일을 구할 수 없습니다.
+        context = {
+            'files': [{
+                          'filename': f,
+                          'accessed': datetime.datetime.strptime(time.ctime(os.path.getatime(join(filepath, f))), "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S"),
+                          'modified': datetime.datetime.strptime(time.ctime(os.path.getmtime(join(filepath, f))), "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S")
+                      } for f in files]
+        }
+
+        return JsonResponse(context)
+
+    return render(request, 'unused_video/unused_video.html')
+
+
+@login_required
+def unused_video_download(request, filename):
+    filepath = '/video/data/remove_target_check/'
+
+    if not file or not os.path.exists(filepath + filename):
+        print 'filepath + file.attatch_file_name :', filepath + filename
+        return HttpResponse("<script>alert('파일이 존재하지 않습니다 .'); window.history.back();</script>")
+
+    response = HttpResponse(open(filepath + filename, 'rb'), content_type='application/force-download')
+
+    response['Content-Disposition'] = 'attachment; filename=%s' % str(filename).encode('utf-8')
+    return response

@@ -1,0 +1,214 @@
+{% extends "container/main_base.html" %}
+{% block pagetitlename %}미사용 동영상{% endblock %}
+{% block pagetitlename_header %}미사용 동영상{% endblock %}
+{% block script_down %}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!--css(s)-->
+<style>
+    .email_title {
+        background-color: #f6f6f6;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        border-bottom: solid black 1px;
+    }
+
+    #search_btn {
+        float: right;
+        margin-bottom: 10px;
+    }
+
+    .panel-body {
+        display: grid;
+    }
+
+    .pop-layer .pop-container {
+        padding: 20px 25px;
+    }
+
+    .pop-layer p.ctxt {
+        color: #666;
+        line-height: 25px;
+    }
+
+    .pop-layer .btn-r {
+        width: 100%;
+        margin: 10px 0 20px;
+        padding-top: 10px;
+        border-top: 1px solid #DDD;
+        text-align: right;
+    }
+
+    .pop-layer {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 60%;
+        width: 410px;
+        height: auto;
+        background-color: #fff;
+        border: 5px solid #3571B5;
+        z-index: 10;
+    }
+
+    .dim-layer {
+        display: none;
+        position: fixed;
+        _position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+    }
+
+    .dim-layer .dimBg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: .5;
+        filter: alpha(opacity=50);
+    }
+
+    .dim-layer .pop-layer {
+        display: block;
+    }
+
+    .layer_title {
+        margin-bottom: 30px;
+    }
+</style>
+<!--css(e)-->
+
+<!--js(s)-->
+<script>
+    $(document).ready(function () {
+        console.log('ready');
+        setDataTable();
+
+        // 검색 클릭 시 테이블 동기화
+        $("#search_btn").click(function () {
+            search();
+        });
+    });
+
+    // 검색 클릭 시 테이블 동기화
+    function search() {
+        var table = $('#dt1').DataTable();
+        table.ajax.reload();
+    }
+
+
+    function buildSearchData() {
+        var obj = {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        return obj
+    }
+
+    function setDataTable() {
+        var $table = $('#dt1');
+        $table.dataTable({
+            "order": [[0, "desc"]],
+            dom: '<"toolbar">rt<"bottom"ip><"clear">',
+            bProcessing: true,
+            ordering: false,
+            serverSide: false,
+            searching: true,
+            pageLength: 10,
+            ajax: {
+                url: "/unused_video",
+                type: "POST",
+                dataType: "json",
+                data: buildSearchData,
+                dataSrc: function (json) {
+                    return json.files;
+                }
+            },
+            columns: [
+                {data: "filename"},
+                //{data: "accessed"},
+                {data: "modified"},
+            ],
+            columnDefs: [
+                {
+                    targets: 0, visible: true, width: '70%', name: "checkbtn", render: function (data) {
+                    return '<a href="/unused_video_download/' + data + '">' + data + '</a>';
+                },
+                },
+                {target: 1, visible: true, width: '30%'},
+                //{target: 2, visible: true, width: '30%'},
+            ],
+//            columnDefs: [
+//                {
+//                    targets: 0, visible: true, width: '50px', name: "checkbtn", render: function (data) {
+//                        return '<input type="checkbox" value="' + data + '">';
+//                    },
+//                },
+//                {targets: 1, visible: true, width: '*'},
+//                {
+//                    targets: 2, visible: true, width: '200px', name: "pk", className: 'dt-right', render: function (data) {
+//                        return '<a href="javascript:download(' + data + ')"><input type="button" value="다운로드" class="btn btn-default btn-block"></a>';
+//                    },
+//                },
+//            ],
+            paginate: true,
+            language: {
+                lengthMenu: "_MENU_",
+                zeroRecords: "조회된 데이터가 없습니다",
+                info: "전체페이지 _PAGE_ / _PAGES_ ( _MAX_ )",
+                infoEmpty: "조회된 데이터가 없습니다",
+                infoFiltered: "(filtered from _MAX_ total records)",
+                sEmptyTable: "조회된 데이터가 없습니다",
+                paginate: {
+                    first: "처음",
+                    previous: "이전",
+                    next: "다음",
+                    last: "끝"
+                }
+            },
+        });
+    }
+
+    function download(path) {
+
+    }
+
+
+</script>
+<!--js(e)-->
+
+{% endblock %}
+{% block containor %}
+<section class="panel panel-featured ">
+    <div class="email_title"><h2 class="panel-title">목록 파일</h2></div>
+    <div class="panel-body" style="padding-top: 0;"> 
+        {% load static %}
+
+        <!--top menu (s)-->
+        <div class="search_a">
+            <input type="button" class="btn btn-success" id="search_btn" value="검색">
+        </div>
+        <!--top menu (e)-->
+        <div style="text-align: right;"><b>* 파일명을 클릭시 다운로드 됩니다. </b></div>
+        <!--data tables (s)-->
+        <table id="dt1" class="table table-hover table-striped  table-bordered" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>파일명</th>
+                <!--<th>접근일</th>-->
+                <th>최종 수정일</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <!--data tables (e)-->
+    </div>
+</section>
+{% endblock %}

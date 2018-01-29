@@ -187,6 +187,10 @@ urlpatterns = [
     url(r'^tracking_log/down/(?P<file_name>.*?)/$', views.file_download, name='tracking_download'),
     # url(r'^manage/filed/$', tracking_view.send_file)
     url(r'^tracking_log/logdata_add/', tracking_view.data_insert),
-    url(r'^tracking_log/downlist/', tracking_view.log_board, name='log_board')
+    url(r'^tracking_log/downlist/', tracking_view.log_board, name='log_board'),
+
+    # unused_video_files
+    url(r'^unused_video$', views.unused_video, name='unused_video'),
+    url(r'^unused_video_download/(?P<filename>.*?)$', views.unused_video_download, name='unused_video_download'),
 
 ]
