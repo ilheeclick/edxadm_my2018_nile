@@ -26,18 +26,40 @@ def log_download(request):
     return render(request, 'trackingLog.html')
 
 
-def makedir():
+def makedir(sftp):
     dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, LOGZIP_DIR, LOG_COMPLETE_DIR]
     for dir in dir_list:
         print 'make dir   ', dir
-        if not os.path.exists(dir):
-            os.mkdir(dir)
+        mkdir_p(sftp, dir)
+        # if not os.path.exists(dir):
+        #     os.mkdir(dir)
+
+
+def mkdir_p(sftp, remote_directory):
+    """Change to this directory, recursively making new folders if needed.
+    Returns True if any folders were created."""
+    if remote_directory == '/':
+        # absolute path so change directory to root
+        sftp.chdir('/')
+        return
+    if remote_directory == '':
+        # top-level relative directory must exist
+        return
+    try:
+        print 'mkdir_p -> try s ---- '
+        sftp.chdir(remote_directory)  # sub-directory exists
+    except IOError:
+        print 'mkdir_p -> except s -------'
+        dirname, basename = os.path.split(remote_directory.rstrip('/'))
+        mkdir_p(sftp, dirname)  # make parent directories
+        sftp.mkdir(basename)  # sub-directory missing, so created it
+        sftp.chdir(basename)
+        return True
 
 
 def logfile_download(request, date):
     global logfile_check
     logfile_check = 1
-    makedir()
     split_str = date.find("/")
     start_date = date[:split_str]
     end_date = date[split_str+1:]
@@ -91,6 +113,10 @@ def logFileDownload(search_date, host, log_dir, local_dir, web_server):
     client.connect(host, username=USER_NAME, password='?kmooc')
 
     sftp = client.open_sftp()
+
+    # 폴더가 없으면 생성
+    makedir(sftp)
+
     sftp.chdir(log_dir)
 
     file_list = sftp.listdir()
@@ -314,7 +340,7 @@ def log_board(request):
         cur = connection.cursor()
         query = """
             SELECT no,
-                   date_format(date_add(processingdate, INTERVAL 9 HOUR),
+                   date_format(processingdate,
                                '%Y-%m-%d %H:%i:%s'),
                    username,
                    DATE_FORMAT(startdate, "%Y/%m/%d"),
