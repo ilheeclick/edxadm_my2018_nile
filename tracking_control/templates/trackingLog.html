@@ -149,6 +149,36 @@
             enddate = $("#datepicker2").val();
             log_note = $("#log_note").val();
 
+            filecheck = setInterval(function(){
+                $.ajax({
+                    url: "/tracking_log/check/",
+                }).done(function (data) {
+                    if(data.check == 'true'){
+                            location.href = "/tracking_log/down/" + data.filename;
+                        $("#download").find("img").hide();
+
+                        $.ajax({
+                            url: "/tracking_log/logdata_add/",
+                            data: {
+                                'client': client,
+                                'startdate': startdate,
+                                'enddate': enddate,
+                                'log_note': log_note
+                            },
+                            dataType: "json",
+                            type: "POST"
+                        }).done(function (data) {
+                            alert('파일 생성 완료!');
+                            datalist();
+                            $("#datepicker").val("");
+                            $("#datepicker2").val("");
+                            $("#log_note").val("");
+                        });
+                        clearInterval(filecheck);
+                    }
+                });
+            }, 10000);
+
             if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
                 alert('날짜를 선택하세요.');
                 return;
