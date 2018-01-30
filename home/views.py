@@ -6974,10 +6974,6 @@ def unused_video(request):
     filepath = '/video/data/remove_target_check/'
 
     if request.is_ajax():
-        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat('/video/data/remove_target_check/list3.txt')
-
-        print mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime
-
         files = [f for f in listdir(filepath) if isfile(join(filepath, f))]
 
         # 조건 검색 요청 시
