@@ -68,9 +68,15 @@ def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     file_ext = get_file_ext(file_name).strip()
     file_byte_size = file_object.size
     file_size = str(file_byte_size / 1024) + "KB"
-    file_dir = UPLOAD_DIR + file_name_enc + '.' + file_ext
 
-    file_path = UPLOAD_DIR
+    if(gubun =='SR'):
+        file_dir = UPLOAD_DIR + 'series/'+file_name_enc + '.' + file_ext
+        file_path = UPLOAD_DIR +'series/'
+    else :
+        file_dir = UPLOAD_DIR + file_name_enc + '.' + file_ext
+        file_path = UPLOAD_DIR
+
+
     if file_path[len(file_path) - 1] == '/':
         file_path = file_path[0:(len(file_path) - 1)]
     fp = open(file_dir, 'wb')
@@ -579,7 +585,6 @@ def series_list(request):
 def modi_series_course(request):
     if request.method == 'POST':
         data = json.dumps({'status': "fail"})
-
         try:
             upload_file = request.FILES['uploadfile']
             uploadfile_user_id = request.POST.get('uploadfile_user_id')
@@ -589,7 +594,7 @@ def modi_series_course(request):
 
         if upload_file:
             uploadfile = request.FILES['uploadfile']
-            common_single_file_upload(uploadfile, 'series', str(uploadfile_user_id))
+            common_single_file_upload(uploadfile, 'SR', str(uploadfile_user_id))
 
             return render(request, 'series_course/modi_series_course.html')
 
