@@ -85,7 +85,7 @@ def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     fp.close()
 
     # DEBUG
-    print "@@@@@@@@@@@@@@@@@@@@@"
+    print "@@@@@@@@@@@@@@@@@@@@@!"
     print file_name
     print file_name_enc
     print file_ext
