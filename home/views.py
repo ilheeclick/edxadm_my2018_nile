@@ -6673,8 +6673,8 @@ def multiple_email_new(request):
                 if subject_flag == 'hello':
                     with connections['default'].cursor() as cur:
                         query = '''
-                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date)
-                             values({0}, '{1}', '{2}', {3}, NULL);
+                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date, memo_gubun)
+                             values({0}, '{1}', '{2}', {3}, NULL, 1);
                         '''.format(user_id_list[n], title, content.replace("'", "''"), user_id)
                         print query  # DEBUG
                         cur.execute(query)
@@ -6682,8 +6682,8 @@ def multiple_email_new(request):
                 elif subject_flag == 'world':
                     with connections['default'].cursor() as cur:
                         query = '''
-                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date)
-                             values({0}, '{1}', '{2}', {3}, NULL);
+                             insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date, memo_gubun)
+                             values({0}, '{1}', '{2}', {3}, NULL, 1);
                         '''.format(user_id_list[n], title, content.replace("'", "''"), user_id)
                         print query  # DEBUG
                         cur.execute(query)
