@@ -134,9 +134,9 @@ LOG_COMPLETE_DIR = '/home/ubuntu/project/management/tracking_control/static/zip_
 # CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
 # LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
 
-REAL_WEB1_HOST = '192.168.33.20'
-REAL_WEB1_ID = 'vagrant'
-REAL_WEB1_PW = 'vagrant'
+REAL_WEB1_HOST = '172.17.101.116'
+REAL_WEB1_ID = 'ubuntu'
+REAL_WEB1_PW = '?kmooc'
 
 debug = True
 
