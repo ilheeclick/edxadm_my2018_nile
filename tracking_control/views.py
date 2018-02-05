@@ -26,6 +26,14 @@ def log_download(request):
     return render(request, 'trackingLog.html')
 
 
+def logfile_check(request):
+    check = os.path.isfile(LOGZIP_DIR+'tracking_log.zip')
+    if check is True:
+        return JsonResponse({'filename': 'tracking_log.zip', 'check': 'true'})
+    else:
+        return JsonResponse({'filename': '', 'check': 'false'})
+
+
 def makedir(sftp):
     dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, LOGZIP_DIR, LOG_COMPLETE_DIR]
     for dir in dir_list:
