@@ -56,6 +56,17 @@
                     $("#search_btn").show();
                 }
             });
+            
+            $(document).on('click', '#search_btn', function () {
+                if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
+                    alert('날짜를 선택하세요.');
+                    return;
+                } else {
+                    search();
+                    $("#datepicker").val("");
+                    $("#datepicker2").val("");
+                }
+            });
         });
 
 
@@ -99,17 +110,6 @@
                     aoData.push({"name": 'method', "value": 'logDown_list'});
                 },
                 "paginate": true,
-            });
-
-            $(document).on('click', '#search_btn', function () {
-                if ($("#datepicker").val() == "" || $("#datepicker2").val() == "") {
-                    alert('날짜를 선택하세요.');
-                    return;
-                } else {
-                    search();
-                    $("#datepicker").val("");
-                    $("#datepicker2").val("");
-                }
             });
 
         }
