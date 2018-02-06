@@ -14,15 +14,19 @@
             "fnServerParams": function (data) {
                 data.push({"name": 'method', "value": 'list'});
             },
-            dom: '<"toolbar"><"search"f>rt<"bottom"ip><"clear">',
+            dom: '<"toolbar"><"search"B>rt<"bottom"ip><"clear">',
             "paginate": true,
             searching: false,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    filename: $("#pagetitle").text() + '-이수현황',
+                }
+            ],
             "initComplete": function (settings, json) {
+                $('.buttons-html5').attr('class', 'btn btn-default');
                 this.api().columns().every(function (i) {
-
-                    //if (i == 0){
-                    //	return;
-                    //}
 
                     var column = this;
                     var select = $('<select style="width: 100%;"><option value=""></option></select>')

@@ -52,7 +52,8 @@
                         <div>
                             <form action="/new_popup/" id="uploadform" method="post"
                                   enctype="multipart/form-data">
-                                <input name='uploadfile' type="file" id="image_file"/>
+                                <input name='uploadfile' type="file" id="image_file" onchange="fileCheck(this)"
+                                       accept="image/gif,image/jpeg,image/png"/>
                                 <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
                                        style="display: none"/>
                             </form>

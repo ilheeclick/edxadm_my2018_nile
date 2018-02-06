@@ -168,7 +168,7 @@ urlpatterns = [
     url(r'^series_list/$', views.series_list, name='series_list'),
     url(r'^all_course/$', views.all_course, name='all_course'),
     url(r'^series_course_list_view/(?P<id>.*?)/$', views.series_course_list_view, name='series_course_list_view'),
-    url(r'^series_complete_list_view/(?P<id>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
+    url(r'^series_complete_list_view/(?P<id>.*?)/(?P<name>.*?)/$', views.series_complete_list_view, name='series_complete_list_view'),
     url(r'^series_course_list_db/$', views.series_course_list_db, name='series_course_list_db'),
     url(r'^series_course_list/$', views.series_course_list, name='series_course_list'),
     # review_manage url

@@ -36,14 +36,15 @@ function setDataTable1() {
             {data: "cnt"},
             {data: "video_time"},
             {data: "learning_time"},
-            {data: "series_seq"},
+            {data: "series_index"},
             {data: "series_seq"},
 
         ],
         columnDefs: [
             {
                 targets: 6, visible: true, name: "pk", render: function (data) {
-                return '<a href="/series_complete_list_view/' + data + '"><input type="button" value="보  기" class="btn btn-default"></a>';
+                var series_index = data.split('+')
+                return '<a href="/series_complete_list_view/' + series_index[0] +'/'+ series_index[1] + '/"><input type="button" value="보  기" class="btn btn-default"></a>';
             },
             },
             {
