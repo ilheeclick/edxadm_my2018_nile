@@ -144,37 +144,49 @@
 
         $(document).on('click', '#day_down', function () {
 
-            client = {{ user.id }};
-            startdate = $("#datepicker").val();
-            enddate = $("#datepicker2").val();
-            log_note = $("#log_note").val();
+            var client = {{ user.id }};
+            var startdate = $("#datepicker").val();
+            var enddate = $("#datepicker2").val();
+            var log_note = $("#log_note").val();
+            var file_size = 0;
 
             filecheck = setInterval(function(){
                 $.ajax({
                     url: "/tracking_log/check/",
                 }).done(function (data) {
                     if(data.check == 'true'){
-                            location.href = "/tracking_log/down/" + data.filename;
-                        $("#download").find("img").hide();
+                        file_size = data.first_size;
 
-                        $.ajax({
-                            url: "/tracking_log/logdata_add/",
-                            data: {
-                                'client': client,
-                                'startdate': startdate,
-                                'enddate': enddate,
-                                'log_note': log_note
-                            },
-                            dataType: "json",
-                            type: "POST"
-                        }).done(function (data) {
-                            alert('파일 생성 완료!');
-                            datalist();
-                            $("#datepicker").val("");
-                            $("#datepicker2").val("");
-                            $("#log_note").val("");
-                        });
-                        clearInterval(filecheck);
+                        size_check = setTimeout(function(){
+                            $.ajax({
+                                url: "/tracking_log/size/",
+                            }).done(function (size_data) {
+                                alert(file_size);
+                                alert('second'+size_data.second_size);
+                                if(file_size == size_data.second_size){
+                                    location.href = "/tracking_log/down/" + size_data.filename;
+                                    $("#download").find("img").hide();
+                                    $.ajax({
+                                        url: "/tracking_log/logdata_add/",
+                                        data: {
+                                            'client': client,
+                                            'startdate': startdate,
+                                            'enddate': enddate,
+                                            'log_note': log_note
+                                        },
+                                        dataType: "json",
+                                        type: "POST"
+                                    }).done(function (data) {
+                                        alert('파일 생성 완료!');
+                                        datalist();
+                                        clearInterval(filecheck);
+                                        $("#datepicker").val("");
+                                        $("#datepicker2").val("");
+                                        $("#log_note").val("");
+                                    });
+                                }
+                            });
+                        }, 2000);
                     }
                 });
             }, 10000);
@@ -198,31 +210,11 @@
                         $("#datepicker").val("");
                         $("#datepicker2").val("");
                         $("#log_note").val("");
-                    } else {
-                        location.href = "/tracking_log/down/" + data.filename;
-                        $("#download").find("img").hide();
-
-                        $.ajax({
-                            url: "/tracking_log/logdata_add/",
-                            data: {
-                                'client': client,
-                                'startdate': startdate,
-                                'enddate': enddate,
-                                'log_note': log_note
-                            },
-                            dataType: "json",
-                            type: "POST"
-                        }).done(function (data) {
-                            alert('파일 생성 완료!');
-                            datalist();
-                            $("#datepicker").val("");
-                            $("#datepicker2").val("");
-                            $("#log_note").val("");
-                        });
                     }
                 });
             }
         });
+
 
     </script>
 {% endblock %}
