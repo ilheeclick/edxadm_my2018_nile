@@ -59,7 +59,8 @@
                         <div>
                             <form action="/modi_series_course/" id="uploadform" method="post"
                                   enctype="multipart/form-data">
-                                <input name='uploadfile' type="file" id="sumnail_file_id"/>
+                                <input name='uploadfile' type="file" id="sumnail_file_id" onchange="fileCheck(this)"
+                                       accept="image/gif,image/jpeg,image/png"/>
                                 <input name='uploadfile_user_id' type="text" value="{{ user.id }}"
                                        style="display: none"/>
                             </form>
@@ -96,7 +97,7 @@
                     </div>
                     <div class="col-sm-9" align="right">
                         <a href="javascript:Del();"><input class="btn btn-danger" type="button" id="DelBtn"
-                                          value="삭     제"></a>
+                                                           value="삭     제"></a>
                         <a href="javascript:save();"><input class="btn btn-primary" type="button" id="SaveBtn"
                                                             value="저     장"></a>
                     </div>

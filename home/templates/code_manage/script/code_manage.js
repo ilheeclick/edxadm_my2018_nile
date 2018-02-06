@@ -89,6 +89,7 @@ function setDataTable1() {
 
     $table.on('click', 'tr', function () {
         group_code = $(this).find("input[type='text']").val();
+        $('#code_index').text(group_code);
         update2();
     });
 };
@@ -233,7 +234,9 @@ function buildSearchData2() {
 }
 
 function checked_all1() {
+    console.log($('#code_index').text());
     console.log($("#check_all1").is(":checked"));
+
 
     if ($("#check_all1").is(":checked")) {
         $("#datatable1 tbody input[type=checkbox]:visible").prop("checked", true);
@@ -394,7 +397,7 @@ function Save2() {
     });
 
     if (cnt2 == 1) {
-        var group_code = $('.form-control').val();
+        var group_code = $('#code_index').text();
         var detail_code = $('#detail_code').val();
         var detail_name = $('#detail_name').val();
         var detail_Ename = $('#detail_Ename').val();

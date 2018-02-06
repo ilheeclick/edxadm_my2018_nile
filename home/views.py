@@ -409,9 +409,10 @@ def series_course_list_view(request, id):
 
 
 @login_required
-def series_complete_list_view(request, id):
+def series_complete_list_view(request, id, name):
     variables = RequestContext(request, {
-        'id': id
+        'id': id,
+        'name': name
     })
     return render_to_response('series_course/series_complete_list.html', variables)
 
@@ -459,8 +460,6 @@ def all_course(request):
              WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
               '''.format(Test, org, Test, org)
 
-        print '======================'
-        print query
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -478,21 +477,22 @@ def series_list(request):
 
     with connections['default'].cursor() as cur:
         query = '''
-              SELECT replace(@rn := @rn - 1, .0, '') rn,
-                     series.series_seq,
-                     series.series_id,
-                     series.series_name,
-                     count(series_course.series_seq) cnt
-                FROM series
-                     LEFT JOIN series_course
-                        ON     series.series_seq = series_course.series_seq
-                           AND series_course.delete_yn = 'N',
-                     (SELECT @rn := count(*) + 1
-                        FROM series
-                       WHERE series.delete_yn = 'N') a
-               WHERE series.delete_yn = 'N'
-            GROUP BY series_name, series_course.series_seq
-            ORDER BY series.regist_date DESC;
+                SELECT replace(@rn := @rn - 1, .0, '')                  rn,
+                         series.series_seq,
+                         series.series_id,
+                         series.series_name,
+                         count(series_course.series_seq)                  cnt,
+                         CONCAT(series.series_seq, '+', series.series_name) series_index
+                    FROM series
+                         LEFT JOIN series_course
+                            ON     series.series_seq = series_course.series_seq
+                               AND series_course.delete_yn = 'N',
+                         (SELECT @rn := count(*) + 1
+                            FROM series
+                           WHERE series.delete_yn = 'N') a
+                   WHERE series.delete_yn = 'N'
+                GROUP BY series_name, series_course.series_seq
+                ORDER BY series.regist_date DESC;
         '''
         cur.execute(query)
         columns = [i[0] for i in cur.description]
@@ -500,9 +500,9 @@ def series_list(request):
 
         video_list = list()
         learning_list = list()
+
         columns += ['video_time']
         columns += ['learning_time']
-
         new_rows = []
 
         for i in xrange(0, len(rows)):
@@ -527,7 +527,6 @@ def series_list(request):
                                  FROM series_course
                                 WHERE series_seq = {0} AND delete_yn = 'N');
             '''.format(rows[i][1])
-            print query
             cur.execute(query)
             effort = cur.fetchall()
 
@@ -859,7 +858,6 @@ def group_code_db(request):
                        SET group_name ='{0}', group_desc = '{1}', use_yn = '{2}', modify_id = '{3}', modify_date = now()
                      WHERE group_code = '{4}';
                     '''.format(group_name, group_desc, use_yn, user_id, group_code_prev)
-            print query
             cur.execute(query)
             cur.close()
             data = json.dumps({'status': "success"})
@@ -1407,7 +1405,6 @@ def user_enroll(request):
                                              '{6}',
                                              '{7}')
                             '''.format(tmp[0], tmp[2], tmp[3], tmp[5], tmp[7], tmp[8], error_code, regist_id)
-                            print query
                             cur.execute(query)
                         error_cnt += 1
 
@@ -1437,7 +1434,6 @@ def user_enroll(request):
                                              '{5}',
                                              '{6}')
                             '''.format(tmp[0], tmp[2], tmp[5], tmp[7], tmp[8], error_code, regist_id)
-                            print query
                             cur.execute(query)
                         error_cnt += 1
 
@@ -1467,7 +1463,6 @@ def user_enroll(request):
                                              '{1}',
                                              '{2}')
                             '''.format(tmp[3], error_code, regist_id)
-                            print query
                             cur.execute(query)
                         error_cnt += 1
                     # ---- NULL exception check LOGIC ---- #
@@ -1621,7 +1616,6 @@ def user_enroll(request):
                                         WHERE  a.email = '{0}'
                                     '''.format(user_email, user_id, user_name, user_gender_code, user_year, user_grade_code)
                                     cur.execute(query)
-                                    print query
                                     success_cnt += 1
 
                             # 등록 세부정보 디비에 삽입
@@ -1646,7 +1640,6 @@ def user_enroll(request):
                                                  '{6}',
                                                  '{7}')
                                 '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code, error_code, regist_id)
-                                print query
                                 cur.execute(query)
 
                             if error_code != '00':
@@ -1679,7 +1672,6 @@ def user_enroll(request):
                                  {4},
                                  {5})
                 '''.format(user_org, user_why, success_cnt, error_cnt, last_index, regist_id)
-                print query
                 cur.execute(query)
 
             # 등록 세부정보 관계 테이블 동기
@@ -1689,7 +1681,6 @@ def user_enroll(request):
                        SET user_bulk_reg_seq = '{0}'
                      WHERE user_bulk_reg_seq IS NULL;
                 '''.format(last_index)
-                print query
                 cur.execute(query)
             # ---- 사용자 측에 보여주는 리스트 LOGIC ---- #
 
@@ -1755,7 +1746,6 @@ def course_list_db(request):
     with connections['default'].cursor() as cur:
         org = request.GET.get('org')
         site_id = request.GET.get('site_id')
-        print org
         if (org == 'None'):
             org = '%'
 
@@ -1795,9 +1785,6 @@ def course_list_db(request):
                           ('{2}');
         '''.format(select_course, org, select_course)
 
-        print ('+++++++++++++++++++++++++++++')
-        print (query)
-
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -1823,11 +1810,21 @@ def multisite_course(request):
 
             for item in course_list:
                 cur = connection.cursor()
-                query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
-                           VALUES ('{0}','{1}','{2}')
+                query = '''SELECT count(*)
+                              FROM multisite_course
+                             WHERE site_id= '{0}' AND course_id = '{1}' AND regist_id = '{2}';
                         '''.format(site_id, item, user_id)
                 cur.execute(query)
+                count = cur.fetchall()
                 cur.close()
+
+                if(count[0][0] == 0):
+                    cur = connection.cursor()
+                    query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
+                               VALUES ('{0}','{1}','{2}')
+                            '''.format(site_id, item, user_id)
+                    cur.execute(query)
+                    cur.close()
 
             data = json.dumps({'status': "success"})
 
@@ -2134,9 +2131,6 @@ def manager_list(request):
                 WHERE mu.site_id = '{0}' and mu.delete_yn = 'N'
         '''.format(id)
 
-        print 'Test === list ====='
-        print query
-
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -2211,9 +2205,7 @@ def manager_db(request):
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
-            print query
-            print 'temporary ----------------------'
-            print row
+
 
             data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)
 
@@ -2342,7 +2334,6 @@ def popupZone_db(request):
                              AND BINARY (end_date) <= '{5}'
                     ORDER BY regist_date DESC;
 			""".format(title, start, end, title, start, end)
-            print query
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
@@ -2636,7 +2627,6 @@ def popup_index1(request, id):
          WHERE popup_id = {0};
         """.format(id)
 
-    print query
     cur.execute(query)
     row = cur.fetchall()
     cur.close()
@@ -2668,7 +2658,6 @@ def popup_index2(request, id):
          WHERE popup_id = {0};
         """.format(id)
 
-    print query
     cur.execute(query)
     row = cur.fetchall()
     cur.close()
@@ -2700,7 +2689,6 @@ def popup_index3(request, id):
          WHERE popup_id = {0};
         """.format(id)
 
-    print query
     cur.execute(query)
     row = cur.fetchall()
     cur.close()
@@ -5114,8 +5102,6 @@ def history(request):
                                             + INTERVAL 2 SECOND)
                 '''.format(r_year, r_mon, r_day, r_hour, r_min, r_sec)
 
-                print query
-
                 cur.execute(query)
                 rows = cur.fetchall()
 
@@ -5152,8 +5138,6 @@ def history(request):
                                             + INTERVAL 9 HOUR
                                             + INTERVAL 2 SECOND)
                 '''.format(r_year, r_mon, r_day, r_hour, r_min, r_sec)
-
-                print query
 
                 cur.execute(query)
                 rows = cur.fetchall()
@@ -5533,10 +5517,6 @@ def history(request):
             # 정렬 조건 추가
             query_add = "ORDER BY action_time DESC"
             query += query_add
-
-            print "---------------------------------> s"
-            print query
-            print "---------------------------------> e"
 
             cur.execute(query)
             rows = cur.fetchall()
@@ -6257,10 +6237,6 @@ def review_manage(request):
                 restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(name_search, org_search, code_search)
                 query = query.replace("-- mode", restr)
 
-            print "------------------>"
-            print query
-            print "------------------>"
-
             cur.execute(query)
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
@@ -6630,7 +6606,6 @@ def multiple_email_new(request):
                         values('M', '{0}', {1}, {2}, {3}, '{4}', '{5}', {6})
                     '''.format(db_account_type, target1, target2, target3, title, content.replace("'", "''"), user_id)
                     cur.execute(query)
-                    print query
             # 보내는 타입이 '수동입력'일 때 로직
             elif subject_flag == 'world':
                 with connections['default'].cursor() as cur:
@@ -6639,7 +6614,6 @@ def multiple_email_new(request):
                         values('M', 'N', 0, 0, 0, '{0}', '{1}', {2})
                     '''.format(title, content.replace("'", "''"), user_id)
                     cur.execute(query)
-                    print query
             # insert 이후 마지막 글 번호 얻어오기
             with connections['default'].cursor() as cur:
                 query = '''
@@ -6659,7 +6633,6 @@ def multiple_email_new(request):
                             from auth_user
                             where email = '{0}';
                         '''.format(item)
-                        print query  # DEBUG
                         cur.execute(query)
                         rows = cur.fetchall()
                         try:
@@ -6676,7 +6649,6 @@ def multiple_email_new(request):
                              insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date, memo_gubun)
                              values({0}, '{1}', '{2}', {3}, NULL, 1);
                         '''.format(user_id_list[n], title, content.replace("'", "''"), user_id)
-                        print query  # DEBUG
                         cur.execute(query)
                 # 보내는 타입이 '수동입력'일 때 로직
                 elif subject_flag == 'world':
@@ -6685,7 +6657,6 @@ def multiple_email_new(request):
                              insert into edxapp.memo(receive_id, title, contents, regist_id, modify_date, memo_gubun)
                              values({0}, '{1}', '{2}', {3}, NULL, 1);
                         '''.format(user_id_list[n], title, content.replace("'", "''"), user_id)
-                        print query  # DEBUG
                         cur.execute(query)
             # ---------- insert memo ----------#
 
@@ -6881,7 +6852,6 @@ def multiple_email_new(request):
                                 insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
                                 values({0}, {1}, '{2}', 'Y', {3})
                             '''.format(row_id, user_id_list[n], user_list[n].replace("'", "''"), user_id)
-                            print query  # DEBUG
                             cur.execute(query)
                     except BaseException:
                         fail_cnt = fail_cnt + 1
@@ -6890,7 +6860,6 @@ def multiple_email_new(request):
                                 insert into edxapp.group_email_target(mail_id, receive_id, email, success_yn, regist_id)
                                 values({0}, {1}, '{2}', 'N', {3})
                             '''.format(row_id, user_id_list[n], user_list[n].replace("'", "''"), user_id)
-                            print query  # DEBUG
                             cur.execute(query)
                 # 보내는 타입이 '수동입력'일 때 로직
                 elif subject_flag == 'world':
@@ -6901,7 +6870,6 @@ def multiple_email_new(request):
                                 insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
                                 values({0}, '{1}', 'Y', {2})
                             '''.format(row_id, user_list[n].replace("'", "''"), user_id)
-                            print query  # DEBUG
                             cur.execute(query)
                     except BaseException:
                         fail_cnt = fail_cnt + 1
@@ -6910,7 +6878,6 @@ def multiple_email_new(request):
                                 insert into edxapp.group_email_target(mail_id, email, success_yn, regist_id)
                                 values({0}, '{1}', 'N', {2})
                             '''.format(row_id, user_list[n].replace("'", "''"), user_id)
-                            print query  # DEBUG
                             cur.execute(query)
 
             # making success cnt, fail cnt
