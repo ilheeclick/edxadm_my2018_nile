@@ -28,10 +28,23 @@ def log_download(request):
 
 def logfile_check(request):
     check = os.path.isfile(LOGZIP_DIR+'tracking_log.zip')
+    print 'check log_complete  ------------>>>> ', check
     if check is True:
-        return JsonResponse({'filename': 'tracking_log.zip', 'check': 'true'})
+        first_size = logfile_size(LOGZIP_DIR+'tracking_log.zip')
+        return JsonResponse({'check': 'true', 'first_size': first_size})
     else:
         return JsonResponse({'filename': '', 'check': 'false'})
+
+
+def logfile_size(file_path):
+    file_size = os.path.getsize(file_path)
+    print 'compress size ======== ', file_size
+    return file_size
+
+
+def second_check(request):
+    second_size = logfile_size(LOGZIP_DIR+'tracking_log.zip')
+    return JsonResponse({'filename': 'tracking_log.zip', 'second_size': second_size})
 
 
 def makedir(sftp):
