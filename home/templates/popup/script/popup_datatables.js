@@ -45,7 +45,23 @@
                 {
                     "targets": [1],
                     "visible": false,
-                }
+                },
+                {
+                    "targets": [10],
+                    "visible": false,
+                },
+                {
+                    "targets": [11],
+                    "visible": false,
+                },
+                {
+                    "targets": [12],
+                    "visible": false,
+                },
+                {
+                    "targets": [13],
+                    "visible": false,
+                },
             ],
             language: {
                     lengthMenu: "_MENU_",
