@@ -37,7 +37,7 @@ function setDataTable1() {
             {data: "video_time"},
             {data: "learning_time"},
             {data: "series_index"},
-            {data: "series_seq"},
+            {data: "series_index"},
 
         ],
         columnDefs: [
@@ -49,7 +49,8 @@ function setDataTable1() {
             },
             {
                 targets: 7, visible: true, name: "pk", render: function (data) {
-                return '<a href="/series_course_list_view/' + data + '"><input type="button" value="관  리" class="btn btn-default"></a>';
+                var series_index = data.split('+')
+                return '<a href="/series_course_list_view/'+ series_index[0] +'/'+ series_index[1] + '/"><input type="button" value="관  리" class="btn btn-default"></a>';
             },
             },
         ],

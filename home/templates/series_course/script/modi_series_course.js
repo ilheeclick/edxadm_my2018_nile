@@ -28,7 +28,10 @@ $(document).ready(function () {
             else {
                 $('#radio_2').attr('checked', 'checked');
             }
+            $('#file_down').text(data[1][0]);
+            $('#file_down').attr('href', '/home/static/uploads/series/' + data[1][1] + '.' + data[1][2]);
         }
+
     })
 });
 

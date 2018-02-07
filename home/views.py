@@ -152,7 +152,20 @@ def modi_series(request, id):
             cur.close()
             for p in row:
                 mod_multi.append(p)
-            print mod_multi
+
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT sumnail_file_id
+                                           FROM series
+                                          WHERE series_seq = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_multi.append(p)
             data = json.dumps(list(mod_multi), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -401,9 +414,10 @@ def series_course_list_db(request):
 
 
 @login_required
-def series_course_list_view(request, id):
+def series_course_list_view(request, id, name):
     variables = RequestContext(request, {
-        'id': id
+        'id': id,
+        'name': name
     })
     return render_to_response('series_course/series_course_list.html', variables)
 
@@ -452,14 +466,15 @@ def all_course(request):
                    display_name,
                    display_number_with_default     course
               FROM course_overviews_courseoverview coc
-                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code and cd.group_code = 003,
                    (SELECT @rn := count(*) + 1
                       FROM course_overviews_courseoverview
                      WHERE     (org, display_number_with_default) NOT IN ({0})
                            AND org LIKE '{1}') b
              WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
               '''.format(Test, org, Test, org)
-
+        print 'Test======='
+        print query
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -1040,7 +1055,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1112,7 +1127,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1173,7 +1188,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1774,7 +1789,7 @@ def course_list_db(request):
                    display_number_with_default            course,
                    substring_index(id, '+', -1)           run
               FROM course_overviews_courseoverview coc
-                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code AND cd.group_code = 003,
                    (  SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview
                        WHERE id NOT IN
@@ -1904,7 +1919,7 @@ def select_list_db(request):
                    substring_index(id, '+', -1)           run
               FROM course_overviews_courseoverview co
                    JOIN multisite_course mc ON co.id = mc.course_id
-                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code and cd.group_code = 003,
                    (SELECT @rn := count(*) + 1
                       FROM multisite_course
                      WHERE site_id = '{0}') b
@@ -2360,6 +2375,13 @@ def modi_popupZone(request, id):
     if request.is_ajax():
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
+            # cur = connection.cursor()
+            # query = """
+            #
+            #         """
+            # cur.execute(query)
+            # row = cur.fetchall()
+            # cur.close()
             cur = connection.cursor()
             query = """
 					SELECT title,
@@ -2391,6 +2413,22 @@ def modi_popupZone(request, id):
             cur.close()
             for p in row:
                 mod_popZone.append(p)
+
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT image_file
+                                           FROM popupzone
+                                          WHERE seq = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_popZone.append(p)
+            print 'popupZone ===='
+            print mod_popZone
             data = json.dumps(list(mod_popZone), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -2467,8 +2505,7 @@ def new_popupZone(request):
                        start_time, end_date, end_time, regist_id, regist_id)
             cur.execute(query)
             cur.close()
-            data = json.dumps({'status': "success"})
-            return course_db_list(data, 'applications/json')
+            return HttpResponse(data, 'applications/json')
 
         elif request.POST['method'] == 'modi':
             title = request.POST.get('title')
@@ -2542,7 +2579,7 @@ def new_popupZone(request):
 @login_required
 def popup_index0(request, id, type):
     cur = connection.cursor()
-    if (type == "text"):
+    if (type == "H"):
         query = """
             SELECT title,
                    contents,
@@ -2570,7 +2607,7 @@ def popup_index0(request, id, type):
 
         return render_to_response('popup/popup_index/indexH.html', context)
 
-    elif (type == "image"):
+    elif (type == "I"):
         query = """
             SELECT title,
                    contents,
@@ -2586,7 +2623,8 @@ def popup_index0(request, id, type):
                    attatch_file_name,
                    width,
                    height,
-                   image_map
+                   image_map,
+                   attatch_file_ext
               FROM popup
               JOIN tb_board_attach ON tb_board_attach.attatch_id = popup.image_file
              WHERE popup_id = {0};
@@ -2789,6 +2827,23 @@ def modi_popup(request, id):
             for p in row:
                 mod_pop.append(p)
 
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT image_file
+                                           FROM popup
+                                          WHERE popup_id = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_pop.append(p)
+
+            print 'mod_pop ==============='
+            print mod_pop
+
             data = json.dumps(list(mod_pop), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -2854,7 +2909,11 @@ def popup_db(request):
                                 WHEN use_yn = 'Y' THEN '사용함'
                                 WHEN use_yn = 'N' THEN '사용안함'
                              END
-                                use_yn
+                                use_yn,
+                             width,
+                             height,
+                             popup_type,
+                             template
                         FROM popup pu
                              JOIN auth_user au ON au.id = pu.regist_id,
                              (SELECT @rn := count(*) + 1
@@ -2878,6 +2937,11 @@ def popup_db(request):
                 value_list.append(pop[7])
                 value_list.append(pop[8])
                 value_list.append(pop[9])
+                value_list.append(pop[10])
+                value_list.append(pop[11])
+                value_list.append(pop[12])
+                value_list.append(pop[13])
+                value_list.append('<a href="javascript:preview(\''+str(pop[1])+'\',\''+str(pop[10])+'\',\''+str(pop[11])+'\',\''+str(pop[12])+'\',\''+str(pop[13]) +'\');"><input class="btn btn-default" type="button" id="PreviewBtn" value="미리보기"></a>')
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)

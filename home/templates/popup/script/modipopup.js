@@ -110,6 +110,8 @@ $(document).ready(function () {
         else if (data[0][16] == "N") {
             $("#use_yn").val("사용안함").prop("selected", true);
         }
+        $('#file_down').text(data[2][0]);
+        $('#file_down').attr('href', '/home/static/uploads/' + data[2][1] + '.' + data[2][2]);
     })
 });
 
@@ -473,7 +475,6 @@ function preview() {
         window.open("/popup_index3/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
-
 }
 
 var link_url = $('#link_URL').val();

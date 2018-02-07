@@ -65,6 +65,11 @@ function setDataTable1() {
             {
                 targets: 1, visible: false,
             },
+            {targets: 3, render: function(data) {return '<div style ="width:110px">'+data+'</div>'}},
+            {targets: 4, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 5, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 6, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 7, render: function(data) {return '<div style ="width:110px">'+data+'</div>'}},
         ],
         rowsGroup: [
             0,
@@ -131,18 +136,11 @@ function setDataTable2() {
             {
                 targets: 1, visible: false,
             },
-            {
-                render: function (data, type, full, meta) {
-                    return "<div class='text-wrap width-80'>" + data + "</div>";
-                },
-                targets: 3
-            },
-            {
-                render: function (data, type, full, meta) {
-                    return "<div class='text-wrap width-80'>" + data + "</div>";
-                },
-                targets: 4
-            },
+            {targets: 3, render: function(data) {return '<div style ="width:110px">'+data+'</div>'}},
+            {targets: 4, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 5, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 6, render: function(data) {return '<div style ="width:200px">'+data+'</div>'}},
+            {targets: 7, render: function(data) {return '<div style ="width:110px">'+data+'</div>'}},
         ],
         rowsGroup: [
             0,
