@@ -152,7 +152,20 @@ def modi_series(request, id):
             cur.close()
             for p in row:
                 mod_multi.append(p)
-            print mod_multi
+
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT sumnail_file_id
+                                           FROM series
+                                          WHERE series_seq = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_multi.append(p)
             data = json.dumps(list(mod_multi), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -2360,6 +2373,13 @@ def modi_popupZone(request, id):
     if request.is_ajax():
         data = json.dumps({'status': "fail"})
         if request.GET['method'] == 'modi':
+            # cur = connection.cursor()
+            # query = """
+            #
+            #         """
+            # cur.execute(query)
+            # row = cur.fetchall()
+            # cur.close()
             cur = connection.cursor()
             query = """
 					SELECT title,
@@ -2391,6 +2411,22 @@ def modi_popupZone(request, id):
             cur.close()
             for p in row:
                 mod_popZone.append(p)
+
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT image_file
+                                           FROM popupzone
+                                          WHERE seq = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_popZone.append(p)
+            print 'popupZone ===='
+            print mod_popZone
             data = json.dumps(list(mod_popZone), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
 
@@ -2467,6 +2503,8 @@ def new_popupZone(request):
                        start_time, end_date, end_time, regist_id, regist_id)
             cur.execute(query)
             cur.close()
+            print 'insert popupzone ======='
+            print query
             data = json.dumps({'status': "success"})
             return course_db_list(data, 'applications/json')
 
@@ -2788,6 +2826,23 @@ def modi_popup(request, id):
             cur.close()
             for p in row:
                 mod_pop.append(p)
+
+            cur = connection.cursor()
+            query = """
+					SELECT attach_org_name, attatch_file_name, attatch_file_ext
+                      FROM tb_board_attach
+                     WHERE attatch_id = (SELECT image_file
+                                           FROM popup
+                                          WHERE popup_id = '{0}');
+                    """.format(id)
+            cur.execute(query)
+            row = cur.fetchall()
+            cur.close()
+            for p in row:
+                mod_pop.append(p)
+
+            print 'mod_pop ==============='
+            print mod_pop
 
             data = json.dumps(list(mod_pop), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')

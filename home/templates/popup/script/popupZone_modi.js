@@ -17,6 +17,8 @@ $(document).ready(function () {
         $('#start_time').val(data[0][5]);
         $('#end_date').val(data[0][6]);
         $('#end_time').val(data[0][7]);
+        $('#file_down').text(data[1][0]);
+        $('#file_down').attr('href', '/home/static/uploads/' + data[1][1] + '.' + data[1][2]);
     });
 });
 
