@@ -99,7 +99,7 @@
         });
 
 
-        $table.on('click', 'tr', function () {
+        $table.on('click', 'tr td:not(:last-child)', function (e) {
             var $row;
             var cell;
             var data;
@@ -118,4 +118,35 @@
 }).apply(this, [jQuery]);
 
 
-
+function preview(id, p_width, p_height, type, template) {
+    var width = p_width;
+    if (Number(width) < 400) {
+        width = "460"
+    }
+    else {
+        width = String(Number(p_width) + 50);
+    }
+    var height = p_height;
+    if (Number(height) < 400) {
+        height = "550"
+    }
+    else {
+        height = String(Number(p_height) + 150);
+    }
+    if (template == 0) {
+        window.open("/popup_index0/" + id + '/' + type, null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template == 1) {
+        window.open("/popup_index1/" + id, null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template == 2) {
+        window.open("/popup_index2/" + id, null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    else if (template == 3) {
+        window.open("/popup_index3/" + id, null,
+            "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
+    }
+}

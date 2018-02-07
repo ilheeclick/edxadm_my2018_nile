@@ -2579,7 +2579,7 @@ def new_popupZone(request):
 @login_required
 def popup_index0(request, id, type):
     cur = connection.cursor()
-    if (type == "text"):
+    if (type == "H"):
         query = """
             SELECT title,
                    contents,
@@ -2607,7 +2607,7 @@ def popup_index0(request, id, type):
 
         return render_to_response('popup/popup_index/indexH.html', context)
 
-    elif (type == "image"):
+    elif (type == "I"):
         query = """
             SELECT title,
                    contents,
@@ -2909,7 +2909,11 @@ def popup_db(request):
                                 WHEN use_yn = 'Y' THEN '사용함'
                                 WHEN use_yn = 'N' THEN '사용안함'
                              END
-                                use_yn
+                                use_yn,
+                             width,
+                             height,
+                             popup_type,
+                             template
                         FROM popup pu
                              JOIN auth_user au ON au.id = pu.regist_id,
                              (SELECT @rn := count(*) + 1
@@ -2933,6 +2937,11 @@ def popup_db(request):
                 value_list.append(pop[7])
                 value_list.append(pop[8])
                 value_list.append(pop[9])
+                value_list.append(pop[10])
+                value_list.append(pop[11])
+                value_list.append(pop[12])
+                value_list.append(pop[13])
+                value_list.append('<a href="javascript:preview(\''+str(pop[1])+'\',\''+str(pop[10])+'\',\''+str(pop[11])+'\',\''+str(pop[12])+'\',\''+str(pop[13]) +'\');"><input class="btn btn-default" type="button" id="PreviewBtn" value="미리보기"></a>')
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
