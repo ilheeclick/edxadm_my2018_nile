@@ -6197,10 +6197,11 @@ def review_manage(request):
                               ON cr.course_id = coc.id
                        LEFT JOIN edxapp.code_detail AS cd
                               ON coc.org = cd.detail_code
+                              and group_code = 003
                 WHERE cr.reg_time < '{0}' AND cr.reg_time > '{1}'
                 -- mode
                 GROUP  BY cr.id,
-                          cd.detail_name,
+                          #cd.detail_name,
                           coc.display_name,
                           cr.content,
                           cr.point,
@@ -6238,6 +6239,9 @@ def review_manage(request):
                 query = query.replace("-- mode", restr)
 
             cur.execute(query)
+            print "---------------------------> s"
+            print query
+            print "---------------------------> e"
             rows = cur.fetchall()
             columns = [col[0] for col in cur.description]
             result_list = [dict(zip(columns, (str(col) for col in row))) for row in rows]
