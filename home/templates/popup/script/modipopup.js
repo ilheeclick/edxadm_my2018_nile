@@ -475,7 +475,6 @@ function preview() {
         window.open("/popup_index3/" + '{{id}}', null,
             "height=" + height + ",width=" + width + ",status=yes,toolbar=no,menubar=no,location=no");
     }
-
 }
 
 var link_url = $('#link_URL').val();

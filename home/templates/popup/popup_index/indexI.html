@@ -12,7 +12,7 @@
     <div class="pop-wrap" id="#_id"
          style="width: {{ pop.7 }}px; height: {{ pop.8 }}px; float: left; z-index: 9999; border: 1px solid #e5e5e5; position: relative">
         <div class="area" style="background-color: #fff;">
-            <img src="{% static 'test_upload/'%}{{ pop.6 }}" usemap="image_map"
+            <img src="{% static 'uploads/'%}{{ pop.6 }}.{{ pop.10 }}" usemap="image_map"
                  style="width: {{ pop.7 }}px; height: {{ pop.8 }}px">
 
             <map name="image_map">
@@ -20,7 +20,7 @@
                     <area shape="rect" coords="0,0,{{ pop.7 }},{{ pop.8 }}" alt="IM" target="_{{ pop.3 }}"
                           href="{{ pop.2 }}">
                 {% else %}
-                    {% for map in pop.10 %}
+                    {% for map in pop.11 %}
                         <area shape="rect" coords="{{ map }}" alt="IM" target="_{{ pop.3 }}" href="{{ pop.2 }}">
                     {% endfor %}
                 {% endif %}

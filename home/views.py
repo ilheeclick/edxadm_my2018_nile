@@ -466,14 +466,15 @@ def all_course(request):
                    display_name,
                    display_number_with_default     course
               FROM course_overviews_courseoverview coc
-                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code and cd.group_code = 003,
                    (SELECT @rn := count(*) + 1
                       FROM course_overviews_courseoverview
                      WHERE     (org, display_number_with_default) NOT IN ({0})
                            AND org LIKE '{1}') b
              WHERE (org, display_number_with_default) NOT IN ({2}) AND org LIKE '{3}';
               '''.format(Test, org, Test, org)
-
+        print 'Test======='
+        print query
         cur.execute(query)
         columns = [i[0] for i in cur.description]
         rows = cur.fetchall()
@@ -1054,7 +1055,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1126,7 +1127,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1187,7 +1188,7 @@ def course_db_list(request):
                                          DATE_FORMAT(a.enrollment_start,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.enrollment_end,'%Y/%m/%d %H:%i:%s'),
                                          DATE_FORMAT(a.end,'%Y/%m/%d %H:%i:%s'),
-                                         DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),
+                                         IFNULL(DATE_FORMAT(c.cert_date,'%Y/%m/%d %H:%i:%s'),''),
                                          d.teacher_name,
                                          a.effort,
                                          CASE
@@ -1918,7 +1919,7 @@ def select_list_db(request):
                    substring_index(id, '+', -1)           run
               FROM course_overviews_courseoverview co
                    JOIN multisite_course mc ON co.id = mc.course_id
-                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON co.org = cd.detail_code and cd.group_code = 003,
                    (SELECT @rn := count(*) + 1
                       FROM multisite_course
                      WHERE site_id = '{0}') b
@@ -2622,7 +2623,8 @@ def popup_index0(request, id, type):
                    attatch_file_name,
                    width,
                    height,
-                   image_map
+                   image_map,
+                   attatch_file_ext
               FROM popup
               JOIN tb_board_attach ON tb_board_attach.attatch_id = popup.image_file
              WHERE popup_id = {0};
