@@ -161,8 +161,6 @@
                             $.ajax({
                                 url: "/tracking_log/size/",
                             }).done(function (size_data) {
-                                alert(file_size);
-                                alert('second'+size_data.second_size);
                                 if(file_size == size_data.second_size){
                                     location.href = "/tracking_log/down/" + size_data.filename;
                                     $("#download").find("img").hide();
