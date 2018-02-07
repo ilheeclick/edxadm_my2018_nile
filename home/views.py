@@ -1788,7 +1788,7 @@ def course_list_db(request):
                    display_number_with_default            course,
                    substring_index(id, '+', -1)           run
               FROM course_overviews_courseoverview coc
-                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code,
+                   LEFT OUTER JOIN code_detail cd ON coc.org = cd.detail_code AND cd.group_code = 003,
                    (  SELECT @rn := count(*) + 1
                         FROM course_overviews_courseoverview
                        WHERE id NOT IN
