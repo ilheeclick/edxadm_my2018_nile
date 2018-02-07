@@ -414,9 +414,10 @@ def series_course_list_db(request):
 
 
 @login_required
-def series_course_list_view(request, id):
+def series_course_list_view(request, id, name):
     variables = RequestContext(request, {
-        'id': id
+        'id': id,
+        'name': name
     })
     return render_to_response('series_course/series_course_list.html', variables)
 
@@ -2503,10 +2504,7 @@ def new_popupZone(request):
                        start_time, end_date, end_time, regist_id, regist_id)
             cur.execute(query)
             cur.close()
-            print 'insert popupzone ======='
-            print query
-            data = json.dumps({'status': "success"})
-            return course_db_list(data, 'applications/json')
+            return HttpResponse(data, 'applications/json')
 
         elif request.POST['method'] == 'modi':
             title = request.POST.get('title')
