@@ -229,8 +229,7 @@ def series_complete_db(request):
                                          WHERE     a.org = b.org
                                                AND a.display_number_with_default =
                                                       b.display_number_with_default
-                                               AND a.start >= b.start
-                                               AND a.created >= b.created)
+                                               AND a.start >= b.start)
                                           AS rank
                                   FROM course_overviews_courseoverview a) ab
                                JOIN series_course sc
@@ -532,8 +531,7 @@ def series_list(request):
                                  WHERE     a.org = b.org
                                        AND a.display_number_with_default =
                                               b.display_number_with_default
-                                       AND a.start >= b.start
-                                       AND a.created >= b.created)
+                                       AND a.start >= b.start)
                                   AS rank
                           FROM edxapp.course_overviews_courseoverview a) ab
                  WHERE     rank = 1
