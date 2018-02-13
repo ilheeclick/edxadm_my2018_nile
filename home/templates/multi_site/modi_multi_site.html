@@ -113,13 +113,16 @@
                 </div>
                 <script>
                     function random_num() {
-                        var result = '';
+                        var r = confirm("키값은 연계기관과 공유된 정보입니다. 변경시 다시 공유하기 전에는 암복화가 이루어 지지 않습니다. 재생성 하시겠습니까?");
+                        if (r == true) {
+                            var result = '';
 
-                        for (var i = 0; i < 16; i++) {
-                            var random_num = Math.floor(Math.random() * 10);
-                            result += random_num.toString()
+                            for (var i = 0; i < 16; i++) {
+                                var random_num = Math.floor(Math.random() * 10);
+                                result += random_num.toString()
+                            }
+                            $('#random_num').val(result);
                         }
-                        $('#random_num').val(result);
                     }
 
                 </script>
