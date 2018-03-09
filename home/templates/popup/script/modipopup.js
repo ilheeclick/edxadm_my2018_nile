@@ -280,7 +280,7 @@ function save_data(pop_id) {
     var pop_id = pop_id;
     var method = '';
     var id = '{{ id }}';
-    if (id == 99999) {
+    if (id == 'new') {
         method = 'add';
     }
     else {
