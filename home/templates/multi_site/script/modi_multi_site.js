@@ -2,7 +2,6 @@ jQuery.ajaxSettings.traditional = true;
 var select_index = '<option>선택하세요</option>'
 $(document).ready(function () {
     $.post("/org_code_list", {
-        csrfmiddlewaretoken: $.cookie('csrftoken'),
     }).done(function (data) {
         var code_list = data.slice(0, -1).split('/');
         for (var i = 0; i < code_list.length; i++) {
