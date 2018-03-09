@@ -3,6 +3,7 @@ $(document).ready(function () {
     $("input:radio[name=radio]").click(function () {
         if ($("input[type=radio][name=radio]:checked").val() == 'P') {
             $('#key_add').css('display', 'block');
+            swal("경고", "Parameter 선택시 연계사이트에 암호화키 변경을 하여야 합니다.", "warning");
         }
         else {
             $('#key_add').css('display', 'none');
