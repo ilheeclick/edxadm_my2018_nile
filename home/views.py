@@ -10,7 +10,6 @@ import subprocess
 import sys
 import urllib
 import uuid
-
 from bson.objectid import ObjectId
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, logout as auth_logout, )
@@ -30,7 +29,6 @@ from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from pymongo import MongoClient
-
 from management.settings import REAL_WEB1_HOST, REAL_WEB1_ID, REAL_WEB1_PW
 from management.settings import STATIC_URL
 from management.settings import UPLOAD_DIR, EXCEL_PATH, LOGZIP_DIR
@@ -69,13 +67,12 @@ def common_single_file_upload(file_object, gubun, user_id, return_data=None):
     file_byte_size = file_object.size
     file_size = str(file_byte_size / 1024) + "KB"
 
-    if(gubun =='SR'):
-        file_dir = UPLOAD_DIR + 'series/'+file_name_enc + '.' + file_ext
-        file_path = UPLOAD_DIR +'series/'
-    else :
+    if (gubun == 'SR'):
+        file_dir = UPLOAD_DIR + 'series/' + file_name_enc + '.' + file_ext
+        file_path = UPLOAD_DIR + 'series/'
+    else:
         file_dir = UPLOAD_DIR + file_name_enc + '.' + file_ext
         file_path = UPLOAD_DIR
-
 
     if file_path[len(file_path) - 1] == '/':
         file_path = file_path[0:(len(file_path) - 1)]
@@ -1451,7 +1448,8 @@ def user_enroll(request):
                         error_cnt += 1
 
                     # 컬럼 누락 오류 (error code 20)
-                    elif not tmp[0] or not tmp[1] or not tmp[2] or not tmp[3] or not tmp[4] or not tmp[5] or not tmp[6] or not tmp[7] or not tmp[8]:
+                    elif not tmp[0] or not tmp[1] or not tmp[2] or not tmp[3] or not tmp[4] or not tmp[5] or not tmp[
+                        6] or not tmp[7] or not tmp[8]:
                         lock = 1
                         error_code = '20'
                         # 등록 세부정보 디비에 삽입
@@ -1627,7 +1625,8 @@ def user_enroll(request):
                                                b.year_of_birth = '{4}',
                                                level_of_education = '{5}'
                                         WHERE  a.email = '{0}'
-                                    '''.format(user_email, user_id, user_name, user_gender_code, user_year, user_grade_code)
+                                    '''.format(user_email, user_id, user_name, user_gender_code, user_year,
+                                               user_grade_code)
                                     cur.execute(query)
                                     success_cnt += 1
 
@@ -1652,7 +1651,8 @@ def user_enroll(request):
                                                  '{5}',
                                                  '{6}',
                                                  '{7}')
-                                '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code, error_code, regist_id)
+                                '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code,
+                                           error_code, regist_id)
                                 cur.execute(query)
 
                             if error_code != '00':
@@ -1831,7 +1831,7 @@ def multisite_course(request):
                 count = cur.fetchall()
                 cur.close()
 
-                if(count[0][0] == 0):
+                if (count[0][0] == 0):
                     cur = connection.cursor()
                     query = '''insert into edxapp.multisite_course(site_id, course_id, regist_id)
                                VALUES ('{0}','{1}','{2}')
@@ -2088,6 +2088,15 @@ def modi_multi_site_db(request):
                     '''.format(site_name, site_code, site_url, regist_id, multi_no, system, random_num)
             cur.execute(query)
             cur.close()
+            if (system == 'O'):
+                cur = connection.cursor()
+                query = '''
+                        update edxapp.multisite
+                        SET Encryption_key = ""
+                        WHERE site_id = '{0}'
+                        '''.format(multi_no)
+                cur.execute(query)
+                cur.close()
             data = json.dumps({'status': "success"})
 
             return HttpResponse(data, 'applications/json')
@@ -2218,7 +2227,6 @@ def manager_db(request):
             cur.execute(query)
             row = cur.fetchall()
             cur.close()
-
 
             data = json.dumps(row, cls=DjangoJSONEncoder, ensure_ascii=False)
 
@@ -2939,7 +2947,10 @@ def popup_db(request):
                 value_list.append(pop[11])
                 value_list.append(pop[12])
                 value_list.append(pop[13])
-                value_list.append('<a href="javascript:preview(\''+str(pop[1])+'\',\''+str(pop[10])+'\',\''+str(pop[11])+'\',\''+str(pop[12])+'\',\''+str(pop[13]) +'\');"><input class="btn btn-default" type="button" id="PreviewBtn" value="미리보기"></a>')
+                value_list.append(
+                    '<a href="javascript:preview(\'' + str(pop[1]) + '\',\'' + str(pop[10]) + '\',\'' + str(
+                        pop[11]) + '\',\'' + str(pop[12]) + '\',\'' + str(pop[
+                                                                              13]) + '\');"><input class="btn btn-default" type="button" id="PreviewBtn" value="미리보기"></a>')
                 popup_list.append(value_list)
 
             data = json.dumps(list(popup_list), cls=DjangoJSONEncoder, ensure_ascii=False)
@@ -6289,15 +6300,18 @@ def review_manage(request):
                 query = query.replace("-- mode", restr)
 
             elif mode == 'name_code':
-                restr = "AND cr.content like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(name_search, code_search)
+                restr = "AND cr.content like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(name_search,
+                                                                                                 code_search)
                 query = query.replace("-- mode", restr)
 
             elif mode == 'org_code':
-                restr = "AND cd.detail_name like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(org_search, code_search)
+                restr = "AND cd.detail_name like '%{0}%' AND coc.id like 'course-v1:%+{1}+%'".format(org_search,
+                                                                                                     code_search)
                 query = query.replace("-- mode", restr)
 
             elif mode == 'name_org_code':
-                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(name_search, org_search, code_search)
+                restr = "AND cr.content like '%{0}%' AND cd.detail_name like '%{1}%' AND coc.id like 'course-v1:%+{2}+%'".format(
+                    name_search, org_search, code_search)
                 query = query.replace("-- mode", restr)
 
             cur.execute(query)
@@ -6535,7 +6549,8 @@ def multiple_email_new(request):
                 instructor = request.POST.get('instructor')
                 operator = request.POST.get('operator')
                 # 유저 목록 구해오는 로직
-                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (instructor == 'true' and operator == 'true'):
+                if (experienced_student == 'true' and instructor == 'true' and operator == 'true') or (
+                                instructor == 'true' and operator == 'true'):
                     target1 = '1'
                     target2 = '1'
                     target3 = '1'
@@ -7019,8 +7034,10 @@ def unused_video(request):
         context = {
             'files': [{
                           'filename': f,
-                          'accessed': datetime.datetime.strptime(time.ctime(os.path.getatime(join(filepath, f))), "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S"),
-                          'modified': datetime.datetime.strptime(time.ctime(os.path.getmtime(join(filepath, f))), "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S")
+                          'accessed': datetime.datetime.strptime(time.ctime(os.path.getatime(join(filepath, f))),
+                                                                 "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S"),
+                          'modified': datetime.datetime.strptime(time.ctime(os.path.getmtime(join(filepath, f))),
+                                                                 "%a %b %d %H:%M:%S %Y").strftime("%Y/%m/%d %H:%I:%S")
                       } for f in files]
         }
 

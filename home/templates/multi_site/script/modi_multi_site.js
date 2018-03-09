@@ -1,5 +1,14 @@
 jQuery.ajaxSettings.traditional = true;
 $(document).ready(function () {
+    $("input:radio[name=radio]").click(function () {
+        if ($("input[type=radio][name=radio]:checked").val() == 'P') {
+            $('#key_add').css('display', 'block');
+        }
+        else {
+            $('#key_add').css('display', 'none');
+        }
+    });
+
     setDataTable1();
     var value_list;
     var id = '{{id}}';
@@ -23,14 +32,19 @@ $(document).ready(function () {
             $('#site_url').val(data[0][2]);
             if (data[0][3] == "O") {
                 $("#radio_1").attr('checked', 'checked');
+                $('#key_add').css('display', 'none');
             }
             else if (data[0][3] == "P") {
                 $("#radio_2").attr('checked', 'checked');
+                $('#key_add').css('display', 'block');
             }
             $('#random_num').val(data[0][4]);
         }
     });
-});
+})
+;
+
+
 function save() {
     //var uploadfile = $('#uploadfile').val();
     var site_name = $('#site_name').val();
@@ -60,7 +74,7 @@ function save() {
         else if (system == '') {
             swal("경고", "인증방식을 선택해주세요.", "warning");
         }
-        else if (random_num == '') {
+        else if (random_num == '' && $("input[type=radio][name=radio]:checked").val() == 'P') {
             swal("경고", "암호화key를 생성해주세요.", "warning");
         }
         else {
