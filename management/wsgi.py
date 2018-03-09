@@ -14,7 +14,7 @@ import site
 site.addsitedir('/home/ubuntu/project/venv/lib/python2.7/site-packages')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'management.settings'
 
-sys.path.insert(0, '/home/ubuntu/project/management/management')
+sys.path.insert(0, '/home/vagrant/project/management/management')
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

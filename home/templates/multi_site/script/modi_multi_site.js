@@ -1,5 +1,33 @@
 jQuery.ajaxSettings.traditional = true;
+var select_index = '<option>선택하세요</option>'
 $(document).ready(function () {
+    $.post("/org_code_list", {
+    }).done(function (data) {
+        var code_list = data.slice(0, -1).split('/');
+        for (var i = 0; i < code_list.length; i++) {
+            var org_code_index = code_list[i].split('+')
+            select_index += '<option value="' + org_code_index[0] + '">' + org_code_index[1] + '</option>';
+        }
+        $('#O_code').html('<select id="org_code_index">' + select_index + '</select>');
+
+    }).fail(function (error) {
+        alert('error = ' + error.responseJSON);
+    });
+
+    $("input:radio[name=radio]").click(function () {
+        if ($("input[type=radio][name=radio]:checked").val() == 'P') {
+            $('#key_add').css('display', 'block');
+            swal("경고", "Parameter 선택시 연계사이트에 암호화키 변경을 하여야 합니다.", "warning");
+            $('#O_code').css("display", "none");
+            $('#P_code').css("display", "block");
+        }
+        else {
+            $('#O_code').css("display", "block");
+            $('#P_code').css("display", "none");
+            $('#key_add').css('display', 'none');
+        }
+    });
+
     setDataTable1();
     var value_list;
     var id = '{{id}}';
@@ -19,22 +47,33 @@ $(document).ready(function () {
         if (data != '') {
             value_list = data[0].toString().split(',');
             $('#site_name').val(data[0][0]);
-            $('#site_code').val(data[0][1]);
             $('#site_url').val(data[0][2]);
             if (data[0][3] == "O") {
                 $("#radio_1").attr('checked', 'checked');
+                $('#key_add').css('display', 'none');
+                $('#P_code').css('display', 'none');
+                $('#O_code').css('display', 'block');
+                $('#org_code_index').val(data[0][1]);
             }
             else if (data[0][3] == "P") {
                 $("#radio_2").attr('checked', 'checked');
+                $('#key_add').css('display', 'block');
+                $('#P_code').css('display', 'block');
+                $('#O_code').css('display', 'none');
+                $('#site_code_P').val(data[0][1]);
             }
             $('#random_num').val(data[0][4]);
         }
     });
-});
+})
+;
+
+
 function save() {
     //var uploadfile = $('#uploadfile').val();
     var site_name = $('#site_name').val();
-    var site_code = $('#site_code').val();
+    var site_code_P = $('#site_code_P').val();
+    var site_code_O = $('#site_code_O').val();
     var site_url = $('#site_url').val();
     var multi_no = '{{ id }}';
     var system = $("input[type=radio][name=radio]:checked").val();
@@ -51,7 +90,7 @@ function save() {
         if (site_name == '') {
             swal("경고", "기관명 입력해주세요.", "warning");
         }
-        else if (site_code == '') {
+        else if (site_code_P == '' && site_code_O == '') {
             swal("경고", "기관코드를 입력해주세요.", "warning");
         }
         else if (site_url == '') {
@@ -60,7 +99,7 @@ function save() {
         else if (system == '') {
             swal("경고", "인증방식을 선택해주세요.", "warning");
         }
-        else if (random_num == '') {
+        else if (random_num == '' && $("input[type=radio][name=radio]:checked").val() == 'P') {
             swal("경고", "암호화key를 생성해주세요.", "warning");
         }
         else {
@@ -86,7 +125,14 @@ function save_date(data) {
             method = 'modi';
         }
         var site_name = $('#site_name').val();
-        var site_code = $('#site_code').val();
+        var site_code = '';
+        if ($("input[type=radio][name=radio]:checked").val() == 'P') {
+            site_code = $('#site_code_P').val();
+        }
+
+        else if ($("input[type=radio][name=radio]:checked").val() == 'O') {
+            site_code = $('#org_code_index').val();
+        }
         var site_url = $('#site_url').val();
         var regist_id = '{{ user.id }}';
         var multi_no = '{{ id }}';
