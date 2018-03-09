@@ -7058,3 +7058,19 @@ def unused_video_download(request, filename):
 
     response['Content-Disposition'] = 'attachment; filename=%s' % str(filename).encode('utf-8')
     return response
+
+
+@csrf_exempt
+def org_code_list(request):
+    with connections['default'].cursor() as cur:
+        cur = connection.cursor()
+        query = """
+                    SELECT concat(backend_name,'+',name) FROM third_party_auth_oauth2providerconfig;
+            """
+        cur.execute(query)
+        rows = cur.fetchall()
+        cur.close()
+        org_code_list = []
+        for row in rows:
+            org_code_list.append(row[0] + '/')
+        return HttpResponse(org_code_list)
