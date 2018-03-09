@@ -7065,9 +7065,14 @@ def org_code_list(request):
     with connections['default'].cursor() as cur:
         cur = connection.cursor()
         query = """
-                    SELECT concat(backend_name,'+',name) FROM third_party_auth_oauth2providerconfig;
+                  SELECT DISTINCT concat(name, '+', backend_name)
+                    FROM third_party_auth_oauth2providerconfig
+                   WHERE enabled = TRUE
+                ORDER BY name;
             """
         cur.execute(query)
+        print 'add modify ============='
+        print query
         rows = cur.fetchall()
         cur.close()
         org_code_list = []
