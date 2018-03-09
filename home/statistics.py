@@ -817,3 +817,231 @@ def statistics_excel(request, date):
 
 def get_value_from_dict(dict, key, default=None):
     return dict[key] if key in dict else default
+
+
+# 학습활동
+def statistics_excel_activity(request, date):
+    # print 'run statistics_excel'
+    time.sleep(1)
+
+    save_name = 'K-Mooc{0}_activity.xlsx'.format(date)
+    save_path = EXCEL_PATH + save_name
+
+    if os.path.isfile(save_path):
+        print 'file exists. so just download.'
+    else:
+        # Get course name
+        course_ids_all = statistics_query.course_ids_all()
+
+        print 'len(course_ids_all) = ', len(course_ids_all)
+
+        client = MongoClient(database_id, 27017)
+        db = client.edxapp
+        course_orgs = {}
+        course_classfys = {}
+        course_middle_classfys = {}
+        course_names = {}
+        course_creates = {}
+        course_enroll_starts = {}
+        course_enroll_ends = {}
+        course_starts = {}
+        course_ends = {}
+        course_edited = {}
+
+        course_effort = {}
+        course_video = {}
+        course_week = {}
+        course_cert_date = {}
+
+        course_state = {}
+        course_order = {}
+
+        print 'step1 : course_info search'
+
+        for course_id, display_name, course, org, start, end, enrollment_start, enrollment_end, effort, cert_date in course_ids_all:
+            print course_id, org, display_name, type(start), start, type(end), end, type(enrollment_start), enrollment_start, type(enrollment_end), enrollment_end
+
+            cid = course_id.split('+')[1]
+            run = course_id.split('+')[2]
+
+            # course_state setting
+            utc_time = datetime.datetime.utcnow()
+
+            if cert_date:
+                course_state[course_id] = '이수증발급'
+                course_order[course_id] = 1
+            elif start and utc_time < start:
+                course_state[course_id] = '개강예정'
+                course_order[course_id] = 5
+            elif end and end < utc_time:
+                course_state[course_id] = '종료'
+                course_order[course_id] = 3
+            elif start and start < utc_time < end:
+                course_state[course_id] = '운영중'
+                course_order[course_id] = 4
+            else:
+                course_state[course_id] = '미정'
+                course_order[course_id] = 9
+
+
+            if cert_date:
+                course_cert_date[course_id] = cert_date
+
+            cursor = db.modulestore.active_versions.find_one({'course': cid, 'run': run})
+            if not cursor:
+                print 'not exists: ', cid, run
+                continue
+
+            pb = cursor.get('versions').get('published-branch')
+            # course_orgs
+            course_orgs[course_id] = cursor.get('org')
+            course_creates[course_id] = cursor.get('edited_on')
+
+            cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)}, {"blocks": {"$elemMatch": {"block_type": "course"}}})
+
+            _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
+            _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+
+            _course_edited = cursor.get('blocks')[0].get('edit_info').get('edited_on')  # middle_classfy
+
+            if start is not None:
+                course_starts[course_id] = start
+
+            if end is not None:
+                course_ends[course_id] = end
+
+            if enrollment_start is not None:
+                course_enroll_starts[course_id] = enrollment_start
+
+            if enrollment_end is not None:
+                course_enroll_ends[course_id] = enrollment_end
+
+            if display_name is not None:
+                course_names[course_id] = display_name
+
+            if _classfy is not None and _classfy != 'all':
+                course_classfys[course_id] = classfy[_classfy] if _classfy in classfy else _classfy
+
+            if _mclassfy is not None and _mclassfy != 'all':
+                course_middle_classfys[course_id] = middle_classfy[_mclassfy] if _mclassfy in middle_classfy else _mclassfy
+
+            if _course_edited is not None:
+                course_edited[course_id] = _course_edited
+
+            if effort:
+                course_effort[course_id] = effort.split('@')[0] if effort and '@' in effort else '-'
+                course_week[course_id] = effort.split('@')[1].split('#')[0] if effort and '@' in effort and '#' in effort else '-'
+                course_video[course_id] = effort.split('#')[1] if effort and '#' in effort else '-'
+
+        print 'step3: info '
+        wb = load_workbook(EXCEL_PATH + 'base.xlsx')
+
+        ws3 = wb['by_course_KPI']
+
+        # excel style
+        thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+        # fill = PatternFill("solid", fgColor="eeeeee")
+        fill = None
+
+        font = Font(b=True, color="000000")
+        # font = None
+        al = Alignment(horizontal="center", vertical="center")
+
+        # by_course_KPI
+        style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'L1:R2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'S1:W1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'S2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'U2:V2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'X1:Y2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws3, 'Z1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # :SHEET 3
+        # ------------------------> by_course_KPI
+
+        sortlist = list()
+        by_course_enroll = statistics_query.by_course_enroll_activity(date)
+        for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt, v_cnt, q_cnt, f_cnt, both_cnt in by_course_enroll:
+            row = tuple()
+            # 0
+            row += (get_value_from_dict(course_order, course_id, 99999),)
+            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(course_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id),)
+            row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
+            row += (get_value_from_dict(course_week, course_id),)
+
+            effort = get_value_from_dict(course_effort, course_id, None)
+            week = get_value_from_dict(course_week, course_id, None)
+
+            if effort and week:
+                if effort.find(':') > 0:
+                    hh = effort.split(':')[0]
+                    mm = effort.split(':')[1]
+                    row += (str((int(hh) * int(week)) + (int(mm) * int(week)) / 60) + ':' + ("%02d" % ((int(mm) * int(week)) % 60)),)
+                else:
+                    row += ('-',)
+            else:
+                row += ('-',)
+            row += (org,)
+
+            # 10
+            row += (course_id.split('+')[1],)
+            row += (course_id.split('+')[2],)
+            row += (get_value_from_dict(course_state, course_id),)
+            row += (get_value_from_dict(course_creates, course_id),)
+            row += (get_value_from_dict(course_enroll_starts, course_id),)
+            row += (get_value_from_dict(course_enroll_ends, course_id),)
+            row += (get_value_from_dict(course_starts, course_id),)
+            row += (get_value_from_dict(course_ends, course_id),)
+            row += (get_value_from_dict(course_cert_date, course_id, ''),)
+            row += (new_enroll_cnt,)
+            row += (new_unenroll_cnt,)
+
+            # 20
+            row += (all_enroll_cnt,)
+            row += (all_unenroll_cnt,)
+            row += (all_enroll_cnt - all_unenroll_cnt,)
+
+            # over 50% cert target
+            row += (half_cnt if course_id in course_cert_date else '',)
+            # certed target
+            row += (cert_cnt if course_id in course_cert_date else '',)
+            # course update date
+            row += (get_value_from_dict(course_edited, course_id),)
+            row += (v_cnt, q_cnt, f_cnt, both_cnt,)
+
+            sortlist.append(row)
+
+            print row
+
+        # print 'course_order:', course_order
+        sortlist.sort(key=itemgetter(0, 16, 4))
+        # sortlist.sort(key=lambda order, cert, created: )
+
+        start_row = 4
+
+        for course_info in sortlist:
+            course_info = course_info[1:]
+
+            start_char = 65
+            for idx in range(0, len(course_info)):
+                if start_char > 116:
+                    ws3['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
+                    style_base(ws3['B' + chr(start_char - 52) + str(start_row)])
+
+                elif start_char > 90:
+                    ws3['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
+                    style_base(ws3['A' + chr(start_char - 26) + str(start_row)])
+
+                else:
+                    ws3[chr(start_char) + str(start_row)] = course_info[idx]
+                    style_base(ws3[chr(start_char) + str(start_row)])
+                start_char += 1
+            start_row += 1
+
+        wb.save(save_path)
+    return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')
+

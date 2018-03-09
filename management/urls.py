@@ -17,7 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 # from home.statistics import statistics_excel, statistics_excel_week, statistics_excel_month
 
-from home.statistics import statistics_excel
+from home.statistics import statistics_excel, statistics_excel_activity
 from home import views
 import tracking_control.views as tracking_view
 from django.contrib.auth import views as auth_views
@@ -38,6 +38,7 @@ urlpatterns = [
     # url(r'^excel_download/?$', statistics_excel),
     # url(r'^excel_select/$', excel_manage),
     url(r'^excel_download/(?P<date>.*?)$', statistics_excel),
+    url(r'^excel_download_activity/(?P<date>.*?)$', statistics_excel_activity),
     # url(r'^excel_download_week/(?P<date>.*?)$', statistics_excel_week),
     # url(r'^excel_download_month/(?P<date>.*?)$', statistics_excel_month),
 

@@ -2184,3 +2184,102 @@ def country_statistics(date):
     row = cur.fetchall()
     cur.close()
     return row
+
+
+# `by_course_enroll`
+def by_course_enroll_activity(date):
+    query = '''
+        SELECT id,
+               org,
+               new_enroll_cnt,
+               new_unenroll_cnt,
+               all_enroll_cnt,
+               all_unenroll_cnt,
+               (SELECT count(*)
+                  FROM certificates_generatedcertificate e
+                 WHERE     e.course_id = t1.id
+                       AND e.grade >= lowest_passing_grade / 2
+                       AND date_format(adddate(e.created_date, INTERVAL 9 HOUR),
+                                       '%Y%m%d') BETWEEN '1'
+                                                     AND '{date}')
+                  half_cnt,
+               (SELECT count(*)
+                  FROM certificates_generatedcertificate e
+                 WHERE     e.course_id = t1.id
+                       AND e.status = 'downloadable'
+                       AND date_format(adddate(e.created_date, INTERVAL 9 HOUR),
+                                       '%Y%m%d') BETWEEN '1'
+                                                     AND '{date}')
+                  cert_cnt,
+               v_cnt,
+               q_cnt,
+               f_cnt,
+               both_cnt
+          FROM (  SELECT a.id,
+                         a.org,
+                         a.lowest_passing_grade,
+                         sum(
+                            if(date_format(adddate(b.created, INTERVAL 9 HOUR),
+                                           '%Y%m%d') = '{date}',
+                               1,
+                               0))
+                            `new_enroll_cnt`,
+                         sum(
+                            if(
+                                   date_format(adddate(b.created, INTERVAL 9 HOUR),
+                                               '%Y%m%d') = '{date}'
+                               AND b.is_active = 0,
+                               1,
+                               0))
+                            `new_unenroll_cnt`,
+                         sum(
+                            if(
+                               date_format(adddate(b.created, INTERVAL 9 HOUR),
+                                           '%Y%m%d') BETWEEN '1'
+                                                         AND '{date}',
+                               1,
+                               0))
+                            `all_enroll_cnt`,
+                         sum(
+                            if(
+                                   date_format(adddate(b.created, INTERVAL 9 HOUR),
+                                               '%Y%m%d') BETWEEN '1'
+                                                             AND '{date}'
+                               AND b.is_active = 0,
+                               1,
+                               0))
+                            `all_unenroll_cnt`
+                    FROM course_overviews_courseoverview a,
+                         student_courseenrollment      b,
+                         auth_user                     c,
+                         auth_userprofile              d
+                   WHERE     a.id = b.course_id
+                         AND b.user_id = c.id
+                         AND c.id = d.user_id
+                         AND lower(b.course_id) NOT LIKE '%test%'
+                         AND lower(b.course_id) NOT LIKE '%demo%'
+                         AND lower(b.course_id) NOT LIKE '%nile%'
+                         AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                            AND '{date}'
+                         AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR),
+                                         '%Y%m%d') BETWEEN '1'
+                                                       AND '{date}'
+                GROUP BY a.id, a.org, a.lowest_passing_grade) t1,
+               (  SELECT a.id                                  course_id,
+                         count(if(c.v_cnt > 0, c.user_id, NULL)) v_cnt,
+                         count(if(c.q_cnt > 0, c.user_id, NULL)) q_cnt,
+                         count(if(c.f_cnt > 0, c.user_id, NULL)) f_cnt,
+                         count(
+                            if(c.v_cnt > 0 OR c.q_cnt > 0 OR c.f_cnt > 0,
+                               c.user_id,
+                               NULL))
+                            both_cnt
+                    FROM course_overviews_courseoverview a
+                         LEFT JOIN student_courseenrollment b
+                            ON a.id = b.course_id AND b.is_active = 1
+                         LEFT JOIN course_activity c
+                            ON b.course_id = c.course_id AND b.user_id = c.user_id
+                GROUP BY a.id) t2
+         WHERE t1.id = t2.course_id;    
+    '''.format(date=date)
+    return execute_query(query)
