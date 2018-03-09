@@ -119,7 +119,7 @@ function save_date(data) {
     try {
         var method = '';
         var site_index = '';
-        if ('{{ id }}' == 99999) {
+        if ('{{ id }}' == 'new') {
             method = 'add';
         }
         else {
