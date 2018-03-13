@@ -182,7 +182,7 @@ dic_univ = {
     'SCHk': u'순천향대학교',
     'WSUK': u'우송대학교',
     'WKUk': u'원광대학교',
-    'InhatcK': u'인하공업전문대학교',
+    'InhatcK': u'인하공업전문대학',
     'ChosunK': u'조선대학교',
     'CNUk': u'충남대학교',
     'ChungbukK': u'충북대학교',
