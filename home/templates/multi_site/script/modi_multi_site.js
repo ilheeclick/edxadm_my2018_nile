@@ -1,6 +1,60 @@
 jQuery.ajaxSettings.traditional = true;
 var select_index = '<option>선택하세요</option>'
 $(document).ready(function () {
+
+    $("#create_url").click(function(){
+        var input_userid = $('#input_userid').val();
+        var random_num = $('#random_num').val();
+        var site_code_P = $('#site_code_P').val();
+        var input_domain = $('#input_domain').val();
+        var lock = 0;
+
+        if(input_userid == ''){
+            swal("경고", "테스트 URL 생성을 하려면 사번 입력이 필요합니다", "warning");
+            lock = 1;
+        }
+        else if(random_num == ''){
+            swal("경고", "테스트 URL 생성을 하려면 암호화 key 생성이 필요합니다", "warning");
+            lock = 1;
+        }
+        else if(site_code_P == ''){
+            swal("경고", "테스트 URL 생성을 하려면 기관 코드 입력이 필요합니다", "warning");
+            lock = 1;
+        }
+        else if(input_domain == ''){
+            swal("경고", "테스트 URL 생성을 하려면 도메인 입력이 필요합니다", "warning");
+            lock = 1;
+        }
+
+        if(lock == 0){
+            $.post( "/api_multisite_create_url/", {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                input_userid: input_userid,
+                random_num: random_num,
+                site_code_P: site_code_P,
+                input_domain: input_domain,
+            })
+            .done(function( data ) {
+                if(data.return == 'success'){
+                    var hello_enc_data = data.hello_enc_data;
+                    hello_enc_data = encodeURI(hello_enc_data);
+
+                    //var domain = 'http://192.168.33.20:8000/multisite/';
+                    var domain = data.domain;
+
+                    var url = domain + data.org + '?encStr=' + hello_enc_data;
+
+                    var url_link = '<a href="' + url + '" style="color: blue">생성된 링크로 이동</a>';
+
+                    $('#result_url').html(url_link);
+                }
+                else if(data.return == 'fail'){
+                    alert( "fail" );
+                }
+            });
+        }
+    });
+
     $.post("/org_code_list", {
     }).done(function (data) {
         var code_list = data.slice(0, -1).split('/');
@@ -20,11 +74,13 @@ $(document).ready(function () {
             swal("경고", "Parameter 선택시 연계사이트에 암호화키 변경을 하여야 합니다.", "warning");
             $('#O_code').css("display", "none");
             $('#P_code').css("display", "block");
+            $('#test_key').show(); // 추가 개발 로직 (멀티사이트 테스트 URL 생성)
         }
         else {
             $('#O_code').css("display", "block");
             $('#P_code').css("display", "none");
             $('#key_add').css('display', 'none');
+            $('#test_key').hide(); // 추가 개발 로직 (멀티사이트 테스트 URL 생성)
         }
     });
 
@@ -54,6 +110,7 @@ $(document).ready(function () {
                 $('#P_code').css('display', 'none');
                 $('#O_code').css('display', 'block');
                 $('#org_code_index').val(data[0][1]);
+                $('#test_key').hide(); // 추가 개발 로직 (멀티사이트 테스트 URL 생성)
             }
             else if (data[0][3] == "P") {
                 $("#radio_2").attr('checked', 'checked');
@@ -61,6 +118,7 @@ $(document).ready(function () {
                 $('#P_code').css('display', 'block');
                 $('#O_code').css('display', 'none');
                 $('#site_code_P').val(data[0][1]);
+                $('#test_key').show(); // 추가 개발 로직 (멀티사이트 테스트 URL 생성)
             }
             $('#random_num').val(data[0][4]);
         }

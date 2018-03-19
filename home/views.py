@@ -2020,6 +2020,68 @@ def modi_multi_site(request, id):
     return render_to_response('multi_site/modi_multi_site.html', variables)
 
 
+#==================================================================================================> AES 함수 시작
+from Crypto.Cipher import AES
+from base64 import b64decode
+from base64 import b64encode
+
+def decrypt(key, _iv, enc):
+    BLOCK_SIZE = 16  # Bytes
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+    unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+    enc = b64decode(enc)
+    cipher = AES.new(key, AES.MODE_CBC, _iv)
+    return unpad(cipher.decrypt(enc)).decode('utf8')
+
+def encrypt(key, iv, raw):
+    BLOCK_SIZE = 16  # Bytes
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+    unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    p_raw = pad(raw.encode('utf8'))
+    enc_data = cipher.encrypt(p_raw)
+    b64_enc_data = b64encode(enc_data)
+    return b64_enc_data
+#==================================================================================================> AES 함수 종료
+
+def api_multisite_create_url(request):
+
+    # 입력 값 초기화
+    input_userid = request.POST.get('input_userid')
+    random_num = request.POST.get('random_num')      # iv
+    site_code_P = request.POST.get('site_code_P')
+    input_domain = request.POST.get('input_domain')
+
+    # 프론트엔드 -> 백엔드 유효성 검증
+    if input_userid == '' or random_num == '' or site_code_P == '':
+        return JsonResponse({'return':'fail'})
+
+    # 정상 로직
+    print "--------------------> s"
+    print "input_userid = ",input_userid
+    print "random_num = ",random_num
+    print "site_code_P = ",site_code_P
+    print "--------------------> e"
+
+    # yyyyMMddHHmmss <- calltime
+    now = datetime.datetime.now()
+    calltime = now.strftime('%Y%m%d%H%M%S')
+
+    raw_data = "calltime=" + calltime + "&userid=" + input_userid + "&orgid=" + site_code_P
+    iv = random_num
+    key = random_num
+
+    print "raw_data ---> ", raw_data
+
+    hello_enc_data = encrypt(key, iv, raw_data)
+    print "hello_enc_data ---> ", hello_enc_data
+
+    hello_raw_data = decrypt(key, iv, hello_enc_data)
+    print "hello_raw_data ---> ", hello_raw_data
+
+    return JsonResponse({'return':'success', 'hello_enc_data':hello_enc_data, 'org':site_code_P, 'domain':input_domain})
+
+
 @csrf_exempt
 @login_required
 def modi_multi_site_db(request):

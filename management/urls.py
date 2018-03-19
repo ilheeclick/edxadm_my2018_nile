@@ -151,6 +151,8 @@ urlpatterns = [
     url(r'^select_list_db/$', views.select_list_db, name='select_list_db'),
     url(r'^multisite_course/$', views.multisite_course, name='multisite_course'),
     url(r'^multisite_org/$', views.multisite_org, name='multisite_org'),
+    url(r'^api_multisite_create_url/$', views.api_multisite_create_url, name='api_multisite_create_url'),
+
 
     # course_manage url
     url(r'^course_manage$', views.course_manage, name='course_manage'),

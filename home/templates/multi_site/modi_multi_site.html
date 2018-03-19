@@ -114,6 +114,22 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 추가 개발 로직 (멀티사이트 테스트 URL 생성) -->
+                <div class="form-group" id="test_key" style="display: none">
+                    <label class="col-sm-2 control-label" style="color: blue">
+                        테스트 사번 입력
+                    </label>
+
+                    <div class="col-sm-10">
+                        <input id="input_domain" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" style="width:36%; float:left;" placeholder="도메인" value="http://wwwdev.kmoocs.kr/">
+                        <input id="input_userid" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" style="width:20%; float:left;" placeholder="사번">
+                        <button type="button" class="btn btn-success" id="create_url" style="float:left; margin-right:20px;">URL 생성</button>
+                        <div id="result_url"></div>
+                    </div>
+                </div>
+                <!-- 추가 개발 로직 (멀티사이트 테스트 URL 생성) -->
+
                 <script>
                     function random_num() {
                         var r = confirm("키값은 연계기관과 공유된 정보입니다. 변경시 다시 공유하기 전에는 암복화가 이루어 지지 않습니다. 재생성 하시겠습니까?");
