@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR, LOG_COMPLETE_DIR
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR
 import functools
 import paramiko
 import re
@@ -48,7 +48,7 @@ def second_check(request):
 
 
 def makedir(sftp):
-    dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, LOGZIP_DIR, LOG_COMPLETE_DIR]
+    dir_list = [LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, LOGZIP_DIR]
     for dir in dir_list:
         print 'make dir   ', dir
         mkdir_p(sftp, dir)
@@ -168,7 +168,7 @@ def logFileDownload(search_date, host, log_dir, local_dir, web_server):
 
 
 def log_change(path_dir, change_local, search_date, web_server):
-    print 'log_change s ---------------------', web_server
+    print 'log_change s --------------------- web_server : ', web_server
     file_list = os.listdir(path_dir)
 
     file_pattern = re.compile(r'.gz$')
@@ -178,9 +178,9 @@ def log_change(path_dir, change_local, search_date, web_server):
             read_file = gzip.open(path_dir + log, 'rb')
 
             if web_server == 1:
-                outfilename = log[:-3] + "_1.gz"
+                outfilename = log[:-3] + "_1"
             elif web_server == 2:
-                outfilename = log[:-3] + "_2.gz"
+                outfilename = log[:-3] + "_2"
 
             output = gzip.open(change_local + outfilename, 'wb')
             f = io.BufferedReader(read_file)
@@ -214,7 +214,8 @@ def log_change(path_dir, change_local, search_date, web_server):
                     data = text
 
                     if name_pattern != '""':
-                        data = re.sub(r1, '"******"', text, count=1)
+                        # data = re.sub(r1, '"******"', text, count=1)
+                        data = text.replace(name_pattern, '"******"', 1)
 
                     if ip_pattern != '""':
                         data = re.sub(r2, '"***.***.***.***"', data, count=1)
@@ -264,7 +265,7 @@ def log_change(path_dir, change_local, search_date, web_server):
         for filename in chdir_list:
             full_filename = os.path.join(change_local, filename)
             ext = os.path.splitext(full_filename)[-1]
-            if ext == '.gz':
+            if ext[-2:] == '_1' or ext[-2:] == '_2':
                 file_cnt += 1
         if file_cnt != 0:
             log_compress(search_date, change_local)
@@ -272,31 +273,34 @@ def log_change(path_dir, change_local, search_date, web_server):
 
 def log_compress(search_date, dir_path):
     logfile_cnt = 0
-    if search_date != '-1' and search_date != '999999':
-        zipname = search_date + "_tracking_log.zip"
-        fantasy_zip = zipfile.ZipFile(LOG_COMPLETE_DIR+zipname, 'w')
-
-        for folder, subfolders, files in os.walk(dir_path):
-            for file in files:
-                if file.endswith('.gz'):
-                    fantasy_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder, file), dir_path),
-                                      compress_type=zipfile.ZIP_DEFLATED)
-
-        fantasy_zip.close()
-        oldLog_remove(dir_path, 1)
-    elif search_date == '999999':
+    # if search_date != '-1' and search_date != '999999':
+    #     zipname = search_date + "_tracking_log.zip"
+    #     fantasy_zip = zipfile.ZipFile(LOG_COMPLETE_DIR+zipname, 'w')
+    #
+    #     for folder, subfolders, files in os.walk(dir_path):
+    #         for file in files:
+    #             print 'file for in \n\n\n\n\n'
+    #             if file.endswith('_1') or file.endswith('_2'):
+    #                 print 'in \n\n\n\n\n'
+    #                 fantasy_zip.write(os.path.join(folder, file), os.path.relpath(os.path.join(folder, file), dir_path),
+    #                                   compress_type=zipfile.ZIP_DEFLATED)
+    #
+    #     fantasy_zip.close()
+    #     oldLog_remove(dir_path, 1)
+    # # elif search_date == '999999':
+    if search_date == '999999':
         file_cnt = 0
-        chdir_list = os.listdir(LOG_COMPLETE_DIR)
+        chdir_list = os.listdir(CHANGE_DIR)
         for filename in chdir_list:
-            full_filename = os.path.join(LOG_COMPLETE_DIR, filename)
+            full_filename = os.path.join(CHANGE_DIR, filename)
             ext = os.path.splitext(full_filename)[-1]
-            if ext == '.zip':
+            if ext[-2:] == '_1' or ext[-2:] == '_2':
                 file_cnt += 1
         if file_cnt == 0:
             logfile_cnt = 1
         else:
-            shutil.make_archive(LOGZIP_DIR+'tracking_log', 'zip', LOG_COMPLETE_DIR)
-        oldLog_remove(LOG_COMPLETE_DIR, 2)
+            shutil.make_archive(LOGZIP_DIR+'tracking_log', 'zip', CHANGE_DIR)
+        oldLog_remove(CHANGE_DIR, 2)
 
     return logfile_cnt
 
@@ -304,9 +308,9 @@ def log_compress(search_date, dir_path):
 # fileType 1: .gz 2: .zip 3: tracking_log.zip(최종 파일)
 def oldLog_remove(dir_path, filetype):
     if filetype == 1:
-        rm_file_list = glob.glob(dir_path+'*.gz')
+        rm_file_list = glob.glob(dir_path+'*')
     elif filetype == 2:
-        rm_file_list = glob.glob(dir_path+'*.zip')
+        rm_file_list = glob.glob(dir_path+'*')
     elif filetype == 3:
         rm_file_list = glob.glob(dir_path)
     for rm_file in rm_file_list:
