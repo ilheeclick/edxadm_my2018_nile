@@ -13,6 +13,7 @@ import zipfile
 import datetime
 import shutil
 import json
+import hashlib
 from django.http import HttpResponse, Http404
 from django.http import JsonResponse
 from django.db import connection
@@ -199,12 +200,12 @@ def log_change(path_dir, change_local, search_date, web_server):
 
                     username_change = name_idx.find(',')
                     ip_change = ip_idx.find(',')
-                    id_change = id_idx.find(',')
+                    id_change = id_idx.find(':')
                     email_change = email_idx.find(',')
 
                     name_pattern = name_idx[0:username_change]
                     ip_pattern = ip_idx[0:ip_change]
-                    id_pattern = id_idx[0:id_change]
+                    id_pattern = id_idx[0:id_change+2]
                     email_pattern = email_idx[0:email_change - 2]
 
                     r1 = re.compile(name_pattern)
@@ -220,13 +221,16 @@ def log_change(path_dir, change_local, search_date, web_server):
                     if ip_pattern != '""':
                         data = re.sub(r2, '"***.***.***.***"', data, count=1)
 
-                    if id_pattern != '"user_id": null':
-                        data = re.sub(r3, '"user_id": ******', data, count=1)
+                    for userid in re.finditer(id_pattern, data):
+                        if data[userid.end(): userid.end() + 4] != 'null':
+                            id_str = data[userid.start():]
+                            ch_userid = hashlib.sha256(id_pattern).hexdigest()
+                            data = data.replace(id_str[:id_str.find(',')], '"user_id": ' + ch_userid)
 
                     if email_index != -1 and email_pattern != '\\':
                         if email_idx[email_change - 1] == "}":
                             data = data.replace(email_pattern, '******@****.**\\\"')
-                        data = data.replace(email_pattern, '******@****.**\\')
+                        data = data.replace(email_pattern, '******@****.***\\')
 
                     # 회원 가입시에 들어가는 개인정보를 처리
 
