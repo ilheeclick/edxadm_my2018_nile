@@ -10,3 +10,4 @@
 *.csv
 venv/
 home/static/upload/
+home/static/uploads/
