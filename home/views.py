@@ -10,6 +10,7 @@ import subprocess
 import sys
 import urllib
 import uuid
+import logging
 from bson.objectid import ObjectId
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, logout as auth_logout, )
@@ -4506,6 +4507,7 @@ def new_notice(request):
                                   '{2}', 
                                   '{3}') 
                     '''.format(noti_id, file_name_list[i], file_ext_list[i], file_size_list[i])
+                    print query
                     cur.execute(query)
                     cur.close()
             # ------ 공지사항 파일첨부 query ------ #
