@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR
+from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR, REAL_WEB1_PW
 import functools
 import paramiko
 import re
@@ -132,7 +132,7 @@ def my_callback(filename, bytes_so_far, bytes_total):
 def logFileDownload(search_date, host, log_dir, local_dir, web_server):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(AllowAnythingPolicy())
-    client.connect(host, username=USER_NAME, password='?kmooc')
+    client.connect(host, username=USER_NAME, password=REAL_WEB1_PW)
 
     sftp = client.open_sftp()
 
