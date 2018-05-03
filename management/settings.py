@@ -118,7 +118,7 @@ STATICFILES_DIRS = (
 # ============================================================================================================
 
 EXCEL_PATH = BASE_DIR + '/home/static/excel/'
-UPLOAD_DIR = BASE_DIR + '/home/static/uploads/'
+UPLOAD_DIR = BASE_DIR + '/home/static/upload/'
 
 LOGZIP_DIR = BASE_DIR + '/tracking_control/static/uploads/'
 
