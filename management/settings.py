@@ -75,8 +75,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'management.wsgi.application'
 
 #database_id = '172.17.101.117' #dev
-database_id = '127.0.0.1'     #real
-#database_id = '192.168.1.113' #realreal
+#database_id = '127.0.0.1'     #real
+database_id = '192.168.1.113' #realreal
 
 DATABASES = {
     'default': {
@@ -117,28 +117,24 @@ STATICFILES_DIRS = (
 # global variables ===========================================================================================
 # ============================================================================================================
 
-EXCEL_PATH = '/home/project/management/home/static/excel/'
-UPLOAD_DIR = '/home/project/management/home/static/upload/'
 EXCEL_PATH = BASE_DIR + '/home/static/excel/'
 UPLOAD_DIR = BASE_DIR + '/home/static/uploads/'
-LOGZIP_DIR = '/home/ubuntu/project/management/tracking_control/static/uploads/'
-# LOGZIP_DIR = '/Users/kotech/workspace/management2/management/static/uploads/'
-WEB1_HOST = '127.0.0.1'
-WEB2_HOST = '127.0.0.1'
+
+LOGZIP_DIR = BASE_DIR + '/tracking_control/static/uploads/'
+
+WEB1_HOST = '203.235.44.151'
+WEB2_HOST = '203.235.44.152'
+
 WEB1_LOG = '/edx/var/log/tracking/'
 WEB2_LOG = '/edx/var/log/tracking/'
-LOCAL1_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w1/'
-LOCAL2_DIR = '/home/ubuntu/project/management/tracking_control/static/tracking_w2/'
-CHANGE_DIR = '/home/ubuntu/project/management/tracking_control/static/ch_tracking/'
-# LOG_COMPLETE_DIR = '/home/ubuntu/project/management/tracking_control/static/zip_tracking/'
-# LOCAL1_DIR = '/Users/kotech/workspace/scpTest/tracking_w1/'
-# LOCAL2_DIR = '/Users/kotech/workspace/scpTest/tracking_w2/'
-# CHANGE_DIR = '/Users/kotech/workspace/scpTest/ch_tracking/'
-# LOG_COMPLETE_DIR = '/Users/kotech/workspace/scpTest/zip_tracking/'
 
-REAL_WEB1_HOST = '172.17.101.116'
+LOCAL1_DIR = BASE_DIR + '/tracking_control/static/tracking_w1/'
+LOCAL2_DIR = BASE_DIR + '/tracking_control/static/tracking_w2/'
+CHANGE_DIR = BASE_DIR + '/tracking_control/static/ch_tracking/'
+
+REAL_WEB1_HOST = '203.235.44.151'
 REAL_WEB1_ID = 'ubuntu'
-REAL_WEB1_PW = '?kmooc'
+REAL_WEB1_PW = '?kmooc123'
 
 debug = True
 
