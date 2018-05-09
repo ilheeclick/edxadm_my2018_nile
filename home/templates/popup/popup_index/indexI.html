@@ -2,6 +2,7 @@
 <!doctype html>
 <html>
 {% for pop in pop_list %}
+
     <head>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <meta charset="utf-8">
@@ -10,10 +11,14 @@
     <body>
     <!-- wrap -->
     <div class="pop-wrap" id="#_id"
-         style="width: {{ pop.7 }}px; height: {{ pop.8 }}px; float: left; z-index: 9999; border: 1px solid #e5e5e5; position: relative">
+         style="min-width: 0px; min-height: 0px; float: left; z-index: 9999; border: 1px solid #e5e5e5; position: relative">
         <div class="area" style="background-color: #fff;">
-            <img src="{% static 'uploads/'%}{{ pop.6 }}.{{ pop.10 }}" usemap="image_map"
+            <img src="{% static 'uploads/'%}{{ pop.6 }}.{{ pop.10 }}" alt="{{ pop.0 }}" usemap="image_map"
+                 {% if pop.7 == 0 and pop.8 == 0%}
+                 style="min-width: 0px; min-height: 0px">
+                 {% else %}
                  style="width: {{ pop.7 }}px; height: {{ pop.8 }}px">
+                 {% endif %}
 
             <map name="image_map">
                 {% if pop.9 == '' %}

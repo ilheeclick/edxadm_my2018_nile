@@ -224,16 +224,18 @@ function save() {
                 else if ((($('#start_date').val() > $('#end_date').val() || $('#start_date').val() == $('#end_date').val() && $('#start_time').val() > $('#end_time').val()))) {
                     swal("경고", "올바른 게시기간을 입력해주세요.", "warning");
                 }
-                else if ($('#width').val() == '') {
-                    swal("경고", "창너비를 입력해주세요.", "warning");
-                }
-                else if ($('#height').val() == '') {
-                    swal("경고", "창높이를 입력해주세요.", "warning");
-                }
                 else if (uploadfile == '' && data == '1') {
+                    if($('#height').val() == '' || $('#width').val() == '' || $('#height').val() == '0' || $('#width').val() == '0'){
+                        $('#width').val(0)
+                        $('#height').val(0)
+                    }
                     save_data(pop_id);
                 }
                 else {
+                    if($('#height').val() == '' || $('#width').val() == '' || $('#height').val() == '0' || $('#width').val() == '0') {
+                        $('#width').val(0)
+                        $('#height').val(0)
+                    }
                     file_flag = '1';
                     document.getElementById("uploadform").submit();
                     save_data(pop_id);
