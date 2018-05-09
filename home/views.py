@@ -4330,6 +4330,10 @@ def new_notice(request):
         # crete file
         cnt = 0
         for item in file_list:
+
+            #kmoocbugfix
+            file_dir_list[cnt] = file_dir_list[cnt].encode('utf-8')
+
             fp = open(file_dir_list[cnt], 'wb')
             for chunk in item.chunks():
                 fp.write(chunk)
