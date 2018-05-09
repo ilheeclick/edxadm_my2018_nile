@@ -74,9 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'management.wsgi.application'
 
-database_id = '172.17.101.117' #dev
-#database_id = '127.0.0.1'     #real
-# database_id = '192.168.1.113' #realreal
+#database_id = '172.17.101.117' #dev
+database_id = '127.0.0.1'     #real
+#database_id = '192.168.1.113' #realreal
 
 DATABASES = {
     'default': {
