@@ -134,6 +134,39 @@
                 <div class="nano-content">
                     <nav id="menu" class="nav-main" role="navigation">
                         <ul class="nav nav-main">
+                            <li class="nav nav-parent" id="course_manage">
+                                <a>
+                                    <i class="fa fa-book" aria-hidden="true"></i>
+                                    <span>강좌 관리</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="course_manage_view">
+                                        <a href="/course_manage">
+                                            강좌 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="user_manage">
+                                <a>
+                                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                    <span>회원 관리</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="user_enroll_view">
+                                        <a href="/user_enroll">
+                                            회원 일괄등록
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="multiple_email">
+                                        <a href="/multiple_email">
+                                            단체 메일/쪽지 발송
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="nav nav-parent" id="stastic">
                                 <a>
                                     <i class="fa fa-bar-chart" aria-hidden="true"></i>
@@ -146,27 +179,6 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
-                            <!--
-                            <li class="nav nav-parent" id="state">
-                                <a>
-                                    <i class="fa fa-book" aria-hidden="true"></i>
-                                    <span>강좌현황</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="mana_state">
-                                        <a href="/mana_state">
-                                            운영 현황
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            -->
-                            <li class="nav nav-parent" id="certificate">
-                                <a>
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                    <span>이수증</span>
-                                </a>
                                 <ul class="nav nav-children">
                                     <li id="uni_certificate">
                                         <a href="/uni_certificate">
@@ -181,11 +193,52 @@
                                         </a>
                                     </li>
                                 </ul>
+                                <ul class="nav nav-children">
+                                    <li id="tracking_log_list">
+                                        <a href="/tracking_log">
+                                            트래킹 로그 추출
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="nav nav-parent" id="community">
+                            <li class="nav nav-parent" id="homepage_manage">
+                                <a>
+                                    <i class="fa fa-desktop" aria-hidden="true"></i>
+                                    <span>홈페이지 관리</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="popup_add">
+                                        <a href="/popup_add">
+                                            팝업
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="popupZone_add">
+                                        <a href="/popupZone_add">
+                                            배너
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="series_course_view">
+                                        <a href="/series_course">
+                                            시리즈 강좌
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="review_manage_view">
+                                        <a href="/review_manage">
+                                            리뷰 관리
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="notice_manage">
                                 <a>
                                     <i class="fa fa-bullhorn" aria-hidden="true"></i>
-                                    <span>게시판</span>
+                                    <span>게시판 관리</span>
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="comm_notice">
@@ -222,97 +275,11 @@
                                         </a>
                                     </li>
                                 </ul>
-
-                                <!-- 개발중 -->
-                                <!--
-                                <ul class="nav nav-children">
-                                    <li id="comm_mobile">
-                                        <a href="/comm_mobile">
-                                            모바일
-                                        </a>
-                                    </li>
-                                </ul>
-                                -->
                             </li>
-                            <li class="nav nav-parent" id="monitoring">
-                                <a>
-                                    <i class="fa fa-laptop" aria-hidden="true"></i>
-                                    <span>모니터링</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="moni_storage">
-                                        <a href="/moni_storage">
-                                            스토리지
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-
-                            <!-- 로그 조회 기능 추가 예정 -->
-                            <li class="nav nav-parent" id="history">
-                                <a>
-                                    <i class="fa fa-history" aria-hidden="true"></i>
-                                    <span>개인정보조회</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="history_list">
-                                        <a href="/history">
-                                            접속이력
-                                        </a>
-                                    </li>
-                                </ul>
-                                <ul class="nav nav-children">
-                                    <li id="login_history_list">
-                                        <a href="/login_history">
-                                            로그인이력
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <!-- multiple mail sending -->
-                            <li class="nav nav-parent" id="email">
-                                <a>
-                                    <i class="fa fa-inbox" aria-hidden="true"></i>
-                                    <span>단체메일</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="multiple_email">
-                                        <a href="/multiple_email">
-                                            단체메일 관리
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- multiple mail sending -->
-
-                            <li class="nav nav-parent" id="popup">
-                                <a>
-                                    <i class="fa fa-bell-o" aria-hidden="true"></i>
-                                    <span>팝업관리</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="popup_add">
-                                        <a href="/popup_add">
-                                            팝업관리
-                                        </a>
-                                    </li>
-                                </ul>
-                                <ul class="nav nav-children">
-                                    <li id="popupZone_add">
-                                        <a href="/popupZone_add">
-                                            팝업존관리
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-
                             <li class="nav nav-parent" id="multi_site">
                                 <a>
                                     <i class="fa fa-window-restore" aria-hidden="true"></i>
-                                    <span>멀티사이트</span>
+                                    <span>멀티사이트 관리</span>
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="multi_site_add">
@@ -322,25 +289,50 @@
                                     </li>
                                 </ul>
                             </li>
-
-                            <li class="nav nav-parent" id="course_manage">
+                            <li class="nav nav-parent" id="monitoring">
                                 <a>
-                                    <i class="fa fa-book" aria-hidden="true"></i>
-                                    <span>강좌 관리</span>
+                                    <i class="fa fa-laptop" aria-hidden="true"></i>
+                                    <span>시스템 모니터링</span>
                                 </a>
                                 <ul class="nav nav-children">
-                                    <li id="course_manage_view">
-                                        <a href="/course_manage">
-                                            강좌 관리
+                                    <li id="moni_storage">
+                                        <a href="/moni_storage">
+                                            스토리지 사용량
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="unused_video_files">
+                                        <a href="/unused_video">
+                                            미사용 동영상
                                         </a>
                                     </li>
                                 </ul>
                             </li>
-
-                            <li class="nav nav-parent" id="code_manage">
+                            <li class="nav nav-parent" id="history">
                                 <a>
-                                    <i class="fa fa-language" aria-hidden="true"></i>
-                                    <span>코드 관리</span>
+                                    <i class="fa fa-history" aria-hidden="true"></i>
+                                    <span>개인정보시스템 접속 이력</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    <li id="login_history_list">
+                                        <a href="/login_history">
+                                            로그인 이력
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-children">
+                                    <li id="history_list">
+                                        <a href="/history">
+                                            조회 이력
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav nav-parent" id="settings">
+                                <a>
+                                    <i class="fa fa-certificate" aria-hidden="true"></i>
+                                    <span>설정</span>
                                 </a>
                                 <ul class="nav nav-children">
                                     <li id="code_manage_view">
@@ -350,84 +342,6 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="nav nav-parent" id="series_course">
-
-                                <a>
-                                    <i class="fa fa-linode" aria-hidden="true"></i>
-                                    <span>시리즈 강좌</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="series_course_view">
-                                        <a href="/series_course">
-                                            시리즈 강좌
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <!-- review management -->
-                            <li class="nav nav-parent" id="review_manage">
-                                <a>
-                                    <i class="fa fa-comments" aria-hidden="true"></i>
-                                    <span>리뷰 관리</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="review_manage_view">
-                                        <a href="/review_manage">
-                                            리뷰 관리
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- review management -->
-
-                            <!-- user enrollment -->
-                            <li class="nav nav-parent" id="user_enroll">
-                                <a>
-                                    <i class="fa fa-user-plus" aria-hidden="true"></i>
-                                    <span>회원 등록</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="user_enroll_view">
-                                        <a href="/user_enroll">
-                                            회원 등록
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- user enrollment -->
-
-                            <!-- trackinglog -->
-                            <li class="nav nav-parent" id="tracking_log">
-                                <a>
-                                    <i class="fa fa-list-ul" aria-hidden="true"></i>
-                                    <span>트래킹 로그 조회</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="tracking_log_list">
-                                        <a href="/tracking_log">
-                                            기간별 조회
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- trackinglog -->
-
-                            <!-- 미사용 동영상 -->
-                            <li class="nav nav-parent" id="unused_video">
-                                <a>
-                                    <i class="fa fa-video-camera" aria-hidden="true"></i>
-                                    <span>미사용 동영상</span>
-                                </a>
-                                <ul class="nav nav-children">
-                                    <li id="unused_video_files">
-                                        <a href="/unused_video">
-                                            목록 파일
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
                         </ul>
                     </nav>
                     <script>
@@ -608,146 +522,117 @@
 //            console.log('pagetitlename: ' + pagetitlename);
 
             switch (pagetitlename) {
-                case '일일 통계':
+                case '강좌 관리':
+                    if (is_expanded != 'none') $('#course_manage').addClass('nav-expanded');
+                    $('#course_manage').addClass('nav-active');
+                    $('#course_manage_view').addClass('nav-active');
+                    break;
+                case '회원 일괄등록':
+                    if (is_expanded != 'none') $('#user_manage').addClass('nav-expanded');
+                    $('#user_manage').addClass('nav-active');
+                    $('#user_enroll_view').addClass('nav-active');
+                    break;
+                case '단체 메일/쪽지 발송':
+                    if (is_expanded != 'none') $('#user_manage').addClass('nav-expanded');
+                    $('#user_manage').addClass('nav-active');
+                    $('#multiple_email').addClass('nav-active');
+                    break;
+                case '일일/주간/월별 통계':
                     if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
                     $('#stastic').addClass('nav-active');
                     $('#day_stastic').addClass('nav-active');
                     break;
-                case '운영 현황':
-                    if (is_expanded != 'none') $('#state').addClass('nav-expanded');
-                    $('#state').addClass('nav-active');
-                    $('#mana_state').addClass('nav-active');
-                    break;
-                case '개발 현황':
-                    if (is_expanded != 'none') $('#state').addClass('nav-expanded');
-                    $('#state').addClass('nav-active');
-                    $('#dev_state').addClass('nav-active');
-                    break;
-                case '이수증 생성':
-                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                    $('#certificate').addClass('nav-active');
-                    $('#create_certificate').addClass('nav-active');
-                    break;
                 case '대학별 이수증 발급 현황':
-                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                    $('#certificate').addClass('nav-active');
+                    if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
+                    $('#stastic').addClass('nav-active');
                     $('#uni_certificate').addClass('nav-active');
                     break;
                 case '사용자별 이수증 발급 현황':
-                    if (is_expanded != 'none') $('#certificate').addClass('nav-expanded');
-                    $('#certificate').addClass('nav-active');
+                    if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
+                    $('#stastic').addClass('nav-active');
                     $('#per_certificate').addClass('nav-active');
                     break;
+                case '트래킹 로그 추출':
+                    if (is_expanded != 'none') $('#stastic').addClass('nav-expanded');
+                    $('#stastic').addClass('nav-active');
+                    $('#tracking_log_list').addClass('nav-active');
+                    break;
+                case '팝업':
+                    if (is_expanded != 'none') $('#homepage_manage').addClass('nav-expanded');
+                    $('#homepage_manage').addClass('nav-active');
+                    $('#popup_add').addClass('nav-active');
+                    break;
+                case '배너':
+                    if (is_expanded != 'none') $('#homepage_manage').addClass('nav-expanded');
+                    $('#homepage_manage').addClass('nav-active');
+                    $('#popupZone_add').addClass('nav-active');
+                    break;
+                case '시리즈 강좌':
+                    if (is_expanded != 'none') $('#homepage_manage').addClass('nav-expanded');
+                    $('#homepage_manage').addClass('nav-active');
+                    $('#series_course_view').addClass('nav-active');
+                    break;
+                case '리뷰 관리':
+                    if (is_expanded != 'none') $('#homepage_manage').addClass('nav-expanded');
+                    $('#homepage_manage').addClass('nav-active');
+                    $('#review_manage_view').addClass('nav-active');
+                    break;
                 case '공지사항':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
+                    if (is_expanded != 'none') $('#notice_manage').addClass('nav-expanded');
+                    $('#notice_manage').addClass('nav-active');
                     $('#comm_notice').addClass('nav-active');
                     break;
                 case 'K-MOOC 소식':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
+                    if (is_expanded != 'none') $('#notice_manage').addClass('nav-expanded');
+                    $('#notice_manage').addClass('nav-active');
                     $('#comm_k_news').addClass('nav-active');
                     break;
                 case 'Q&A':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
+                    if (is_expanded != 'none') $('#notice_manage').addClass('nav-expanded');
+                    $('#notice_manage').addClass('nav-active');
                     $('#comm_faq').addClass('nav-active');
                     break;
                 case 'Q&A 질문현황':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
+                    if (is_expanded != 'none') $('#notice_manage').addClass('nav-expanded');
+                    $('#notice_manage').addClass('nav-active');
                     $('#comm_faqrequest').addClass('nav-active');
                     break;
                 case '자료실':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
+                    if (is_expanded != 'none') $('#notice_manage').addClass('nav-expanded');
+                    $('#notice_manage').addClass('nav-active');
                     $('#comm_reference_room').addClass('nav-active');
-                    break;
-                case '모바일':
-                    if (is_expanded != 'none') $('#community').addClass('nav-expanded');
-                    $('#community').addClass('nav-active');
-                    $('#comm_mobile').addClass('nav-active');
-                    break;
-                case '스토리지':
-                    if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
-                    $('#monitoring').addClass('nav-active');
-                    $('#moni_storage').addClass('nav-active');
-                    break;
-                case '접속이력':
-                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
-                    $('#history').addClass('nav-active');
-                    $('#history_list').addClass('nav-active');
-                    break;
-                case '로그인이력':
-                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
-                    $('#history').addClass('nav-active');
-                    $('#login_history_list').addClass('nav-active');
-                    break;
-                case '팝업관리':
-                    if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
-                    $('#popup').addClass('nav-active');
-                    $('#popup_add').addClass('nav-active');
-                    break;
-                case '팝업존관리':
-                    if (is_expanded != 'none') $('#popup').addClass('nav-expanded');
-                    $('#popup').addClass('nav-active');
-                    $('#popupZone_add').addClass('nav-active');
-                    break;
-                case '단체메일':
-                    if (is_expanded != 'none') $('#email').addClass('nav-expanded');
-                    $('#email').addClass('nav-active');
-                    $('#multiple_email').addClass('nav-active');
                     break;
                 case '멀티사이트 관리':
                     if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
                     $('#multi_site').addClass('nav-active');
                     $('#multi_site_add').addClass('nav-active');
                     break;
-                case '멀티사이트 추가':
-                    if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
-                    $('#multi_site').addClass('nav-active');
-                    $('#multi_site_add').addClass('nav-active');
-                    break;
-                case '연계강좌 지정':
-                    if (is_expanded != 'none') $('#multi_site').addClass('nav-expanded');
-                    $('#multi_site').addClass('nav-active');
-                    $('#multi_site_add').addClass('nav-active');
-                    break;
-                case '강좌 관리':
-                    if (is_expanded != 'none') $('#course_manage').addClass('nav-expanded');
-                    $('#course_manage').addClass('nav-active');
-                    $('#course_manage_view').addClass('nav-active');
-                    break;
-                case '코드 관리':
-                    if (is_expanded != 'none') $('#code_manage').addClass('nav-expanded');
-                    $('#code_manage').addClass('nav-active');
-                    $('#code_manage_view').addClass('nav-active');
-                    break;
-                case '시리즈 강좌':
-                    if (is_expanded != 'none') $('#series_course').addClass('nav-expanded');
-                    $('#series_course').addClass('nav-active');
-                    $('#series_course_view').addClass('nav-active');
-                    break;
-                case '리뷰 관리':
-                    if (is_expanded != 'none') $('#review_manage').addClass('nav-expanded');
-                    $('#review_manage').addClass('nav-active');
-                    $('#review_manage_view').addClass('nav-active');
-                    break;
-                case '회원 관리':
-                    if (is_expanded != 'none') $('#user_enroll').addClass('nav-expanded');
-                    $('#user_enroll').addClass('nav-active');
-                    $('#user_enroll_view').addClass('nav-active');
-                    break;
-                case '트래킹 로그 조회':
-                    if (is_expanded != 'none') $('#tracking_log').addClass('nav-expanded');
-                    $('#tracking_log').addClass('nav-active');
-                    $('#tracking_log_list').addClass('nav-active');
+                case '스토리지 사용량':
+                    if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
+                    $('#monitoring').addClass('nav-active');
+                    $('#moni_storage').addClass('nav-active');
                     break;
                 case '미사용 동영상':
-                    if (is_expanded != 'none') $('#unused_video').addClass('nav-expanded');
-                    $('#unused_video').addClass('nav-active');
+                    if (is_expanded != 'none') $('#monitoring').addClass('nav-expanded');
+                    $('#monitoring').addClass('nav-active');
                     $('#unused_video_files').addClass('nav-active');
                     break;
+                case '로그인 이력':
+                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
+                    $('#history').addClass('nav-active');
+                    $('#login_history_list').addClass('nav-active');
+                    break;
+                case '조회 이력':
+                    if (is_expanded != 'none') $('#history').addClass('nav-expanded');
+                    $('#history').addClass('nav-active');
+                    $('#history_list').addClass('nav-active');
+                    break;
+                case '코드 관리':
+                    if (is_expanded != 'none') $('#settings').addClass('nav-expanded');
+                    $('#settings').addClass('nav-active');
+                    $('#code_manage_view').addClass('nav-active');
+                    break;
+
 
             }
         }
