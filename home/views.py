@@ -4317,6 +4317,11 @@ def new_notice(request):
         file_list = request.FILES.getlist('file')
         file_list_cnt = len(request.FILES.getlist('file'))
 
+        print "-----------------------> DEBUG [s]"
+        print "file_list = ", file_list
+        print "file_list_cnt = ", file_list_cnt
+        print "-----------------------> DEBUG [e]"
+
         # make name, dir
         for item in file_list:
             file_name_list.append(str(item))
@@ -4330,10 +4335,6 @@ def new_notice(request):
         # crete file
         cnt = 0
         for item in file_list:
-
-            #kmoocbugfix
-            file_dir_list[cnt] = file_dir_list[cnt].encode('utf-8')
-
             fp = open(file_dir_list[cnt], 'wb')
             for chunk in item.chunks():
                 fp.write(chunk)

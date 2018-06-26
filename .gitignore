@@ -11,3 +11,4 @@
 venv/
 home/static/upload/
 home/static/uploads/
+management/settings.py
