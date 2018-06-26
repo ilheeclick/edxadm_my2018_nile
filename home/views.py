@@ -1612,6 +1612,7 @@ def user_enroll(request):
                                     user_email,
                                     user_pw
                                 )
+                                print cmd
                                 result = os.system(cmd)
 
                                 # 등록된 회원 정보 변경(업데이트)
