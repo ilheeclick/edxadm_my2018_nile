@@ -1611,7 +1611,7 @@ def user_enroll(request):
                                     REAL_WEB1_PW,
                                     user_email,
                                     user_pw,
-                                    user_name
+                                    user_id
                                 )
                                 print cmd
                                 result = os.system(cmd)
@@ -1623,13 +1623,17 @@ def user_enroll(request):
                                                JOIN auth_userprofile AS b
                                                  ON a.id = b.user_id
                                         SET
-                                               b.NAME = '{2}',
-                                               b.gender = '{3}',
-                                               b.year_of_birth = '{4}',
-                                               level_of_education = '{5}'
-                                        WHERE  a.email = '{0}'
-                                    '''.format(user_email, user_name, user_gender_code, user_year,
-                                               user_grade_code)
+                                               b.NAME = '{user_name}',
+                                               b.gender = '{user_gender_code}',
+                                               b.year_of_birth = '{user_year}',
+                                               level_of_education = '{user_grade_code}'
+                                        WHERE  a.email = '{user_email}'
+                                    '''.format(
+                                        user_email=user_email,
+                                        user_name=user_name,
+                                        user_gender_code=user_gender_code,
+                                        user_year=user_year,
+                                        user_grade_code=user_grade_code)
                                     cur.execute(query)
                                     success_cnt += 1
 
@@ -1654,7 +1658,7 @@ def user_enroll(request):
                                                  '{5}',
                                                  '{6}',
                                                  '{7}')
-                                '''.format(user_id, user_email, user_name, user_year, user_gender_code, user_grade_code,
+                                '''.format('x', user_email, user_name, user_year, user_gender_code, user_grade_code,
                                            error_code, regist_id)
                                 cur.execute(query)
 
