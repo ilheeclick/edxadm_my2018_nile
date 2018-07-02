@@ -1605,12 +1605,13 @@ def user_enroll(request):
                         try:
                             if lock == 0:
                                 # 회원 등록
-                                cmd = 'sshpass -p{2} ssh -o StrictHostKeyChecking=no {1}@{0} /edx/app/edxapp/edx-platform/add_user.sh {3} {4}'.format(
+                                cmd = 'sshpass -p{2} ssh -o StrictHostKeyChecking=no {1}@{0} /edx/app/edxapp/edx-platform/add_user.sh {3} {4} {5}'.format(
                                     REAL_WEB1_HOST,
                                     REAL_WEB1_ID,
                                     REAL_WEB1_PW,
                                     user_email,
-                                    user_pw
+                                    user_pw,
+                                    user_name
                                 )
                                 print cmd
                                 result = os.system(cmd)
@@ -1621,13 +1622,13 @@ def user_enroll(request):
                                         UPDATE auth_user AS a
                                                JOIN auth_userprofile AS b
                                                  ON a.id = b.user_id
-                                        SET    a.username = '{1}',
+                                        SET
                                                b.NAME = '{2}',
                                                b.gender = '{3}',
                                                b.year_of_birth = '{4}',
                                                level_of_education = '{5}'
                                         WHERE  a.email = '{0}'
-                                    '''.format(user_email, user_id, user_name, user_gender_code, user_year,
+                                    '''.format(user_email, user_name, user_gender_code, user_year,
                                                user_grade_code)
                                     cur.execute(query)
                                     success_cnt += 1
@@ -4368,7 +4369,7 @@ def new_notice(request):
             odby = request.POST.get('odby')
             upload_file = request.POST.get('uploadfile')
 
-            # file 
+            # file
             file_ext_list = []
             file_name_list = []
             file_size_list = []
@@ -4389,17 +4390,17 @@ def new_notice(request):
             # ------ 공지사항 쓰기 query ------ #
             cur = connection.cursor()
             query = '''
-                INSERT INTO edxapp.tb_board 
-                            (subject, 
-                             content, 
-                             head_title, 
+                INSERT INTO edxapp.tb_board
+                            (subject,
+                             content,
+                             head_title,
                              section,
-                             odby) 
-                VALUES      ('{0}', 
-                             '{1}', 
-                             '{2}', 
+                             odby)
+                VALUES      ('{0}',
+                             '{1}',
+                             '{2}',
                              '{3}',
-                             '{4}') 
+                             '{4}')
             '''.format(title, content, head_title, section, odby)
             cur.execute(query)
             # ------ 공지사항 쓰기 query ------ #
@@ -4419,15 +4420,15 @@ def new_notice(request):
                 for i in range(0, file_cnt):
                     cur = connection.cursor()
                     query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
+                    INSERT INTO edxapp.tb_board_attach
+                                (board_id,
+                                 attatch_file_name,
+                                 attatch_file_ext,
+                                 attatch_file_size)
+                     VALUES      ('{0}',
+                                  '{1}',
+                                  '{2}',
+                                  '{3}')
                     '''.format(board_id, file_name_list[i], file_ext_list[i], file_size_list[i])
                     cur.execute(query)
                     cur.close()
@@ -4457,15 +4458,15 @@ def new_notice(request):
             for item in delete_list:
                 cur = connection.cursor()
                 query = '''
-                    UPDATE edxapp.tb_board_attach 
-                    SET    del_yn = 'Y' 
-                    WHERE  attatch_id = '{0}'; 
+                    UPDATE edxapp.tb_board_attach
+                    SET    del_yn = 'Y'
+                    WHERE  attatch_id = '{0}';
                 '''.format(item)
                 cur.execute(query)
                 cur.close()
             # ------ file delete query ------ #
 
-            # file 
+            # file
             file_ext_list = []
             file_name_list = []
             file_size_list = []
@@ -4486,13 +4487,13 @@ def new_notice(request):
             # ------ 공지사항 수정 query ------ #
             cur = connection.cursor()
             query = '''
-                UPDATE edxapp.tb_board 
-                SET    subject = '{0}', 
-                       content = '{1}', 
-                       head_title = '{2}', 
+                UPDATE edxapp.tb_board
+                SET    subject = '{0}',
+                       content = '{1}',
+                       head_title = '{2}',
                        mod_date = Now(),
                        odby = {3}
-                WHERE  board_id = '{4}' 
+                WHERE  board_id = '{4}'
             '''.format(title, content, head_title, odby, noti_id)
             cur.execute(query)
             cur.close()
@@ -4503,15 +4504,15 @@ def new_notice(request):
                 for i in range(0, file_cnt):
                     cur = connection.cursor()
                     query = '''
-                    INSERT INTO edxapp.tb_board_attach 
-                                (board_id, 
-                                 attatch_file_name, 
-                                 attatch_file_ext, 
-                                 attatch_file_size) 
-                     VALUES      ('{0}', 
-                                  '{1}', 
-                                  '{2}', 
-                                  '{3}') 
+                    INSERT INTO edxapp.tb_board_attach
+                                (board_id,
+                                 attatch_file_name,
+                                 attatch_file_ext,
+                                 attatch_file_size)
+                     VALUES      ('{0}',
+                                  '{1}',
+                                  '{2}',
+                                  '{3}')
                     '''.format(noti_id, file_name_list[i], file_ext_list[i], file_size_list[i])
                     print query
                     cur.execute(query)
@@ -4577,12 +4578,12 @@ def modi_notice(request, id, use_yn):
     # ------ 공지사항 파일첨부 보여주기 query ------ #
     cur = connection.cursor()
     query = '''
-        SELECT attatch_file_name, 
-               attatch_file_ext, 
+        SELECT attatch_file_name,
+               attatch_file_ext,
                attatch_file_size,
                attatch_id
-        FROM   edxapp.tb_board_attach 
-        WHERE  board_id = '{0}' 
+        FROM   edxapp.tb_board_attach
+        WHERE  board_id = '{0}'
                AND del_yn = 'N'
     '''.format(id)
     cur.execute(query)
@@ -4778,11 +4779,11 @@ def modi_knews(request, id, use_yn):
     # ------ knews 파일첨부 보여주기 query ------ #
     cur = connection.cursor()
     query = '''
-        SELECT attatch_file_name, 
-               attatch_file_ext, 
+        SELECT attatch_file_name,
+               attatch_file_ext,
                attatch_file_size,
                attatch_id
-        FROM   edxapp.tb_board_attach 
+        FROM   edxapp.tb_board_attach
         WHERE  board_id = '{0}'
                AND del_yn = 'N'
     '''.format(id)
@@ -5160,11 +5161,11 @@ def modi_refer(request, id, use_yn):
     # ------ 공지사항 파일첨부 보여주기 query ------ #
     cur = connection.cursor()
     query = '''
-        SELECT attatch_file_name, 
-               attatch_file_ext, 
+        SELECT attatch_file_name,
+               attatch_file_ext,
                attatch_file_size,
                attatch_id
-        FROM   edxapp.tb_board_attach 
+        FROM   edxapp.tb_board_attach
         WHERE  board_id = '{0}'
                AND del_yn = 'N'
     '''.format(id)
