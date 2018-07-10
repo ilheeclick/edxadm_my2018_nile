@@ -55,8 +55,9 @@ def common_read_csv(file_name):
     reader = csv.reader(f, dialect=csv.excel_tab)
     for row in reader:
         for r in row:
-            print r.decode('euckr').encode('utf-8')
-            user_list.append(r.decode('euckr').encode('utf-8'))
+            print r
+            user_list.append(r)
+            #user_list.append(r.encode('utf-8'))
     f.close()
     return user_list
 
