@@ -156,7 +156,7 @@ def logFileDownload(search_date, host, log_dir, local_dir, web_server):
     for i in sorted(file_list):
         if re.search(date_compile, i) is not None:
             split_date = i.find('-20')
-
+            print 'file_list ---->  ', i
             sfile = str(i)
             searchfile = sfile[split_date+1:split_date+9]
             if searchfile == search_date:

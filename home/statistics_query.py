@@ -457,40 +457,42 @@ def by_course_demographics(date):
     query = '''
           SELECT course_id,
                  org,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc,
                  sum(
-                    if(mode = 'honor'
+                    if(cc > bc 
+                       and mode = 'honor'
                        and is_active = 1
                        AND pass_type < 3
                        AND gender NOT IN ('m', 'f', 'o'),
                        1,
                        0))
                     no_gender1,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age < 20, 1, 0))    age1,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age < 20, 1, 0))    age1,
                  sum(
-                    if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0))
+                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0))
                     age2,
                  sum(
-                    if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0))
+                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0))
                     age3,
                  sum(
-                    if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0))
+                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0))
                     age4,
                  sum(
-                    if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0))
+                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0))
                     age5,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND age > 59, 1, 0))    age6,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0))   edu1,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0))   edu2,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0))   edu3,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0))   edu4,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0))  edu5,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0))  edu7,
-                 sum(if(mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
-                 sum(if(mode = 'honor' 
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age > 59, 1, 0))    age6,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0))   edu1,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0))   edu2,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0))   edu3,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0))   edu4,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0))  edu5,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0))  edu7,
+                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
+                 sum(if(cc > bc 
+                        and mode = 'honor' 
                         and is_active = 1
                         AND pass_type < 3
                         AND (   edu IS NULL
@@ -505,29 +507,29 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(mode = 'honor' and is_active = 1 AND pass_type < 3, 1, NULL))
+                 count(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3, 1, NULL))
                     allcnt,
-                 sum(if(mode = 'honor' and pass_type < 2 AND gender = 'm', 1, 0))                  male,
-                 sum(if(mode = 'honor' and pass_type < 2 AND gender = 'f', 1, 0))
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'm', 1, 0))                  male,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'f', 1, 0))
                     female,
-                 sum(if(mode = 'honor' and pass_type < 2 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(mode = 'honor' and pass_type < 2 AND gender IN ('m', 'f', 'o'), 1, 0))
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'o', 1, 0))                  etc,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender IN ('m', 'f', 'o'), 1, 0))
                     no_gender2,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age < 20, 1, 0))                      age1,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(mode = 'honor' and pass_type < 2 AND age > 59, 1, 0))                      age6,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(mode = 'honor' and pass_type < 2 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(mode = 'honor' and pass_type < 2
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age < 20, 1, 0))                      age1,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0))         age3,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0))         age4,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0))         age5,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age > 59, 1, 0))                      age6,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'p', 1, 0))                     edu1,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'm', 1, 0))                     edu2,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'b', 1, 0))                     edu3,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'a', 1, 0))                     edu4,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'hs', 1, 0))                    edu5,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'jhs', 1, 0))                   edu6,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'el', 1, 0))                    edu7,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'other', 1, 0))                 edu8,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 2
                         AND (   edu IS NULL
                              OR edu NOT IN ('p',
                                             'm',
@@ -540,29 +542,29 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(mode = 'honor' and pass_type < 2, 1, NULL))
+                 count(if(cc > bc and mode = 'honor' and pass_type < 2, 1, NULL))
                     allcnt,
-                 sum(if(mode = 'honor' and pass_type < 1 AND gender = 'm', 1, 0))                  male,
-                 sum(if(mode = 'honor' and pass_type < 1 AND gender = 'f', 1, 0))
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'm', 1, 0))                  male,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'f', 1, 0))
                     female,
-                 sum(if(mode = 'honor' and pass_type < 1 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(mode = 'honor' and pass_type < 1 AND gender NOT IN ('m', 'f', 'o'), 1, 0))
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'o', 1, 0))                  etc,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender NOT IN ('m', 'f', 'o'), 1, 0))
                     no_gender3,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age < 20, 1, 0))                      age1,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(mode = 'honor' and pass_type < 1 AND age > 59, 1, 0))                      age6,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(mode = 'honor' and pass_type < 1 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(mode = 'honor' and pass_type < 1
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age < 20, 1, 0))                      age1,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0))         age3,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0))         age4,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0))         age5,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age > 59, 1, 0))                      age6,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'p', 1, 0))                     edu1,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'm', 1, 0))                     edu2,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'b', 1, 0))                     edu3,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'a', 1, 0))                     edu4,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'hs', 1, 0))                    edu5,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'jhs', 1, 0))                   edu6,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'el', 1, 0))                    edu7,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'other', 1, 0))                 edu8,
+                 sum(if(cc > bc and mode = 'honor' and pass_type < 1
                         AND (   edu IS NULL
                              OR edu NOT IN ('p',
                                             'm',
@@ -575,7 +577,7 @@ def by_course_demographics(date):
                         1,
                         0))
                     edu9,
-                 count(if(mode = 'honor' and pass_type < 1, 1, NULL))
+                 count(if(cc > bc and mode = 'honor' and pass_type < 1, 1, NULL))
                     allcnt
             FROM (SELECT is_active,
                          t1.course_id,
@@ -584,6 +586,8 @@ def by_course_demographics(date):
                          age,
                          edu,
                          mm mode,
+                         adddate(t2.created_date, INTERVAL 9 HOUR) as cc,
+                         adddate(t1.bc, INTERVAL 9 HOUR) as bc,
                          CASE
                             WHEN t2.status = 'downloadable' THEN 0
                             WHEN t2.grade >= (lowest_passing_grade / 2) THEN 1
@@ -601,7 +605,8 @@ def by_course_demographics(date):
                                  - ifnull(d.year_of_birth, 0)
                                     age,
                                  d.level_of_education edu,
-                                 b.mode mm
+                                 b.mode mm,
+                                 b.created bc
                             FROM course_overviews_courseoverview a,
                                  student_courseenrollment      b,
                                  auth_user                     c,
