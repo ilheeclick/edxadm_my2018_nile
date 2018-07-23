@@ -243,6 +243,7 @@ def log_change(path_dir, change_local, search_date, web_server):
                         joinname_idx = text[joinname_index + 16:]
                         joinname_change = joinname_idx.find(',')
                         joinname_pattern = joinname_idx[0:joinname_change - 3]
+                        print 'joinname_pattern ==================', joinname_pattern, '\n\n\n\n\n\n\n\n\n\n\n'
                         r6 = re.compile(joinname_pattern)
 
                         uniname_index = text.find('\"name\\\":')
