@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from management.settings import WEB1_HOST, WEB2_HOST, WEB1_LOG, WEB2_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR, REAL_WEB1_PW, WEB1_DOWNLOAD_PATH
+from management.settings import WEB1_HOST, WEB2_HOST, WEB_LOG, LOCAL1_DIR, LOCAL2_DIR, CHANGE_DIR, USER_NAME, LOGZIP_DIR, REAL_WEB1_PW, WEB_DOWNLOAD_PATH
 import functools
 import paramiko
 import re
@@ -98,8 +98,8 @@ def logfile_download(request, date):
         date_list.append(date.strftime("%Y%m%d"))
 
     for searchDate in date_list:
-        logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR, 1)
-        # logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR, 2)
+        logFileDownload(searchDate, WEB1_HOST, WEB_LOG, LOCAL1_DIR, 1)
+        logFileDownload(searchDate, WEB2_HOST, WEB_LOG, LOCAL2_DIR, 2)
         # ------------------------------- 실제 서버 반영시 하단 내용으로 반영
         # logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
         # logFileDownload(searchDate, WEB2_HOST, WEB2_LOG, LOCAL2_DIR)
@@ -166,7 +166,7 @@ def logFileDownload(search_date, host, log_dir, local_dir, web_server):
                 # sftp.get(i, local_dir+sfile, callback=callback_for_filename)
                 cmd = 'sshpass -p' + REAL_WEB1_PW + ' ssh -t ' + USER_NAME + '@' + host + ' ~/manage/track.sh ' + searchfile
                 os.system(cmd)
-                sftp.chdir(WEB1_DOWNLOAD_PATH)
+                sftp.chdir(WEB_DOWNLOAD_PATH)
                 sftp.get(i, local_dir+sfile, callback=callback_for_filename)
     log_change(local_dir, CHANGE_DIR, search_date, web_server)
     client.close()
