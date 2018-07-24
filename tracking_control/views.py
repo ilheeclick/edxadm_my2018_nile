@@ -80,6 +80,8 @@ def mkdir_p(sftp, remote_directory):
 
 
 def logfile_download(request, date):
+    cmd = 'sh /home/ubuntu/project/management/tracking_control/track.sh'
+    os.system(cmd)
     global logfile_check
     logfile_check = 1
     split_str = date.find("/")
@@ -98,7 +100,7 @@ def logfile_download(request, date):
         date_list.append(date.strftime("%Y%m%d"))
 
     for searchDate in date_list:
-        #logFileDownload(searchDate, WEB1_HOST, WEB_LOG, LOCAL1_DIR, 1)
+        logFileDownload(searchDate, WEB1_HOST, WEB_LOG, LOCAL1_DIR, 1)
         logFileDownload(searchDate, WEB2_HOST, WEB_LOG, LOCAL2_DIR, 2)
         # ------------------------------- 실제 서버 반영시 하단 내용으로 반영
         # logFileDownload(searchDate, WEB1_HOST, WEB1_LOG, LOCAL1_DIR)
@@ -164,11 +166,11 @@ def logFileDownload(search_date, host, log_dir, local_dir, web_server):
                 callback_for_filename = functools.partial(my_callback, i)
                 # sftp.get(i, local_dir+sfile)
                 # sftp.get(i, local_dir+sfile, callback=callback_for_filename)
-                cmd = 'sshpass -p' + REAL_WEB1_PW + ' ssh -tt ' + USER_NAME + '@' + host + ' ~/manage/track.sh ' + searchfile
-                print 'cmd == > ', cmd
+                if host == WEB1_HOST:
+                    cmd = 'sshpass -p' + REAL_WEB1_PW + ' ssh -tt ' + USER_NAME + '@' + host + ' ~/manage/track.sh ' + searchfile
 
-		os.system(cmd)
-                print 'os check'
+		    os.system(cmd)
+                    print 'cmd check'
                 sftp.chdir(WEB_DOWNLOAD_PATH)
                 sftp.get(i, local_dir+sfile, callback=callback_for_filename)
     log_change(local_dir, CHANGE_DIR, search_date, web_server)
@@ -246,9 +248,6 @@ def log_change(path_dir, change_local, search_date, web_server):
                         joinname_idx = text[joinname_index + 16:]
                         joinname_change = joinname_idx.find(',')
                         joinname_pattern = joinname_idx[0:joinname_change - 3]
-			print 'filename => ', log
-                        print 'joinname_pattern ==================', joinname_pattern, '\n\n\n\n'
-                        print 'joinname_idx ====> ', joinname_idx, '\n'
                         #r6 = re.compile(joinname_pattern)
 
                         uniname_index = text.find('\"name\\\":')
