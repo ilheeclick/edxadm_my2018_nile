@@ -80,7 +80,7 @@ def mkdir_p(sftp, remote_directory):
 
 
 def logfile_download(request, date):
-    cmd = 'sh /home/ubuntu/project/management/tracking_control/track.sh'
+    cmd = 'sh /home/ubuntu/project/management/tracking_control/tracking.sh'
     os.system(cmd)
     global logfile_check
     logfile_check = 1
