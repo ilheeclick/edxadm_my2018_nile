@@ -192,7 +192,7 @@ def log_change(path_dir, change_local, search_date, web_server):
             elif web_server == 2:
                 outfilename = log[:-3] + "_2"
 
-            output = gzip.open(change_local + outfilename, 'wb')
+            output = io.open(change_local + outfilename, 'w', encoding='utf-8')
             f = io.BufferedReader(read_file)
             for text in f.readlines():
                 username_index = text.find('\"username\":')
@@ -264,7 +264,7 @@ def log_change(path_dir, change_local, search_date, web_server):
                         data = data.replace(joinname_pattern, '******')
                         data = data.replace(uniname_pattern, "\"******\\\"")
 
-                    output.write(data)
+                    output.write(data.decode('utf-8'))
 
             f.close()
 
