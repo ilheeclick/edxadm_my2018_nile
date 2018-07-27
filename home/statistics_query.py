@@ -233,79 +233,113 @@ def overall_cert(date):
     '''.format(date=date)
     return execute_query(query)
 
+
 # 'by_course_enroll_audit'
 def by_course_enroll_audit(date):
     query = '''
-        select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2 AND date_format(
-                                        adddate(e.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') half_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable' AND date_format(
-                                        adddate(e.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') cert_cnt
-          from (
-        SELECT a.id,
-                       a.org,
-                       a.lowest_passing_grade,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) `new_enroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
-                  FROM course_overviews_courseoverview a,
-                       student_courseenrollment        b,
-                       auth_user                       c,
-                       auth_userprofile                d
-                 WHERE     a.id = b.course_id
-                       AND b.user_id = c.id
-                       AND c.id = d.user_id
-                       AND lower(b.course_id) NOT LIKE '%test%'
-                       AND lower(b.course_id) NOT LIKE '%demo%'
-                       AND lower(b.course_id) NOT LIKE '%nile%'
-                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                            AND '{date}'
-                       AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                            AND '{date}'
-                 group by a.id,  a.org, a.lowest_passing_grade ) t1;    '''.format(date=date)
+        SELECT id, 
+               org, 
+               new_enroll_cnt, 
+               new_unenroll_cnt, 
+               all_enroll_cnt, 
+               all_unenroll_cnt, 
+               (SELECT Count(*) 
+                FROM   certificates_generatedcertificate e 
+                WHERE  e.course_id = t1.id 
+                       AND e.grade >= lowest_passing_grade / 2 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726') half_cnt, 
+               (SELECT Count(*) 
+                FROM   certificates_generatedcertificate e 
+                WHERE  e.course_id = t1.id 
+                       AND e.status = 'downloadable' 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726') cert_cnt 
+        FROM   (SELECT a.id, 
+                       a.org, 
+                       a.lowest_passing_grade, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '20180726' and b.mode = 'audit' and b.created >= mm, 1, 0 	))                             `new_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '20180726' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `new_unenroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' and b.mode = 'audit' and b.created >= mm, 1, 0))      `all_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `all_unenroll_cnt` 
+                FROM   course_overviews_courseoverview a
+                join student_courseenrollment b
+                on a.id = b.course_id
+        		join auth_user c
+                on b.user_id = c.id 
+        	    join auth_userprofile d
+                on c.id = d.user_id 
+        	    left join
+                       (
+        				select course_id, max(created_date) as mm
+        				from certificates_generatedcertificate
+        				where status = 'downloadable'
+        				group by course_id
+                       ) cert
+        	    on a.id = cert.course_id
+                where Lower(b.course_id) NOT LIKE '%test%' 
+                       AND Lower(b.course_id) NOT LIKE '%demo%' 
+                       AND Lower(b.course_id) NOT LIKE '%nile%' 
+                       AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' 
+                       AND Date_format(Adddate(c.date_joined, INTERVAL 9 hour), '%Y%m%d' ) BETWEEN '1' AND '20180726' 
+                GROUP  BY a.id, 
+                          a.org, 
+                          a.lowest_passing_grade) t1; 
+    '''.format(date=date)
     return execute_query(query)
 
 # 'by_course_enroll'
 def by_course_enroll(date):
     query = '''
-        select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2 AND date_format(
-                                        adddate(e.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') half_cnt,
-                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable' AND date_format(
-                                        adddate(e.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}') cert_cnt
-          from (
-        SELECT a.id,
-                       a.org,
-                       a.lowest_passing_grade,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) `new_enroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
-                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
-                  FROM course_overviews_courseoverview a,
-                       student_courseenrollment        b,
-                       auth_user                       c,
-                       auth_userprofile                d
-                 WHERE     a.id = b.course_id
-                       AND b.user_id = c.id
-                       AND c.id = d.user_id
-                       AND lower(b.course_id) NOT LIKE '%test%'
-                       AND lower(b.course_id) NOT LIKE '%demo%'
-                       AND lower(b.course_id) NOT LIKE '%nile%'
-                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                            AND '{date}'
-                       AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
-                                                                                            AND '{date}'
-                 group by a.id,  a.org, a.lowest_passing_grade ) t1;    '''.format(date=date)
+        SELECT id, 
+               org, 
+               new_enroll_cnt, 
+               new_unenroll_cnt, 
+               all_enroll_cnt, 
+               all_unenroll_cnt, 
+               (SELECT Count(*) 
+                FROM   certificates_generatedcertificate e 
+                WHERE  e.course_id = t1.id 
+                       AND e.grade >= lowest_passing_grade / 2 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') half_cnt, 
+               (SELECT Count(*) 
+                FROM   certificates_generatedcertificate e 
+                WHERE  e.course_id = t1.id 
+                       AND e.status = 'downloadable' 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') cert_cnt 
+        FROM   (SELECT a.id, 
+                       a.org, 
+                       a.lowest_passing_grade, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'honor' and b.created <= mm, 1, 0 	))                             `new_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= mm, 1, 0)) `new_unenroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'honor' and b.created <= mm, 1, 0))      `all_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= mm, 1, 0)) `all_unenroll_cnt` 
+                FROM   course_overviews_courseoverview a
+                join student_courseenrollment b
+                on a.id = b.course_id
+        		join auth_user c
+                on b.user_id = c.id 
+        	    join auth_userprofile d
+                on c.id = d.user_id 
+        	    left join
+                       (
+        				select course_id, max(created_date) as mm
+        				from certificates_generatedcertificate
+        				where status = 'downloadable'
+        				group by course_id
+                       ) cert
+        	    on a.id = cert.course_id
+                where Lower(b.course_id) NOT LIKE '%test%' 
+                       AND Lower(b.course_id) NOT LIKE '%demo%' 
+                       AND Lower(b.course_id) NOT LIKE '%nile%' 
+                       AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' 
+                       AND Date_format(Adddate(c.date_joined, INTERVAL 9 hour), '%Y%m%d' ) BETWEEN '1' AND '{date}' 
+                GROUP  BY a.id, 
+                          a.org, 
+                          a.lowest_passing_grade) t1; 
+    '''.format(date=date)
     return execute_query(query)
+
+
+
 
 # 'by_course_demographics_audit'
 def by_course_demographics_audit(date):
