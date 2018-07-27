@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import statistics
 from django.db import connection
 import logging
@@ -234,8 +233,44 @@ def overall_cert(date):
     '''.format(date=date)
     return execute_query(query)
 
+# 'by_course_enroll_audit'
+def by_course_enroll_audit(date):
+    query = '''
+        select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
+                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.grade >= lowest_passing_grade/2 AND date_format(
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}') half_cnt,
+                (select count(*) from certificates_generatedcertificate e where e.course_id = t1.id and e.status = 'downloadable' AND date_format(
+                                        adddate(e.created_date, INTERVAL 9 HOUR),
+                                        '%Y%m%d') BETWEEN '1'
+                                                      AND '{date}') cert_cnt
+          from (
+        SELECT a.id,
+                       a.org,
+                       a.lowest_passing_grade,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) `new_enroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0, 1, 0)) `new_unenroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}', 1, 0)) `all_enroll_cnt`,
+                       sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0, 1, 0)) `all_unenroll_cnt`
+                  FROM course_overviews_courseoverview a,
+                       student_courseenrollment        b,
+                       auth_user                       c,
+                       auth_userprofile                d
+                 WHERE     a.id = b.course_id
+                       AND b.user_id = c.id
+                       AND c.id = d.user_id
+                       AND lower(b.course_id) NOT LIKE '%test%'
+                       AND lower(b.course_id) NOT LIKE '%demo%'
+                       AND lower(b.course_id) NOT LIKE '%nile%'
+                       AND date_format(adddate(b.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                            AND '{date}'
+                       AND date_format(adddate(c.date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                            AND '{date}'
+                 group by a.id,  a.org, a.lowest_passing_grade ) t1;    '''.format(date=date)
+    return execute_query(query)
 
-# `by_course_enroll`
+# 'by_course_enroll'
 def by_course_enroll(date):
     query = '''
         select id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt,
@@ -272,9 +307,8 @@ def by_course_enroll(date):
                  group by a.id,  a.org, a.lowest_passing_grade ) t1;    '''.format(date=date)
     return execute_query(query)
 
-
-# `audit'
-def audit(date):
+# 'by_course_demographics_audit'
+def by_course_demographics_audit(date):
     query = '''
           SELECT course_id,
                  org,
@@ -1410,7 +1444,6 @@ def age_gender_join(date):
                                         '%Y%m%d') BETWEEN '20151014'
                                                       AND '{date}') t1) t2
         GROUP BY age_group;
-
     """.format(
         year=date[:4],
         date=date

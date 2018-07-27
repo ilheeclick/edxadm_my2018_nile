@@ -705,7 +705,7 @@ def statistics_excel(request, date):
         # ------------------------> by_course_KPI_audit
 
         sortlist = list()
-        by_course_enroll = statistics_query.by_course_enroll(date)
+        by_course_enroll = statistics_query.by_course_enroll_audit(date)
         for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt in by_course_enroll:
             row = tuple()
             # 0
@@ -922,8 +922,7 @@ def statistics_excel(request, date):
         # ------------------------> by_course_demographic_audit
 
         sortlist = list()
-        #by_course_demographic = statistics_query.by_course_demographics(date)
-        by_course_demographic = statistics_query.audit(date)
+        by_course_demographic = statistics_query.by_course_demographics_audit(date)
         for course_id, org, \
             male_1, female_1, etc_1, no_gender1, age1_1, age2_1, age3_1, age4_1, age5_1, age6_1, edu1_1, edu2_1, edu3_1, edu4_1, edu5_1, edu6_1, edu7_1, edu8_1, edu9_1, allcnt_1, \
             male_2, female_2, etc_2, no_gender2, age1_2, age2_2, age3_2, age4_2, age5_2, age6_2, edu1_2, edu2_2, edu3_2, edu4_2, edu5_2, edu6_2, edu7_2, edu8_2, edu9_2, allcnt_2, \
