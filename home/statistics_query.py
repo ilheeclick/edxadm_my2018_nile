@@ -247,19 +247,19 @@ def by_course_enroll_audit(date):
                 FROM   certificates_generatedcertificate e 
                 WHERE  e.course_id = t1.id 
                        AND e.grade >= lowest_passing_grade / 2 
-                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726') half_cnt, 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') half_cnt, 
                (SELECT Count(*) 
                 FROM   certificates_generatedcertificate e 
                 WHERE  e.course_id = t1.id 
                        AND e.status = 'downloadable' 
-                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726') cert_cnt 
+                       AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') cert_cnt 
         FROM   (SELECT a.id, 
                        a.org, 
                        a.lowest_passing_grade, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '20180726' and b.mode = 'audit' and b.created >= mm, 1, 0 	))                             `new_enroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '20180726' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `new_unenroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' and b.mode = 'audit' and b.created >= mm, 1, 0))      `all_enroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `all_unenroll_cnt` 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'audit' and b.created >= mm, 1, 0 	))                             `new_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `new_unenroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'audit' and b.created >= mm, 1, 0))      `all_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'audit' and b.created >= mm, 1, 0)) `all_unenroll_cnt` 
                 FROM   course_overviews_courseoverview a
                 join student_courseenrollment b
                 on a.id = b.course_id
@@ -278,8 +278,8 @@ def by_course_enroll_audit(date):
                 where Lower(b.course_id) NOT LIKE '%test%' 
                        AND Lower(b.course_id) NOT LIKE '%demo%' 
                        AND Lower(b.course_id) NOT LIKE '%nile%' 
-                       AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '20180726' 
-                       AND Date_format(Adddate(c.date_joined, INTERVAL 9 hour), '%Y%m%d' ) BETWEEN '1' AND '20180726' 
+                       AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' 
+                       AND Date_format(Adddate(c.date_joined, INTERVAL 9 hour), '%Y%m%d' ) BETWEEN '1' AND '{date}' 
                 GROUP  BY a.id, 
                           a.org, 
                           a.lowest_passing_grade) t1; 
@@ -344,362 +344,254 @@ def by_course_enroll(date):
 # 'by_course_demographics_audit'
 def by_course_demographics_audit(date):
     query = '''
-          SELECT course_id,
-                 org,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc,
-                 sum(
-                    if(mode = 'audit'
-                       and is_active = 1
-                       AND pass_type < 3
-                       AND gender NOT IN ('m', 'f', 'o'),
-                       1,
-                       0))
-                    no_gender1,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age < 20, 1, 0))    age1,
-                 sum(
-                    if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0))
-                    age2,
-                 sum(
-                    if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0))
-                    age3,
-                 sum(
-                    if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0))
-                    age4,
-                 sum(
-                    if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0))
-                    age5,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND age > 59, 1, 0))    age6,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0))   edu1,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0))   edu2,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0))   edu3,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0))   edu4,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0))  edu5,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0))  edu7,
-                 sum(if(mode = 'audit' and is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
-                 sum(if(mode = 'audit' 
-                        and is_active = 1
-                        AND pass_type < 3
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(mode = 'audit' and is_active = 1 AND pass_type < 3, 1, NULL))
-                    allcnt,
-                 sum(if(mode = 'audit' and pass_type < 2 AND gender = 'm', 1, 0))                  male,
-                 sum(if(mode = 'audit' and pass_type < 2 AND gender = 'f', 1, 0))
-                    female,
-                 sum(if(mode = 'audit' and pass_type < 2 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(mode = 'audit' and pass_type < 2 AND gender IN ('m', 'f', 'o'), 1, 0))
-                    no_gender2,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age < 20, 1, 0))                      age1,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(mode = 'audit' and pass_type < 2 AND age > 59, 1, 0))                      age6,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(mode = 'audit' and pass_type < 2 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(mode = 'audit' and pass_type < 2
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(mode = 'audit' and pass_type < 2, 1, NULL))
-                    allcnt,
-                 sum(if(mode = 'audit' and pass_type < 1 AND gender = 'm', 1, 0))                  male,
-                 sum(if(mode = 'audit' and pass_type < 1 AND gender = 'f', 1, 0))
-                    female,
-                 sum(if(mode = 'audit' and pass_type < 1 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(mode = 'audit' and pass_type < 1 AND gender NOT IN ('m', 'f', 'o'), 1, 0))
-                    no_gender3,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age < 20, 1, 0))                      age1,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(mode = 'audit' and pass_type < 1 AND age > 59, 1, 0))                      age6,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(mode = 'audit' and pass_type < 1 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(mode = 'audit' and pass_type < 1
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(mode = 'audit' and pass_type < 1, 1, NULL))
-                    allcnt
-            FROM (SELECT is_active,
-                         t1.course_id,
-                         org,
-                         gender,
-                         age,
-                         edu,
-                         mm mode,
-                         CASE
-                            WHEN t2.status = 'downloadable' THEN 0
-                            WHEN t2.grade >= (lowest_passing_grade / 2) THEN 1
-                            ELSE 2
-                         END
-                            pass_type
-                    FROM (SELECT b.is_active,
-                                 a.id               course_id,
-                                 a.org,
-                                 a.lowest_passing_grade,
-                                 c.id               user_id,
-                                 ifnull(d.gender, '') gender,
-                                   substring('{year}', 1, 4)
-                                 + 1
-                                 - ifnull(d.year_of_birth, 0)
-                                    age,
-                                 d.level_of_education edu,
-                                 b.mode mm
-                            FROM course_overviews_courseoverview a,
-                                 student_courseenrollment      b,
-                                 auth_user                     c,
-                                 auth_userprofile              d
-                           WHERE     a.id = b.course_id
-                                 AND b.user_id = c.id
-                                 AND c.id = d.user_id
-                                 AND date_format(adddate(b.created, INTERVAL 9 HOUR),
-                                                 '%Y%m%d') BETWEEN '1'
-                                                               AND '{date}'
-                                 AND lower(b.course_id) NOT LIKE '%test%'
-                                 AND lower(b.course_id) NOT LIKE '%demo%'
-                                 AND lower(b.course_id) NOT LIKE '%nile%') t1
-                         LEFT JOIN certificates_generatedcertificate t2
-                            ON t1.course_id = t2.course_id AND t1.user_id = t2.user_id AND date_format(
-                                        adddate(t2.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}')
-                 t3
-        GROUP BY course_id, org;
+        SELECT course_id, 
+               org, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND gender NOT IN ( 'm', 'f', 'o' ), 1, 0)) no_gender1, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age < 20, 1, 0)) age1, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0)) age2, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0)) age3,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0)) age4, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND age > 59, 1, 0)) age6,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0)) edu1,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0)) edu2,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0)) edu3,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0)) edu4,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0)) edu5,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0)) edu7,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9, 
+               Count(IF(real_time >= cert_time AND mode = 'audit' AND is_active = 1 AND pass_type < 3, 1, NULL)) allcnt, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND gender = 'm', 1, 0)) male,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND gender = 'o', 1, 0)) etc, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND gender IN ( 'm', 'f', 'o' ), 1, 0)) no_gender2, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age < 20, 1, 0)) age1, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0)) age2, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0)) age3, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0)) age4,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND age > 59, 1, 0)) age6,
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'p', 1, 0)) edu1, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'm', 1, 0)) edu2 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'b', 1, 0)) edu3 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'a', 1, 0)) edu4 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'hs', 1, 0)) edu5 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'jhs', 1, 0)) edu6 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'el', 1, 0)) edu7 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND edu = 'other', 1, 0)) edu8 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9 , 
+               Count(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 2, 1, NULL)) allcnt, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND gender = 'm', 1, 0)) male , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND gender = 'o', 1, 0)) etc, 
+        	   Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND gender NOT IN ( 'm', 'f', 'o' ), 1, 0)) no_gender3, 
+        	   Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age < 20, 1, 0)) age1 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0)) age2 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0)) age3 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0)) age4 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0)) age5 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND age > 59, 1, 0)) age6 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'p', 1, 0)) edu1 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'm', 1, 0)) edu2 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'b', 1, 0)) edu3 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'a', 1, 0)) edu4 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'hs', 1, 0)) edu5 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'jhs', 1, 0)) edu6 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'el', 1, 0)) edu7 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND edu = 'other', 1, 0)) edu8 , 
+               Sum(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9 , 
+               Count(IF(real_time >= cert_time AND mode = 'audit' AND pass_type < 1, 1, NULL)) allcnt 
+        FROM   (SELECT is_active, 
+                       t1.course_id, 
+                       org, 
+                       gender, 
+                       age, 
+                       edu, 
+                       mm  mode, 
+                       CASE 
+                         WHEN t2.status = 'downloadable' THEN 0 
+                         WHEN t2.grade >= ( lowest_passing_grade / 2 ) THEN 1 
+                         ELSE 2 
+                       end pass_type,
+                       cert.mmd as real_time,
+                       t1.ccc as cert_time
+                FROM   (SELECT b.is_active, 
+                               a.id
+                               course_id, 
+                               a.org, 
+                               a.lowest_passing_grade, 
+                               c.id 
+                               user_id, 
+                               Ifnull(d.gender, '') 
+                               gender, 
+                               Substring('{year}', 1, 4) + 1 - 
+                               Ifnull(d.year_of_birth, 0) age, 
+                               d.level_of_education 
+                               edu, 
+                               b.mode mm,
+                               b.created ccc
+                        FROM   course_overviews_courseoverview a, 
+                               student_courseenrollment b, 
+                               auth_user c, 
+                               auth_userprofile d 
+                        WHERE  a.id = b.course_id 
+                               AND b.user_id = c.id 
+                               AND c.id = d.user_id 
+                               AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' 
+                               AND Lower(b.course_id) NOT LIKE '%test%' 
+                               AND Lower(b.course_id) NOT LIKE '%demo%' 
+                               AND Lower(b.course_id) NOT LIKE '%nile%') t1 
+                       LEFT JOIN certificates_generatedcertificate t2 
+                              ON t1.course_id = t2.course_id 
+                                 AND t1.user_id = t2.user_id 
+                                 AND Date_format(Adddate(t2.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}'
+                       left join
+                       (
+                   				select course_id, max(created_date) as mmd
+                   				from certificates_generatedcertificate
+                   				where status = 'downloadable'
+                   				group by course_id
+                        ) cert
+                   	    on t1.course_id = cert.course_id) t3 
+        GROUP  BY course_id, 
+                  org;
     '''.format(
         year=date[:4],
         date=date
     )
     return execute_query(query)
-
-
 
 
 # `by_course_demographic` `코스별 학력`
 def by_course_demographics(date):
     query = '''
-          SELECT course_id,
-                 org,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc,
-                 sum(
-                    if(cc > bc 
-                       and mode = 'honor'
-                       and is_active = 1
-                       AND pass_type < 3
-                       AND gender NOT IN ('m', 'f', 'o'),
-                       1,
-                       0))
-                    no_gender1,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age < 20, 1, 0))    age1,
-                 sum(
-                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0))
-                    age2,
-                 sum(
-                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0))
-                    age3,
-                 sum(
-                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0))
-                    age4,
-                 sum(
-                    if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0))
-                    age5,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND age > 59, 1, 0))    age6,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0))   edu1,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0))   edu2,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0))   edu3,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0))   edu4,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0))  edu5,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0))  edu7,
-                 sum(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
-                 sum(if(cc > bc 
-                        and mode = 'honor' 
-                        and is_active = 1
-                        AND pass_type < 3
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(cc > bc and mode = 'honor' and is_active = 1 AND pass_type < 3, 1, NULL))
-                    allcnt,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'm', 1, 0))                  male,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'f', 1, 0))
-                    female,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND gender IN ('m', 'f', 'o'), 1, 0))
-                    no_gender2,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age < 20, 1, 0))                      age1,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND age > 59, 1, 0))                      age6,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 2
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(cc > bc and mode = 'honor' and pass_type < 2, 1, NULL))
-                    allcnt,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'm', 1, 0))                  male,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'f', 1, 0))
-                    female,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender = 'o', 1, 0))                  etc,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND gender NOT IN ('m', 'f', 'o'), 1, 0))
-                    no_gender3,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age < 20, 1, 0))                      age1,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0))         age2,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0))         age3,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0))         age4,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0))         age5,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND age > 59, 1, 0))                      age6,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'p', 1, 0))                     edu1,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'm', 1, 0))                     edu2,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'b', 1, 0))                     edu3,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'a', 1, 0))                     edu4,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'hs', 1, 0))                    edu5,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'jhs', 1, 0))                   edu6,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'el', 1, 0))                    edu7,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1 AND edu = 'other', 1, 0))                 edu8,
-                 sum(if(cc > bc and mode = 'honor' and pass_type < 1
-                        AND (   edu IS NULL
-                             OR edu NOT IN ('p',
-                                            'm',
-                                            'b',
-                                            'a',
-                                            'hs',
-                                            'jhs',
-                                            'el',
-                                            'other')),
-                        1,
-                        0))
-                    edu9,
-                 count(if(cc > bc and mode = 'honor' and pass_type < 1, 1, NULL))
-                    allcnt
-            FROM (SELECT is_active,
-                         t1.course_id,
-                         org,
-                         gender,
-                         age,
-                         edu,
-                         mm mode,
-                         adddate(t2.created_date, INTERVAL 9 HOUR) as cc,
-                         adddate(t1.bc, INTERVAL 9 HOUR) as bc,
-                         CASE
-                            WHEN t2.status = 'downloadable' THEN 0
-                            WHEN t2.grade >= (lowest_passing_grade / 2) THEN 1
-                            ELSE 2
-                         END
-                            pass_type
-                    FROM (SELECT b.is_active,
-                                 a.id               course_id,
-                                 a.org,
-                                 a.lowest_passing_grade,
-                                 c.id               user_id,
-                                 ifnull(d.gender, '') gender,
-                                   substring('{year}', 1, 4)
-                                 + 1
-                                 - ifnull(d.year_of_birth, 0)
-                                    age,
-                                 d.level_of_education edu,
-                                 b.mode mm,
-                                 b.created bc
-                            FROM course_overviews_courseoverview a,
-                                 student_courseenrollment      b,
-                                 auth_user                     c,
-                                 auth_userprofile              d
-                           WHERE     a.id = b.course_id
-                                 AND b.user_id = c.id
-                                 AND c.id = d.user_id
-                                 AND date_format(adddate(b.created, INTERVAL 9 HOUR),
-                                                 '%Y%m%d') BETWEEN '1'
-                                                               AND '{date}'
-                                 AND lower(b.course_id) NOT LIKE '%test%'
-                                 AND lower(b.course_id) NOT LIKE '%demo%'
-                                 AND lower(b.course_id) NOT LIKE '%nile%') t1
-                         LEFT JOIN certificates_generatedcertificate t2
-                            ON t1.course_id = t2.course_id AND t1.user_id = t2.user_id AND date_format(
-                                        adddate(t2.created_date, INTERVAL 9 HOUR),
-                                        '%Y%m%d') BETWEEN '1'
-                                                      AND '{date}')
-                 t3
-        GROUP BY course_id, org;
+        SELECT course_id, 
+               org, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND gender = 'm', 1, 0)) male , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND gender = 'o', 1, 0)) etc, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND gender NOT IN ( 'm', 'f', 'o' ), 1, 0)) no_gender1, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age < 20, 1, 0)) age1, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 20 AND 29, 1, 0)) age2, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 30 AND 39, 1, 0)) age3,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 40 AND 49, 1, 0)) age4, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND age > 59, 1, 0)) age6,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'p', 1, 0)) edu1,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'm', 1, 0)) edu2,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'b', 1, 0)) edu3,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'a', 1, 0)) edu4,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'hs', 1, 0)) edu5,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'jhs', 1, 0)) edu6,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'el', 1, 0)) edu7,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND edu = 'other', 1, 0)) edu8,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9, 
+               Count(IF(real_time <= cert_time AND mode = 'honor' AND is_active = 1 AND pass_type < 3, 1, NULL)) allcnt, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND gender = 'm', 1, 0)) male,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND gender = 'o', 1, 0)) etc, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND gender IN ( 'm', 'f', 'o' ), 1, 0)) no_gender2, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age < 20, 1, 0)) age1, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age BETWEEN 20 AND 29, 1, 0)) age2, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age BETWEEN 30 AND 39, 1, 0)) age3, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age BETWEEN 40 AND 49, 1, 0)) age4,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age BETWEEN 50 AND 59, 1, 0)) age5,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND age > 59, 1, 0)) age6,
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'p', 1, 0)) edu1, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'm', 1, 0)) edu2 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'b', 1, 0)) edu3 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'a', 1, 0)) edu4 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'hs', 1, 0)) edu5 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'jhs', 1, 0)) edu6 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'el', 1, 0)) edu7 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND edu = 'other', 1, 0)) edu8 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9 , 
+               Count(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 2, 1, NULL)) allcnt, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND gender = 'm', 1, 0)) male , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND gender = 'f', 1, 0)) female, 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND gender = 'o', 1, 0)) etc, 
+        	   Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND gender NOT IN ( 'm', 'f', 'o' ), 1, 0)) no_gender3, 
+        	   Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age < 20, 1, 0)) age1 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age BETWEEN 20 AND 29, 1, 0)) age2 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age BETWEEN 30 AND 39, 1, 0)) age3 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age BETWEEN 40 AND 49, 1, 0)) age4 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age BETWEEN 50 AND 59, 1, 0)) age5 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND age > 59, 1, 0)) age6 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'p', 1, 0)) edu1 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'm', 1, 0)) edu2 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'b', 1, 0)) edu3 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'a', 1, 0)) edu4 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'hs', 1, 0)) edu5 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'jhs', 1, 0)) edu6 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'el', 1, 0)) edu7 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND edu = 'other', 1, 0)) edu8 , 
+               Sum(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1 AND ( edu IS NULL OR edu NOT IN ( 'p', 'm', 'b', 'a', 'hs', 'jhs', 'el', 'other' ) ), 1, 0)) edu9 , 
+               Count(IF(real_time <= cert_time AND mode = 'honor' AND pass_type < 1, 1, NULL)) allcnt 
+        FROM   (SELECT is_active, 
+                       t1.course_id, 
+                       org, 
+                       gender, 
+                       age, 
+                       edu, 
+                       mm  mode, 
+                       CASE 
+                         WHEN t2.status = 'downloadable' THEN 0 
+                         WHEN t2.grade >= ( lowest_passing_grade / 2 ) THEN 1 
+                         ELSE 2 
+                       end pass_type,
+                       cert.mmd as real_time,
+                       t1.ccc as cert_time
+                FROM   (SELECT b.is_active, 
+                               a.id
+                               course_id, 
+                               a.org, 
+                               a.lowest_passing_grade, 
+                               c.id 
+                               user_id, 
+                               Ifnull(d.gender, '') 
+                               gender, 
+                               Substring('{year}', 1, 4) + 1 - 
+                               Ifnull(d.year_of_birth, 0) age, 
+                               d.level_of_education 
+                               edu, 
+                               b.mode mm,
+                               b.created ccc
+                        FROM   course_overviews_courseoverview a, 
+                               student_courseenrollment b, 
+                               auth_user c, 
+                               auth_userprofile d 
+                        WHERE  a.id = b.course_id 
+                               AND b.user_id = c.id 
+                               AND c.id = d.user_id 
+                               AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' 
+                               AND Lower(b.course_id) NOT LIKE '%test%' 
+                               AND Lower(b.course_id) NOT LIKE '%demo%' 
+                               AND Lower(b.course_id) NOT LIKE '%nile%') t1 
+                       LEFT JOIN certificates_generatedcertificate t2 
+                              ON t1.course_id = t2.course_id 
+                                 AND t1.user_id = t2.user_id 
+                                 AND Date_format(Adddate(t2.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}'
+                       left join
+                       (
+                   				select course_id, max(created_date) as mmd
+                   				from certificates_generatedcertificate
+                   				where status = 'downloadable'
+                   				group by course_id
+                        ) cert
+                   	    on t1.course_id = cert.course_id) t3 
+        GROUP  BY course_id, 
+                  org;
     '''.format(
         year=date[:4],
         date=date
     )
     return execute_query(query)
+
 
 
 # `by_course_demographic` `코스별 학력`
