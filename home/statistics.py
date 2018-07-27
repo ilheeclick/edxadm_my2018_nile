@@ -352,9 +352,10 @@ def statistics_excel(request, date):
 
         ws1 = wb['overall']
         ws2 = wb['overall_demographic']
-        ws3 = wb['by_course_KPI']
-        ws4 = wb['by_course_demographic']
-        ws5 = wb['audit']
+        ws3 = wb['by_course_KPI_honor']
+        ws4 = wb['by_course_KPI_audit']
+        ws5 = wb['by_course_demographic_honor']
+        ws6 = wb['by_course_demographic_audit']
 
         # 20170816 추가 시트
 
@@ -406,7 +407,7 @@ def statistics_excel(request, date):
         style_range(ws2, 'B100:B107', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws2, 'B108:B115', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # by_course_KPI
+        # by_course_KPI_honor
         style_range(ws3, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws3, 'L1:R2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws3, 'S1:W1', border=thin_border, fill=fill, font=font, alignment=al)
@@ -415,25 +416,16 @@ def statistics_excel(request, date):
         style_range(ws3, 'X1:Y2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws3, 'Z1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # by_course_demographic
+        # by_course_KPI_audit
         style_range(ws4, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'L1:AE1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AF1:AY1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AZ1:BS1', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'L2:O2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'P2:U2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'V2:AD2', border=thin_border, fill=fill, font=font, alignment=al)
-        # style_range(ws4, 'AE2:AE3', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AF2:AI2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AJ2:AO2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AP2:AX2', border=thin_border, fill=fill, font=font, alignment=al)
-        # style_range(ws4, 'AY2:AY3', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'AZ2:BC2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'BD2:BI2', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws4, 'BJ2:BR2', border=thin_border, fill=fill, font=font, alignment=al)
-        # style_range(ws4, 'BS2:BS3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'L1:R2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'S1:W1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'S2:T2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'U2:V2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'X1:Y2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws4, 'Z1:Z2', border=thin_border, fill=fill, font=font, alignment=al)
 
-        # audit
+        # by_course_demographic_honor
         style_range(ws5, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws5, 'L1:AE1', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws5, 'AF1:AY1', border=thin_border, fill=fill, font=font, alignment=al)
@@ -447,6 +439,21 @@ def statistics_excel(request, date):
         style_range(ws5, 'AZ2:BC2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws5, 'BD2:BI2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws5, 'BJ2:BR2', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # by_course_demographic_honor
+        style_range(ws6, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'L1:AE1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AF1:AY1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AZ1:BS1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'L2:O2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'P2:U2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'V2:AD2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AF2:AI2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AJ2:AO2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AP2:AX2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'AZ2:BC2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'BD2:BI2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws6, 'BJ2:BR2', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 가입현황
         # logger.info('가입현황')
@@ -613,7 +620,7 @@ def statistics_excel(request, date):
             start_row += 1
 
         # :SHEET 3
-        # ------------------------> by_course_KPI
+        # ------------------------> by_course_KPI_honor
 
         sortlist = list()
         by_course_enroll = statistics_query.by_course_enroll(date)
@@ -693,24 +700,16 @@ def statistics_excel(request, date):
                 start_char += 1
             start_row += 1
 
+
         # :SHEET 4
-        # ------------------------> by_course_demographic
+        # ------------------------> by_course_KPI_audit
 
         sortlist = list()
-        by_course_demographic = statistics_query.by_course_demographics(date)
-        for course_id, org, \
-            male_1, female_1, etc_1, no_gender1, age1_1, age2_1, age3_1, age4_1, age5_1, age6_1, edu1_1, edu2_1, edu3_1, edu4_1, edu5_1, edu6_1, edu7_1, edu8_1, edu9_1, allcnt_1, \
-            male_2, female_2, etc_2, no_gender2, age1_2, age2_2, age3_2, age4_2, age5_2, age6_2, edu1_2, edu2_2, edu3_2, edu4_2, edu5_2, edu6_2, edu7_2, edu8_2, edu9_2, allcnt_2, \
-            male_3, female_3, etc_3, no_gender3, age1_3, age2_3, age3_3, age4_3, age5_3, age6_3, edu1_3, edu2_3, edu3_3, edu4_3, edu5_3, edu6_3, edu7_3, edu8_3, edu9_3, allcnt_3 \
-                in by_course_demographic:
+        by_course_enroll = statistics_query.by_course_enroll(date)
+        for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt, half_cnt, cert_cnt in by_course_enroll:
             row = tuple()
-
-            # 정렬을 위한 변수. 정렬 후 해당 내용은 사용하지 않음. s
+            # 0
             row += (get_value_from_dict(course_order, course_id, 99999),)
-            row += (get_value_from_dict(course_starts, course_id, ''),)
-            row += (get_value_from_dict(course_names, course_id, ''),)
-            # e
-
             row += (get_value_from_dict(dic_univ, org),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
@@ -731,108 +730,65 @@ def statistics_excel(request, date):
                     row += ('-',)
             else:
                 row += ('-',)
-
             row += (org,)
+
+            # 10
             row += (course_id.split('+')[1],)
             row += (course_id.split('+')[2],)
+            row += (get_value_from_dict(course_state, course_id),)
+            row += (get_value_from_dict(course_creates, course_id),)
+            row += (get_value_from_dict(course_enroll_starts, course_id),)
+            row += (get_value_from_dict(course_enroll_ends, course_id),)
+            row += (get_value_from_dict(course_starts, course_id),)
+            row += (get_value_from_dict(course_ends, course_id),)
+            row += (get_value_from_dict(course_cert_date, course_id, ''),)
+            row += (new_enroll_cnt,)
+            row += (new_unenroll_cnt,)
 
-            row += (male_1,)
-            row += (female_1,)
-            row += (etc_1,)
-            row += (no_gender1,)
-            row += (age1_1,)
-            row += (age2_1,)
-            row += (age3_1,)
-            row += (age4_1,)
-            row += (age5_1,)
-            row += (age6_1,)
-            row += (edu1_1,)
-            row += (edu2_1,)
-            row += (edu3_1,)
-            row += (edu4_1,)
-            row += (edu5_1,)
-            row += (edu6_1,)
-            row += (edu7_1,)
-            row += (edu8_1,)
-            row += (edu9_1,)
-            row += (allcnt_1,)
+            # 20
+            row += (all_enroll_cnt,)
+            row += (all_unenroll_cnt,)
+            row += (all_enroll_cnt - all_unenroll_cnt,)
 
-            row += (male_2 if course_id in course_cert_date else '-',)
-            row += (female_2 if course_id in course_cert_date else '-',)
-            row += (etc_2 if course_id in course_cert_date else '-',)
-            row += (no_gender2 if course_id in course_cert_date else '-',)
-            row += (age1_2 if course_id in course_cert_date else '-',)
-            row += (age2_2 if course_id in course_cert_date else '-',)
-            row += (age3_2 if course_id in course_cert_date else '-',)
-            row += (age4_2 if course_id in course_cert_date else '-',)
-            row += (age5_2 if course_id in course_cert_date else '-',)
-            row += (age6_2 if course_id in course_cert_date else '-',)
-            row += (edu1_2 if course_id in course_cert_date else '-',)
-            row += (edu2_2 if course_id in course_cert_date else '-',)
-            row += (edu3_2 if course_id in course_cert_date else '-',)
-            row += (edu4_2 if course_id in course_cert_date else '-',)
-            row += (edu5_2 if course_id in course_cert_date else '-',)
-            row += (edu6_2 if course_id in course_cert_date else '-',)
-            row += (edu7_2 if course_id in course_cert_date else '-',)
-            row += (edu8_2 if course_id in course_cert_date else '-',)
-            row += (edu9_2 if course_id in course_cert_date else '-',)
-            row += (allcnt_2 if course_id in course_cert_date else '-',)
-
-            row += (male_3 if course_id in course_cert_date else '-',)
-            row += (female_3 if course_id in course_cert_date else '-',)
-            row += (etc_3 if course_id in course_cert_date else '-',)
-            row += (no_gender3 if course_id in course_cert_date else '-',)
-            row += (age1_3 if course_id in course_cert_date else '-',)
-            row += (age2_3 if course_id in course_cert_date else '-',)
-            row += (age3_3 if course_id in course_cert_date else '-',)
-            row += (age4_3 if course_id in course_cert_date else '-',)
-            row += (age5_3 if course_id in course_cert_date else '-',)
-            row += (age6_3 if course_id in course_cert_date else '-',)
-            row += (edu1_3 if course_id in course_cert_date else '-',)
-            row += (edu2_3 if course_id in course_cert_date else '-',)
-            row += (edu3_3 if course_id in course_cert_date else '-',)
-            row += (edu4_3 if course_id in course_cert_date else '-',)
-            row += (edu5_3 if course_id in course_cert_date else '-',)
-            row += (edu6_3 if course_id in course_cert_date else '-',)
-            row += (edu7_3 if course_id in course_cert_date else '-',)
-            row += (edu8_3 if course_id in course_cert_date else '-',)
-            row += (edu9_3 if course_id in course_cert_date else '-',)
-            row += (allcnt_3 if course_id in course_cert_date else '-',)
+            # over 50% cert target
+            row += (half_cnt if course_id in course_cert_date else '',)
+            # certed target
+            row += (cert_cnt if course_id in course_cert_date else '',)
+            # course update date
+            row += (get_value_from_dict(course_edited, course_id),)
 
             sortlist.append(row)
 
-        sortlist.sort(key=itemgetter(0, 1, 2))
+            print row
+
+        # print 'course_order:', course_order
+        sortlist.sort(key=itemgetter(0, 16, 4))
+        # sortlist.sort(key=lambda order, cert, created: )
 
         start_row = 4
         for course_info in sortlist:
-            course_info = course_info[3:]
+
+            # print 'course_info --- s'
+            # print course_info
+            # print 'course_info --- e'
+
+            # order 값 제거
+            course_info = course_info[1:]
 
             start_char = 65
             for idx in range(0, len(course_info)):
-                if start_char > 116:
-                    ws4['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
-                    style_base(ws4['B' + chr(start_char - 52) + str(start_row)])
-
-                    start_char += 1
-                elif start_char > 90:
-                    ws4['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
-                    style_base(ws4['A' + chr(start_char - 26) + str(start_row)])
-
-                    start_char += 1
-                else:
-                    ws4[chr(start_char) + str(start_row)] = course_info[idx]
-                    style_base(ws4[chr(start_char) + str(start_row)])
-
-                    start_char += 1
-
+                ws4[chr(start_char) + str(start_row)] = course_info[idx]
+                style_base(ws4[chr(start_char) + str(start_row)])
+                start_char += 1
             start_row += 1
 
+
+
         # :SHEET 5
-        # ------------------------> audit
+        # ------------------------> by_course_demographic_honor
 
         sortlist = list()
-        #by_course_demographic = statistics_query.by_course_demographics(date)
-        by_course_demographic = statistics_query.audit(date)
+        by_course_demographic = statistics_query.by_course_demographics(date)
         for course_id, org, \
             male_1, female_1, etc_1, no_gender1, age1_1, age2_1, age3_1, age4_1, age5_1, age6_1, edu1_1, edu2_1, edu3_1, edu4_1, edu5_1, edu6_1, edu7_1, edu8_1, edu9_1, allcnt_1, \
             male_2, female_2, etc_2, no_gender2, age1_2, age2_2, age3_2, age4_2, age5_2, age6_2, edu1_2, edu2_2, edu3_2, edu4_2, edu5_2, edu6_2, edu7_2, edu8_2, edu9_2, allcnt_2, \
@@ -956,6 +912,141 @@ def statistics_excel(request, date):
                     start_char += 1
                 else:
                     ws5[chr(start_char) + str(start_row)] = course_info[idx]
+                    style_base(ws4[chr(start_char) + str(start_row)])
+
+                    start_char += 1
+
+            start_row += 1
+
+        # :SHEET 6
+        # ------------------------> by_course_demographic_audit
+
+        sortlist = list()
+        #by_course_demographic = statistics_query.by_course_demographics(date)
+        by_course_demographic = statistics_query.audit(date)
+        for course_id, org, \
+            male_1, female_1, etc_1, no_gender1, age1_1, age2_1, age3_1, age4_1, age5_1, age6_1, edu1_1, edu2_1, edu3_1, edu4_1, edu5_1, edu6_1, edu7_1, edu8_1, edu9_1, allcnt_1, \
+            male_2, female_2, etc_2, no_gender2, age1_2, age2_2, age3_2, age4_2, age5_2, age6_2, edu1_2, edu2_2, edu3_2, edu4_2, edu5_2, edu6_2, edu7_2, edu8_2, edu9_2, allcnt_2, \
+            male_3, female_3, etc_3, no_gender3, age1_3, age2_3, age3_3, age4_3, age5_3, age6_3, edu1_3, edu2_3, edu3_3, edu4_3, edu5_3, edu6_3, edu7_3, edu8_3, edu9_3, allcnt_3 \
+                in by_course_demographic:
+            row = tuple()
+
+            # 정렬을 위한 변수. 정렬 후 해당 내용은 사용하지 않음. s
+            row += (get_value_from_dict(course_order, course_id, 99999),)
+            row += (get_value_from_dict(course_starts, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id, ''),)
+            # e
+
+            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(course_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id),)
+            row += (get_value_from_dict(course_video, course_id),)
+            row += (get_value_from_dict(course_effort, course_id),)
+            row += (get_value_from_dict(course_week, course_id),)
+
+            effort = get_value_from_dict(course_effort, course_id, None)
+            week = get_value_from_dict(course_week, course_id, None)
+
+            if effort and week:
+                if effort.find(':') > 0:
+                    hh = effort.split(':')[0]
+                    mm = effort.split(':')[1]
+                    row += (str((int(hh) * int(week)) + (int(mm) * int(week)) / 60) + ':' + ("%02d" % ((int(mm) * int(week)) % 60)),)
+                else:
+                    row += ('-',)
+            else:
+                row += ('-',)
+
+            row += (org,)
+            row += (course_id.split('+')[1],)
+            row += (course_id.split('+')[2],)
+
+            row += (male_1,)
+            row += (female_1,)
+            row += (etc_1,)
+            row += (no_gender1,)
+            row += (age1_1,)
+            row += (age2_1,)
+            row += (age3_1,)
+            row += (age4_1,)
+            row += (age5_1,)
+            row += (age6_1,)
+            row += (edu1_1,)
+            row += (edu2_1,)
+            row += (edu3_1,)
+            row += (edu4_1,)
+            row += (edu5_1,)
+            row += (edu6_1,)
+            row += (edu7_1,)
+            row += (edu8_1,)
+            row += (edu9_1,)
+            row += (allcnt_1,)
+
+            row += (male_2 if course_id in course_cert_date else '-',)
+            row += (female_2 if course_id in course_cert_date else '-',)
+            row += (etc_2 if course_id in course_cert_date else '-',)
+            row += (no_gender2 if course_id in course_cert_date else '-',)
+            row += (age1_2 if course_id in course_cert_date else '-',)
+            row += (age2_2 if course_id in course_cert_date else '-',)
+            row += (age3_2 if course_id in course_cert_date else '-',)
+            row += (age4_2 if course_id in course_cert_date else '-',)
+            row += (age5_2 if course_id in course_cert_date else '-',)
+            row += (age6_2 if course_id in course_cert_date else '-',)
+            row += (edu1_2 if course_id in course_cert_date else '-',)
+            row += (edu2_2 if course_id in course_cert_date else '-',)
+            row += (edu3_2 if course_id in course_cert_date else '-',)
+            row += (edu4_2 if course_id in course_cert_date else '-',)
+            row += (edu5_2 if course_id in course_cert_date else '-',)
+            row += (edu6_2 if course_id in course_cert_date else '-',)
+            row += (edu7_2 if course_id in course_cert_date else '-',)
+            row += (edu8_2 if course_id in course_cert_date else '-',)
+            row += (edu9_2 if course_id in course_cert_date else '-',)
+            row += (allcnt_2 if course_id in course_cert_date else '-',)
+
+            row += (male_3 if course_id in course_cert_date else '-',)
+            row += (female_3 if course_id in course_cert_date else '-',)
+            row += (etc_3 if course_id in course_cert_date else '-',)
+            row += (no_gender3 if course_id in course_cert_date else '-',)
+            row += (age1_3 if course_id in course_cert_date else '-',)
+            row += (age2_3 if course_id in course_cert_date else '-',)
+            row += (age3_3 if course_id in course_cert_date else '-',)
+            row += (age4_3 if course_id in course_cert_date else '-',)
+            row += (age5_3 if course_id in course_cert_date else '-',)
+            row += (age6_3 if course_id in course_cert_date else '-',)
+            row += (edu1_3 if course_id in course_cert_date else '-',)
+            row += (edu2_3 if course_id in course_cert_date else '-',)
+            row += (edu3_3 if course_id in course_cert_date else '-',)
+            row += (edu4_3 if course_id in course_cert_date else '-',)
+            row += (edu5_3 if course_id in course_cert_date else '-',)
+            row += (edu6_3 if course_id in course_cert_date else '-',)
+            row += (edu7_3 if course_id in course_cert_date else '-',)
+            row += (edu8_3 if course_id in course_cert_date else '-',)
+            row += (edu9_3 if course_id in course_cert_date else '-',)
+            row += (allcnt_3 if course_id in course_cert_date else '-',)
+
+            sortlist.append(row)
+
+        sortlist.sort(key=itemgetter(0, 1, 2))
+
+        start_row = 4
+        for course_info in sortlist:
+            course_info = course_info[3:]
+
+            start_char = 65
+            for idx in range(0, len(course_info)):
+                if start_char > 116:
+                    ws6['B' + chr(start_char - 52) + str(start_row)] = course_info[idx]
+                    style_base(ws4['B' + chr(start_char - 52) + str(start_row)])
+
+                    start_char += 1
+                elif start_char > 90:
+                    ws6['A' + chr(start_char - 26) + str(start_row)] = course_info[idx]
+                    style_base(ws4['A' + chr(start_char - 26) + str(start_row)])
+
+                    start_char += 1
+                else:
+                    ws6[chr(start_char) + str(start_row)] = course_info[idx]
                     style_base(ws4[chr(start_char) + str(start_row)])
 
                     start_char += 1
