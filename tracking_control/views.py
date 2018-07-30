@@ -263,8 +263,10 @@ def log_change(path_dir, change_local, search_date, web_server):
 
                         if pwd2_pattern != "":
                             data = data.replace(pwd2_pattern, '********')
-                        data = data.replace(joinname_pattern, '******')
-                        data = data.replace(uniname_pattern, "\"******\\\"")
+                        if joinname_pattern != "":
+                            data = data.replace(joinname_pattern, '******')
+                        if uniname_pattern != "":
+                            data = data.replace(uniname_pattern, "\"******\\\"")
 
                     output.write(data.decode('utf-8'))
 
