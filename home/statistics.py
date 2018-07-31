@@ -353,9 +353,9 @@ def statistics_excel(request, date):
         ws1 = wb['overall']
         ws2 = wb['overall_demographic']
         ws3 = wb['by_course_KPI_honor']
-        ws4 = wb['by_course_KPI_audit']
+        ws4 = wb['by_course_KPI_total']
         ws5 = wb['by_course_demographic_honor']
-        ws6 = wb['by_course_demographic_audit']
+        ws6 = wb['by_course_demographic_total']
 
         # 20170816 추가 시트
 
