@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import statistics
 from django.db import connection
 import logging
