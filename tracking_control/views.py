@@ -229,14 +229,16 @@ def log_change(path_dir, change_local, search_date, web_server):
                         # data = re.sub(r1, '"******"', text, count=1)
                         data = text.replace(name_pattern, '"******"', 1)
 
-                    if ip_pattern != '""':
-                        data = re.sub(r2, '"***.***.***.***"', data, count=1)
-
-                    for userid in re.finditer(id_pattern, data):
+                    for userid in r3.finditer(data):
                         if data[userid.end(): userid.end() + 4] != 'null':
                             id_str = data[userid.start():]
                             ch_userid = hashlib.sha256(id_pattern).hexdigest()
-                            data = data.replace(id_str[:id_str.find(',')], '"user_id": ' + ch_userid)
+                            id_point = re.compile(id_str[:id_str.find(',')])
+                            data = id_point.sub('"user_id": "' + ch_userid + '"', data)
+                            break
+
+                    if ip_pattern != '""':
+                        data = re.sub(r2, '"***.***.***.***"', data, count=1)
 
                     if email_index != -1 and email_pattern != '\\':
                         if email_idx[email_change - 1] == "}":
