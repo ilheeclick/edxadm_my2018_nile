@@ -4368,7 +4368,7 @@ def new_notice(request):
             title = request.POST.get('title')
             title = title.replace("'", "''")
             content = request.POST.get('content')
-            content = content.replace("'", "''")
+            content = content.replace("'", "''").replace("/home/static/upload/", "/static/file_upload/")
             head_title = request.POST.get('head_title')
             section = request.POST.get('section')
             odby = request.POST.get('odby')
@@ -4448,7 +4448,7 @@ def new_notice(request):
             title = request.POST.get('title')
             title = title.replace("'", "''")
             content = request.POST.get('content')
-            content = content.replace("'", "''")
+            content = content.replace("'", "''").replace("/home/static/upload/", "/static/file_upload/")
             noti_id = request.POST.get('board_id')
             odby = request.POST.get('odby')
             head_title = request.POST.get('head_title')
@@ -4567,7 +4567,7 @@ def modi_notice(request, id, use_yn):
 
             mod_notice = []
             mod_notice.append(row[0][0])
-            mod_notice.append(row[0][1])
+            mod_notice.append(row[0][1].replace("/static/file_upload/", "/home/static/upload/"))
             mod_notice.append(row[0][2])
             mod_notice.append(row[0][3])
 
@@ -4769,7 +4769,7 @@ def modi_knews(request, id, use_yn):
             files = cur.fetchall()
             cur.close()
             mod_knews.append(row[0][0])
-            mod_knews.append(row[0][1])
+            mod_knews.append(row[0][1].replace("/static/file_upload/", "/home/static/upload/"))
             mod_knews.append(row[0][2])
             mod_knews.append(row[0][3])
             if files:
@@ -4911,7 +4911,7 @@ def new_faq(request):
             faq_question = request.POST.get('faq_question')
             faq_question = faq_question.replace("'", "''")
             faq_answer = request.POST.get('faq_answer')
-            faq_answer = faq_answer.replace("'", "''")
+            faq_answer = faq_answer.replace("'", "''").replace("/home/static/upload/", "/static/file_upload/")
             section = request.POST.get('section')
 
             print 'head_title == ', head_title, ' faq_question == ', faq_question, ' faq_answer == ', faq_answer, ' section == ', section
@@ -4926,7 +4926,7 @@ def new_faq(request):
             question = request.POST.get('faq_question')
             question = question.replace("'", "''")
             answer = request.POST.get('faq_answer')
-            answer = answer.replace("'", "''")
+            answer = answer.replace("'", "''").replace("/home/static/upload/", "/static/file_upload/")
             head_title = request.POST.get('head_title')
             faq_id = request.POST.get('faq_id')
             cur = connection.cursor()
@@ -4968,7 +4968,8 @@ def modi_faq(request, id, use_yn):
             cur.close()
             print 'query', query
             for f in row:
-                faq = f
+                faq = list(f)
+                faq[1] = faq[1].replace("/static/file_upload/", "/home/static/upload/")
                 mod_faq.append(faq)
             data = json.dumps(list(mod_faq), cls=DjangoJSONEncoder, ensure_ascii=False)
         return HttpResponse(data, 'applications/json')
@@ -5152,7 +5153,7 @@ def modi_refer(request, id, use_yn):
             cur.close()
 
             mod_refer.append(row[0][0])
-            mod_refer.append(row[0][1])
+            mod_refer.append(row[0][1].replace("/static/file_upload/", "/home/static/upload/"))
             mod_refer.append(row[0][2])
             mod_refer.append(row[0][3])
             if files:
