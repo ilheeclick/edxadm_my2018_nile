@@ -60,7 +60,7 @@ $(document).ready(function () {
         var code_list = data.slice(0, -1).split('/');
         for (var i = 0; i < code_list.length; i++) {
             var org_code_index = code_list[i].split('+')
-            select_index += '<option value="' + org_code_index[0] + '">' + org_code_index[1] + '</option>';
+            select_index += '<option value="' + org_code_index[1] + '">' + org_code_index[0] + '</option>';
         }
         $('#O_code').html('<select id="org_code_index">' + select_index + '</select>');
 
