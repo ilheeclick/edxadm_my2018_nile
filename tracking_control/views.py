@@ -212,7 +212,7 @@ def log_change(path_dir, change_local, search_date, web_server):
                     username_change = name_idx.find(',')
                     ip_change = ip_idx.find(',')
                     id_change = id_idx.find(':')
-                    email_change = email_idx.find(',')
+                    email_change = email_idx.find(']')
 
                     name_pattern = name_idx[0:username_change]
                     ip_pattern = ip_idx[0:ip_change]
@@ -232,7 +232,8 @@ def log_change(path_dir, change_local, search_date, web_server):
                     for userid in r3.finditer(data):
                         if data[userid.end(): userid.end() + 4] != 'null':
                             id_str = data[userid.start():]
-                            ch_userid = hashlib.sha256(id_pattern).hexdigest()
+                            user_id = id_str[id_str.find(':') + 2:id_str.find(',')]
+                            ch_userid = hashlib.sha256(user_id).hexdigest()
                             id_point = re.compile(id_str[:id_str.find(',')])
                             data = id_point.sub('"user_id": "' + ch_userid + '"', data)
                             break
@@ -240,10 +241,11 @@ def log_change(path_dir, change_local, search_date, web_server):
                     if ip_pattern != '""':
                         data = re.sub(r2, '"***.***.***.***"', data, count=1)
 
-                    if email_index != -1 and email_pattern != '\\':
+                    if email_index != -1 and email_pattern != '\\' and email_pattern != '':
                         if email_idx[email_change - 1] == "}":
-                            data = data.replace(email_pattern, '******@****.**\\\"')
-                        data = data.replace(email_pattern, '******@****.***\\')
+                            data = data.replace(email_pattern, '******@****.***\"')
+                        else:
+                            data = data.replace(email_pattern, '******@****.***')
 
                     # 회원 가입시에 들어가는 개인정보를 처리
 
