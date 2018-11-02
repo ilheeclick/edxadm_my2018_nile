@@ -202,6 +202,7 @@ def log_change(path_dir, change_local, search_date, web_server):
                 id_index = text.find('\"user_id\":')
                 email_index = text.find('\"email\\\":')
                 pwd2_index = text.find('\"password2\\\":')
+                id_index2 = text.find('\\\"user_id\\\":')
 
                 if username_index != -1:
                     name_idx = text[username_index + 12:]
@@ -271,6 +272,18 @@ def log_change(path_dir, change_local, search_date, web_server):
                             data = data.replace(joinname_pattern, '******')
                         if uniname_pattern != "":
                             data = data.replace(uniname_pattern, "\"******\\\"")
+
+                    if id_index2 != -1:
+                        if text.find('edx.user.settings.viewed') == -1:
+                            id_end_idx = text[id_index2 + 16:].find('\\\"')
+                            user_id2 = text[id_index2 + 16: id_index2 + 16 + id_end_idx]
+
+                        else:
+                            id_end_idx = text[id_index2 + 13:].find(',')
+                            user_id2 = text[id_index2 + 13: id_index2 + 13 + id_end_idx]
+
+                        ch_userid2 = hashlib.sha256(user_id2).hexdigest()
+                        data = data.replace(user_id2, ch_userid2)
 
                     output.write(data.decode('utf-8'))
 
