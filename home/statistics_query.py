@@ -314,10 +314,10 @@ def by_course_enroll(date):
         FROM   (SELECT a.id, 
                        a.org, 
                        a.lowest_passing_grade, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'honor' and b.created <= mm, 1, 0 	))                             `new_enroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= mm, 1, 0)) `new_unenroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'honor' and b.created <= mm, 1, 0))      `all_enroll_cnt`, 
-                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= mm, 1, 0)) `all_unenroll_cnt` 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'honor' and b.created <= ifnull(mm, now()), 1, 0 	))                             `new_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= ifnull(mm, now()), 1, 0)) `new_unenroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'honor' and b.created <= ifnull(mm, now()), 1, 0))      `all_enroll_cnt`, 
+                       Sum(IF(Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'honor' and b.created <= ifnull(mm, now()), 1, 0)) `all_unenroll_cnt` 
                 FROM   course_overviews_courseoverview a
                 join student_courseenrollment b
                 on a.id = b.course_id
