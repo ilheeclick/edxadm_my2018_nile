@@ -11,6 +11,7 @@ import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy, countries
 from bson.objectid import ObjectId
 import time
+from django.db import connections
 import logging
 import logging.handlers
 
@@ -196,6 +197,20 @@ def certificate_excel(request, course_id):
 def statistics_excel(request, date):
     # print 'run statistics_excel'
     time.sleep(1)
+
+    dic_univ = dict()
+
+    with connections['default'].cursor() as cur:
+        query = '''
+            SELECT detail_code, detail_name
+              FROM code_detail
+             WHERE group_code = '003';
+        '''
+
+        cur.excute(query)
+        univ_list = cur.fatchall()
+        for univ in univ_list:
+            dic_univ[univ[0]] = univ[1]
 
     save_name = 'K-Mooc{0}.xlsx'.format(date)
     save_path = EXCEL_PATH + save_name
