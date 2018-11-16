@@ -11,7 +11,7 @@ import datetime
 from management.settings import EXCEL_PATH, dic_univ, database_id, debug, classfy, middle_classfy, countries
 from bson.objectid import ObjectId
 import time
-from django.db import connections
+from django.db import connection
 import logging
 import logging.handlers
 
@@ -200,15 +200,15 @@ def statistics_excel(request, date):
 
     dic_univ = dict()
 
-    with connections['default'].cursor() as cur:
+    with connection.cursor() as cur:
         query = '''
             SELECT detail_code, detail_name
               FROM code_detail
              WHERE group_code = '003';
         '''
 
-        cur.excute(query)
-        univ_list = cur.fatchall()
+        cur.execute(query)
+        univ_list = cur.fetchall()
         for univ in univ_list:
             dic_univ[univ[0]] = univ[1]
 
@@ -643,7 +643,7 @@ def statistics_excel(request, date):
             row = tuple()
             # 0
             row += (get_value_from_dict(course_order, course_id, 99999),)
-            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
@@ -725,7 +725,7 @@ def statistics_excel(request, date):
             row = tuple()
             # 0
             row += (get_value_from_dict(course_order, course_id, 99999),)
-            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
@@ -817,7 +817,7 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_names, course_id, ''),)
             # e
 
-            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
@@ -951,7 +951,7 @@ def statistics_excel(request, date):
             row += (get_value_from_dict(course_names, course_id, ''),)
             # e
 
-            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
@@ -1072,6 +1072,9 @@ def statistics_excel(request, date):
 
 
 def get_value_from_dict(dict, key, default=None):
+    if default == 'dic_univ':
+        dict = {k.lower(): v for k, v in dict.items()}
+        key = key.lower()
     return dict[key] if key in dict else default
 
 
@@ -1221,7 +1224,7 @@ def statistics_excel_activity(request, date):
             row = tuple()
             # 0
             row += (get_value_from_dict(course_order, course_id, 99999),)
-            row += (get_value_from_dict(dic_univ, org),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
             row += (get_value_from_dict(course_classfys, course_id, ''),)
             row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
             row += (get_value_from_dict(course_names, course_id),)
