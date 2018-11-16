@@ -1075,6 +1075,7 @@ def get_value_from_dict(dict, key, default=None):
     if default == 'dic_univ':
         dict = {k.lower(): v for k, v in dict.items()}
         key = key.lower()
+        default = None
     return dict[key] if key in dict else default
 
 
