@@ -1713,7 +1713,7 @@ def user_enroll(request):
 def download_bulkuser_example(request):
     fsock = open(EXCEL_PATH + 'bulk_user/user_enroll.csv', 'r')
     response = HttpResponse(fsock)
-    response['Content-Disposition'] = "attachment; filename=회원일괄등록요청.csv"
+    response['Content-Disposition'] = "attachment; filename=user_enroll.csv"
     return response
 
 
