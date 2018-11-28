@@ -287,10 +287,23 @@ def statistics_excel(request, date):
 
             cursor = db.modulestore.structures.find_one({'_id': ObjectId(pb)}, {"blocks": {"$elemMatch": {"block_type": "course"}}})
 
-            _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
-            _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+            try:
+                _classfy = cursor.get('blocks')[0].get('fields').get('classfy')  # classfy
+            except AttributeError as e:
+                _classfy = ''
+                print 'AttributeError:', ObjectId(pb), course_id, org, display_name, e
 
-            _course_edited = cursor.get('blocks')[0].get('edit_info').get('edited_on')  # middle_classfy
+            try:
+                _mclassfy = cursor.get('blocks')[0].get('fields').get('middle_classfy')  # middle_classfy
+            except AttributeError as e:
+                _mclassfy = ''
+                print 'AttributeError:', ObjectId(pb), course_id, org, display_name, e
+
+            try:
+                _course_edited = cursor.get('blocks')[0].get('edit_info').get('edited_on')  # middle_classfy
+            except AttributeError as e:
+                _course_edited = ''
+                print 'AttributeError:', ObjectId(pb), course_id, org, display_name, e
 
             if start is not None:
                 course_starts[course_id] = start
@@ -326,11 +339,13 @@ def statistics_excel(request, date):
         # 요약
         auth_user_info = statistics_query.auth_user_info(date)
         student_courseenrollment_info = statistics_query.student_courseenrollment_info(date)
+        student_honor_courseenrollment_info = statistics_query.student_honor_courseenrollment_info(date)
         certificate_info = statistics_query.overall_only_cert(date)
 
         # 회원가입/수강신청 세부사항
         overall_auth = statistics_query.overall_auth(date)
         overall_enroll = statistics_query.overall_enroll(date)
+        overall_honor_enroll = statistics_query.overall_honor_enroll(date)
         overall_cert = statistics_query.overall_cert(date)
 
         # 연령구분
@@ -363,7 +378,9 @@ def statistics_excel(request, date):
         age_edu_cert = statistics_query.age_edu_cert(date)
 
         print 'step3: info '
-        wb = load_workbook(EXCEL_PATH + 'base.xlsx')
+        # wb = load_workbook(EXCEL_PATH + 'base.xlsx')
+        # wb = load_workbook(EXCEL_PATH + 'base_test.xlsx')
+        wb = load_workbook(EXCEL_PATH + 'base_new.xlsx')
 
         ws1 = wb['overall']
         ws2 = wb['overall_demographic']
@@ -371,6 +388,7 @@ def statistics_excel(request, date):
         ws4 = wb['by_course_KPI_total']
         ws5 = wb['by_course_demographic_honor']
         ws6 = wb['by_course_demographic_total']
+        ws7 = wb['by_course_KPI']
 
         # 20170816 추가 시트
 
@@ -389,14 +407,16 @@ def statistics_excel(request, date):
         style_range(ws1, 'B2:C2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'D2:E2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'F2:G2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'H2:I2', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 세부사항
         style_range(ws1, 'B7:C8', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'D7:E7', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws1, 'F7:G7', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'B9:B12', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'B13:B15', border=thin_border, fill=fill, font=font, alignment=al)
-        style_range(ws1, 'B16:B17', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B9:B13', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B14:B16', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B17:B19', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws1, 'B20:B21', border=thin_border, fill=fill, font=font, alignment=al)
 
         # 연령/성별
         style_range(ws2, 'B2:C3', border=thin_border, fill=fill, font=font, alignment=al)
@@ -470,47 +490,128 @@ def statistics_excel(request, date):
         style_range(ws6, 'BD2:BI2', border=thin_border, fill=fill, font=font, alignment=al)
         style_range(ws6, 'BJ2:BR2', border=thin_border, fill=fill, font=font, alignment=al)
 
+        # by_course_KPI
+        style_range(ws7, 'A1:K2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'L1:T2', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # 전체 신청(수강 및 청강)
+        style_range(ws7, 'U1:Y1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'U2:V2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'U3:U3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'V3:V3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'W2:X2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'W3:W3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'X3:X3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'Y2:Y2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'Y3:Y3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # 수강신청(일반)
+        style_range(ws7, 'Z1:AD1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'Z2:AA2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'Z3:Z3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AA3:AA3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'AB2:AC2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AB3:AB3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AC3:AC3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'AD2:AD2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AD3:AD3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        # 수강신청(청강)
+        style_range(ws7, 'AE1:AI1', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AE2:AF2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AE3:AE3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AF3:AF3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'AG2:AH2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AG3:AG3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AH3:AH3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'AI2:AI2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AI3:AI3', border=thin_border, fill=fill, font=font, alignment=al)
+
+        style_range(ws7, 'AJ1:AK2', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AJ3:AJ3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AK3:AK3', border=thin_border, fill=fill, font=font, alignment=al)
+        style_range(ws7, 'AL1:AL3', border=thin_border, fill=fill, font=font, alignment=al)
+
+
+
         # 가입현황
         # logger.info('가입현황')
         ws1['B4'] = auth_user_info[0][0]
         ws1['C4'] = auth_user_info[0][1]
         ws1['D4'] = student_courseenrollment_info[0][0]
         ws1['E4'] = student_courseenrollment_info[0][1]
-        ws1['F4'] = certificate_info[0][0]
-        ws1['G4'] = certificate_info[0][1]
+
+        ws1['F4'] = student_honor_courseenrollment_info[0][0]
+        ws1['G4'] = student_honor_courseenrollment_info[0][2]
+
+        ws1['H4'] = certificate_info[0][0]
+        ws1['I4'] = certificate_info[0][1]
 
         # 회원가입 / 수강신청 세부사항
         # logger.info('수강신청구분')
         ws1['E9'] = overall_auth[0][0]
         ws1['E10'] = overall_auth[0][1]
-        ws1['E12'] = overall_auth[0][2]
-        ws1['G9'] = overall_auth[0][3]
-        ws1['G10'] = overall_auth[0][4]
-        ws1['G12'] = overall_auth[0][5]
+        ws1['E11'] = overall_auth[0][0] - overall_auth[0][1]
+        # ws1['E12'] = overall_auth[0][2]
+        ws1['E12'] = str(overall_auth[0][2]) + '/' + str(overall_auth[0][8])
+        ws1['E13'] = overall_auth[0][3]
+
+
+        ws1['G9'] = overall_auth[0][4]
+        ws1['G10'] = overall_auth[0][5]
+        ws1['G11'] = overall_auth[0][4] - overall_auth[0][5]
+        # ws1['G12'] = overall_auth[0][6]
+        ws1['G12'] = str(overall_auth[0][6]) + '/' + str(overall_auth[0][9])
+        ws1['G13'] = overall_auth[0][7]
+
+
+        #: 전체 수강신청(수강 및 청강)
+        ws1['D14'] = overall_enroll[0][0]
+        ws1['D15'] = overall_enroll[0][1]
+        ws1['D16'] = overall_enroll[0][2]
+        ws1['E14'] = overall_enroll[0][3]
+        ws1['E15'] = overall_enroll[0][4]
+        # ws1['E16'] = overall_enroll[0][5]
+        ws1['E16'] = overall_enroll[0][3] - overall_enroll[0][4]
+        ws1['F14'] = overall_enroll[0][6]
+        ws1['F15'] = overall_enroll[0][7]
+        ws1['F16'] = overall_enroll[0][8]
+        ws1['G14'] = overall_enroll[0][9]
+        ws1['G15'] = overall_enroll[0][10]
+        # ws1['G16'] = overall_enroll[0][11]
+        ws1['G16'] = overall_enroll[0][9] - overall_enroll[0][10]
 
         #: 수강신청
-        ws1['D13'] = overall_enroll[0][0]
-        ws1['D14'] = overall_enroll[0][1]
-        ws1['D15'] = overall_enroll[0][2]
-        ws1['E13'] = overall_enroll[0][3]
-        ws1['E14'] = overall_enroll[0][4]
-        ws1['E15'] = overall_enroll[0][5]
-        ws1['F13'] = overall_enroll[0][6]
-        ws1['F14'] = overall_enroll[0][7]
-        ws1['F15'] = overall_enroll[0][8]
-        ws1['G13'] = overall_enroll[0][9]
-        ws1['G14'] = overall_enroll[0][10]
-        ws1['G15'] = overall_enroll[0][11]
+        ws1['D17'] = overall_honor_enroll[0][0]
+        ws1['D18'] = overall_honor_enroll[0][1]
+        # ws1['D19'] = overall_honor_enroll[0][2]
+        ws1['D19'] = overall_honor_enroll[0][0] + overall_honor_enroll[0][1]
+        ws1['E17'] = overall_honor_enroll[0][3]
+        ws1['E18'] = overall_honor_enroll[0][4]
+        ws1['E19'] = overall_honor_enroll[0][5]
+        ws1['F17'] = overall_honor_enroll[0][6]
+        ws1['F18'] = overall_honor_enroll[0][7]
+        ws1['F19'] = overall_honor_enroll[0][8]
+        ws1['G17'] = overall_honor_enroll[0][9]
+        ws1['G18'] = overall_honor_enroll[0][10]
+        # ws1['G19'] = overall_honor_enroll[0][11]
+        ws1['G19'] = overall_honor_enroll[0][9] - overall_honor_enroll[0][10]
 
         #: 이수
-        ws1['D16'] = overall_cert[0][0]
-        ws1['D17'] = overall_cert[0][1]
-        ws1['E16'] = overall_cert[0][2]
-        ws1['E17'] = overall_cert[0][3]
-        ws1['F16'] = overall_cert[0][4]
-        ws1['F17'] = overall_cert[0][5]
-        ws1['G16'] = overall_cert[0][6]
-        ws1['G17'] = overall_cert[0][7]
+        ws1['D20'] = overall_cert[0][0]
+        ws1['D21'] = overall_cert[0][1]
+        ws1['E20'] = overall_cert[0][2]
+        ws1['E21'] = overall_cert[0][3]
+        ws1['F20'] = overall_cert[0][4]
+        ws1['F21'] = overall_cert[0][5]
+        ws1['G20'] = overall_cert[0][6]
+        ws1['G21'] = overall_cert[0][7]
 
         # ::::::::::::::::::::::::::::::::::::::::::::::::::: 연령/성별
 
@@ -1066,6 +1167,133 @@ def statistics_excel(request, date):
                     start_char += 1
 
             start_row += 1
+
+
+
+
+
+
+
+        # :SHEET 7
+        # ------------------------> by_course_KPI
+
+        sortlist = list()
+        by_course_enroll = statistics_query.by_course_enroll_open_audit(date)
+        for course_id, org, new_enroll_cnt, new_unenroll_cnt, all_enroll_cnt, all_unenroll_cnt\
+                , new_honor_enroll_cnt, new_honor_unenroll_cnt, all_honor_enroll_cnt, all_honor_unenroll_cnt\
+                , new_audit_enroll_cnt, new_audit_unenroll_cnt, all_audit_enroll_cnt, all_audit_unenroll_cnt\
+                , half_cnt, cert_cnt, audit_yn, catalog_visibility in by_course_enroll:
+            row = tuple()
+            # 0
+            row += (get_value_from_dict(course_order, course_id, 99999),)
+            row += (get_value_from_dict(dic_univ, org, 'dic_univ'),)
+            row += (get_value_from_dict(course_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_middle_classfys, course_id, ''),)
+            row += (get_value_from_dict(course_names, course_id),)
+
+            row += (get_value_from_dict(course_effort, course_id),)     # 주간 학습 권장시간 구성 동영상시간 @ 주차 # 학습인정시간
+            row += (get_value_from_dict(course_week, course_id),)       # 총 주차
+
+            effort = get_value_from_dict(course_effort, course_id, None)
+            week = get_value_from_dict(course_week, course_id, None)
+            video = get_value_from_dict(course_video, course_id, None)
+
+            if effort and week:
+                if effort.find(':') > 0:
+                    hh = effort.split(':')[0]
+                    mm = effort.split(':')[1]
+                    # 총 학습시간
+                    row += (str((int(hh) * int(week)) + (int(mm) * int(week)) / 60) + ':' + ("%02d" % ((int(mm) * int(week)) % 60)),)
+                else:
+                    row += ('-',)
+            else:
+                row += ('-',)
+
+            if video:
+                row += (get_value_from_dict(course_video, course_id),)  # 동영상 재생시간
+            else:
+                row += ('-',)
+
+            row += (org,)
+
+            # 10
+
+            row += (course_id.split('+')[1],)   # 11
+            row += (course_id.split('+')[2],)
+
+            row += (catalog_visibility,)  # 강좌 공개여부
+            row += (audit_yn,)  # 청강 여부
+
+            row += (get_value_from_dict(course_state, course_id),)
+            row += (get_value_from_dict(course_creates, course_id),)
+            row += (get_value_from_dict(course_enroll_starts, course_id),)
+            row += (get_value_from_dict(course_enroll_ends, course_id),)
+            row += (get_value_from_dict(course_starts, course_id),)
+            row += (get_value_from_dict(course_ends, course_id),)   # 20
+            row += (get_value_from_dict(course_cert_date, course_id, ''),)  # 21
+
+            row += (new_enroll_cnt,)    # 22 신규 등록 [전체 신청(수강 및 청강)]
+            row += (new_unenroll_cnt,)  # 23 신규 등록 취소 [전체 신청(수강 및 청강)]
+
+            row += (all_enroll_cnt,)
+            row += (all_unenroll_cnt,)
+            row += (all_enroll_cnt - all_unenroll_cnt,)
+
+            row += (new_honor_enroll_cnt,)  # 27
+            row += (new_honor_unenroll_cnt,)
+
+            row += (all_honor_enroll_cnt,)
+            row += (all_honor_unenroll_cnt,)
+            row += (all_honor_enroll_cnt - all_honor_unenroll_cnt,)
+
+            row += (new_audit_enroll_cnt,)    # 27
+            row += (new_audit_unenroll_cnt,)
+
+            row += (all_audit_enroll_cnt,)
+            row += (all_audit_unenroll_cnt,)
+            row += (all_audit_enroll_cnt - all_audit_unenroll_cnt,)
+
+            # over 50% cert target
+            row += (half_cnt if course_id in course_cert_date else '',)
+            # certed target
+            row += (cert_cnt if course_id in course_cert_date else '',)
+            # course update date
+            row += (get_value_from_dict(course_edited, course_id),)
+
+            sortlist.append(row)
+
+            print row
+
+        # print 'course_order:', course_order
+        sortlist.sort(key=itemgetter(0))
+        # sortlist.sort(key=lambda order, cert, created: )
+
+        start_row = 4   # 엑셀에서 데이터가 출력되는 행의 시작 위치
+        for course_info in sortlist:
+
+            # print 'course_info --- s'
+            # print course_info
+            # print 'course_info --- e'
+
+            # order 값 제거
+            course_info = course_info[1:]
+
+            start_char = 65     # 엑셀에서 데이터가 출력되는 컬럼의 시작 위치
+            for idx in range(0, len(course_info)):
+                # print 'small line:', 1
+                # if start_char == 91:
+                #     print 'test... break...'
+                if idx > 25:
+                    ws7['A' + chr(start_char-26) + str(start_row)] = course_info[idx]
+                    style_base(ws7['A' + chr(start_char-26) + str(start_row)])
+                else:
+                    ws7[chr(start_char) + str(start_row)] = course_info[idx]
+                    style_base(ws7[chr(start_char) + str(start_row)])
+                # print 'small line:', 2
+                start_char += 1
+                # print 'line:', start_char
+            start_row += 1
+
 
         wb.save(save_path)
     return HttpResponse('/home/static/excel/' + save_name, content_type='application/vnd.ms-excel')

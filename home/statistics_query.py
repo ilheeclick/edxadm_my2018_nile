@@ -142,6 +142,32 @@ def overall_only_enroll(date):
     '''.format(date=date)
     return execute_query(query)
 
+# < 요약 : 수강신청건수(청강 제외) >
+def overall_only_honor_enroll(date):
+    query = '''
+        SELECT sum(
+                  if(
+                     date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d')   = '{date}',
+                     1,
+                     0))
+                  new_enroll_cnt,
+               sum(case when mode = 'honor' and c.is_activate = 1 then 1 else 0 end) all_honor_enroll_cnt,
+               sum(case when not(mode = 'honor') and c.is_activate = 1 then 1 else 0 end) all_not_honor_enroll_cnt, 
+               sum(c.is_active = 1) all_enroll_cnt
+          FROM auth_user                       a,
+               auth_userprofile                b,
+               student_courseenrollment        c,
+               course_overviews_courseoverview d
+         WHERE     a.id = b.user_id
+               AND a.id = c.user_id
+               AND c.course_id = d.id
+               AND lower(c.course_id) NOT LIKE '%test%'
+               AND lower(c.course_id) NOT LIKE '%demo%'
+               AND lower(c.course_id) NOT LIKE '%nile%'
+               AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                  AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
 
 # < 요약 : 이수건수 >
 def overall_only_cert(date):
@@ -177,12 +203,45 @@ def overall_auth(date):
              INTERVAL 9 HOUR),
           '%Y%m%d')  = '{date}',a.id,NULL)) new_sec_cnt,
             count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.is_active = 1 ,a.id,NULL)) new_active_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and a.dormant_yn = 'Y', a.id, NULL)) new_dormant_cnt,
             count(a.id) all_cnt,
             count(if(a.email LIKE 'delete_%' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}', a.id, NULL)) all_sec_cnt,
-            count(if(a.email not LIKE 'delete_%' and a.is_active = 1, a.id, NULL)) all_active_cnt
+            count(if(a.email not LIKE 'delete_%' and a.is_active = 1, a.id, NULL)) all_active_cnt,
+            count(if(a.dormant_yn = 'Y' AND date_format(adddate(last_login, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}', a.id, NULL)) all_dormant_cnt,
+            count(if(date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and not(a.is_active = 1) ,a.id,NULL)) new_not_active_cnt,
+            count(if(a.email not LIKE 'delete_%' and not(a.is_active = 1), a.id, NULL)) all_not_active_cnt
           FROM auth_user a, auth_userprofile b
          WHERE     a.id = b.user_id
                AND date_format(adddate(date_joined, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '20151014' AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
+
+
+# `수강신청 세부사항`
+def overall_honor_enroll(date):
+    query = '''
+        SELECT sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}',1,0)) new_enroll_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,1,0)) new_sec_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', c.is_active,0)) new_total_cnt,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}', a.id,null)) new_enroll_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 0,a.id,null)) new_sec_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') = '{date}' and c.is_active = 1, c.user_id, null)) new_total_id,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',1,0)) all_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,1,0)) all_sec_cnt,
+               sum(if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}', c.is_active,0)) all_total_cnt,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}',a.id,null)) all_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 0,a.id,null)) all_sec_id,
+               count(distinct if(date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') between '1' and '{date}' and c.is_active = 1,a.id,null)) all_total_id
+          FROM auth_user a, auth_userprofile b, student_courseenrollment c, course_overviews_courseoverview d
+         WHERE     a.id = b.user_id
+               and a.id = c.user_id
+               and c.course_id = d.id
+               AND lower(c.course_id) NOT LIKE '%test%'
+               AND lower(c.course_id) NOT LIKE '%demo%'
+               AND lower(c.course_id) NOT LIKE '%nile%'
+               AND c.mode = 'honor'
+               AND date_format(adddate(c.created, INTERVAL 9 HOUR), '%Y%m%d') BETWEEN '1'
+                                                                                    AND '{date}';
     '''.format(date=date)
     return execute_query(query)
 
@@ -291,6 +350,89 @@ def by_course_enroll_audit(date):
                       a.lowest_passing_grade) t1; 
     '''.format(date=date)
     return execute_query(query)
+
+# 'by_course_enroll_open_audit'
+def by_course_enroll_open_audit(date):
+    query = '''
+    SELECT id, 
+           org, 
+           new_enroll_cnt, 
+           new_unenroll_cnt, 
+           all_enroll_cnt, 
+           all_unenroll_cnt,
+           new_honor_enroll_cnt, 
+           new_honor_unenroll_cnt, 
+           all_honor_enroll_cnt, 
+           all_honor_unenroll_cnt,
+           new_audit_enroll_cnt, 
+           new_audit_unenroll_cnt, 
+           all_audit_enroll_cnt, 
+           all_audit_unenroll_cnt,
+           (SELECT Count(*) 
+            FROM   certificates_generatedcertificate e 
+            WHERE  e.course_id = t1.id 
+                   AND e.grade >= lowest_passing_grade / 2 
+                   AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') half_cnt, 
+           (SELECT Count(*) 
+            FROM   certificates_generatedcertificate e 
+            WHERE  e.course_id = t1.id 
+                   AND e.status = 'downloadable' 
+                   AND Date_format(Adddate(e.created_date, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}') cert_cnt,
+           audit_yn,
+           catalog_visibility
+    FROM   (SELECT a.id, 
+                   a.org, 
+                   a.lowest_passing_grade, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'audit') or
+                           (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'honor'), 1, 0 	))                             `new_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'audit') or
+                           (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'honor') , 1, 0)) `new_unenroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'audit') or
+                           (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'honor'), 1, 0))      `all_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'audit') or
+                           (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'honor'), 1, 0)) `all_unenroll_cnt`,
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'honor'), 1, 0 	))                             `new_honor_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'honor') , 1, 0)) `new_honor_unenroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'honor'), 1, 0))      `all_honor_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'honor'), 1, 0)) `all_honor_unenroll_cnt`,
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' and b.mode = 'audit'), 1, 0 	))                             `new_audit_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') = '{date}' AND b.is_active = 0 and b.mode = 'audit') , 1, 0)) `new_audit_unenroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'audit'), 1, 0))      `all_audit_enroll_cnt`, 
+                   Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'audit'), 1, 0)) `all_audit_unenroll_cnt`,
+                   audit.audit_yn `audit_yn`,
+                   case when a.catalog_visibility = 'both' then '목록에서 접속 가능' else 'URL 접속 가능' end  `catalog_visibility` 
+            FROM   course_overviews_courseoverview a
+                   join student_courseenrollment b
+                        on a.id = b.course_id
+                   join auth_user c
+                        on b.user_id = c.id 
+                   join auth_userprofile d
+                        on c.id = d.user_id 
+                   left join
+                        (
+                            select course_id, max(created_date) as mm
+                            from certificates_generatedcertificate
+                            where status = 'downloadable'
+                            group by course_id
+                        ) cert
+                        on a.id = cert.course_id
+                   left outer join
+                        (
+                            select course_id, case when upper(nullif(audit_yn,'N')) = 'Y' then 'Y' else 'N' end audit_yn
+                            from course_overview_addinfo
+                        ) audit
+                        on a.id = audit.course_id
+            where Lower(b.course_id) NOT LIKE '%test%' 
+                   AND Lower(b.course_id) NOT LIKE '%demo%' 
+                   AND Lower(b.course_id) NOT LIKE '%nile%' 
+                   AND Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' 
+                   AND Date_format(Adddate(c.date_joined, INTERVAL 9 hour), '%Y%m%d' ) BETWEEN '1' AND '{date}' 
+            GROUP  BY a.id, 
+                      a.org, 
+                      a.lowest_passing_grade, audit.audit_yn, a.catalog_visibility) t1; 
+    '''.format(date=date)
+    return execute_query(query)
+
 
 # 'by_course_enroll'
 def by_course_enroll(date):
@@ -977,6 +1119,23 @@ def student_courseenrollment_info(date):
     '''.format(date=date)
     return execute_query(query)
 
+# `수강신청건수(청강 제외)`
+def student_honor_courseenrollment_info(date):
+    query = '''
+        SELECT sum(if(date_format(adddate(b.created, interval 9 hour), '%Y%m%d') = '{date}', 1, 0)) newcnt,
+               sum(b.is_active)                                           allcnt,
+               sum(case when b.mode = 'honor' and b.is_active = 1 then 1 else 0 end) all_honor_enroll_cnt,
+               sum(case when not(b.mode = 'honor') and b.is_active = 1 then 1 else 0 end) all_not_honor_enroll_cnt 
+          FROM auth_user a, student_courseenrollment b, course_overviews_courseoverview c
+         WHERE     1 = 1
+               AND a.id = b.user_id
+               and b.course_id = c.id
+               AND lower(b.course_id) NOT LIKE '%test%'
+               AND lower(b.course_id) NOT LIKE '%demo%'
+               AND lower(b.course_id) NOT LIKE '%nile%'
+               AND date_format(adddate(b.created, interval 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}';
+    '''.format(date=date)
+    return execute_query(query)
 
 # `수강신청건수 주간`
 def student_courseenrollment_info_week(date):
