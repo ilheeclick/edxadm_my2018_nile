@@ -400,7 +400,10 @@ def by_course_enroll_open_audit(date):
                    Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' and b.mode = 'audit'), 1, 0))      `all_audit_enroll_cnt`, 
                    Sum(IF( (Date_format(Adddate(b.created, INTERVAL 9 hour), '%Y%m%d') BETWEEN '1' AND '{date}' AND b.is_active = 0 and b.mode = 'audit'), 1, 0)) `all_audit_unenroll_cnt`,
                    audit.audit_yn `audit_yn`,
-                   case when a.catalog_visibility = 'both' then '목록에서 접속 가능' else 'URL 접속 가능' end  `catalog_visibility` 
+                   case when a.catalog_visibility = 'both' then '공개' 
+                        else case when a.catalog_visibility = 'about' then '직접접근만 허용'
+                            else '비공개' end
+                   end  `catalog_visibility` 
             FROM   course_overviews_courseoverview a
                    join student_courseenrollment b
                         on a.id = b.course_id
